@@ -85,7 +85,7 @@ require_once __DIR__ . '/../components/nav-active.php';
           <span
             class="hidden md:inline font-outfit text-[18px] tracking-wide text-gray-700 group-hover:text-[#30442B] transition-all duration-300 ease-out transform group-hover:translate-x-0.5">Cart</span>
           <span
-            class="absolute -top-2 -right-1 bg-[#30442B] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transition-all duration-300 ease-out group-hover:ring-4 group-hover:ring-[#30442B]/20 group-hover:scale-110 group-hover:-translate-y-0.5">0</span>
+            class="cart-count absolute -top-2 -right-1 bg-[#30442B] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transition-all duration-300 ease-out group-hover:ring-4 group-hover:ring-[#30442B]/20 group-hover:scale-110 group-hover:-translate-y-0.5">0</span>
         </div>
       </a>
 
