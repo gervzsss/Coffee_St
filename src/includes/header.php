@@ -90,7 +90,7 @@ require_once __DIR__ . '/../components/nav-active.php';
       </a>
 
       <!-- Login -->
-      <a href="/COFFEE_ST/public/pages/login.php"
+      <a id="open-login" href="#login-modal" data-open-login="login"
         class="hidden md:inline-flex items-center px-8 py-2.5 font-outfit text-[18px] font-medium tracking-wide border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-out hover:text-white hover:border-[#30442B]/80 hover:shadow-xl group transform hover:-translate-y-0.5">
         <span
           class="relative z-10 transform transition-transform duration-300 ease-out group-hover:translate-x-1">Login</span>
@@ -154,7 +154,7 @@ require_once __DIR__ . '/../components/nav-active.php';
           class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('contact.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
       </a>
       <div class="pt-4">
-        <a href="/COFFEE_ST/public/pages/login.php"
+        <a href="#login-modal" data-open-login="login"
           class="inline-flex items-center justify-center w-full px-7 py-3 font-outfit text-[20px] font-medium border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group">
           <span class="relative z-10 transform transition-transform duration-300 group-hover:translate-x-1">Login</span>
           <div
