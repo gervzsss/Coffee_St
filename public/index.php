@@ -21,13 +21,17 @@ $year = date('Y');
 
     <?php include __DIR__ . '/../src/views/featured-products.php'; ?>
 
+    <?php include __DIR__ . '/../src/views/split-screen.php'; ?>
+
+    <?php include __DIR__ . '/../src/views/benefits-grid.php'; ?>
+
   </main>
 
   <?php include __DIR__ . '/../src/includes/footer.php'; ?>
 
   <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
-  <script src="/COFFEE_ST/src/resources/js/featured-products.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/home.js"></script>
 </body>
 
 </html>

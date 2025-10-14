@@ -1,6 +1,3 @@
-// jQuery-only interactions for Coffee_St.
-// Keep this file free of frameworks; use Tailwind classes for state (e.g., 'hidden').
-
 $(function () {
   // Desktop dropdown menu (if present)
   $("#menuToggle").on("click", function () {
@@ -19,4 +16,5 @@ $(function () {
     var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
     $("#scroll-progress").css("width", progress + "%");
   });
+
 });
