@@ -18,8 +18,10 @@ $(document).ready(function () {
         return window.showToast(message);
       const $c = ensureToastContainer();
       const $toast = $(
-        '<div class="pointer-events-auto select-none rounded-md bg-amber-600 px-4 py-3 text-sm font-medium text-white shadow-lg ring-1 ring-amber-500/50 opacity-0 -translate-y-2 transition duration-300"></div>',
-      ).text(message);
+        '<div class="pointer-events-auto select-none rounded-2xl bg-[#30442B] px-5 py-3 text-sm font-medium text-white shadow-xl shadow-[#30442B]/20 ring-1 ring-white/15 opacity-0 -translate-y-2 transition duration-300"></div>',
+      ).html(
+        '<div class="flex items-center gap-3"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white"><svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></span><span class="leading-tight">' + message + '</span></div>',
+      );
       $c.append($toast);
       requestAnimationFrame(() => {
         $toast
