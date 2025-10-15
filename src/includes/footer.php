@@ -49,7 +49,7 @@
 
     <!-- Bottom Bar -->
     <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-300">
-      <p>&copy; <?php echo date('Y'); ?> Coffee St. All rights reserved.</p>
+      <p>&copy; <?php echo date("Y"); ?> Coffee St. All rights reserved.</p>
     </div>
   </div>
 </footer>

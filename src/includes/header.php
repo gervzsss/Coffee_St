@@ -2,10 +2,10 @@
 // Header partial: Navigation and related UI
 // Uses Tailwind CSS utilities and jQuery for interactivity
 // Active link helper is defined in src/components/nav-active.php
-require_once __DIR__ . '/../components/nav-active.php';
+require_once __DIR__ . "/../components/nav-active.php";
 
-if (!function_exists('is_authenticated')) {
-  require_once __DIR__ . '/../helpers/auth.php';
+if (!function_exists("is_authenticated")) {
+  require_once __DIR__ . "/../helpers/auth.php";
 }
 
 $authenticatedUser = current_user();
@@ -28,36 +28,72 @@ $authenticatedUser = current_user();
     <div class="hidden md:flex items-center ml-[440px]">
       <div class="flex items-center space-x-14">
         <a href="/COFFEE_ST/public/index.php" class="group relative px-4 py-2.5">
-          <span
-            class="relative z-10 text-[22px] font-outfit font-semibold tracking-wide transition-all duration-300 ease-out transform group-hover:-translate-y-0.5 group-hover:tracking-wider <?php echo isActive('index.php') ? 'text-[#30442B]' : 'text-gray-800 group-hover:text-[#30442B]'; ?>">Home</span>
-          <span
-            class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg -z-0 transform scale-95 opacity-0 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('index.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
-          <span
-            class="absolute left-0 -bottom-1 h-0.5 w-full bg-[#30442B] transform origin-left scale-x-0 transition-all duration-300 ease-out group-hover:scale-x-100 <?php echo isActive('index.php') ? 'scale-x-100' : ''; ?>"></span>
+          <span class="relative z-10 text-[22px] font-outfit font-semibold tracking-wide transition-all duration-300 ease-out transform group-hover:-translate-y-0.5 group-hover:tracking-wider <?php echo isActive(
+            "index.php",
+          )
+            ? "text-[#30442B]"
+            : "text-gray-800 group-hover:text-[#30442B]"; ?>">Home</span>
+          <span class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg -z-0 transform scale-95 opacity-0 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100 <?php echo isActive(
+            "index.php",
+          )
+            ? "opacity-100 scale-100"
+            : ""; ?>"></span>
+          <span class="absolute left-0 -bottom-1 h-0.5 w-full bg-[#30442B] transform origin-left scale-x-0 transition-all duration-300 ease-out group-hover:scale-x-100 <?php echo isActive(
+            "index.php",
+          )
+            ? "scale-x-100"
+            : ""; ?>"></span>
         </a>
         <a href="/COFFEE_ST/public/pages/products.php" class="group relative px-4 py-2.5">
-          <span
-            class="relative z-10 text-[24px] font-outfit font-medium transition-all duration-300 ease-in-out <?php echo isActive('products.php') ? 'text-[#30442B] font-semibold' : 'text-gray-800 group-hover:text-[#30442B]'; ?>">Menu</span>
-          <span
-            class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg -z-0 transform scale-95 opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('products.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
-          <span
-            class="absolute left-0 -bottom-1 h-0.5 w-full bg-[#30442B] transform origin-left scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100 <?php echo isActive('products.php') ? 'scale-x-100' : ''; ?>"></span>
+          <span class="relative z-10 text-[24px] font-outfit font-medium transition-all duration-300 ease-in-out <?php echo isActive(
+            "products.php",
+          )
+            ? "text-[#30442B] font-semibold"
+            : "text-gray-800 group-hover:text-[#30442B]"; ?>">Menu</span>
+          <span class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg -z-0 transform scale-95 opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:scale-100 <?php echo isActive(
+            "products.php",
+          )
+            ? "opacity-100 scale-100"
+            : ""; ?>"></span>
+          <span class="absolute left-0 -bottom-1 h-0.5 w-full bg-[#30442B] transform origin-left scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100 <?php echo isActive(
+            "products.php",
+          )
+            ? "scale-x-100"
+            : ""; ?>"></span>
         </a>
         <a href="/COFFEE_ST/public/pages/about.php" class="group relative px-4 py-2.5">
-          <span
-            class="relative z-10 text-[24px] font-outfit font-medium transition-all duration-300 ease-in-out <?php echo isActive('about.php') ? 'text-[#30442B] font-semibold' : 'text-gray-800 group-hover:text-[#30442B]'; ?>">About</span>
-          <span
-            class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg -z-0 transform scale-95 opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('about.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
-          <span
-            class="absolute left-0 -bottom-1 h-0.5 w-full bg-[#30442B] transform origin-left scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100 <?php echo isActive('about.php') ? 'scale-x-100' : ''; ?>"></span>
+          <span class="relative z-10 text-[24px] font-outfit font-medium transition-all duration-300 ease-in-out <?php echo isActive(
+            "about.php",
+          )
+            ? "text-[#30442B] font-semibold"
+            : "text-gray-800 group-hover:text-[#30442B]"; ?>">About</span>
+          <span class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg -z-0 transform scale-95 opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:scale-100 <?php echo isActive(
+            "about.php",
+          )
+            ? "opacity-100 scale-100"
+            : ""; ?>"></span>
+          <span class="absolute left-0 -bottom-1 h-0.5 w-full bg-[#30442B] transform origin-left scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100 <?php echo isActive(
+            "about.php",
+          )
+            ? "scale-x-100"
+            : ""; ?>"></span>
         </a>
         <a href="/COFFEE_ST/public/pages/contact.php" class="group relative px-4 py-2.5">
-          <span
-            class="relative z-10 text-[24px] font-outfit font-medium transition-all duration-300 ease-in-out <?php echo isActive('contact.php') ? 'text-[#30442B] font-semibold' : 'text-gray-800 group-hover:text-[#30442B]'; ?>">Contact</span>
-          <span
-            class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg -z-0 transform scale-95 opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('contact.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
-          <span
-            class="absolute left-0 -bottom-1 h-0.5 w-full bg-[#30442B] transform origin-left scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100 <?php echo isActive('contact.php') ? 'scale-x-100' : ''; ?>"></span>
+          <span class="relative z-10 text-[24px] font-outfit font-medium transition-all duration-300 ease-in-out <?php echo isActive(
+            "contact.php",
+          )
+            ? "text-[#30442B] font-semibold"
+            : "text-gray-800 group-hover:text-[#30442B]"; ?>">Contact</span>
+          <span class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg -z-0 transform scale-95 opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:scale-100 <?php echo isActive(
+            "contact.php",
+          )
+            ? "opacity-100 scale-100"
+            : ""; ?>"></span>
+          <span class="absolute left-0 -bottom-1 h-0.5 w-full bg-[#30442B] transform origin-left scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100 <?php echo isActive(
+            "contact.php",
+          )
+            ? "scale-x-100"
+            : ""; ?>"></span>
         </a>
       </div>
     </div>
@@ -99,7 +135,9 @@ $authenticatedUser = current_user();
       <?php if ($authenticatedUser): ?>
         <div class="hidden md:flex items-center gap-3">
           <span class="font-outfit text-[18px] font-medium text-[#30442B]">Hi,
-            <?php echo htmlspecialchars($authenticatedUser['first_name'] ?? 'Guest'); ?>!</span>
+            <?php echo htmlspecialchars(
+              $authenticatedUser["first_name"] ?? "Guest",
+            ); ?>!</span>
           <button id="logout-button" type="button"
             class="cursor-pointer inline-flex items-center px-6 py-2.5 font-outfit text-[16px] font-medium tracking-wide border-2 border-[#30442B] text-white bg-[#30442B] rounded-full transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30">
             Logout
@@ -146,35 +184,61 @@ $authenticatedUser = current_user();
 
     <!-- Mobile Navigation Links -->
     <div class="flex flex-col space-y-6 pt-4">
-      <a href="/COFFEE_ST/public/index.php"
-        class="relative text-[24px] font-outfit transition-all duration-300 ease-in-out py-2 group <?php echo isActive('index.php') ? 'text-[#30442B] font-semibold' : 'text-black hover:text-[#30442B]'; ?>">
+      <a href="/COFFEE_ST/public/index.php" class="relative text-[24px] font-outfit transition-all duration-300 ease-in-out py-2 group <?php echo isActive(
+        "index.php",
+      )
+        ? "text-[#30442B] font-semibold"
+        : "text-black hover:text-[#30442B]"; ?>">
         <span class="relative z-10 transition-all duration-300">Home</span>
-        <span
-          class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('index.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
+        <span class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive(
+          "index.php",
+        )
+          ? "opacity-100 scale-100"
+          : ""; ?>"></span>
       </a>
-      <a href="/COFFEE_ST/public/pages/products.php"
-        class="relative text-[24px] font-outfit transition-all duration-300 ease-in-out py-2 group <?php echo isActive('products.php') ? 'text-[#30442B] font-semibold' : 'text-black hover:text-[#30442B]'; ?>">
+      <a href="/COFFEE_ST/public/pages/products.php" class="relative text-[24px] font-outfit transition-all duration-300 ease-in-out py-2 group <?php echo isActive(
+        "products.php",
+      )
+        ? "text-[#30442B] font-semibold"
+        : "text-black hover:text-[#30442B]"; ?>">
         <span class="relative z-10 transition-all duration-300">Menu</span>
-        <span
-          class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('products.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
+        <span class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive(
+          "products.php",
+        )
+          ? "opacity-100 scale-100"
+          : ""; ?>"></span>
       </a>
-      <a href="/COFFEE_ST/public/pages/about.php"
-        class="relative text-[24px] font-outfit transition-all duration-300 ease-in-out py-2 group <?php echo isActive('about.php') ? 'text-[#30442B] font-semibold' : 'text-black hover:text-[#30442B]'; ?>">
+      <a href="/COFFEE_ST/public/pages/about.php" class="relative text-[24px] font-outfit transition-all duration-300 ease-in-out py-2 group <?php echo isActive(
+        "about.php",
+      )
+        ? "text-[#30442B] font-semibold"
+        : "text-black hover:text-[#30442B]"; ?>">
         <span class="relative z-10 transition-all duration-300">About</span>
-        <span
-          class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('about.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
+        <span class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive(
+          "about.php",
+        )
+          ? "opacity-100 scale-100"
+          : ""; ?>"></span>
       </a>
-      <a href="/COFFEE_ST/public/pages/contact.php"
-        class="relative text-[24px] font-outfit transition-all duration-300 ease-in-out py-2 group <?php echo isActive('contact.php') ? 'text-[#30442B] font-semibold' : 'text-black hover:text-[#30442B]'; ?>">
+      <a href="/COFFEE_ST/public/pages/contact.php" class="relative text-[24px] font-outfit transition-all duration-300 ease-in-out py-2 group <?php echo isActive(
+        "contact.php",
+      )
+        ? "text-[#30442B] font-semibold"
+        : "text-black hover:text-[#30442B]"; ?>">
         <span class="relative z-10 transition-all duration-300">Contact</span>
-        <span
-          class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('contact.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
+        <span class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive(
+          "contact.php",
+        )
+          ? "opacity-100 scale-100"
+          : ""; ?>"></span>
       </a>
       <div class="pt-4">
         <?php if ($authenticatedUser): ?>
           <div class="flex flex-col gap-4">
             <span class="font-outfit text-xl text-[#30442B]">Logged in as
-              <?php echo htmlspecialchars($authenticatedUser['email']); ?></span>
+              <?php echo htmlspecialchars(
+                $authenticatedUser["email"],
+              ); ?></span>
             <button id="logout-button-mobile" type="button"
               class="cursor-pointer inline-flex items-center justify-center w-full px-7 py-3 font-outfit text-[20px] font-medium text-white bg-[#30442B] border-2 border-[#30442B] rounded-full transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30">
               Logout

@@ -16,5 +16,4 @@ $(function () {
     var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
     $("#scroll-progress").css("width", progress + "%");
   });
-
 });

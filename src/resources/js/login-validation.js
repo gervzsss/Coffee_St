@@ -20,7 +20,9 @@ $(document).ready(function () {
       const $toast = $(
         '<div class="pointer-events-auto select-none rounded-2xl bg-[#30442B] px-5 py-3 text-sm font-medium text-white shadow-xl shadow-[#30442B]/20 ring-1 ring-white/15 opacity-0 -translate-y-2 transition duration-300"></div>',
       ).html(
-        '<div class="flex items-center gap-3"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white"><svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></span><span class="leading-tight">' + message + '</span></div>',
+        '<div class="flex items-center gap-3"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white"><svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></span><span class="leading-tight">' +
+        message +
+        "</span></div>",
       );
       $c.append($toast);
       requestAnimationFrame(() => {
@@ -264,11 +266,15 @@ $(document).ready(function () {
     }
 
     // open login
-    $(document).on("click", "#open-login, [data-open-login='login']", function (e) {
-      e.preventDefault();
-      $("#signup-modal").hide();
-      openModal("#login-modal");
-    });
+    $(document).on(
+      "click",
+      "#open-login, [data-open-login='login']",
+      function (e) {
+        e.preventDefault();
+        $("#signup-modal").hide();
+        openModal("#login-modal");
+      },
+    );
 
     // open signup
     $(document).on("click", "#open-signup", function (e) {
@@ -416,7 +422,9 @@ $(document).ready(function () {
             });
           }
 
-          const msg = (res && res.error) || "Unable to log in right now. Please try again.";
+          const msg =
+            (res && res.error) ||
+            "Unable to log in right now. Please try again.";
           showErrorToast(msg);
         })
         .always(function () {
@@ -514,7 +522,9 @@ $(document).ready(function () {
             applyBackendErrors(res.errors, map);
           }
 
-          const msg = (res && res.error) || "Unable to sign up right now. Please try again.";
+          const msg =
+            (res && res.error) ||
+            "Unable to sign up right now. Please try again.";
           showErrorToast(msg);
         })
         .always(function () {
@@ -522,23 +532,27 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on("click", "#logout-button, #logout-button-mobile", function (e) {
-      e.preventDefault();
-      $.ajax({
-        url: routes.logout,
-        method: "POST",
-        dataType: "json",
-      })
-        .done(function () {
-          showToast("Logged out successfully!");
-          setTimeout(function () {
-            window.location.reload();
-          }, 500);
+    $(document).on(
+      "click",
+      "#logout-button, #logout-button-mobile",
+      function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: routes.logout,
+          method: "POST",
+          dataType: "json",
         })
-        .fail(function () {
-          showErrorToast("Unable to logout right now. Please try again.");
-        });
-    });
+          .done(function () {
+            showToast("Logged out successfully!");
+            setTimeout(function () {
+              window.location.reload();
+            }, 500);
+          })
+          .fail(function () {
+            showErrorToast("Unable to logout right now. Please try again.");
+          });
+      },
+    );
   }
   initializeModalLogic();
 });

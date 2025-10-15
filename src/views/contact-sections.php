@@ -135,7 +135,7 @@
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <p class="text-sm text-neutral-500">We’ll respond within 24 hours — promise.</p>
               <button type="submit"
-                class="inline-flex items-center justify-center rounded-full bg-[#30442B] px-8 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-[#3a533a] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30">
+                class="cursor-pointer inline-flex items-center justify-center rounded-full bg-[#30442B] px-8 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-[#3a533a] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30">
                 Send message
               </button>
             </div>

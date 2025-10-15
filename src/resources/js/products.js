@@ -13,9 +13,9 @@ $(function () {
   if (!$noResults.length) {
     $noResults = $(
       '<div id="no-results" class="text-center py-16 w-full hidden col-span-full">' +
-        '<p class="text-gray-500 text-xl mb-2">No products found</p>' +
-        '<p class="text-gray-400">Try adjusting your search or selecting a different category</p>' +
-      "</div>"
+      '<p class="text-gray-500 text-xl mb-2">No products found</p>' +
+      '<p class="text-gray-400">Try adjusting your search or selecting a different category</p>' +
+      "</div>",
     );
     $grid.append($noResults);
   }
@@ -26,7 +26,10 @@ $(function () {
   // Activate a category: uses data-active attribute (for CSS styling)
   function activateCategory(category) {
     $(".category-btn").attr("data-active", "false");
-    $(".category-btn[data-category='" + category + "']").attr("data-active", "true");
+    $(".category-btn[data-category='" + category + "']").attr(
+      "data-active",
+      "true",
+    );
   }
 
   function normalize(s) {

@@ -18,7 +18,9 @@ $(function () {
     var $toast = $(
       '<div class="pointer-events-auto select-none rounded-2xl bg-[#30442B] px-5 py-3 text-sm font-medium text-white shadow-xl shadow-[#30442B]/20 ring-1 ring-white/15 opacity-0 -translate-y-2 transition duration-300"></div>',
     ).html(
-      '<div class="flex items-center gap-3"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white"><svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></span><span class="leading-tight">' + message + '</span></div>',
+      '<div class="flex items-center gap-3"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white"><svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></span><span class="leading-tight">' +
+      message +
+      "</span></div>",
     );
     $container.append($toast);
     setTimeout(function () {
@@ -75,8 +77,7 @@ $(function () {
     "contact-message": function () {
       var value = $.trim($("#contact-message").val());
       if (!value) return "Message is required.";
-      if (value.length < 10)
-        return "Message should be at least 10 characters.";
+      if (value.length < 10) return "Message should be at least 10 characters.";
       return null;
     },
   };
@@ -135,10 +136,7 @@ $(function () {
     showToast("Message submitted successfully!");
 
     $contactForm.trigger("reset");
-    $contactForm
-      .find(".contact-error")
-      .text("")
-      .addClass("hidden");
+    $contactForm.find(".contact-error").text("").addClass("hidden");
     $contactForm
       .find("input, textarea")
       .removeClass("border-red-400 focus:border-red-400 focus:ring-red-400");

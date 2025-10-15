@@ -25,18 +25,21 @@ $(function () {
       var g = parseInt($contextTrack.css("gap"), 10);
       if (isNaN(g)) g = parseInt($contextTrack.css("column-gap"), 10);
       if (isNaN(g)) g = 32; // gap-8 fallback
-      var slideW = $contextTrack.children(".featured-slide").first().outerWidth() || 0;
+      var slideW =
+        $contextTrack.children(".featured-slide").first().outerWidth() || 0;
       return slideW + g;
     }
 
     function setTransformInstant(offsetPx) {
       $track.css("transition", "none");
-      $track.css("transform", "translateX(" + (-offsetPx) + "px)");
+      $track.css("transform", "translateX(" + -offsetPx + "px)");
       void $track.width(); // force reflow via jQuery
       $track.css("transition", TRANSITION).css("will-change", "transform");
     }
 
-    function stepSize() { return computeStep($track); }
+    function stepSize() {
+      return computeStep($track);
+    }
 
     function goToIndex(instant) {
       var offset = index * stepSize();
@@ -46,16 +49,23 @@ $(function () {
       } else {
         isAnimating = true;
         $track.css("transition", TRANSITION);
-        $track.css("transform", "translateX(" + (-offset) + "px)");
+        $track.css("transform", "translateX(" + -offset + "px)");
       }
     }
 
     function startAutoplay() {
       if (auto) clearInterval(auto);
-      auto = setInterval(function () { if (!isAnimating) $(".featured-next").trigger("click"); }, 3500);
+      auto = setInterval(function () {
+        if (!isAnimating) $(".featured-next").trigger("click");
+      }, 3500);
     }
 
-    function stopAutoplay() { if (auto) { clearInterval(auto); auto = null; } }
+    function stopAutoplay() {
+      if (auto) {
+        clearInterval(auto);
+        auto = null;
+      }
+    }
 
     // Build clones equal to visible count at both ends
     function initCarousel() {
@@ -70,12 +80,16 @@ $(function () {
       visible = Math.max(1, Math.round(containerW / (step || 1)));
       if (COUNT <= visible) {
         // not enough slides; disable nav and autoplay
-        $(".featured-prev, .featured-next").addClass("opacity-0 pointer-events-none");
+        $(".featured-prev, .featured-next").addClass(
+          "opacity-0 pointer-events-none",
+        );
         index = 0;
         goToIndex(true);
         return;
       } else {
-        $(".featured-prev, .featured-next").removeClass("opacity-0 pointer-events-none");
+        $(".featured-prev, .featured-next").removeClass(
+          "opacity-0 pointer-events-none",
+        );
       }
 
       // prepend last 'visible' slides
@@ -93,33 +107,43 @@ $(function () {
     }
 
     // Bind controls once
-    $(".featured-next").off("click.fc").on("click.fc", function () {
-      if (isAnimating) return;
-      index += 1;
-      goToIndex(false);
-    });
-    $(".featured-prev").off("click.fc").on("click.fc", function () {
-      if (isAnimating) return;
-      index -= 1;
-      goToIndex(false);
-    });
+    $(".featured-next")
+      .off("click.fc")
+      .on("click.fc", function () {
+        if (isAnimating) return;
+        index += 1;
+        goToIndex(false);
+      });
+    $(".featured-prev")
+      .off("click.fc")
+      .on("click.fc", function () {
+        if (isAnimating) return;
+        index -= 1;
+        goToIndex(false);
+      });
 
     $container.on("mouseenter", stopAutoplay);
     $container.on("mouseleave", startAutoplay);
 
     // Snap logic for variable visible
-    $track.off("transitionend.fc webkitTransitionEnd.fc oTransitionEnd.fc").on("transitionend.fc webkitTransitionEnd.fc oTransitionEnd.fc", function (e) {
-      if (e.originalEvent && e.originalEvent.propertyName !== "transform") return;
-      isAnimating = false;
-      var maxIndex = COUNT + visible - 1;
-      if (index > maxIndex) {
-        index -= COUNT;
-        goToIndex(true);
-      } else if (index < visible) {
-        index += COUNT;
-        goToIndex(true);
-      }
-    });
+    $track
+      .off("transitionend.fc webkitTransitionEnd.fc oTransitionEnd.fc")
+      .on(
+        "transitionend.fc webkitTransitionEnd.fc oTransitionEnd.fc",
+        function (e) {
+          if (e.originalEvent && e.originalEvent.propertyName !== "transform")
+            return;
+          isAnimating = false;
+          var maxIndex = COUNT + visible - 1;
+          if (index > maxIndex) {
+            index -= COUNT;
+            goToIndex(true);
+          } else if (index < visible) {
+            index += COUNT;
+            goToIndex(true);
+          }
+        },
+      );
 
     // Init now and on resize (debounced)
     var resizeTimer = null;
@@ -139,7 +163,9 @@ $(function () {
   $(document).on("click", ".add-to-cart", function () {
     var $btn = $(this);
     $btn.addClass("scale-95");
-    setTimeout(function () { $btn.removeClass("scale-95"); }, 150);
+    setTimeout(function () {
+      $btn.removeClass("scale-95");
+    }, 150);
 
     var $badge = $(".cart-count");
     if ($badge.length) {
@@ -174,9 +200,7 @@ $(function () {
     if (!$section.length) return;
     if (!$section.hasClass("animated") && isInViewportJQ($section)) {
       $section.addClass("animated");
-      $section
-        .animate({ opacity: 1 }, 800)
-        .css("transform", "translateY(0)");
+      $section.animate({ opacity: 1 }, 800).css("transform", "translateY(0)");
       // Remove scroll listener after animation completes
       $(window).off("scroll", handleSplitScreenAnimation);
     }
