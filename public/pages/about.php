@@ -14,12 +14,13 @@ $year = date('Y');
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css">
 </head>
 
-<body class="font-poppins">
+<body class="min-h-screen bg-neutral-50 font-poppins text-neutral-900">
   <?php include __DIR__ . '/../../src/includes/header.php'; ?>
 
-  <main class="mx-auto max-w-5xl px-4 py-28">
-    <h1 class="text-3xl font-semibold text-[#30442B]">About (placeholder)</h1>
-    <p class="mt-4 text-neutral-700">This is the about page placeholder. Add your story, mission, and team here.</p>
+  <main class="flex flex-col">
+
+    <?php include __DIR__ . '/../../src/views/about-info.php'; ?>
+
   </main>
 
   <?php include __DIR__ . '/../../src/includes/footer.php'; ?>

@@ -1,11 +1,11 @@
 <?php
 // Products Page Main Content Partial
 
-if (!defined('BASE_PATH')) {
-  define('BASE_PATH', dirname(__DIR__, 2));
+if (!defined("BASE_PATH")) {
+  define("BASE_PATH", dirname(__DIR__, 2));
 }
 
-require_once BASE_PATH . '/src/repositories/ProductRepository.php';
+require_once BASE_PATH . "/src/repositories/ProductRepository.php";
 
 $productRepository = new ProductRepository(db());
 $products = $productRepository->getAllActive();
@@ -43,9 +43,9 @@ $products = $productRepository->getAllActive();
         class="lg:sticky lg:top-28 bg-white rounded-xl shadow-xl p-6 lg:max-h-[calc(100vh-140px)] lg:overflow-y-auto border border-gray-100">
         <!-- Drinks Section -->
         <div class="space-y-8 mb-12">
-          <div class="mb-4"> <!-- All Products moved above the Drinks header -->
+          <div class="mb-4">
             <button
-              class="cursor-pointer category-btn group w-full flex items-center px-6 py-5 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] bg-[#30442B]/5"
+              class="cursor-pointer category-btn group w-full flex items-center px-6 py-5 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] bg-[#30442B]/5 text-base font-medium"
               data-category="all">
               <span class="flex items-center gap-4 category-label">
                 <span class="category-icon">🌟</span>
@@ -56,7 +56,7 @@ $products = $productRepository->getAllActive();
           <h3 class="text-[#30442B] font-bold text-3xl px-2 mb-6">Drinks</h3>
           <div class="space-y-4">
             <button
-              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B]"
+              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] text-base font-medium"
               data-category="hot-coffee">
               <span class="flex items-center gap-4 category-label">
                 <span class="category-icon">☕</span>
@@ -64,7 +64,7 @@ $products = $productRepository->getAllActive();
               </span>
             </button>
             <button
-              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B]"
+              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] text-base font-medium"
               data-category="iced-coffee">
               <span class="flex items-center gap-4 category-label">
                 <span class="category-icon">🧊</span>
@@ -72,7 +72,7 @@ $products = $productRepository->getAllActive();
               </span>
             </button>
             <button
-              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B]"
+              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] text-base font-medium"
               data-category="frappe">
               <span class="flex items-center gap-4 category-label">
                 <span class="category-icon">🥤</span>
@@ -80,9 +80,9 @@ $products = $productRepository->getAllActive();
               </span>
             </button>
             <button
-              class="cursor-pointer category-btn group w-full flex items-center px-4 py-2 text-sm transition-all duration-300 hover:bg-[#30442B]/5 text-gray-600 hover:text-[#30442B]"
+              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] text-base font-medium"
               data-category="non-coffee">
-              <span class="flex items-center gap-3 category-label">
+              <span class="flex items-center gap-4 category-label">
                 <span class="category-icon">🍵</span>
                 <span class="category-text">Non-Coffee</span>
               </span>
@@ -95,28 +95,28 @@ $products = $productRepository->getAllActive();
 
         <!-- Pastries Section -->
         <div class="space-y-6">
-          <h3 class="text-[#30442B] font-bold text-2xl px-2 mb-6">Pastries & Desserts</h3>
+          <h3 class="text-[#30442B] font-bold text-3xl px-2 mb-6">Pastries & Desserts</h3>
           <div class="space-y-4">
             <button
-              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B]"
+              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] text-base font-medium"
               data-category="pastries">
-              <span class="flex items-center gap-3 category-label">
+              <span class="flex items-center gap-4 category-label">
                 <span class="category-icon">🥐</span>
                 <span class="category-text">Pastries</span>
               </span>
             </button>
             <button
-              class="cursor-pointer category-btn group w-full flex items-center px-4 py-2 text-sm transition-all duration-300 hover:bg-[#30442B]/5 text-gray-600 hover:text-[#30442B]"
+              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] text-base font-medium"
               data-category="cakes">
-              <span class="flex items-center gap-3 category-label">
+              <span class="flex items-center gap-4 category-label">
                 <span class="category-icon">🍰</span>
                 <span class="category-text">Cakes</span>
               </span>
             </button>
             <button
-              class="cursor-pointer category-btn group w-full flex items-center px-4 py-2 text-sm transition-all duration-300 hover:bg-[#30442B]/5 text-gray-600 hover:text-[#30442B]"
+              class="cursor-pointer category-btn group w-full flex items-center px-6 py-4 rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] text-base font-medium"
               data-category="buns">
-              <span class="flex items-center gap-3 category-label">
+              <span class="flex items-center gap-4 category-label">
                 <span class="category-icon">🥖</span>
                 <span class="category-text">Buns</span>
               </span>
@@ -144,7 +144,9 @@ $products = $productRepository->getAllActive();
           <?php foreach ($products as $product): ?>
             <div
               class="product-card group bg-white rounded-2xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg"
-              data-category="<?php echo htmlspecialchars($product->category); ?>">
+              data-category="<?php echo htmlspecialchars(
+                $product->category,
+              ); ?>">
               <div class="relative h-72 bg-[#30442B] overflow-hidden">
                 <div class="absolute inset-0 flex items-center justify-center p-8">
                   <img src="<?php echo htmlspecialchars($product->image); ?>"
@@ -161,7 +163,10 @@ $products = $productRepository->getAllActive();
                   <h3 class="text-xl font-bold text-gray-800 group-hover:text-[#30442B] transition-colors duration-300">
                     <?php echo htmlspecialchars($product->name); ?>
                   </h3>
-                  <span class="text-xl font-bold text-[#30442B]">$<?php echo number_format($product->price, 2); ?></span>
+                  <span class="text-xl font-bold text-[#30442B]">$<?php echo number_format(
+                    $product->price,
+                    2,
+                  ); ?></span>
                 </div>
                 <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
                   <?php echo htmlspecialchars($product->description); ?>
