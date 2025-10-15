@@ -3,6 +3,12 @@
 // Uses Tailwind CSS utilities and jQuery for interactivity
 // Active link helper is defined in src/components/nav-active.php
 require_once __DIR__ . '/../components/nav-active.php';
+
+if (!function_exists('is_authenticated')) {
+  require_once __DIR__ . '/../helpers/auth.php';
+}
+
+$authenticatedUser = current_user();
 ?>
 
 <nav class="bg-white shadow-sm fixed w-full z-50 border-b border-gray-100">
@@ -89,15 +95,26 @@ require_once __DIR__ . '/../components/nav-active.php';
         </div>
       </a>
 
-      <!-- Login -->
-      <a id="open-login" href="#login-modal" data-open-login="login"
-        class="hidden md:inline-flex items-center px-8 py-2.5 font-outfit text-[18px] font-medium tracking-wide border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-out hover:text-white hover:border-[#30442B]/80 hover:shadow-xl group transform hover:-translate-y-0.5">
-        <span
-          class="relative z-10 transform transition-transform duration-300 ease-out group-hover:translate-x-1">Login</span>
-        <div
-          class="absolute inset-0 bg-[#30442B] transform scale-x-0 origin-left transition-transform duration-300 ease-out group-hover:scale-x-100">
+      <!-- Authentication -->
+      <?php if ($authenticatedUser): ?>
+        <div class="hidden md:flex items-center gap-3">
+          <span class="font-outfit text-[18px] font-medium text-[#30442B]">Hi,
+            <?php echo htmlspecialchars($authenticatedUser['first_name'] ?? 'Guest'); ?>!</span>
+          <button id="logout-button" type="button"
+            class="cursor-pointer inline-flex items-center px-6 py-2.5 font-outfit text-[16px] font-medium tracking-wide border-2 border-[#30442B] text-white bg-[#30442B] rounded-full transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30">
+            Logout
+          </button>
         </div>
-      </a>
+      <?php else: ?>
+        <a id="open-login" href="#login-modal" data-open-login="login"
+          class="hidden md:inline-flex items-center px-8 py-2.5 font-outfit text-[18px] font-medium tracking-wide border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-out hover:text-white hover:border-[#30442B]/80 hover:shadow-xl group transform hover:-translate-y-0.5">
+          <span
+            class="relative z-10 transform transition-transform duration-300 ease-out group-hover:translate-x-1">Login</span>
+          <div
+            class="absolute inset-0 bg-[#30442B] transform scale-x-0 origin-left transition-transform duration-300 ease-out group-hover:scale-x-100">
+          </div>
+        </a>
+      <?php endif; ?>
 
       <!-- Mobile Menu Button -->
       <button id="mobile-menu-button" class="md:hidden text-black hover:text-[#30442B] transition-colors duration-200"
@@ -154,13 +171,24 @@ require_once __DIR__ . '/../components/nav-active.php';
           class="absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 <?php echo isActive('contact.php') ? 'opacity-100 scale-100' : ''; ?>"></span>
       </a>
       <div class="pt-4">
-        <a href="#login-modal" data-open-login="login"
-          class="inline-flex items-center justify-center w-full px-7 py-3 font-outfit text-[20px] font-medium border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group">
-          <span class="relative z-10 transform transition-transform duration-300 group-hover:translate-x-1">Login</span>
-          <div
-            class="absolute inset-0 bg-[#30442B] transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100">
+        <?php if ($authenticatedUser): ?>
+          <div class="flex flex-col gap-4">
+            <span class="font-outfit text-xl text-[#30442B]">Logged in as
+              <?php echo htmlspecialchars($authenticatedUser['email']); ?></span>
+            <button id="logout-button-mobile" type="button"
+              class="cursor-pointer inline-flex items-center justify-center w-full px-7 py-3 font-outfit text-[20px] font-medium text-white bg-[#30442B] border-2 border-[#30442B] rounded-full transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30">
+              Logout
+            </button>
           </div>
-        </a>
+        <?php else: ?>
+          <a href="#login-modal" data-open-login="login"
+            class="inline-flex items-center justify-center w-full px-7 py-3 font-outfit text-[20px] font-medium border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group">
+            <span class="relative z-10 transform transition-transform duration-300 group-hover:translate-x-1">Login</span>
+            <div
+              class="absolute inset-0 bg-[#30442B] transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100">
+            </div>
+          </a>
+        <?php endif; ?>
       </div>
     </div>
   </div>

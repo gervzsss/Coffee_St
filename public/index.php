@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../src/config/bootstrap.php';
+
 $title = 'Coffee St. - Your Premium Coffee Destination';
 $year = date('Y');
 ?>

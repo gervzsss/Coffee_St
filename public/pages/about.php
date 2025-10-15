@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../src/config/bootstrap.php';
+
 $title = 'About - Coffee St.';
 $year = date('Y');
 ?>
@@ -23,7 +25,7 @@ $year = date('Y');
   <?php include __DIR__ . '/../../src/includes/footer.php'; ?>
 
   <?php include __DIR__ . '/../../src/components/modals/auth-modals.php'; ?>
-  
+
   <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script src="/COFFEE_ST/src/resources/js/login-validation.js"></script>

@@ -32,7 +32,8 @@
             personalized
             experience.</p>
         </div>
-        <form id="login-form" class="space-y-6" autocomplete="off" novalidate>
+        <form id="login-form" class="space-y-6" autocomplete="off" novalidate method="post"
+          action="/COFFEE_ST/public/auth/login.php">
           <div class="space-y-2">
             <label for="login-email" class="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500">
               Email address
@@ -112,12 +113,13 @@
             exclusive
             offers.</p>
         </div>
-        <form id="signup-form" class="space-y-6" autocomplete="off" novalidate>
+        <form id="signup-form" class="space-y-6" autocomplete="off" novalidate method="post"
+          action="/COFFEE_ST/public/auth/register.php">
           <div class="grid gap-5 sm:grid-cols-2">
             <div class="space-y-2">
               <label for="reg-first"
                 class="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500">First name</label>
-              <input id="reg-first" type="text" name="first-name" autocomplete="given-name"
+              <input id="reg-first" type="text" name="first_name" autocomplete="given-name"
                 class="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition duration-200 placeholder:text-neutral-400 focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/20"
                 placeholder="Jane" />
               <p data-error-for="reg-first" class="hidden text-sm font-medium text-red-500"></p>
@@ -125,7 +127,7 @@
             <div class="space-y-2">
               <label for="reg-last" class="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500">Last
                 name</label>
-              <input id="reg-last" type="text" name="last-name" autocomplete="family-name"
+              <input id="reg-last" type="text" name="last_name" autocomplete="family-name"
                 class="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition duration-200 placeholder:text-neutral-400 focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/20"
                 placeholder="Doe" />
               <p data-error-for="reg-last" class="hidden text-sm font-medium text-red-500"></p>

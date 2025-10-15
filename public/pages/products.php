@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../src/config/bootstrap.php';
+
 $title = 'Products - Coffee St.';
 $year = date('Y');
 ?>
