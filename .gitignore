@@ -7,3 +7,5 @@ dist
 vendor
 
 .env
+
+php_errors.log

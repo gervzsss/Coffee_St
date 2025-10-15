@@ -1,5 +1,14 @@
 <?php
 // Products Page Main Content Partial
+
+if (!defined('BASE_PATH')) {
+  define('BASE_PATH', dirname(__DIR__, 2));
+}
+
+require_once BASE_PATH . '/src/repositories/ProductRepository.php';
+
+$productRepository = new ProductRepository(db());
+$products = $productRepository->getAllActive();
 ?>
 
 <!-- Header Section with Search -->
@@ -125,128 +134,46 @@
     <!-- Products Grid -->
     <div class="flex-1">
       <div class="grid products-equal-rows grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" id="products-grid">
-        <?php
-        $products = [
-          // Hot Coffee
-          [
-            'category' => 'hot-coffee',
-            'name' => 'Classic Espresso',
-            'description' => 'Rich and smooth espresso shot with perfect crema',
-            'price' => 3.99,
-            'image' => '/COFFEE_ST/public/assets/americano.png'
-          ],
-          [
-            'category' => 'hot-coffee',
-            'name' => 'Cappuccino',
-            'description' => 'Rich espresso with steamed milk and silky foam',
-            'price' => 4.99,
-            'image' => '/COFFEE_ST/public/assets/cafe_late.png'
-          ],
-          [
-            'category' => 'hot-coffee',
-            'name' => 'Caramel Macchiato',
-            'description' => 'Espresso with vanilla syrup and caramel drizzle',
-            'price' => 5.49,
-            'image' => '/COFFEE_ST/public/assets/americano.png'
-          ],
-          // Iced Coffee
-          [
-            'category' => 'iced-coffee',
-            'name' => 'Classic Cold Brew',
-            'description' => 'Smooth, slow-steeped cold coffee blend',
-            'price' => 4.99,
-            'image' => '/COFFEE_ST/public/assets/cafe_late.png'
-          ],
-          [
-            'category' => 'iced-coffee',
-            'name' => 'Iced Americano',
-            'description' => 'Chilled espresso with cold water and ice',
-            'price' => 4.49,
-            'image' => '/COFFEE_ST/public/assets/americano.png'
-          ],
-          // Frappe
-          [
-            'category' => 'frappe',
-            'name' => 'Caramel Frappuccino',
-            'description' => 'Blended coffee with caramel and whipped cream',
-            'price' => 5.99,
-            'image' => '/COFFEE_ST/public/assets/javachip.png'
-          ],
-          [
-            'category' => 'frappe',
-            'name' => 'Mocha Frappuccino',
-            'description' => 'Rich chocolate and coffee blend with whipped cream',
-            'price' => 5.99,
-            'image' => '/COFFEE_ST/public/assets/javachip.png'
-          ],
-          // Non-Coffee
-          [
-            'category' => 'non-coffee',
-            'name' => 'Green Tea Latte',
-            'description' => 'Premium matcha green tea with steamed milk',
-            'price' => 4.99,
-            'image' => '/COFFEE_ST/public/assets/cafe_late.png'
-          ],
-          [
-            'category' => 'non-coffee',
-            'name' => 'Hot Chocolate',
-            'description' => 'Rich Belgian chocolate with steamed milk',
-            'price' => 4.49,
-            'image' => '/COFFEE_ST/public/assets/americano.png'
-          ],
-          // Pastries
-          [
-            'category' => 'pastries',
-            'name' => 'Butter Croissant',
-            'description' => 'Flaky, buttery croissant baked fresh daily',
-            'price' => 3.49,
-            'image' => '/COFFEE_ST/public/assets/cinammon.png'
-          ],
-          [
-            'category' => 'pastries',
-            'name' => 'Chocolate Muffin',
-            'description' => 'Rich chocolate muffin with chocolate chips',
-            'price' => 3.99,
-            'image' => '/COFFEE_ST/public/assets/javachip.png'
-          ],
-          [
-            'category' => 'cakes',
-            'name' => 'New York Cheesecake',
-            'description' => 'Classic creamy cheesecake with graham crust',
-            'price' => 6.99,
-            'image' => '/COFFEE_ST/public/assets/cafe_late.png'
-          ],
-          [
-            'category' => 'buns',
-            'name' => 'Cinnamon Roll',
-            'description' => 'Freshly baked with cream cheese frosting',
-            'price' => 4.49,
-            'image' => '/COFFEE_ST/public/assets/cinammon.png'
-          ],
-        ];
-
-        foreach ($products as $product) {
-          echo '
-          <div class="product-card group bg-white rounded-2xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg" data-category="' . $product['category'] . '">
-            <div class="relative h-72 bg-[#30442B] overflow-hidden">
-              <div class="absolute inset-0 flex items-center justify-center p-8">
-                <img src="' . $product['image'] . '" alt="' . $product['name'] . '" class="max-h-48 w-auto transition-transform duration-500 transform group-hover:scale-110 drop-shadow-xl" loading="lazy" />
+        <?php if (empty($products)): ?>
+          <div
+            class="col-span-full flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#30442B]/30 bg-white/70 py-20 text-center">
+            <p class="text-xl font-semibold text-[#30442B]">Products coming soon.</p>
+            <p class="mt-2 text-sm text-neutral-500">Please check back later while we brew something special.</p>
+          </div>
+        <?php else: ?>
+          <?php foreach ($products as $product): ?>
+            <div
+              class="product-card group bg-white rounded-2xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg"
+              data-category="<?php echo htmlspecialchars($product->category); ?>">
+              <div class="relative h-72 bg-[#30442B] overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center p-8">
+                  <img src="<?php echo htmlspecialchars($product->image); ?>"
+                    alt="<?php echo htmlspecialchars($product->name); ?>"
+                    class="max-h-48 w-auto transition-transform duration-500 transform group-hover:scale-110 drop-shadow-xl"
+                    loading="lazy" />
+                </div>
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-[#30442B]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                </div>
               </div>
-              <div class="absolute inset-0 bg-gradient-to-t from-[#30442B]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-            <div class="p-6 bg-white relative">
-              <div class="flex justify-between items-start mb-2">
-                <h3 class="text-xl font-bold text-gray-800 group-hover:text-[#30442B] transition-colors duration-300">' . $product['name'] . '</h3>
-                <span class="text-xl font-bold text-[#30442B]">$' . number_format($product['price'], 2) . '</span>
+              <div class="p-6 bg-white relative">
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="text-xl font-bold text-gray-800 group-hover:text-[#30442B] transition-colors duration-300">
+                    <?php echo htmlspecialchars($product->name); ?>
+                  </h3>
+                  <span class="text-xl font-bold text-[#30442B]">$<?php echo number_format($product->price, 2); ?></span>
+                </div>
+                <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                  <?php echo htmlspecialchars($product->description); ?>
+                </p>
+                <button
+                  class="cursor-pointer w-full px-6 py-3 bg-[#30442B] text-white text-sm font-medium rounded-xl transition-all duration-300 hover:bg-[#30442B]/90 hover:shadow-md active:transform active:scale-95 group-hover:shadow-lg add-to-cart">
+                  Add to Cart
+                </button>
               </div>
-              <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">' . $product['description'] . '</p>
-              <button class="cursor-pointer w-full px-6 py-3 bg-[#30442B] text-white text-sm font-medium rounded-xl transition-all duration-300 hover:bg-[#30442B]/90 hover:shadow-md active:transform active:scale-95 group-hover:shadow-lg add-to-cart">
-                Add to Cart
-              </button>
             </div>
-          </div>';
-        }
-        ?>
+          <?php endforeach; ?>
+        <?php endif; ?>
       </div>
     </div>
   </div>
