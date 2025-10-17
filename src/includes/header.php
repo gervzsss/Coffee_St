@@ -114,7 +114,7 @@ $authenticatedUser = current_user();
         </button>
       </div>
 
-      <!-- Cart -->
+  <!-- Cart -->
       <a href="/COFFEE_ST/public/pages/cart.php" class="relative flex items-center gap-2 group">
         <div
           class="relative flex items-center gap-2.5 py-2 px-4 rounded-full transition-all duration-300 ease-out bg-transparent hover:bg-[#30442B]/5">
@@ -138,6 +138,7 @@ $authenticatedUser = current_user();
             <?php echo htmlspecialchars(
               $authenticatedUser["first_name"] ?? "Guest",
             ); ?>!</span>
+          <a href="/COFFEE_ST/public/pages/orders.php" class="font-outfit text-[16px] text-[#30442B] underline">My Orders</a>
           <button id="logout-button" type="button"
             class="cursor-pointer inline-flex items-center px-6 py-2.5 font-outfit text-[16px] font-medium tracking-wide border-2 border-[#30442B] text-white bg-[#30442B] rounded-full transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30">
             Logout
@@ -262,3 +263,13 @@ $authenticatedUser = current_user();
 <div class="fixed top-0 left-0 w-full h-0.5 z-50">
   <div id="scroll-progress" class="h-full bg-[#30442B] w-0 transition-all duration-300 rounded-full"></div>
 </div>
+
+<!-- Auth flag for frontend scripts -->
+<script>
+  window.__isAuthenticated = <?php echo json_encode((bool) $authenticatedUser); ?>;
+  // jQuery-friendly alias
+  window.IS_AUTH = window.__isAuthenticated;
+  // expose login trigger selector for consistency
+  window.__openLoginSelector = '[data-open-login="login"]';
+  // no-op if jQuery not loaded yet
+</script>

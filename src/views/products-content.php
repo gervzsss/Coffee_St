@@ -146,7 +146,7 @@ $products = $productRepository->getAllActive();
               class="product-card group bg-white rounded-2xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg"
               data-category="<?php echo htmlspecialchars(
                 $product->category,
-              ); ?>">
+              ); ?>" data-id="<?php echo (int)$product->id; ?>">
               <div class="relative h-72 bg-[#30442B] overflow-hidden">
                 <div class="absolute inset-0 flex items-center justify-center p-8">
                   <img src="<?php echo htmlspecialchars($product->image); ?>"
@@ -172,7 +172,8 @@ $products = $productRepository->getAllActive();
                   <?php echo htmlspecialchars($product->description); ?>
                 </p>
                 <button
-                  class="cursor-pointer w-full px-6 py-3 bg-[#30442B] text-white text-sm font-medium rounded-xl transition-all duration-300 hover:bg-[#30442B]/90 hover:shadow-md active:transform active:scale-95 group-hover:shadow-lg add-to-cart">
+                  class="cursor-pointer w-full px-6 py-3 bg-[#30442B] text-white text-sm font-medium rounded-xl transition-all duration-300 hover:bg-[#30442B]/90 hover:shadow-md active:transform active:scale-95 group-hover:shadow-lg add-to-cart"
+                  data-product-id="<?php echo (int)$product->id; ?>">
                   Add to Cart
                 </button>
               </div>
