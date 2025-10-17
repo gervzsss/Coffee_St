@@ -15,6 +15,10 @@ $(function () {
   }
 
   function openATC(product) {
+    // Show overlay and modal, lock body scroll
+    $overlay.removeClass("hidden").css("display", "flex");
+    $("body").addClass("overflow-hidden");
+    $modal.show();
     // product: {id, name, price, image, category, description}
     $modal.find('[data-atc="product-id"]').val(product.id);
     $modal
@@ -67,18 +71,24 @@ $(function () {
             addonsGrid.append($opt);
           });
         }
-      })
-      .always(function () {
-        // Center using flex only when visible to avoid class conflict with hidden
-        $overlay.addClass("flex");
-        $overlay.removeClass("hidden").fadeIn(120);
       });
   }
 
   function closeATC() {
-    $overlay.fadeOut(120, function () {
-      $overlay.removeClass("flex");
-    });
+    $modal.hide();
+    $overlay.addClass("hidden").css("display", "none");
+    $("body").removeClass("overflow-hidden");
+    // Reset modal content
+    $modal.find('[data-atc="product-id"]').val("");
+    $modal.find('[data-atc="image"]').attr("src", "").attr("alt", "");
+    $modal.find('[data-atc="name"]').text("");
+    $modal.find('[data-atc="category"]').text("");
+    $modal.find('[data-atc="description"]').text("");
+    $modal.find('[data-atc="qty"]').val(1);
+    $modal.find('[data-atc="base-price"]').val(0);
+    $modal.find('[data-atc="price"]').text("$0.00");
+    $modal.find('[data-atc="addons-wrap"]').prop("hidden", true);
+    $modal.find('[data-atc="addons"]').empty();
   }
 
   // Price recalculation when add-ons or qty change
@@ -98,6 +108,7 @@ $(function () {
     return { unit: unit, qty: qty };
   }
 
+
   // Open modal from any .add-to-cart button, pulling product data from card markup
   $(document).on("click", ".add-to-cart", function () {
     var $card = $(this).closest(".product-card");
@@ -105,10 +116,7 @@ $(function () {
       id: parseInt($(this).data("product-id") || $card.data("id"), 10),
       name: $.trim($card.find("h3").first().text()),
       price: (function () {
-        var t = $.trim($card.find("span.font-bold").first().text()).replace(
-          /[^0-9.]/g,
-          "",
-        );
+        var t = $.trim($card.find("span.font-bold").first().text()).replace(/[^0-9.]/g, "");
         var n = parseFloat(t);
         return isNaN(n) ? 0 : n;
       })(),
@@ -118,8 +126,14 @@ $(function () {
     };
     if (!product.id) return;
 
-    // Guests: open modal but queue action on add; allow browsing options
-    openATC(product);
+    // Only open modal if user is authenticated
+    if (window.IS_AUTH) {
+      openATC(product);
+    } else {
+      // Not logged in: trigger login/signup modal
+      var sel = window.__openLoginSelector || '[data-open-login="login"]';
+      $(sel).first().trigger("click");
+    }
   });
 
   // Qty controls
@@ -150,6 +164,13 @@ $(function () {
       closeATC();
     },
   );
+
+  // ESC key closes modal and overlay
+  $(document).on("keydown", function (e) {
+    if (e.key === "Escape" && $overlay.is(":visible")) {
+      closeATC();
+    }
+  });
   $(document).on("click", "#atc-overlay", function (e) {
     if ($(e.target).is("#atc-overlay")) closeATC();
   });
@@ -234,7 +255,35 @@ $(function () {
   // Direct Checkout
   $(document).on("click", '[data-atc="checkout"]', function () {
     var payload = collectPayload();
-    doAddToCart(payload, "checkout");
+    // Add only this product to cart, then redirect to checkout
+    $.post("/COFFEE_ST/public/api/cart.php?action=add", payload)
+      .done(function (resp) {
+        if (resp && resp.success) {
+          updateCartCount(resp.summary && resp.summary.count ? resp.summary.count : 0);
+          // Redirect to checkout with only this product
+          window.location.href = "/COFFEE_ST/public/pages/checkout.php?single=" + encodeURIComponent(payload.product_id);
+        } else if (resp && resp.error) {
+          if (/login/i.test(resp.error)) {
+            try {
+              sessionStorage.setItem("queuedAddToCart", JSON.stringify(payload));
+            } catch (e) { }
+            $('[data-open-login="login"]').first().trigger("click");
+          } else {
+            alert(resp.error);
+          }
+        }
+      })
+      .fail(function (xhr) {
+        if (xhr && xhr.status === 401) {
+          try {
+            sessionStorage.setItem("queuedAddToCart", JSON.stringify(payload));
+          } catch (e) { }
+          $('[data-open-login="login"]').first().trigger("click");
+        } else {
+          alert("Unable to add to cart.");
+        }
+      });
+    closeATC();
   });
 
   // Replay on login success (optional custom event)

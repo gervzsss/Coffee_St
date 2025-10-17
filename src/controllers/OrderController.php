@@ -23,7 +23,7 @@ class OrderController
     if (!$user || !isset($user['id'])) {
       throw new \RuntimeException('Unauthorized');
     }
-    return (int)$user['id'];
+    return (int) $user['id'];
   }
 
   public function checkout(array $payload): array
@@ -31,15 +31,37 @@ class OrderController
     $uid = $this->requireUserId();
     $cart = $this->carts->getOrCreateActiveCart($uid);
     $details = $this->carts->getCartDetails($cart->id ?? 0);
+    $singleProductId = isset($payload['single_product_id']) && $payload['single_product_id']
+      ? (int) $payload['single_product_id']
+      : null;
+
+    $items = $details['items'];
+    if ($singleProductId) {
+      $items = array_values(array_filter($items, static fn($it) => (int) $it->product_id === $singleProductId));
+      if (empty($items)) {
+        return ['success' => false, 'error' => 'Selected item is no longer in your cart.'];
+      }
+    }
+
+    $subtotal = 0.0;
+    foreach ($items as $it) {
+      $lineUnit = (float) $it->unit_price + (float) $it->price_delta;
+      $subtotal += $lineUnit * (int) $it->quantity;
+    }
+    if (!$singleProductId) {
+      $subtotal = $details['subtotal'];
+    } else {
+      $subtotal = round($subtotal, 2);
+    }
 
     // Build snapshot
     $itemsSnapshot = [];
-    foreach ($details['items'] as $it) {
+    foreach ($items as $it) {
       // get product name for snapshot
       $pstmt = db()->prepare('SELECT name FROM products WHERE id = :id');
       $pstmt->execute(['id' => $it->product_id]);
       $pname = ($pstmt->fetch()['name'] ?? '') ?: '';
-      $delta = (float)($it->price_delta ?? 0);
+      $delta = (float) ($it->price_delta ?? 0);
       $itemsSnapshot[] = [
         'product_id' => $it->product_id,
         'product_name' => $pname,
@@ -51,11 +73,11 @@ class OrderController
     $orderConfig = require BASE_PATH . '/src/config/order.php';
     $delivery = (float) ($payload['delivery_fee'] ?? $orderConfig['delivery_fee']);
     $taxRate = (float) ($orderConfig['tax_rate'] ?? 0.08);
-    $tax = round($details['subtotal'] * $taxRate, 2);
-    $total = round($details['subtotal'] + $delivery + $tax, 2);
+    $tax = round($subtotal * $taxRate, 2);
+    $total = round($subtotal + $delivery + $tax, 2);
     $snapshot = [
       'items' => $itemsSnapshot,
-      'subtotal' => $details['subtotal'],
+      'subtotal' => $subtotal,
       'delivery_fee' => $delivery,
       'tax' => $tax,
       'tax_rate' => $taxRate,
@@ -65,12 +87,20 @@ class OrderController
     $orderId = $this->orders->createFromCart($uid, $snapshot);
 
     // mock payment: mark as paid immediately
-  $upd = db()->prepare('UPDATE orders SET status = "paid", tax_rate = :rate, tax_amount = :tax WHERE id = :id');
-  $upd->execute(['id' => $orderId, 'rate' => $taxRate, 'tax' => $tax]);
+    $upd = db()->prepare('UPDATE orders SET status = "paid", tax_rate = :rate, tax_amount = :tax WHERE id = :id');
+    $upd->execute(['id' => $orderId, 'rate' => $taxRate, 'tax' => $tax]);
 
     // finalize cart
-    $this->carts->clearCart($cart->id ?? 0);
-    $this->carts->markConverted($cart->id ?? 0);
+    if ($singleProductId) {
+      $this->carts->removeItem($cart->id ?? 0, $singleProductId);
+      $remaining = $this->carts->getCartDetails($cart->id ?? 0);
+      if (($remaining['count'] ?? 0) <= 0) {
+        $this->carts->markConverted($cart->id ?? 0);
+      }
+    } else {
+      $this->carts->clearCart($cart->id ?? 0);
+      $this->carts->markConverted($cart->id ?? 0);
+    }
 
     return ['success' => true, 'order_id' => $orderId];
   }

@@ -16,15 +16,18 @@ if (!is_authenticated()) {
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
   http_response_code(405);
   header('Allow: POST');
-  echo json_encode(['success'=>false,'error'=>'Method not allowed']);
+  echo json_encode(['success' => false, 'error' => 'Method not allowed']);
   exit;
 }
 
 try {
   $controller = new OrderController(new CartRepository(db()), new OrderRepository(db()));
   $payload = [
-    'delivery_fee' => (float)($_POST['delivery_fee'] ?? 1.78),
-    'tax' => isset($_POST['tax']) ? (float)$_POST['tax'] : null,
+    'delivery_fee' => (float) ($_POST['delivery_fee'] ?? 1.78),
+    'tax' => isset($_POST['tax']) ? (float) $_POST['tax'] : null,
+    'single_product_id' => isset($_POST['single_product_id']) && $_POST['single_product_id'] !== ''
+      ? (int) $_POST['single_product_id']
+      : null,
   ];
   echo json_encode($controller->checkout($payload));
 } catch (Throwable $e) {
