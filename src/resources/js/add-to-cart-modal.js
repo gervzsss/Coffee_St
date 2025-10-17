@@ -30,7 +30,7 @@ $(function () {
     $modal.find('[data-atc="description"]').text(product.description || "");
     $modal.find('[data-atc="qty"]').val(1);
     $modal.find('[data-atc="base-price"]').val(product.price || 0);
-    $modal.find('[data-atc="price"]').text("$" + money(product.price || 0));
+  $modal.find('[data-atc="price"]').text("₱" + money(product.price || 0));
 
     // Load variants/add-ons
     var addonsWrap = $modal
@@ -54,8 +54,8 @@ $(function () {
             var priceTag =
               delta !== 0
                 ? delta > 0
-                  ? "+$" + money(delta)
-                  : "-$" + money(Math.abs(delta))
+                  ? "+₱" + money(delta)
+                  : "-₱" + money(Math.abs(delta))
                 : "";
             var $txt = $(
               '<div class="flex-1">' +

@@ -37,17 +37,17 @@ $title = 'Order #' . $orderId . ' - Coffee St.';
               <?php if (!empty($it['variant_name'])): ?><div class="text-xs text-neutral-500"><?php echo htmlspecialchars($it['variant_name']); ?></div><?php endif; ?>
             </td>
             <td class="text-right"><?php echo (int)$it['quantity']; ?></td>
-            <td class="text-right">$<?php echo number_format(((float)$it['unit_price'] + (float)$it['price_delta']), 2); ?></td>
-            <td class="text-right">$<?php echo number_format((float)$it['line_total'], 2); ?></td>
+            <td class="text-right">₱<?php echo number_format(((float)$it['unit_price'] + (float)$it['price_delta']), 2); ?></td>
+            <td class="text-right">₱<?php echo number_format((float)$it['line_total'], 2); ?></td>
           </tr>
         <?php endforeach; ?>
         </tbody>
       </table>
       <div class="mt-4 space-y-1 text-sm">
-        <div class="flex justify-between"><span>Subtotal</span><span>$<?php echo number_format($order->subtotal, 2); ?></span></div>
-        <div class="flex justify-between"><span>Delivery</span><span>$<?php echo number_format($order->delivery_fee, 2); ?></span></div>
-        <div class="flex justify-between"><span>Tax (<?php echo number_format((float)($order->tax_rate ?? 0)*100,2); ?>%)</span><span>$<?php echo number_format((float)($order->tax_amount ?? $order->tax), 2); ?></span></div>
-        <div class="flex justify-between font-semibold text-lg pt-2"><span>Total</span><span>$<?php echo number_format($order->total, 2); ?></span></div>
+  <div class="flex justify-between"><span>Subtotal</span><span>₱<?php echo number_format($order->subtotal, 2); ?></span></div>
+  <div class="flex justify-between"><span>Delivery</span><span>₱<?php echo number_format($order->delivery_fee, 2); ?></span></div>
+  <div class="flex justify-between"><span>Tax (<?php echo number_format((float)($order->tax_rate ?? 0)*100,2); ?>%)</span><span>₱<?php echo number_format((float)($order->tax_amount ?? $order->tax), 2); ?></span></div>
+  <div class="flex justify-between font-semibold text-lg pt-2"><span>Total</span><span>₱<?php echo number_format($order->total, 2); ?></span></div>
       </div>
     </div>
   </main>

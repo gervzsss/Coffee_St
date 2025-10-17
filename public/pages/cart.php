@@ -67,7 +67,7 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
                   <div class="flex-1">
                     <div class="flex justify-between">
                       <h3 class="font-semibold text-lg"><?php echo htmlspecialchars($p?->name ?? ''); ?></h3>
-                      <span class="font-semibold">$<?php echo number_format($it->unit_price * $it->quantity, 2); ?></span>
+                      <span class="font-semibold">₱<?php echo number_format($it->unit_price * $it->quantity, 2); ?></span>
                     </div>
                     <div class="mt-3 flex items-center gap-3" data-product-id="<?php echo (int)$it->product_id; ?>">
                       <button class="decrease-qty h-8 w-8 rounded-full border flex items-center justify-center" aria-label="Decrease">−</button>
@@ -90,13 +90,13 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
           <div class="rounded-lg border bg-white p-6 shadow-sm sticky top-28">
             <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
             <dl class="space-y-2 text-sm">
-              <div class="flex justify-between py-2 border-b"><dt>Subtotal</dt><dd>$<span id="summary-subtotal"><?php echo number_format($subtotal,2); ?></span></dd></div>
-              <div class="flex justify-between py-2 border-b"><dt>Delivery Fee</dt><dd>$<span id="summary-delivery"><?php echo number_format($deliveryFee,2); ?></span></dd></div>
-              <div class="flex justify-between py-2 border-b"><dt>Tax 8%</dt><dd>$<span id="summary-tax"><?php echo number_format($tax,2); ?></span></dd></div>
+              <div class="flex justify-between py-2 border-b"><dt>Subtotal</dt><dd>₱<span id="summary-subtotal"><?php echo number_format($subtotal,2); ?></span></dd></div>
+              <div class="flex justify-between py-2 border-b"><dt>Delivery Fee</dt><dd>₱<span id="summary-delivery"><?php echo number_format($deliveryFee,2); ?></span></dd></div>
+              <div class="flex justify-between py-2 border-b"><dt>Tax 8%</dt><dd>₱<span id="summary-tax"><?php echo number_format($tax,2); ?></span></dd></div>
             </dl>
             <div class="flex justify-between items-center mt-4 text-lg font-semibold">
               <span>Total</span>
-              <span>$<span id="summary-total"><?php echo number_format($total,2); ?></span></span>
+              <span>₱<span id="summary-total"><?php echo number_format($total,2); ?></span></span>
             </div>
             <button id="proceed-checkout" class="cursor-pointer mt-6 w-full py-3 rounded bg-[#30442B] text-white hover:bg-[#3d5a38] transition">Proceed to Checkout</button>
             <p class="text-xs text-neutral-500 mt-3">Estimated delivery: 25-35 minutes</p>

@@ -163,7 +163,7 @@ $products = $productRepository->getAllActive();
                   <h3 class="text-xl font-bold text-gray-800 group-hover:text-[#30442B] transition-colors duration-300">
                     <?php echo htmlspecialchars($product->name); ?>
                   </h3>
-                  <span class="text-xl font-bold text-[#30442B]">$<?php echo number_format(
+                  <span class="text-xl font-bold text-[#30442B]">₱<?php echo number_format(
                     $product->price,
                     2,
                   ); ?></span>
