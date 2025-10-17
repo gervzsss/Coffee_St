@@ -1,3 +1,0 @@
-ALTER TABLE `orders`
-  ADD COLUMN `tax_rate` DECIMAL(6,4) NOT NULL DEFAULT 0.0800 AFTER `delivery_fee`,
-  ADD COLUMN `tax_amount` DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER `tax_rate`;
