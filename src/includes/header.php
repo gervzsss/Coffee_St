@@ -139,6 +139,7 @@ $authenticatedUser = current_user();
               $authenticatedUser["first_name"] ?? "Guest",
             ); ?>!</span>
           <a href="/COFFEE_ST/public/pages/orders.php" class="font-outfit text-[16px] text-[#30442B] underline">My Orders</a>
+          <a href="/COFFEE_ST/public/pages/inbox.php" class="font-outfit text-[16px] text-[#30442B] underline ml-4">Inbox</a>
           <button id="logout-button" type="button"
             class="cursor-pointer inline-flex items-center px-6 py-2.5 font-outfit text-[16px] font-medium tracking-wide border-2 border-[#30442B] text-white bg-[#30442B] rounded-full transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30">
             Logout

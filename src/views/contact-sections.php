@@ -92,6 +92,14 @@
         <div class="relative">
           <h2 class="font-outfit text-3xl font-semibold text-[#30442B]">Send us a message</h2>
           <p class="mt-3 text-sm text-neutral-500">All fields are required so we can serve you better.</p>
+          <?php
+          $user = function_exists('current_user') ? current_user() : null;
+          $userName = $user && (!empty($user['first_name']) || !empty($user['last_name']))
+            ? htmlspecialchars(trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')))
+            : '';
+          $userEmail = $user && !empty($user['email']) ? htmlspecialchars($user['email']) : '';
+          $isLoggedIn = $userName && $userEmail;
+          ?>
           <form id="contact-form" class="mt-8 space-y-7" novalidate>
             <div class="grid gap-6 sm:grid-cols-2">
               <div>
@@ -99,7 +107,8 @@
                   class="block text-xs font-semibold uppercase tracking-[0.25em] text-neutral-500">Name</label>
                 <input id="contact-name" name="name" type="text" autocomplete="name"
                   class="mt-2 w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/15"
-                  placeholder="Your full name" aria-describedby="contact-name-error" />
+                  placeholder="Your full name" aria-describedby="contact-name-error"
+                  value="<?= $isLoggedIn ? $userName : '' ?>" <?= $isLoggedIn ? 'readonly' : '' ?> />
                 <p id="contact-name-error" data-error-for="contact-name"
                   class="contact-error mt-2 hidden text-sm font-medium text-red-500"></p>
               </div>
@@ -108,7 +117,8 @@
                   class="block text-xs font-semibold uppercase tracking-[0.25em] text-neutral-500">Email</label>
                 <input id="contact-email" name="email" type="email" autocomplete="email"
                   class="mt-2 w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/15"
-                  placeholder="name@example.com" aria-describedby="contact-email-error" />
+                  placeholder="name@example.com" aria-describedby="contact-email-error"
+                  value="<?= $isLoggedIn ? $userEmail : '' ?>" <?= $isLoggedIn ? 'readonly' : '' ?> />
                 <p id="contact-email-error" data-error-for="contact-email"
                   class="contact-error mt-2 hidden text-sm font-medium text-red-500"></p>
               </div>

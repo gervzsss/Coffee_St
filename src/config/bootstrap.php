@@ -40,3 +40,4 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once BASE_PATH . '/src/helpers/auth.php';
+require_once BASE_PATH . '/src/config/db.php';

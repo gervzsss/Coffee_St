@@ -133,17 +133,35 @@ $(function () {
 
     if (!allValid) return;
 
-    showToast("Message submitted successfully!");
-
-    $contactForm.trigger("reset");
-    $contactForm.find(".contact-error").text("").addClass("hidden");
-    $contactForm
-      .find("input, textarea")
-      .removeClass("border-red-400 focus:border-red-400 focus:ring-red-400");
-
-    formSubmitted = false;
-    $.each(fieldInteraction, function (key) {
-      fieldInteraction[key] = false;
-    });
+    var formData = {
+      name: $("#contact-name").val(),
+      email: $("#contact-email").val(),
+      subject: $("#contact-subject").val(),
+      message: $("#contact-message").val(),
+    };
+    $.post("/COFFEE_ST/public/api/inquiry.php", formData)
+      .done(function (resp) {
+        showToast("Message submitted successfully!");
+        $contactForm.trigger("reset");
+        $contactForm.find(".contact-error").text("").addClass("hidden");
+        $contactForm
+          .find("input, textarea")
+          .removeClass("border-red-400 focus:border-red-400 focus:ring-red-400");
+        formSubmitted = false;
+        $.each(fieldInteraction, function (key) {
+          fieldInteraction[key] = false;
+        });
+      })
+      .fail(function (xhr) {
+        var resp = xhr.responseJSON || {};
+        if (resp.errors) {
+          $.each(resp.errors, function (field, msg) {
+            var $field = $("#contact-" + field);
+            setFieldError($field, msg);
+          });
+        } else {
+          showToast("Failed to submit message. Please try again later.");
+        }
+      });
   });
 });
