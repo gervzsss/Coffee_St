@@ -37,6 +37,63 @@ $(document).ready(function () {
     $('body').css('overflow', 'auto'); // Restore scrolling
   }
 
+  function formatDateTime(value) {
+    if (!value) return '—';
+    var normalized = String(value).replace(' ', 'T');
+    var date = new Date(normalized);
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+    return date.toLocaleString(undefined, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  var STATUS_BADGE_CLASSES = {
+    pending: 'bg-yellow-50 text-yellow-700',
+    responded: 'bg-green-50 text-green-700',
+    done: 'bg-slate-100 text-slate-600',
+  };
+
+  var AVATAR_CLASSES = {
+    pending: 'bg-yellow-100 text-yellow-600',
+    responded: 'bg-green-100 text-green-600',
+    done: 'bg-slate-200 text-slate-600',
+  };
+
+  function applyThreadStatus($card, status, updatedAt) {
+    var normalizedStatus = status || 'pending';
+    var label = normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);
+    var badgeClasses = STATUS_BADGE_CLASSES[normalizedStatus] || STATUS_BADGE_CLASSES.pending;
+    var avatarClasses = AVATAR_CLASSES[normalizedStatus] || AVATAR_CLASSES.pending;
+
+    var $badge = $card.find('.inquiry-status');
+    $badge
+      .removeClass(Object.values(STATUS_BADGE_CLASSES).join(' '))
+      .addClass(badgeClasses)
+      .text(label);
+
+    var $avatar = $card.find('.inquiry-avatar');
+    $avatar
+      .removeClass(Object.values(AVATAR_CLASSES).join(' '))
+      .addClass(avatarClasses);
+
+    if (updatedAt) {
+      var formatted = formatDateTime(updatedAt);
+      $card.find('.thread-updated-at').text('Updated: ' + formatted);
+    }
+
+    $card.attr('data-thread-status', normalizedStatus);
+
+    if (normalizedStatus === 'done') {
+      $card.find('.mark-thread-done').remove();
+    }
+  }
+
   // View details functionality (Customer only)
   $(document).on('click', '#customerContent .fa-circle-info', function () {
     const row = $(this).closest('tr');
@@ -99,56 +156,169 @@ $(document).ready(function () {
   });
 
   // Reply to Inquiry Button Click
+  let activeReplyButton = null;
+  let isSendingReply = false;
+
   $(document).on('click', '.reply-inquiry', function (e) {
     e.preventDefault();
     e.stopPropagation();
 
-    const name = $(this).data('name');
-    const email = $(this).data('email');
-    const subject = $(this).data('subject');
-    const date = $(this).data('date');
-    const message = $(this).data('message');
+    activeReplyButton = $(this);
 
-    console.log('Reply button clicked', { name, email, subject, date, message }); // Debug log
+    const threadId = activeReplyButton.data('thread-id');
+    const name = activeReplyButton.data('name');
+    const email = activeReplyButton.data('email');
+    const subjectRaw = activeReplyButton.data('subject') || '';
+    const subjectDisplay = activeReplyButton.data('subject-display') || 'No Subject';
+    const date = activeReplyButton.data('date') || '—';
+    const message = activeReplyButton.data('message') || '';
 
-    // Populate reply modal
-    $('#replySubject').text(subject);
-    $('#replyName').text(name);
-    $('#replyEmail').text(email);
+    $('#replyInquiryId').val(threadId);
+    $('#replyName').text(name || '—');
+    $('#replyEmail').text(email || '—');
     $('#replyDate').text(date);
-    $('#replyCustomerMessage').text(message);
+    $('#replyCustomerMessage').text(message || '—');
+
+    const $subject = $('#replySubject');
+    $subject.text(subjectDisplay);
+    if (!subjectRaw.trim()) {
+      $subject.addClass('italic text-gray-400');
+    } else {
+      $subject.removeClass('italic text-gray-400');
+    }
+
+    $('#replyError').addClass('hidden').text('');
     $('#replyResponseText').val('');
 
     showModal('replyInquiryModal');
+    $('#replyResponseText').trigger('focus');
   });
 
-  // Send Reply Button
   $('#sendReply').on('click', function (e) {
     e.preventDefault();
-    const response = $('#replyResponseText').val();
+    if (isSendingReply) return;
 
-    if (!response.trim()) {
-      alert('Please type a response before sending');
+    const threadId = parseInt($('#replyInquiryId').val(), 10);
+    const response = $('#replyResponseText').val().trim();
+
+    if (!response) {
+      $('#replyError').removeClass('hidden').text('Please enter a reply before sending.');
+      $('#replyResponseText').focus();
+      return;
+    }
+    if (!Number.isInteger(threadId) || threadId <= 0) {
+      $('#replyError').removeClass('hidden').text('Invalid inquiry reference. Please reload the page.');
       return;
     }
 
-    // Here you would typically make an API call to send the email
-    alert('Reply sent successfully!');
-    hideModal('replyInquiryModal');
-    $('#replyResponseText').val('');
+    isSendingReply = true;
+    const $sendBtn = $('#sendReply');
+    $sendBtn.prop('disabled', true).text('Sending…');
+    $('#replyError').addClass('hidden').text('');
+
+    $.ajax({
+      url: '/COFFEE_ST/public/api/inquiry-reply.php',
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        thread_id: threadId,
+        message: response,
+      },
+    })
+      .done(function (payload) {
+        if (!payload || payload.success !== true) {
+          const errorMessage = payload && payload.error ? payload.error : 'Unable to send reply right now.';
+          $('#replyError').removeClass('hidden').text(errorMessage);
+          return;
+        }
+
+        hideModal('replyInquiryModal');
+        $('#replyResponseText').val('');
+
+        if (activeReplyButton) {
+          const $card = activeReplyButton.closest('.inquiry-card');
+          var newStatus = (payload.thread && payload.thread.status) ? payload.thread.status : 'responded';
+          var updatedAt = payload.thread && payload.thread.last_message_at ? payload.thread.last_message_at : null;
+          applyThreadStatus($card, newStatus, updatedAt);
+
+          if (updatedAt) {
+            activeReplyButton.data('date', formatDateTime(updatedAt));
+          }
+
+          activeReplyButton = null;
+        }
+
+        alert('Reply sent successfully.');
+      })
+      .fail(function (xhr) {
+        let message = 'Failed to send reply. Please try again.';
+        if (xhr.responseJSON && xhr.responseJSON.error) {
+          message = xhr.responseJSON.error;
+        }
+        $('#replyError').removeClass('hidden').text(message);
+      })
+      .always(function () {
+        isSendingReply = false;
+        $sendBtn.prop('disabled', false).text('Send Reply');
+      });
   });
 
-  // Cancel Reply Button
   $('#cancelReply').on('click', function (e) {
     e.preventDefault();
     hideModal('replyInquiryModal');
     $('#replyResponseText').val('');
+    $('#replyError').addClass('hidden').text('');
+    activeReplyButton = null;
   });
 
   // Handle ban/delete confirmation
   $('.confirm-ban').on('click', function () {
     alert('User has been deleted successfully');
     hideModal('banConfirmModal');
+  });
+
+  $(document).on('click', '.mark-thread-done', function (e) {
+    e.preventDefault();
+
+    const $button = $(this);
+    const threadId = parseInt($button.data('thread-id'), 10);
+    if (!Number.isInteger(threadId) || threadId <= 0) {
+      alert('Invalid thread reference.');
+      return;
+    }
+
+    $button.prop('disabled', true).text('Marking…');
+
+    $.ajax({
+      url: '/COFFEE_ST/public/api/thread-status.php',
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        thread_id: threadId,
+        status: 'done',
+      },
+    })
+      .done(function (payload) {
+        if (!payload || payload.success !== true) {
+          const errorMessage = payload && payload.error ? payload.error : 'Unable to update status.';
+          alert(errorMessage);
+          return;
+        }
+
+        const $card = $button.closest('.inquiry-card');
+        var updatedAt = payload.thread && payload.thread.last_message_at ? payload.thread.last_message_at : null;
+        applyThreadStatus($card, 'done', updatedAt);
+      })
+      .fail(function (xhr) {
+        let message = 'Failed to update thread status.';
+        if (xhr.responseJSON && xhr.responseJSON.error) {
+          message = xhr.responseJSON.error;
+        }
+        alert(message);
+      })
+      .always(function () {
+        $button.prop('disabled', false).text('Mark Done');
+      });
   });
 
   // Add Staff Form Submit
@@ -217,6 +387,9 @@ $(document).ready(function () {
     hideModal('editStaffModal');
     hideModal('addStaffModal');
     hideModal('replyInquiryModal');
+    $('#replyError').addClass('hidden').text('');
+    $('#replyResponseText').val('');
+    activeReplyButton = null;
   });
 
   // Close modals when clicking outside
@@ -227,6 +400,9 @@ $(document).ready(function () {
       hideModal('editStaffModal');
       hideModal('addStaffModal');
       hideModal('replyInquiryModal');
+      $('#replyResponseText').val('');
+      $('#replyError').addClass('hidden').text('');
+      activeReplyButton = null;
     }
   });
 

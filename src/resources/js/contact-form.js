@@ -2,6 +2,19 @@ $(function () {
   var $contactForm = $("#contact-form");
   if (!$contactForm.length) return;
 
+  var $subjectField = $("#contact-subject");
+  var subjectLocked = !!$subjectField.data("subjectLocked");
+  var lockedSubjectValue = $.trim(
+    $subjectField.data("originalSubject") || $subjectField.val() || "",
+  );
+
+  if (subjectLocked && lockedSubjectValue) {
+    $subjectField.prop("readonly", true).val(lockedSubjectValue);
+    setTimeout(function () {
+      $("#contact-message").trigger("focus");
+    }, 50);
+  }
+
   function ensureToastContainer() {
     var $container = $("#toast-container");
     if (!$container.length) {
@@ -151,6 +164,12 @@ $(function () {
         $.each(fieldInteraction, function (key) {
           fieldInteraction[key] = false;
         });
+        if (subjectLocked && lockedSubjectValue) {
+          $subjectField.val(lockedSubjectValue).prop("readonly", true);
+          setTimeout(function () {
+            $("#contact-message").trigger("focus");
+          }, 50);
+        }
       })
       .fail(function (xhr) {
         var resp = xhr.responseJSON || {};

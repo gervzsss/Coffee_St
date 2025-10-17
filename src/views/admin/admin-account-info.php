@@ -6,12 +6,7 @@ function renderAdminContent()
 {
   $pdo = db();
   $repo = new InquiryRepository($pdo);
-  $allInquiries = $repo->getAll(200, 0);
-  $topLevelInquiries = array_values(
-    array_filter($allInquiries, static function ($inquiry) {
-      return empty($inquiry["parent_id"]);
-    }),
-  );
+  $threads = $repo->getThreadsForAdmin(null, 200, 0);
 
   $formatInitials = static function ($name) {
     $parts = preg_split("/\s+/", trim((string) $name));
@@ -28,52 +23,77 @@ function renderAdminContent()
     return $initials !== "" ? $initials : "??";
   };
 
+  $statusCounts = [
+    "pending" => 0,
+    "responded" => 0,
+    "done" => 0,
+  ];
+
   $enrichedInquiries = [];
-  foreach ($topLevelInquiries as $inquiry) {
-    $thread = $repo->getThread($inquiry["id"]);
-    $hasAdminReply = false;
-    foreach ($thread as $message) {
-      if (!empty($message["is_admin"])) {
-        $hasAdminReply = true;
-        break;
-      }
+  foreach ($threads as $thread) {
+    $status = strtolower((string) ($thread["status"] ?? "pending"));
+    if (isset($statusCounts[$status])) {
+      $statusCounts[$status]++;
     }
 
-    $firstMessage = $thread[0]["message"] ?? ($inquiry["message"] ?? "");
+    $customerName = $thread["user_id"]
+      ? trim(
+        sprintf(
+          "%s %s",
+          $thread["first_name"] ?? "",
+          $thread["last_name"] ?? "",
+        ),
+      )
+      : ((string) ($thread["guest_name"] ?? "Guest"));
+    if ($customerName === "") {
+      $customerName = "Guest";
+    }
+
+    $customerEmail = $thread["user_id"]
+      ? (string) ($thread["user_email"] ?? "")
+      : (string) ($thread["guest_email"] ?? "");
+
+    $firstCustomerMessage = (string) ($thread["first_customer_message"] ?? "");
+    $latestCustomerMessage = (string) (
+      $thread["latest_customer_message"] ?? $firstCustomerMessage
+    );
     $preview =
-      mb_strlen($firstMessage) > 160
-      ? mb_substr($firstMessage, 0, 157) . "…"
-      : $firstMessage;
-    $createdAt = $inquiry["created_at"] ?? "";
-    $createdAtDisplay = $createdAt
-      ? date("Y-m-d h:i A", strtotime($createdAt))
+      mb_strlen($firstCustomerMessage) > 160
+      ? mb_substr($firstCustomerMessage, 0, 157) . "…"
+      : $firstCustomerMessage;
+
+    $firstMessageAt = $thread["first_message_at"] ?? $thread["created_at"] ?? null;
+    $createdAtDisplay = $firstMessageAt
+      ? date("Y-m-d h:i A", strtotime((string) $firstMessageAt))
       : "—";
+    $lastMessageDisplay = $thread["last_message_at"]
+      ? date("Y-m-d h:i A", strtotime((string) $thread["last_message_at"]))
+      : $createdAtDisplay;
+
+    $subjectRaw = (string) ($thread["subject"] ?? "");
+    $subjectDisplay = $subjectRaw !== "" ? $subjectRaw : "No Subject";
 
     $enrichedInquiries[] = [
-      "id" => $inquiry["id"],
-      "name" => $inquiry["name"],
-      "email" => $inquiry["email"],
-      "subject" => $inquiry["subject"] ?? null,
-      "subject_display" =>
-        ($inquiry["subject"] ?? "") !== ""
-        ? $inquiry["subject"]
-        : "No Subject",
+      "id" => (int) $thread["id"],
+      "name" => $customerName,
+      "email" => $customerEmail,
+      "subject" => $subjectRaw,
+      "subject_display" => $subjectDisplay,
       "message_preview" => $preview,
+      "latest_customer_message" => $latestCustomerMessage !== ""
+        ? $latestCustomerMessage
+        : $firstCustomerMessage,
       "created_at_display" => $createdAtDisplay,
-      "initials" => $formatInitials($inquiry["name"]),
-      "has_admin_reply" => $hasAdminReply,
+      "last_message_display" => $lastMessageDisplay,
+      "initials" => $formatInitials($customerName),
+      "status" => $status,
     ];
   }
 
   $totalInquiries = count($enrichedInquiries);
-  $respondedCount = count(
-    array_filter(
-      $enrichedInquiries,
-      static fn($inq) => $inq["has_admin_reply"],
-    ),
-  );
-  $pendingCount = $totalInquiries - $respondedCount;
-  $archivedCount = 0;
+  $pendingCount = $statusCounts["pending"];
+  $respondedCount = $statusCounts["responded"];
+  $doneCount = $statusCounts["done"];
   ?>
   <div class="main-content min-h-screen p-6 ml-64 transition-all duration-300 ease-in-out">
     <div class="max-w-screen-2xl mx-auto">
@@ -174,11 +194,11 @@ function renderAdminContent()
 
       <!-- Inquiries Statistics -->
       <div id="inquiriesStats" class="stats-container mb-8" style="display: none;">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div
             class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
             <div class="flex justify-between items-center mb-4">
-              <h3 class="text-sm font-medium text-gray-500">Total Messages</h3>
+              <h3 class="text-sm font-medium text-gray-500">Total Threads</h3>
             </div>
             <p class="text-3xl font-bold text-gray-800"><?= $totalInquiries ?></p>
           </div>
@@ -195,6 +215,13 @@ function renderAdminContent()
               <h3 class="text-sm font-medium text-gray-500">Responded</h3>
             </div>
             <p class="text-3xl font-bold text-gray-800"><?= $respondedCount ?></p>
+          </div>
+          <div
+            class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-sm font-medium text-gray-500">Done</h3>
+            </div>
+            <p class="text-3xl font-bold text-gray-800"><?= $doneCount ?></p>
           </div>
         </div>
       </div>
@@ -469,14 +496,26 @@ function renderAdminContent()
               </div>
             <?php else: ?>
               <?php foreach ($enrichedInquiries as $inq): ?>
-                <div class="p-5 border border-gray-200 rounded-xl hover:shadow-md transition-all bg-white">
+                <?php
+                $status = $inq["status"];
+                $statusLabel = ucfirst($status);
+                $badgeClassMap = [
+                  "pending" => "bg-yellow-50 text-yellow-700",
+                  "responded" => "bg-green-50 text-green-700",
+                  "done" => "bg-slate-100 text-slate-600",
+                ];
+                $avatarClassMap = [
+                  "pending" => "bg-yellow-100 text-yellow-600",
+                  "responded" => "bg-green-100 text-green-600",
+                  "done" => "bg-slate-200 text-slate-600",
+                ];
+                $badgeClass = $badgeClassMap[$status] ?? "bg-slate-100 text-slate-600";
+                $avatarClass = $avatarClassMap[$status] ?? "bg-slate-200 text-slate-600";
+                ?>
+                <div class="inquiry-card p-5 border border-gray-200 rounded-xl hover:shadow-md transition-all bg-white" data-thread-id="<?= $inq["id"] ?>" data-thread-status="<?= htmlspecialchars($status, ENT_QUOTES) ?>">
                   <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-3">
-                      <div class="w-12 h-12 rounded-full <?= $inq[
-                        "has_admin_reply"
-                      ]
-                        ? "bg-green-100 text-green-600"
-                        : "bg-yellow-100 text-yellow-600" ?> flex items-center justify-center text-sm font-semibold">
+                      <div class="inquiry-avatar w-12 h-12 rounded-full <?= $avatarClass ?> flex items-center justify-center text-sm font-semibold">
                         <?= htmlspecialchars($inq["initials"]) ?>
                       </div>
                       <div>
@@ -488,12 +527,8 @@ function renderAdminContent()
                         ) ?></p>
                       </div>
                     </div>
-                    <span class="px-3 py-1 text-xs font-medium rounded-full <?= $inq[
-                      "has_admin_reply"
-                    ]
-                      ? "bg-green-50 text-green-700"
-                      : "bg-yellow-50 text-yellow-700" ?>">
-                      <?= $inq["has_admin_reply"] ? "Responded" : "Pending" ?>
+                    <span class="inquiry-status px-3 py-1 text-xs font-medium rounded-full <?= $badgeClass ?>">
+                      <?= htmlspecialchars($statusLabel) ?>
                     </span>
                   </div>
                   <h5 class="font-medium text-gray-800 mb-2">
@@ -507,19 +542,27 @@ function renderAdminContent()
                     htmlspecialchars($inq["message_preview"]),
                   ) ?></p>
                   <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-500"><?= htmlspecialchars(
-                      $inq["created_at_display"],
-                    ) ?></span>
+                    <div class="flex flex-col text-sm text-gray-500">
+                      <span class="thread-opened-at">Opened: <?= htmlspecialchars($inq["created_at_display"]) ?></span>
+                      <span class="thread-updated-at">Updated: <?= htmlspecialchars($inq["last_message_display"]) ?></span>
+                    </div>
                     <div class="flex items-center gap-2">
-                      <a href="/COFFEE_ST/public/admin/inquiry-thread.php?inquiry_id=<?= $inq[
+                      <a href="/COFFEE_ST/public/admin/inquiry-thread.php?thread_id=<?= $inq[
                         "id"
                       ] ?>"
                         class="px-4 py-2 text-sm font-medium text-[#30442B] hover:text-white hover:bg-[#30442B] border border-[#30442B] rounded-lg transition-all shadow-sm">
                         View Thread
                       </a>
+                      <?php if ($status !== "done"): ?>
+                        <button
+                          class="cursor-pointer mark-thread-done px-4 py-2 text-sm font-medium text-[#30442B] hover:text-white hover:bg-[#30442B] border border-[#30442B] rounded-lg transition-all shadow-sm"
+                          data-thread-id="<?= $inq["id"] ?>">
+                          Mark Done
+                        </button>
+                      <?php endif; ?>
                       <button
                         class="cursor-pointer reply-inquiry px-5 py-2 text-sm font-medium text-white bg-[#30442B] hover:bg-[#3a5336] rounded-lg transition-all shadow-sm"
-                        data-inquiry-id="<?= $inq[
+                        data-thread-id="<?= $inq[
                           "id"
                         ] ?>" data-name="<?= htmlspecialchars(
                            $inq["name"],
@@ -528,10 +571,16 @@ function renderAdminContent()
                             $inq["email"],
                             ENT_QUOTES,
                           ) ?>" data-subject="<?= htmlspecialchars(
-                             $inq["subject_display"],
+                             $inq["subject"] ?? "",
                              ENT_QUOTES,
-                           ) ?>" data-message="<?= htmlspecialchars(
-                              $inq["message_preview"],
+                           ) ?>" data-subject-display="<?= htmlspecialchars(
+                              $inq["subject_display"],
+                              ENT_QUOTES,
+                            ) ?>" data-message="<?= htmlspecialchars(
+                               $inq["latest_customer_message"],
+                               ENT_QUOTES,
+                             ) ?>" data-date="<?= htmlspecialchars(
+                              $inq["last_message_display"],
                               ENT_QUOTES,
                             ) ?>">
                         Reply

@@ -84,11 +84,11 @@ function renderBanConfirmModal()
 
         <div class="flex items-center justify-center gap-3">
           <button
-            class="cancel-ban px-8 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all">
+            class="cursor-pointer cancel-ban px-8 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all">
             Cancel
           </button>
           <button
-            class="confirm-ban px-8 py-3 text-sm font-medium text-white bg-[#30442B] hover:bg-[#3a5336] rounded-xl transition-all">
+            class="cursor-pointer confirm-ban px-8 py-3 text-sm font-medium text-white bg-[#30442B] hover:bg-[#3a5336] rounded-xl transition-all">
             Confirm
           </button>
         </div>
@@ -234,36 +234,51 @@ function renderReplyInquiryModal()
           <h2 class="text-2xl font-bold text-gray-800 mb-1">Reply to Message</h2>
           <p class="text-sm text-gray-500">Send a response to the customer's message</p>
         </div>
-
-        <div class="space-y-4">
-          <!-- Subject -->
-          <div>
-            <label class="text-sm font-medium text-gray-700 mb-1 block">Subject</label>
-            <p class="text-base text-gray-800" id="inquirySubject">Re: Question about delivery times</p>
+        <input type="hidden" id="replyInquiryId" value="">
+        <div class="space-y-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">From</p>
+              <p id="replyName" class="mt-1 text-base font-medium text-gray-800">—</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Email</p>
+              <p id="replyEmail" class="mt-1 text-base text-gray-700">—</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Received</p>
+              <p id="replyDate" class="mt-1 text-base text-gray-700">—</p>
+            </div>
           </div>
 
-          <!-- Customer Message -->
           <div>
-            <label class="text-sm font-medium text-gray-700 mb-1 block">Customer's Message</label>
-            <p class="text-sm text-gray-600 bg-gray-50 p-4 rounded-xl" id="inquiryMessage">What are your typical delivery
-              times for orders placed in the morning? I need to plan my schedule.</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Subject</p>
+            <p id="replySubject" class="mt-2 text-base font-medium text-gray-800">—</p>
           </div>
 
-          <!-- Your Response -->
           <div>
-            <label class="text-sm font-medium text-gray-700 mb-1 block">Your Response</label>
-            <textarea
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-all h-32"></textarea>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Customer Message</p>
+            <div id="replyCustomerMessage"
+              class="mt-2 rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 whitespace-pre-line">—
+            </div>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex items-center gap-3 pt-2">
-            <button
-              class="cancel-reply px-8 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all">
+          <div>
+            <label for="replyResponseText" class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Your
+              Response</label>
+            <textarea id="replyResponseText"
+              class="mt-2 w-full h-32 resize-y rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-800 shadow-sm transition focus:border-[#30442B] focus:outline-none focus:ring-2 focus:ring-[#30442B]/20"
+              placeholder="Type your reply here..." required></textarea>
+            <p id="replyError" class="mt-2 hidden text-sm font-medium text-red-600"></p>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button id="cancelReply"
+              class="cursor-pointer px-6 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all">
               Cancel
             </button>
-            <button
-              class="send-reply px-8 py-3 text-sm font-medium text-white bg-[#30442B] hover:bg-[#3a5336] rounded-xl transition-all">
+            <button id="sendReply"
+              class="cursor-pointer px-6 py-3 text-sm font-semibold text-white bg-[#30442B] hover:bg-[#3a5336] rounded-xl transition-all disabled:cursor-not-allowed disabled:opacity-70">
               Send Reply
             </button>
           </div>

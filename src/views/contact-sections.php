@@ -100,6 +100,10 @@
           $userEmail = $user && !empty($user['email']) ? htmlspecialchars($user['email']) : '';
           $isLoggedIn = $userName && $userEmail;
           ?>
+          <?php
+          $prefilledSubject = $prefilledSubject ?? '';
+          $subjectLocked = $subjectLocked ?? false;
+          ?>
           <form id="contact-form" class="mt-8 space-y-7" novalidate>
             <div class="grid gap-6 sm:grid-cols-2">
               <div>
@@ -128,7 +132,11 @@
                 class="block text-xs font-semibold uppercase tracking-[0.25em] text-neutral-500">Subject</label>
               <input id="contact-subject" name="subject" type="text" autocomplete="off"
                 class="mt-2 w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/15"
-                placeholder="Let us know how we can help" aria-describedby="contact-subject-error" />
+                placeholder="Let us know how we can help" aria-describedby="contact-subject-error"
+                value="<?= htmlspecialchars($prefilledSubject) ?>"
+                <?= $subjectLocked ? 'readonly' : '' ?>
+                data-subject-locked="<?= $subjectLocked ? 'true' : 'false' ?>"
+                data-original-subject="<?= htmlspecialchars($prefilledSubject) ?>" />
               <p id="contact-subject-error" data-error-for="contact-subject"
                 class="contact-error mt-2 hidden text-sm font-medium text-red-500"></p>
             </div>
