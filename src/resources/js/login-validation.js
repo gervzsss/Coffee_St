@@ -382,8 +382,10 @@ $(document).ready(function () {
 
           if (res.success) {
             // Mark that login just succeeded so other scripts can replay queued actions after reload
-            try { sessionStorage.setItem('loginJustSucceeded', '1'); } catch (e) {}
-            $(document).trigger('user:login-success');
+            try {
+              sessionStorage.setItem("loginJustSucceeded", "1");
+            } catch (e) { }
+            $(document).trigger("user:login-success");
             closeModals();
             showToast(res.message || "Login successful!");
             setTimeout(function () {

@@ -19,8 +19,14 @@ $(function () {
 
   // Initialize cart count only if authenticated; ignore/silence 401s for guests
   if (window.IS_AUTH) {
-    $.get('/COFFEE_ST/public/api/cart.php?action=get')
-      .done(function(resp){ if(resp && resp.success){ $(".cart-count").text(resp.summary.count || 0); } })
-      .fail(function(xhr){ /* guests or errors: do nothing to avoid console noise */ });
+    $.get("/COFFEE_ST/public/api/cart.php?action=get")
+      .done(function (resp) {
+        if (resp && resp.success) {
+          $(".cart-count").text(resp.summary.count || 0);
+        }
+      })
+      .fail(function (xhr) {
+        /* guests or errors: do nothing to avoid console noise */
+      });
   }
 });
