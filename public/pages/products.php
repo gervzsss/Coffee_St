@@ -27,11 +27,12 @@ $year = date('Y');
   <?php include __DIR__ . '/../../src/includes/footer.php'; ?>
 
   <?php include __DIR__ . '/../../src/components/modals/auth-modals.php'; ?>
+  <?php include __DIR__ . '/../../src/components/modals/add-to-cart-modal.php'; ?>
 
   <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script src="/COFFEE_ST/src/resources/js/products.js"></script>
-  <script src="/COFFEE_ST/src/resources/js/cart-modal.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/add-to-cart-modal.js"></script>
   <script src="/COFFEE_ST/src/resources/js/login-validation.js"></script>
   <script>
     $(function(){

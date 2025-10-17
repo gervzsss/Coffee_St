@@ -159,19 +159,13 @@ $(function () {
     });
   })();
 
-  // Add to Cart button feedback + cart badge increment
+  // Add to Cart button visual feedback only (count updates after API success elsewhere)
   $(document).on("click", ".add-to-cart", function () {
     var $btn = $(this);
     $btn.addClass("scale-95");
     setTimeout(function () {
       $btn.removeClass("scale-95");
     }, 150);
-
-    var $badge = $(".cart-count");
-    if ($badge.length) {
-      var n = parseInt($badge.text(), 10) || 0;
-      $badge.text(n + 1);
-    }
   });
 
   // Split-screen section reveal on viewport
