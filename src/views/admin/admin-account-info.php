@@ -28,6 +28,7 @@ function renderAdminContent()
     "responded" => 0,
     "done" => 0,
   ];
+  $unreadCount = 0;
 
   $enrichedInquiries = [];
   foreach ($threads as $thread) {
@@ -57,10 +58,15 @@ function renderAdminContent()
     $latestCustomerMessage = (string) (
       $thread["latest_customer_message"] ?? $firstCustomerMessage
     );
-    $preview =
-      mb_strlen($firstCustomerMessage) > 160
-      ? mb_substr($firstCustomerMessage, 0, 157) . "…"
+    $hasUnread = (int)($thread["has_unread"] ?? 0) === 1;
+    if ($hasUnread) { $unreadCount++; }
+    $previewSource = $latestCustomerMessage !== ""
+      ? $latestCustomerMessage
       : $firstCustomerMessage;
+    $preview =
+      mb_strlen($previewSource) > 160
+      ? mb_substr($previewSource, 0, 157) . "…"
+      : $previewSource;
 
     $firstMessageAt = $thread["first_message_at"] ?? $thread["created_at"] ?? null;
     $createdAtDisplay = $firstMessageAt
@@ -80,13 +86,12 @@ function renderAdminContent()
       "subject" => $subjectRaw,
       "subject_display" => $subjectDisplay,
       "message_preview" => $preview,
-      "latest_customer_message" => $latestCustomerMessage !== ""
-        ? $latestCustomerMessage
-        : $firstCustomerMessage,
+      "latest_customer_message" => $previewSource,
       "created_at_display" => $createdAtDisplay,
       "last_message_display" => $lastMessageDisplay,
       "initials" => $formatInitials($customerName),
       "status" => $status,
+      "has_unread" => $hasUnread,
     ];
   }
 
@@ -117,7 +122,9 @@ function renderAdminContent()
             </button>
             <button data-tab="inquiries"
               class="cursor-pointer tab-button flex-1 px-8 py-4 text-white hover:bg-white/10 rounded-lg transition-all">
-              <span class="text-base font-bold uppercase tracking-wider">Inquiries</span>
+              <span class="text-base font-bold uppercase tracking-wider">
+                Inquiries<?= $unreadCount > 0 ? ' (' . (int)$unreadCount . ')' : '' ?>
+              </span>
             </button>
           </div>
         </div>
@@ -160,7 +167,7 @@ function renderAdminContent()
             <div class="flex justify-between items-center mb-4">
               <h3 class="text-sm font-medium text-gray-500">Unread Messages</h3>
             </div>
-            <p class="text-3xl font-bold text-gray-800">2</p>
+            <p class="text-3xl font-bold text-gray-800"><?= $unreadCount ?></p>
           </div>
         </div>
       </div>
@@ -538,9 +545,9 @@ function renderAdminContent()
                       <?= htmlspecialchars($inq["subject"]) ?>
                     <?php endif; ?>
                   </h5>
-                  <p class="text-gray-600 text-sm mb-3"><?= nl2br(
-                    htmlspecialchars($inq["message_preview"]),
-                  ) ?></p>
+                    <p class="text-gray-600 text-sm mb-3<?= $inq['has_unread'] ? ' font-semibold' : '' ?>"><?= nl2br(
+                      htmlspecialchars($inq["message_preview"]),
+                    ) ?></p>
                   <div class="flex items-center justify-between">
                     <div class="flex flex-col text-sm text-gray-500">
                       <span class="thread-opened-at">Opened: <?= htmlspecialchars($inq["created_at_display"]) ?></span>

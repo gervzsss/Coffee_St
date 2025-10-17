@@ -54,7 +54,6 @@ class InquiryRepository
 
     return null;
   }
-
   private function createThread(
     ?int $userId,
     ?string $guestEmail,
@@ -226,8 +225,10 @@ class InquiryRepository
         throw new RuntimeException('Thread not found.');
       }
 
-      $this->addMessage($threadId, 'admin', $adminUserId, $adminName, $adminEmail, $message);
-      $this->setThreadStatus($threadId, 'responded');
+  $this->addMessage($threadId, 'admin', $adminUserId, $adminName, $adminEmail, $message);
+  $this->setThreadStatus($threadId, 'responded');
+  // Auto-mark as read when admin replies
+  $this->updateThreadMetadata($threadId, ['admin_last_viewed_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s')]);
 
       $this->pdo->commit();
 
@@ -242,6 +243,16 @@ class InquiryRepository
       }
       throw $e;
     }
+  }
+
+  /**
+   * Mark a thread as viewed by admin now.
+   */
+  public function markThreadViewedByAdmin(int $threadId): void
+  {
+    $this->updateThreadMetadata($threadId, [
+      'admin_last_viewed_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+    ]);
   }
 
   public function getThreadById(int $threadId): ?array
@@ -297,6 +308,12 @@ class InquiryRepository
                             t.created_at,
                             t.updated_at,
                             t.last_message_at,
+                            t.admin_last_viewed_at,
+                            CASE
+                              WHEN t.admin_last_viewed_at IS NULL THEN 1
+                              WHEN t.last_message_at > t.admin_last_viewed_at THEN 1
+                              ELSE 0
+                            END AS has_unread,
                             u.first_name,
                             u.last_name,
                             u.email AS user_email,
@@ -310,7 +327,7 @@ class InquiryRepository
                             (
                                 SELECT tm.message
                                 FROM thread_messages tm
-                                WHERE tm.thread_id = t.id AND tm.sender_type IN (\'user\', \'guest\')
+                WHERE tm.thread_id = t.id
                                 ORDER BY tm.created_at DESC
                                 LIMIT 1
                             ) AS latest_customer_message,

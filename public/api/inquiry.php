@@ -89,10 +89,5 @@ try {
     echo json_encode(['error' => $e->getMessage()]);
 } catch (\Throwable $e) {
     http_response_code(500);
-    // TEMPORARY: Output detailed error for debugging
-    echo json_encode([
-        'error' => 'Failed to submit inquiry.',
-        'exception' => $e->getMessage(),
-        'trace' => $e->getTraceAsString(),
-    ]);
+    echo json_encode(['error' => 'Failed to submit inquiry.']);
 }

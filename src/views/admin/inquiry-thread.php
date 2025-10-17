@@ -11,6 +11,14 @@ if (!$threadId) {
 
 $repo = new InquiryRepository(db());
 $threadData = $repo->getThreadWithMessages($threadId);
+// Mark as viewed by admin when opening the thread
+if ($threadData) {
+  try {
+    $repo->markThreadViewedByAdmin($threadId);
+  } catch (Throwable $e) {
+    // non-fatal
+  }
+}
 if (!$threadData) {
   echo '<div class="p-6 text-gray-600">Thread not found.</div>';
   return;
