@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
 require_once "../../src/config/bootstrap.php"; ?>
 
 <!DOCTYPE html>

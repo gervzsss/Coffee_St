@@ -1,5 +1,17 @@
 <?php
-// Admin login front-end page (Tailwind CSS)
+require_once __DIR__ . '/../../src/helpers/admin-auth.php';
+
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $email = $_POST['email'] ?? '';
+  $password = $_POST['password'] ?? '';
+  if (admin_login($email, $password)) {
+    header('Location: admin-dashboard.php');
+    exit;
+  } else {
+    $error = 'Invalid admin credentials.';
+  }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -34,7 +46,12 @@
           </div>
 
           <!-- Login Form -->
-          <form class="space-y-8" action="#" method="POST">
+          <form class="space-y-8" action="" method="POST">
+            <?php if ($error): ?>
+              <div class="bg-red-100 text-red-700 rounded-lg px-4 py-3 mb-4 text-center">
+                <?= htmlspecialchars($error) ?>
+              </div>
+            <?php endif; ?>
             <!-- Email Field -->
             <div class="space-y-3">
               <label for="email" class="block text-xs text-white/90 font-medium uppercase tracking-widest">

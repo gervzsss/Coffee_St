@@ -1,6 +1,7 @@
 <?php
 // Admin settings page
 ?>
+<?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
 <!doctype html>
 <html lang="en">
 

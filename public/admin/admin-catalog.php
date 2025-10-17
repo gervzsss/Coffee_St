@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
 <?php
 // Admin catalog management page
 ?>
