@@ -20,14 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Login — Coffee St.</title>
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
 </head>
 
 <body class="antialiased bg-black">
   <main class="relative min-h-screen w-full">
     <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 bg-[url('../assets/admin/AdminLogin.png')] bg-cover bg-center scale-x-[-1]">
+    <div
+      class="absolute inset-0 bg-[url('/COFFEE_ST/public/assets/admin/AdminLogin.png')] bg-cover bg-center scale-x-[-1]">
       <div class="absolute inset-0 bg-black/60"></div>
     </div>
 

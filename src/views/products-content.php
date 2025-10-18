@@ -1,5 +1,4 @@
 <?php
-// Products Page Main Content Partial
 
 if (!defined("BASE_PATH")) {
   define("BASE_PATH", dirname(__DIR__, 2));
@@ -170,7 +169,8 @@ $products = $productRepository->getAllActive();
               </div>
               <div class="flex flex-1 flex-col bg-white p-6">
                 <div class="mb-2">
-                  <h3 class="font-playfair text-xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-[#30442B]">
+                  <h3
+                    class="font-playfair text-xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-[#30442B]">
                     <?php echo htmlspecialchars($product->name); ?>
                   </h3>
                 </div>
@@ -178,12 +178,16 @@ $products = $productRepository->getAllActive();
                   <?php echo htmlspecialchars($product->description); ?>
                 </p>
                 <div class="mt-auto flex items-center justify-between pt-2">
-                  <span class="text-xl font-semibold text-[#30442B]">₱<?php echo number_format($product->price, 2); ?></span>
+                  <span class="text-xl font-semibold text-[#30442B]">₱<?php echo number_format(
+                    $product->price,
+                    2,
+                  ); ?></span>
                   <button
                     class="add-to-cart flex cursor-pointer items-center gap-2 rounded-full bg-[#30442B] px-4 py-2 text-sm font-medium text-white transition-colors duration-300 hover:bg-[#405939]"
                     data-product-id="<?php echo (int) $product->id; ?>">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                      </path>
                     </svg>
                     Add to Cart
                   </button>

@@ -9,7 +9,7 @@ require_once "../../src/config/bootstrap.php"; ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Orders - Coffee Street</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
 </head>
 
 <body class="antialiased bg-gray-50 text-slate-800">

@@ -9,8 +9,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Catalog Management — Coffee St.</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
+  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
   <script src="/src/resources/js/admin-catalog.js"></script>
 </head>
 
@@ -24,11 +24,10 @@
     </div>
   </div>
 
-  <?php include_once __DIR__ .
-    "/../../src/components/modals/admin-catalog-modal.php"; ?>
+  <?php include_once __DIR__ . "/../../src/components/modals/admin-catalog-modal.php"; ?>
+
+  <script src="../../src/resources/js/admin-catalog.js"></script>
 
 </body>
 
 </html>
-
-<script src="../../src/resources/js/admin-catalog.js"></script>

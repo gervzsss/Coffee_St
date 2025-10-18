@@ -1,6 +1,3 @@
-<?php
-// Benefits Grid Section Partial
-?>
 <section class="bg-[#FDFBF6] px-4 py-16 md:px-8" id="benefits-grid">
   <div class="mx-auto max-w-6xl">
     <div class="mb-12 text-center">

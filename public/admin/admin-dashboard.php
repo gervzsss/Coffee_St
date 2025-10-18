@@ -6,7 +6,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Coffee St. — Dashboard</title>
-	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
 </head>
 
 <body class="antialiased bg-gray-50 text-slate-800">

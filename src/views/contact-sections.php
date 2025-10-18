@@ -133,8 +133,7 @@
               <input id="contact-subject" name="subject" type="text" autocomplete="off"
                 class="mt-2 w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/15"
                 placeholder="Let us know how we can help" aria-describedby="contact-subject-error"
-                value="<?= htmlspecialchars($prefilledSubject) ?>"
-                <?= $subjectLocked ? 'readonly' : '' ?>
+                value="<?= htmlspecialchars($prefilledSubject) ?>" <?= $subjectLocked ? 'readonly' : '' ?>
                 data-subject-locked="<?= $subjectLocked ? 'true' : 'false' ?>"
                 data-original-subject="<?= htmlspecialchars($prefilledSubject) ?>" />
               <p id="contact-subject-error" data-error-for="contact-subject"

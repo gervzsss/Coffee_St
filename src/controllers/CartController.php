@@ -21,16 +21,16 @@ class CartController
     if (!$user || !isset($user['id'])) {
       throw new \RuntimeException('Unauthorized');
     }
-    return (int)$user['id'];
+    return (int) $user['id'];
   }
 
   public function add(array $payload): array
   {
     $uid = $this->requireUserId();
     $cart = $this->repo->getOrCreateActiveCart($uid);
-    $productId = (int)($payload['product_id'] ?? 0);
-    $qty = max(1, (int)($payload['quantity'] ?? 1));
-    $variantId = isset($payload['variant_id']) ? (int)$payload['variant_id'] : null;
+    $productId = (int) ($payload['product_id'] ?? 0);
+    $qty = max(1, (int) ($payload['quantity'] ?? 1));
+    $variantId = isset($payload['variant_id']) ? (int) $payload['variant_id'] : null;
     $item = $this->repo->addOrUpdateItem($cart->id ?? 0, $productId, $qty, $variantId);
     $summary = $this->repo->getCartDetails($cart->id ?? 0);
     return [
@@ -44,8 +44,8 @@ class CartController
   {
     $uid = $this->requireUserId();
     $cart = $this->repo->getOrCreateActiveCart($uid);
-    $pid = (int)($payload['product_id'] ?? 0);
-    $qty = (int)($payload['quantity'] ?? 0);
+    $pid = (int) ($payload['product_id'] ?? 0);
+    $qty = (int) ($payload['quantity'] ?? 0);
     $this->repo->setQuantity($cart->id ?? 0, $pid, $qty);
     $summary = $this->repo->getCartDetails($cart->id ?? 0);
     return ['success' => true, 'summary' => $summary];
@@ -55,7 +55,7 @@ class CartController
   {
     $uid = $this->requireUserId();
     $cart = $this->repo->getOrCreateActiveCart($uid);
-    $pid = (int)($payload['product_id'] ?? 0);
+    $pid = (int) ($payload['product_id'] ?? 0);
     $this->repo->removeItem($cart->id ?? 0, $pid);
     $summary = $this->repo->getCartDetails($cart->id ?? 0);
     return ['success' => true, 'summary' => $summary];

@@ -24,14 +24,13 @@
                     class="h-full w-full rounded-lg object-contain transition-transform duration-500 group-hover:scale-105" />
                 </div>
               </div>
-              <div class="flex flex-col grow border-t border-gray-100 bg-white p-6">
+              <div class="flex grow flex-col border-t border-gray-100 bg-white p-6">
                 <h3 class="font-playfair mb-2 text-xl font-bold text-[#30442B]">
                   Caramel Latte
                 </h3>
                 <p class="mb-4 line-clamp-2 text-gray-600">
                   Rich espresso with steamed milk and caramel drizzle
                 </p>
-
               </div>
             </div>
           </div>
@@ -45,14 +44,13 @@
                     class="h-full w-full rounded-lg object-contain transition-transform duration-500 group-hover:scale-105" />
                 </div>
               </div>
-              <div class="flex flex-col grow border-t border-gray-100 bg-white p-6">
+              <div class="flex grow flex-col border-t border-gray-100 bg-white p-6">
                 <h3 class="font-playfair mb-2 text-xl font-bold text-[#30442B]">
                   Blueberry Delight
                 </h3>
                 <p class="mb-4 line-clamp-2 text-gray-600">
                   Fresh blueberry parfait with vanilla cream
                 </p>
-
               </div>
             </div>
           </div>
@@ -66,14 +64,13 @@
                     class="h-full w-full rounded-lg object-contain transition-transform duration-500 group-hover:scale-105" />
                 </div>
               </div>
-              <div class="flex flex-col grow border-t border-gray-100 bg-white p-6">
+              <div class="flex grow flex-col border-t border-gray-100 bg-white p-6">
                 <h3 class="font-playfair mb-2 text-xl font-bold text-[#30442B]">
                   Artisan Latte
                 </h3>
                 <p class="mb-4 line-clamp-2 text-gray-600">
                   Hand-crafted latte with signature leaf art design
                 </p>
-
               </div>
             </div>
           </div>
@@ -87,14 +84,13 @@
                     class="h-full w-full rounded-lg object-contain transition-transform duration-500 group-hover:scale-105" />
                 </div>
               </div>
-              <div class="flex flex-col grow border-t border-gray-100 bg-white p-6">
+              <div class="flex grow flex-col border-t border-gray-100 bg-white p-6">
                 <h3 class="font-playfair mb-2 text-xl font-bold text-[#30442B]">
                   Almond Chocolate Croissant
                 </h3>
                 <p class="mb-4 line-clamp-2 text-gray-600">
                   Buttery croissant filled with chocolate and almonds
                 </p>
-
               </div>
             </div>
           </div>
@@ -122,10 +118,8 @@
 </section>
 
 <!-- Initialize Swiper -->
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  $(function () {
     new Swiper(".swiper-container", {
       slidesPerView: 1,
       spaceBetween: 32,

@@ -1,9 +1,9 @@
 <?php
 // Determine current page filename for active state
-$currentFile = basename($_SERVER['PHP_SELF'] ?? '');
+$currentFile = basename($_SERVER["PHP_SELF"] ?? "");
 function nav_active($file, $current)
 {
-	return ($current === $file) ? 'bg-white/10 text-white font-semibold' : '';
+	return $current === $file ? "bg-white/10 text-white font-semibold" : "";
 }
 ?>
 <!-- Admin Vertical Navbar (Tailwind CSS) -->
@@ -38,8 +38,10 @@ function nav_active($file, $current)
 	<!-- Navigation Links -->
 	<ul class="flex-1 flex flex-col gap-1 mt-6 px-2">
 		<li>
-			<a href="admin-dashboard.php"
-				class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active('admin-dashboard.php', $currentFile); ?>">
+			<a href="admin-dashboard.php" class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active(
+				"admin-dashboard.php",
+				$currentFile,
+			); ?>">
 				<svg class="h-6 w-6 text-white/80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 					<path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 8h14v-2H7v2zm0-4h14v-2H7v2zm0-6v2h14V7H7z" />
 				</svg>
@@ -47,9 +49,10 @@ function nav_active($file, $current)
 			</a>
 		</li>
 		<li>
-			<a href="admin-catalog.php"
-				class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active('admin-catalog.php', $currentFile); ?>"
-				:class="open ? '' : 'justify-center px-0'">
+			<a href="admin-catalog.php" class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active(
+				"admin-catalog.php",
+				$currentFile,
+			); ?>" :class="open ? '' : 'justify-center px-0'">
 				<svg class="h-6 w-6 text-white/80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 					<path d="M3 7h18M3 12h18M3 17h18" />
 				</svg>
@@ -57,9 +60,10 @@ function nav_active($file, $current)
 			</a>
 		</li>
 		<li>
-			<a href="admin-orders.php"
-				class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active('admin-orders.php', $currentFile); ?>"
-				:class="open ? '' : 'justify-center px-0'">
+			<a href="admin-orders.php" class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active(
+				"admin-orders.php",
+				$currentFile,
+			); ?>" :class="open ? '' : 'justify-center px-0'">
 				<svg class="h-6 w-6 text-white/80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 					<path d="M9 17v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
 					<circle cx="9" cy="7" r="4" />
@@ -68,9 +72,10 @@ function nav_active($file, $current)
 			</a>
 		</li>
 		<li>
-			<a href="admin-accounts.php"
-				class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active('admin-accounts.php', $currentFile); ?>"
-				:class="open ? '' : 'justify-center px-0'">
+			<a href="admin-accounts.php" class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active(
+				"admin-accounts.php",
+				$currentFile,
+			); ?>" :class="open ? '' : 'justify-center px-0'">
 				<svg class="h-6 w-6 text-white/80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 					<path d="M16 11V7a4 4 0 00-8 0v4M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H5a2 2 0 00-2 2v5a2 2 0 002 2z" />
 				</svg>
@@ -78,9 +83,10 @@ function nav_active($file, $current)
 			</a>
 		</li>
 		<li>
-			<a href="admin-analytics.php"
-				class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active('admin-analytics.php', $currentFile); ?>"
-				:class="open ? '' : 'justify-center px-0'">
+			<a href="admin-analytics.php" class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active(
+				"admin-analytics.php",
+				$currentFile,
+			); ?>" :class="open ? '' : 'justify-center px-0'">
 				<svg class="h-6 w-6 text-white/80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 					<path d="M11 17a2 2 0 104 0 2 2 0 00-4 0zm-7-2a7 7 0 0114 0v4H4v-4z" />
 				</svg>
@@ -88,9 +94,11 @@ function nav_active($file, $current)
 			</a>
 		</li>
 		<li>
-			<a href="admin-settings.php"
-				class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 group <?php echo nav_active('admin-settings.php', $currentFile) ?: 'text-white/90'; ?>"
-				:class="open ? (<?php echo "'bg-[#30442B] text-white'"; ?>) : 'justify-center px-0'">
+			<a href="admin-settings.php" class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 group <?php echo nav_active(
+				"admin-settings.php",
+				$currentFile,
+			) ?:
+				"text-white/90"; ?>" :class="open ? (<?php echo "'bg-[#30442B] text-white'"; ?>) : 'justify-center px-0'">
 				<svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 					<path d="M12 4v16m8-8H4" />
 				</svg>
@@ -98,9 +106,10 @@ function nav_active($file, $current)
 			</a>
 		</li>
 		<li class="mt-auto mb-4">
-			<a href="admin-logout.php"
-				class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active('admin-logout.php', $currentFile); ?>"
-				:class="open ? '' : 'justify-center px-0'">
+			<a href="admin-logout.php" class="flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group <?php echo nav_active(
+				"admin-logout.php",
+				$currentFile,
+			); ?>" :class="open ? '' : 'justify-center px-0'">
 				<svg class="h-6 w-6 text-white/80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 					<path d="M17 16l4-4m0 0l-4-4m4 4H7" />
 				</svg>

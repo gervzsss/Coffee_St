@@ -1,6 +1,3 @@
-<?php
-// Split Screen Section Partial
-?>
 <section class="translate-y-10 transform py-20 opacity-0" id="split-screen-section">
   <div class="mx-auto max-w-7xl">
     <div class="flex flex-col items-center md:flex-row">
