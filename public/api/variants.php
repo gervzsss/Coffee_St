@@ -14,7 +14,7 @@ try {
         exit;
     }
 
-    $pid = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
+    $pid = isset($_GET['product_id']) ? (int) $_GET['product_id'] : 0;
     if ($pid <= 0) {
         http_response_code(400);
         echo json_encode(['success' => false, 'error' => 'Missing product_id']);

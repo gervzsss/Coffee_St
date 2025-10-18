@@ -21,27 +21,45 @@ $controller = new CartController(new CartRepository(db()));
 try {
   switch ($action) {
     case 'add':
-      if ($method !== 'POST') { http_response_code(405); echo json_encode(['success'=>false,'error'=>'Method not allowed']); break; }
+      if ($method !== 'POST') {
+        http_response_code(405);
+        echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+        break;
+      }
       $payload = [
-        'product_id' => (int)($_POST['product_id'] ?? 0),
-        'quantity' => (int)($_POST['quantity'] ?? 1),
-        'variant_id' => isset($_POST['variant_id']) ? (int)$_POST['variant_id'] : null,
+        'product_id' => (int) ($_POST['product_id'] ?? 0),
+        'quantity' => (int) ($_POST['quantity'] ?? 1),
+        'variant_id' => isset($_POST['variant_id']) ? (int) $_POST['variant_id'] : null,
       ];
-      if ($payload['product_id'] <= 0) { http_response_code(400); echo json_encode(['success'=>false,'error'=>'Invalid product.']); break; }
-      if ($payload['quantity'] <= 0) { $payload['quantity'] = 1; }
+      if ($payload['product_id'] <= 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Invalid product.']);
+        break;
+      }
+      if ($payload['quantity'] <= 0) {
+        $payload['quantity'] = 1;
+      }
       echo json_encode($controller->add($payload));
       break;
     case 'setQty':
-      if ($method !== 'POST') { http_response_code(405); echo json_encode(['success'=>false,'error'=>'Method not allowed']); break; }
+      if ($method !== 'POST') {
+        http_response_code(405);
+        echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+        break;
+      }
       $payload = [
-        'product_id' => (int)($_POST['product_id'] ?? 0),
-        'quantity' => (int)($_POST['quantity'] ?? 0),
+        'product_id' => (int) ($_POST['product_id'] ?? 0),
+        'quantity' => (int) ($_POST['quantity'] ?? 0),
       ];
       echo json_encode($controller->setQty($payload));
       break;
     case 'remove':
-      if ($method !== 'POST') { http_response_code(405); echo json_encode(['success'=>false,'error'=>'Method not allowed']); break; }
-      $payload = ['product_id' => (int)($_POST['product_id'] ?? 0)];
+      if ($method !== 'POST') {
+        http_response_code(405);
+        echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+        break;
+      }
+      $payload = ['product_id' => (int) ($_POST['product_id'] ?? 0)];
       echo json_encode($controller->remove($payload));
       break;
     case 'get':
@@ -50,5 +68,5 @@ try {
   }
 } catch (Throwable $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'error' => 'Cart operation failed: '.$e->getMessage()]);
+  echo json_encode(['success' => false, 'error' => 'Cart operation failed: ' . $e->getMessage()]);
 }

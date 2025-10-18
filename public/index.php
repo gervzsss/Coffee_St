@@ -15,6 +15,7 @@ $year = date('Y');
 </head>
 
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
+
   <?php include __DIR__ . '/../src/includes/header.php'; ?>
 
   <main class="pt-24">
@@ -32,13 +33,13 @@ $year = date('Y');
   <?php include __DIR__ . '/../src/includes/footer.php'; ?>
 
   <?php include __DIR__ . '/../src/components/modals/auth-modals.php'; ?>
-  <?php include __DIR__ . '/../src/components/modals/add-to-cart-modal.php'; ?>
 
   <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script src="/COFFEE_ST/src/resources/js/home.js"></script>
   <script src="/COFFEE_ST/src/resources/js/add-to-cart-modal.js"></script>
   <script src="/COFFEE_ST/src/resources/js/login-validation.js"></script>
+
 </body>
 
 </html>

@@ -35,12 +35,12 @@ $year = date('Y');
   <script src="/COFFEE_ST/src/resources/js/add-to-cart-modal.js"></script>
   <script src="/COFFEE_ST/src/resources/js/login-validation.js"></script>
   <script>
-    $(function(){
+    $(function () {
       // Initialize cart count for logged-in users only
       if (window.IS_AUTH) {
         $.get('/COFFEE_ST/public/api/cart.php?action=get')
-          .done(function(resp){ if(resp && resp.success){ $('.cart-count').text(resp.summary.count || 0); } })
-          .fail(function(){ /* ignore for guests */ });
+          .done(function (resp) { if (resp && resp.success) { $('.cart-count').text(resp.summary.count || 0); } })
+          .fail(function () { /* ignore for guests */ });
       }
     });
   </script>
