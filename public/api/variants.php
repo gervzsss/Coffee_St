@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 
+
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once __DIR__ . '/../../src/repositories/VariantRepository.php';
+require_once __DIR__ . '/../../src/repositories/repositories.php';
+use App\Repositories\VariantRepository;
+use function App\Helpers\db;
 
 header('Content-Type: application/json');
 
@@ -13,6 +16,7 @@ try {
         echo json_encode(['success' => false, 'error' => 'Method not allowed']);
         exit;
     }
+
 
     $pid = isset($_GET['product_id']) ? (int) $_GET['product_id'] : 0;
     if ($pid <= 0) {

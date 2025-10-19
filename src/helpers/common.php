@@ -1,0 +1,117 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Helpers;
+
+/**
+ * Common helper functions and constants for Coffee_St.
+ *
+ * Includes:
+ * - Database connection helper: db()
+ * - User auth session helpers: login_user(), logout_user(), is_authenticated(), current_user()
+ * - Admin auth helpers: admin_login(), admin_logout(), is_admin_authenticated()
+ *
+ * Relies on merged config at src/config/config.php
+ */
+
+// -------------------------
+// Database helper
+// -------------------------
+/**
+ * Returns a shared PDO connection using config from src/config/config.php
+ */
+function db(): \PDO
+{
+  static $pdo = null;
+  if ($pdo === null) {
+    $config = require __DIR__ . '/../config/config.php';
+    $db = $config['db'] ?? [];
+    $dsn = sprintf(
+      'mysql:host=%s;port=%s;dbname=%s;charset=%s',
+      $db['host'] ?? '127.0.0.1',
+      $db['port'] ?? '3306',
+      $db['database'] ?? '',
+      $db['charset'] ?? 'utf8mb4'
+    );
+    $pdo = new \PDO($dsn, $db['username'] ?? '', $db['password'] ?? '', $db['options'] ?? []);
+  }
+  return $pdo;
+}
+
+// -------------------------
+// User auth helpers
+// -------------------------
+const AUTH_SESSION_KEY = 'auth_user';
+
+/** Store minimal user payload in session */
+function login_user(array $user): void
+{
+  if (session_status() === PHP_SESSION_ACTIVE) {
+    session_regenerate_id(true);
+  }
+  $_SESSION[AUTH_SESSION_KEY] = [
+    'id' => $user['id'] ?? null,
+    'first_name' => $user['first_name'] ?? '',
+    'last_name' => $user['last_name'] ?? '',
+    'email' => $user['email'] ?? '',
+  ];
+}
+
+/** Clear user session */
+function logout_user(): void
+{
+  if (session_status() === PHP_SESSION_ACTIVE) {
+    session_regenerate_id(true);
+  }
+  unset($_SESSION[AUTH_SESSION_KEY]);
+}
+
+/** Is visitor authenticated? */
+function is_authenticated(): bool
+{
+  return isset($_SESSION[AUTH_SESSION_KEY]['id']);
+}
+
+/** Current user payload or null */
+function current_user(): ?array
+{
+  return $_SESSION[AUTH_SESSION_KEY] ?? null;
+}
+
+// -------------------------
+// Admin auth helpers
+// -------------------------
+const ADMIN_SESSION_KEY = 'admin_auth';
+
+/** Attempt admin login using admin config */
+function admin_login(string $email, string $password): bool
+{
+  $config = require __DIR__ . '/../config/config.php';
+  $admin = $config['admin'] ?? [];
+  if ($email === ($admin['email'] ?? '') && password_verify($password, $admin['password_hash'] ?? '')) {
+    if (session_status() === PHP_SESSION_ACTIVE) {
+      session_regenerate_id(true);
+    }
+    $_SESSION[ADMIN_SESSION_KEY] = [
+      'email' => $admin['email'] ?? $email,
+      'logged_in' => true,
+    ];
+    return true;
+  }
+  return false;
+}
+
+/** Log out admin */
+function admin_logout(): void
+{
+  unset($_SESSION[ADMIN_SESSION_KEY]);
+  if (session_status() === PHP_SESSION_ACTIVE) {
+    session_regenerate_id(true);
+  }
+}
+
+/** Check admin auth */
+function is_admin_authenticated(): bool
+{
+  return isset($_SESSION[ADMIN_SESSION_KEY]['logged_in']) && $_SESSION[ADMIN_SESSION_KEY]['logged_in'] === true;
+}

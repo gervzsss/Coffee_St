@@ -1,7 +1,12 @@
 <?php
 // public/api/inquiry.php
+
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once __DIR__ . '/../../src/repositories/InquiryRepository.php';
+require_once __DIR__ . '/../../src/helpers/common.php';
+require_once __DIR__ . '/../../src/repositories/repositories.php';
+use App\Repositories\InquiryRepository;
+use function App\Helpers\db;
+use function App\Helpers\current_user;
 
 header('Content-Type: application/json');
 
@@ -10,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['error' => 'Method not allowed']);
     exit;
 }
+
 
 $name = trim((string) ($_POST['name'] ?? ''));
 $email = trim((string) ($_POST['email'] ?? ''));
@@ -20,15 +26,11 @@ $userId = null;
 $userEmail = null;
 $userName = null;
 
-if (function_exists('current_user')) {
-    $user = current_user();
-    if ($user && isset($user['id'])) {
-        $userId = (int) $user['id'];
-        $userEmail = trim((string) ($user['email'] ?? ''));
-        $userName = trim(
-            sprintf('%s %s', $user['first_name'] ?? '', $user['last_name'] ?? ''),
-        );
-    }
+$user = current_user();
+if ($user && isset($user['id'])) {
+    $userId = (int) $user['id'];
+    $userEmail = trim((string) ($user['email'] ?? ''));
+    $userName = trim(sprintf('%s %s', $user['first_name'] ?? '', $user['last_name'] ?? ''));
 }
 
 $errors = [];

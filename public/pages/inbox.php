@@ -1,19 +1,26 @@
 <?php
 // public/pages/inbox.php
-require_once __DIR__ . "/../../src/config/bootstrap.php";
-require_once __DIR__ . "/../../src/repositories/InquiryRepository.php";
 
-if (
-  !function_exists("current_user") ||
-  !($user = current_user()) ||
-  !isset($user["id"])
-) {
-  header("Location: /COFFEE_ST/public/");
+require_once __DIR__ . "/../../src/config/bootstrap.php";
+require_once __DIR__ . "/../../src/repositories/repositories.php";
+use App\Repositories\InquiryRepository;
+use function App\Helpers\current_user;
+use function App\Helpers\db;
+
+// Require authentication; current_user() is imported from App\Helpers
+$user = current_user();
+if (!$user || !isset($user['id'])) {
+  header('Location: /COFFEE_ST/public/index.php');
   exit();
 }
 
 $repo = new InquiryRepository(db());
-$threads = $repo->getThreadsForUser((int) $user["id"]);
+$email = isset($user['email']) ? (string) $user['email'] : '';
+if ($email !== '') {
+  $threads = $repo->getThreadsForUserOrEmail((int) $user['id'], $email);
+} else {
+  $threads = $repo->getThreadsForUser((int) $user['id']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,22 +87,16 @@ $threads = $repo->getThreadsForUser((int) $user["id"]);
             <?php foreach ($threadData["messages"] as $message): ?>
               <div class="border border-gray-100 rounded-lg p-4">
                 <div class="mb-1 flex items-center justify-between">
-                  <span class="font-semibold text-sm <?= $message[
-                    "sender_type"
-                  ] === "admin"
+                  <span class="font-semibold text-sm <?= (isset($message["sender_type"]) && $message["sender_type"] === "admin")
                     ? "text-[#30442B]"
                     : "text-blue-700" ?>">
-                    <?= $message["sender_type"] === "admin"
+                    <?= (isset($message["sender_type"]) && $message["sender_type"] === "admin")
                       ? "Coffee St. Admin"
                       : htmlspecialchars($message["sender_name"] ?? "You") ?>
                   </span>
-                  <span class="text-xs text-gray-400 ml-2"><?= htmlspecialchars(
-                    $message["created_at"],
-                  ) ?></span>
+                  <span class="text-xs text-gray-400 ml-2"><?= htmlspecialchars($message["created_at"] ?? '') ?></span>
                 </div>
-                <div class="text-gray-800 whitespace-pre-line"><?= htmlspecialchars(
-                  $message["message"],
-                ) ?></div>
+                <div class="text-gray-800 whitespace-pre-line"><?= htmlspecialchars($message["message"] ?? '') ?></div>
               </div>
             <?php endforeach; ?>
           </div>

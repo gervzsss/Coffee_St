@@ -1,20 +1,28 @@
 <?php
-
 declare(strict_types=1);
 
-if (!defined('BASE_PATH')) {
-  define('BASE_PATH', dirname(__DIR__, 2));
-}
 
-require_once BASE_PATH . '/src/repositories/CartRepository.php';
-require_once BASE_PATH . '/src/helpers/auth.php';
 
+namespace App\Controllers;
+
+use App\Repositories\CartRepository;
+use function App\Helpers\current_user;
+
+/**
+ * Controller for cart actions (add, setQty, remove, get).
+ */
 class CartController
 {
   public function __construct(private CartRepository $repo)
   {
   }
 
+  /**
+   * Get the current user's ID or throw if not authenticated.
+   *
+   * @return int
+   * @throws \RuntimeException
+   */
   private function requireUserId(): int
   {
     $user = current_user();
@@ -24,6 +32,12 @@ class CartController
     return (int) $user['id'];
   }
 
+  /**
+   * Add an item to the cart.
+   *
+   * @param array $payload
+   * @return array
+   */
   public function add(array $payload): array
   {
     $uid = $this->requireUserId();
@@ -40,6 +54,12 @@ class CartController
     ];
   }
 
+  /**
+   * Set the quantity of an item in the cart.
+   *
+   * @param array $payload
+   * @return array
+   */
   public function setQty(array $payload): array
   {
     $uid = $this->requireUserId();
@@ -51,6 +71,12 @@ class CartController
     return ['success' => true, 'summary' => $summary];
   }
 
+  /**
+   * Remove an item from the cart.
+   *
+   * @param array $payload
+   * @return array
+   */
   public function remove(array $payload): array
   {
     $uid = $this->requireUserId();
@@ -61,6 +87,11 @@ class CartController
     return ['success' => true, 'summary' => $summary];
   }
 
+  /**
+   * Get the current user's cart.
+   *
+   * @return array
+   */
   public function get(): array
   {
     $uid = $this->requireUserId();

@@ -3,7 +3,11 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once BASE_PATH . '/src/controllers/AuthController.php';
+
+use App\Controllers\AuthController;
+use App\Services\AuthService;
+use App\Repositories\UserRepository;
+use function App\Helpers\db;
 
 header('Content-Type: application/json; charset=utf-8');
 

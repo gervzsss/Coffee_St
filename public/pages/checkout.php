@@ -1,7 +1,12 @@
 <?php
+
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once BASE_PATH . '/src/repositories/CartRepository.php';
-require_once BASE_PATH . '/src/repositories/ProductRepository.php';
+require_once BASE_PATH . '/src/repositories/repositories.php';
+use App\Repositories\CartRepository;
+use App\Repositories\ProductRepository;
+use function App\Helpers\current_user;
+use function App\Helpers\db;
+use function App\Helpers\is_authenticated;
 
 if (!is_authenticated()) {
   header('Location: /COFFEE_ST/public/pages/cart.php');
@@ -70,7 +75,7 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
                 $p = $productRepo->findById($it->product_id); ?>
                 <li class="py-3 flex justify-between">
                   <span class="text-neutral-800"><?php echo htmlspecialchars($p?->name ?? ''); ?> ×
-                    <?php echo (int) $it->quantity; ?></span>
+                    <?php echo (int) ($it->quantity ?? 0); ?></span>
                   <span class="font-medium">₱<?php echo number_format($it->unit_price * $it->quantity, 2); ?></span>
                 </li>
               <?php endforeach; ?>

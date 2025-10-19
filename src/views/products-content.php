@@ -1,10 +1,10 @@
 <?php
-
 if (!defined("BASE_PATH")) {
   define("BASE_PATH", dirname(__DIR__, 2));
 }
-
-require_once BASE_PATH . "/src/repositories/ProductRepository.php";
+require_once BASE_PATH . '/src/helpers/common.php';
+use function App\Helpers\db;
+use App\Repositories\ProductRepository;
 
 $productRepository = new ProductRepository(db());
 $products = $productRepository->getAllActive();

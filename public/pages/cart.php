@@ -1,7 +1,11 @@
 <?php
+
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once BASE_PATH . '/src/repositories/CartRepository.php';
-require_once BASE_PATH . '/src/repositories/ProductRepository.php';
+require_once BASE_PATH . '/src/repositories/repositories.php';
+use App\Repositories\CartRepository;
+use App\Repositories\ProductRepository;
+use function App\Helpers\current_user;
+use function App\Helpers\db;
 
 $title = 'Cart - Coffee St.';
 
@@ -52,7 +56,7 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
           <div class="rounded-lg border bg-white p-4 flex items-center gap-3">
             <input type="checkbox" class="h-5 w-5 text-[#30442B]" checked />
             <span class="text-sm text-neutral-700">Select All Items
-              (<?php echo array_sum(array_map(fn($i) => $i->quantity, $items)); ?>)</span>
+              (<?php echo array_sum(array_map(fn($i) => (int) ($i->quantity ?? 0), $items)); ?>)</span>
           </div>
 
           <?php if (empty($items)): ?>

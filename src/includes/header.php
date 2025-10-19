@@ -2,11 +2,11 @@
 // Header partial: Navigation and related UI
 // Uses Tailwind CSS utilities and jQuery for interactivity
 // Active link helper is defined in src/components/nav-active.php
+
 require_once __DIR__ . "/../components/nav-active.php";
 
-if (!function_exists("is_authenticated")) {
-  require_once __DIR__ . "/../helpers/auth.php";
-}
+use function App\Helpers\is_authenticated;
+use function App\Helpers\current_user;
 
 $authenticatedUser = current_user();
 ?>
@@ -140,7 +140,7 @@ $authenticatedUser = current_user();
             ); ?>!</span>
           <a href="/COFFEE_ST/public/pages/orders.php" class="font-outfit text-[16px] text-[#30442B] underline">My
             Orders</a>
-          <a href="/COFFEE_ST/public/pages/inbox.php"
+          <a id="inbox-link" href="/COFFEE_ST/public/pages/inbox.php"
             class="font-outfit text-[16px] text-[#30442B] underline ml-4">Inbox</a>
           <button id="logout-button" type="button"
             class="cursor-pointer inline-flex items-center px-6 py-2.5 font-outfit text-[16px] font-medium tracking-wide border-2 border-[#30442B] text-white bg-[#30442B] rounded-full transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30">

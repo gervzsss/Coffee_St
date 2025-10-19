@@ -6,6 +6,8 @@ require_once __DIR__ . '/../../src/config/bootstrap.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+use function App\Helpers\logout_user;
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   http_response_code(405);
   header('Allow: POST');

@@ -1,6 +1,11 @@
 <?php
+
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once BASE_PATH . '/src/repositories/OrderRepository.php';
+require_once BASE_PATH . '/src/repositories/repositories.php';
+use App\Repositories\OrderRepository;
+use function App\Helpers\current_user;
+use function App\Helpers\db;
+use function App\Helpers\is_authenticated;
 
 if (!is_authenticated()) {
   header('Location: /COFFEE_ST/public/index.php');
@@ -56,15 +61,16 @@ $title = 'Order #' . $orderId . ' - Coffee St.';
           <?php foreach ($items as $it): ?>
             <tr class="border-b last:border-0">
               <td class="py-2">
-                <div class="font-medium"><?php echo htmlspecialchars($it['product_name']); ?></div>
+                <div class="font-medium"><?php echo htmlspecialchars($it['product_name'] ?? ''); ?></div>
                 <?php if (!empty($it['variant_name'])): ?>
-                  <div class="text-xs text-neutral-500"><?php echo htmlspecialchars($it['variant_name']); ?></div>
+                  <div class="text-xs text-neutral-500"><?php echo htmlspecialchars($it['variant_name'] ?? ''); ?></div>
                 <?php endif; ?>
               </td>
-              <td class="text-right"><?php echo (int) $it['quantity']; ?></td>
+              <td class="text-right"><?php echo (int) ($it['quantity'] ?? 0); ?></td>
               <td class="text-right">
-                ₱<?php echo number_format(((float) $it['unit_price'] + (float) $it['price_delta']), 2); ?></td>
-              <td class="text-right">₱<?php echo number_format((float) $it['line_total'], 2); ?></td>
+                ₱<?php echo number_format(((float) ($it['unit_price'] ?? 0) + (float) ($it['price_delta'] ?? 0)), 2); ?>
+              </td>
+              <td class="text-right">₱<?php echo number_format((float) ($it['line_total'] ?? 0), 2); ?></td>
             </tr>
           <?php endforeach; ?>
         </tbody>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../src/config/bootstrap.php";
+use function App\Helpers\current_user;
 
 $title = "Contact - Coffee St.";
 $year = date("Y");
@@ -9,7 +10,7 @@ $subjectLocked = false;
 
 if (isset($_GET["subject"])) {
   $subjectParam = trim((string) $_GET["subject"]);
-  if ($subjectParam !== "" && function_exists("current_user")) {
+  if ($subjectParam !== "") {
     $current = current_user();
     if ($current && isset($current["id"])) {
       $prefilledSubject = $subjectParam;

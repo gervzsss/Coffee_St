@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../src/config/bootstrap.php";
 require_once __DIR__ . "/../../src/includes/admin-auth-guard.php";
+require_once __DIR__ . "/../../src/repositories/repositories.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,22 +1,30 @@
 <?php
-
 declare(strict_types=1);
 
-if (!defined('BASE_PATH')) {
-  define('BASE_PATH', dirname(__DIR__, 2));
-}
 
-require_once BASE_PATH . '/src/repositories/CartRepository.php';
-require_once BASE_PATH . '/src/repositories/OrderRepository.php';
-require_once BASE_PATH . '/src/helpers/auth.php';
-require_once BASE_PATH . '/src/config/order.php';
 
+namespace App\Controllers;
+
+use App\Repositories\CartRepository;
+use App\Repositories\OrderRepository;
+use function App\Helpers\current_user;
+use function App\Helpers\db;
+
+/**
+ * Controller for order actions (checkout, list).
+ */
 class OrderController
 {
   public function __construct(private CartRepository $carts, private OrderRepository $orders)
   {
   }
 
+  /**
+   * Get the current user's ID or throw if not authenticated.
+   *
+   * @return int
+   * @throws \RuntimeException
+   */
   private function requireUserId(): int
   {
     $user = current_user();
@@ -26,6 +34,12 @@ class OrderController
     return (int) $user['id'];
   }
 
+  /**
+   * Handle checkout and order creation.
+   *
+   * @param array $payload
+   * @return array
+   */
   public function checkout(array $payload): array
   {
     $uid = $this->requireUserId();
@@ -57,7 +71,7 @@ class OrderController
     // Build snapshot
     $itemsSnapshot = [];
     foreach ($items as $it) {
-      // get product name for snapshot
+      // get product name for snapshot using merged helpers db()
       $pstmt = db()->prepare('SELECT name FROM products WHERE id = :id');
       $pstmt->execute(['id' => $it->product_id]);
       $pname = ($pstmt->fetch()['name'] ?? '') ?: '';
@@ -70,9 +84,12 @@ class OrderController
         'line_total' => round(($it->unit_price + $delta) * $it->quantity, 2),
       ];
     }
-    $orderConfig = require BASE_PATH . '/src/config/order.php';
-    $delivery = (float) ($payload['delivery_fee'] ?? $orderConfig['delivery_fee']);
-    $taxRate = (float) ($orderConfig['tax_rate'] ?? 0.08);
+    // Load order config from unified config
+    $config = defined('BASE_PATH')
+      ? require BASE_PATH . '/src/config/config.php'
+      : ['order' => ['delivery_fee' => 1.78, 'tax_rate' => 0.08]];
+    $delivery = (float) ($payload['delivery_fee'] ?? ($config['order']['delivery_fee'] ?? 1.78));
+    $taxRate = (float) (($config['order']['tax_rate'] ?? 0.08));
     $tax = round($subtotal * $taxRate, 2);
     $total = round($subtotal + $delivery + $tax, 2);
     $snapshot = [
@@ -105,6 +122,11 @@ class OrderController
     return ['success' => true, 'order_id' => $orderId];
   }
 
+  /**
+   * List all orders for the current user.
+   *
+   * @return array
+   */
   public function list(): array
   {
     $uid = $this->requireUserId();

@@ -1,8 +1,11 @@
 <?php
 // public/api/inquiry-reply.php
+
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once __DIR__ . '/../../src/helpers/admin-auth.php';
-require_once __DIR__ . '/../../src/repositories/InquiryRepository.php';
+require_once __DIR__ . '/../../src/helpers/common.php';
+require_once __DIR__ . '/../../src/repositories/repositories.php';
+use App\Repositories\InquiryRepository;
+use function App\Helpers\db;
 
 header('Content-Type: application/json');
 
@@ -12,14 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-if (!is_admin_authenticated()) {
+if (!\App\Helpers\is_admin_authenticated()) {
     http_response_code(403);
     echo json_encode(['error' => 'Unauthorized']);
     exit;
 }
 
+
 $threadId = isset($_POST['thread_id']) ? (int) $_POST['thread_id'] : 0;
-if (!$threadId && isset($_POST['parent_id'])) {
+if ($threadId <= 0 && isset($_POST['parent_id'])) {
     $threadId = (int) $_POST['parent_id'];
 }
 
@@ -33,8 +37,8 @@ if ($threadId <= 0 || $message === '') {
 $repo = new InquiryRepository(db());
 
 try {
-    $adminConfig = require __DIR__ . '/../../src/config/admin.php';
-    $adminEmail = $adminConfig['email'] ?? 'admin@coffeest.com';
+    $config = require __DIR__ . '/../../src/config/config.php';
+    $adminEmail = $config['admin']['email'] ?? 'admin@coffeest.com';
     $adminName = 'Coffee St. Admin';
 
     $thread = $repo->getThreadById($threadId);

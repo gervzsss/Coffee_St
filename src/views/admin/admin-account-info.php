@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/../../config/db.php";
-require_once __DIR__ . "/../../repositories/InquiryRepository.php";
+use function App\Helpers\db;
+use App\Repositories\InquiryRepository;
 
 function renderAdminContent()
 {
@@ -58,8 +58,10 @@ function renderAdminContent()
     $latestCustomerMessage = (string) (
       $thread["latest_customer_message"] ?? $firstCustomerMessage
     );
-    $hasUnread = (int)($thread["has_unread"] ?? 0) === 1;
-    if ($hasUnread) { $unreadCount++; }
+    $hasUnread = (int) ($thread["has_unread"] ?? 0) === 1;
+    if ($hasUnread) {
+      $unreadCount++;
+    }
     $previewSource = $latestCustomerMessage !== ""
       ? $latestCustomerMessage
       : $firstCustomerMessage;
@@ -123,7 +125,7 @@ function renderAdminContent()
             <button data-tab="inquiries"
               class="cursor-pointer tab-button flex-1 px-8 py-4 text-white hover:bg-white/10 rounded-lg transition-all">
               <span class="text-base font-bold uppercase tracking-wider">
-                Inquiries<?= $unreadCount > 0 ? ' (' . (int)$unreadCount . ')' : '' ?>
+                Inquiries<?= $unreadCount > 0 ? ' (' . (int) $unreadCount . ')' : '' ?>
               </span>
             </button>
           </div>
@@ -519,10 +521,12 @@ function renderAdminContent()
                 $badgeClass = $badgeClassMap[$status] ?? "bg-slate-100 text-slate-600";
                 $avatarClass = $avatarClassMap[$status] ?? "bg-slate-200 text-slate-600";
                 ?>
-                <div class="inquiry-card p-5 border border-gray-200 rounded-xl hover:shadow-md transition-all bg-white" data-thread-id="<?= $inq["id"] ?>" data-thread-status="<?= htmlspecialchars($status, ENT_QUOTES) ?>">
+                <div class="inquiry-card p-5 border border-gray-200 rounded-xl hover:shadow-md transition-all bg-white"
+                  data-thread-id="<?= $inq["id"] ?>" data-thread-status="<?= htmlspecialchars($status, ENT_QUOTES) ?>">
                   <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-3">
-                      <div class="inquiry-avatar w-12 h-12 rounded-full <?= $avatarClass ?> flex items-center justify-center text-sm font-semibold">
+                      <div
+                        class="inquiry-avatar w-12 h-12 rounded-full <?= $avatarClass ?> flex items-center justify-center text-sm font-semibold">
                         <?= htmlspecialchars($inq["initials"]) ?>
                       </div>
                       <div>
@@ -545,9 +549,9 @@ function renderAdminContent()
                       <?= htmlspecialchars($inq["subject"]) ?>
                     <?php endif; ?>
                   </h5>
-                    <p class="text-gray-600 text-sm mb-3<?= $inq['has_unread'] ? ' font-semibold' : '' ?>"><?= nl2br(
-                      htmlspecialchars($inq["message_preview"]),
-                    ) ?></p>
+                  <p class="text-gray-600 text-sm mb-3<?= $inq['has_unread'] ? ' font-semibold' : '' ?>"><?= nl2br(
+                          htmlspecialchars($inq["message_preview"]),
+                        ) ?></p>
                   <div class="flex items-center justify-between">
                     <div class="flex flex-col text-sm text-gray-500">
                       <span class="thread-opened-at">Opened: <?= htmlspecialchars($inq["created_at_display"]) ?></span>
@@ -587,9 +591,9 @@ function renderAdminContent()
                                $inq["latest_customer_message"],
                                ENT_QUOTES,
                              ) ?>" data-date="<?= htmlspecialchars(
-                              $inq["last_message_display"],
-                              ENT_QUOTES,
-                            ) ?>">
+                                $inq["last_message_display"],
+                                ENT_QUOTES,
+                              ) ?>">
                         Reply
                       </button>
                     </div>

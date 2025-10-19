@@ -1,8 +1,11 @@
 <?php
 // public/api/thread-status.php
+
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once __DIR__ . '/../../src/helpers/admin-auth.php';
-require_once __DIR__ . '/../../src/repositories/InquiryRepository.php';
+require_once __DIR__ . '/../../src/helpers/common.php';
+require_once __DIR__ . '/../../src/repositories/repositories.php';
+use App\Repositories\InquiryRepository;
+use function App\Helpers\db;
 
 header('Content-Type: application/json');
 
@@ -12,11 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
-if (!is_admin_authenticated()) {
+if (!\App\Helpers\is_admin_authenticated()) {
   http_response_code(403);
   echo json_encode(['error' => 'Unauthorized']);
   exit;
 }
+
 
 $threadId = isset($_POST['thread_id']) ? (int) $_POST['thread_id'] : 0;
 $status = strtolower(trim((string) ($_POST['status'] ?? '')));

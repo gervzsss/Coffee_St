@@ -1,5 +1,7 @@
 <?php
-require_once __DIR__ . '/../../src/helpers/admin-auth.php';
+use function App\Helpers\admin_login;
+session_start();
+require_once __DIR__ . '/../../src/helpers/common.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -47,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           <!-- Login Form -->
           <form class="space-y-8" action="" method="POST">
-            <?php if ($error): ?>
+            <?php if (!empty($error)): ?>
               <div class="bg-red-100 text-red-700 rounded-lg px-4 py-3 mb-4 text-center">
                 <?= htmlspecialchars($error) ?>
               </div>

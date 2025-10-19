@@ -2,19 +2,24 @@
 
 declare(strict_types=1);
 
+
 require_once __DIR__ . '/../../src/config/bootstrap.php';
 require_once BASE_PATH . '/src/controllers/CartController.php';
+use App\Controllers\CartController;
+use App\Repositories\CartRepository;
+use function App\Helpers\db;
 
 header('Content-Type: application/json; charset=utf-8');
 
-if (!is_authenticated()) {
+if (!\App\Helpers\is_authenticated()) {
   http_response_code(401);
   echo json_encode(['success' => false, 'error' => 'Please login to manage your cart.']);
   exit;
 }
 
+
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-$action = $_GET['action'] ?? $_POST['action'] ?? 'get';
+$action = $_GET['action'] ?? ($_POST['action'] ?? 'get');
 
 $controller = new CartController(new CartRepository(db()));
 

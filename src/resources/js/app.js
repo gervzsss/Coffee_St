@@ -29,4 +29,19 @@ $(function () {
         /* guests or errors: do nothing to avoid console noise */
       });
   }
+
+  // Inbox navigation fallback: if not authenticated, open login modal instead of navigating
+  $(document).on('click', '#inbox-link', function (e) {
+    if (!window.IS_AUTH) {
+      e.preventDefault();
+      var sel = window.__openLoginSelector || '[data-open-login="login"]';
+      var $trigger = $(sel).first();
+      if ($trigger.length) {
+        $trigger.trigger('click');
+      } else {
+        // Fallback: emit event for login modal if scripts listen to it
+        $(document).trigger('open:login');
+      }
+    }
+  });
 });

@@ -1,5 +1,21 @@
 <?php
-// Global bootstrap: loads Composer autoload, environment variables, and starts the session.
+/**
+ * Global bootstrap for Coffee_St.
+ *
+ * - Loads Composer autoload, environment variables, and starts the session.
+ * - Sets up timezone and session security.
+ * - Loads core helpers and config.
+ *
+ * Environment variables required:
+ *   - APP_TIMEZONE
+ *   - SESSION_SECURE_COOKIE
+ *   - SESSION_LIFETIME
+ *   - SESSION_SAMESITE
+ *   - DB_* (see db.php)
+ *   - ADMIN_EMAIL, ADMIN_PASSWORD_HASH
+ *
+ * @return void
+ */
 
 declare(strict_types=1);
 
@@ -39,5 +55,7 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
-require_once BASE_PATH . '/src/helpers/auth.php';
-require_once BASE_PATH . '/src/config/db.php';
+require_once BASE_PATH . '/src/helpers/common.php';
+// Common helpers include user/admin auth and db() connection.
+require_once BASE_PATH . '/src/models/models.php';
+require_once BASE_PATH . '/src/repositories/repositories.php';

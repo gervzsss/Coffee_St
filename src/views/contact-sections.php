@@ -93,7 +93,8 @@
           <h2 class="font-outfit text-3xl font-semibold text-[#30442B]">Send us a message</h2>
           <p class="mt-3 text-sm text-neutral-500">All fields are required so we can serve you better.</p>
           <?php
-          $user = function_exists('current_user') ? current_user() : null;
+          use function App\Helpers\current_user;
+          $user = current_user();
           $userName = $user && (!empty($user['first_name']) || !empty($user['last_name']))
             ? htmlspecialchars(trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')))
             : '';

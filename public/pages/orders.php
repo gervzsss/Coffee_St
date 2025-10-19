@@ -1,6 +1,11 @@
 <?php
+
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once BASE_PATH . '/src/repositories/OrderRepository.php';
+require_once BASE_PATH . '/src/repositories/repositories.php';
+use App\Repositories\OrderRepository;
+use function App\Helpers\current_user;
+use function App\Helpers\db;
+use function App\Helpers\is_authenticated;
 
 if (!is_authenticated()) {
   header('Location: /COFFEE_ST/public/index.php');
@@ -45,14 +50,14 @@ $orders = $repo->listForUser((int) current_user()['id']);
           <tbody>
             <?php foreach ($orders as $o): ?>
               <tr class="border-b last:border-0">
-                <td class="p-4 font-medium">#<?php echo (int) $o->id; ?></td>
+                <td class="p-4 font-medium">#<?php echo (int) ($o->id ?? 0); ?></td>
                 <td class="p-4"><?php echo htmlspecialchars(date('M j, Y g:i A', strtotime($o->created_at ?? 'now'))); ?>
                 </td>
-                <td class="p-4 text-right">$<?php echo number_format($o->total, 2); ?></td>
-                <td class="p-4 text-right">₱<?php echo number_format($o->total, 2); ?></td>
-                <td class="p-4 uppercase text-[#30442B]"><?php echo htmlspecialchars($o->status); ?></td>
+                <td class="p-4 text-right">$<?php echo number_format($o->total ?? 0, 2); ?></td>
+                <td class="p-4 text-right">₱<?php echo number_format($o->total ?? 0, 2); ?></td>
+                <td class="p-4 uppercase text-[#30442B]"><?php echo htmlspecialchars($o->status ?? ''); ?></td>
                 <td class="p-4 text-right"><a class="text-[#30442B] underline"
-                    href="/COFFEE_ST/public/pages/order-view.php?id=<?php echo (int) $o->id; ?>">View</a></td>
+                    href="/COFFEE_ST/public/pages/order-view.php?id=<?php echo (int) ($o->id ?? 0); ?>">View</a></td>
               </tr>
             <?php endforeach; ?>
           </tbody>
