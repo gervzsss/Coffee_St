@@ -1,7 +1,7 @@
 <?php
-use function App\Helpers\admin_login;
-session_start();
+require_once __DIR__ . '/../../src/config/bootstrap.php';
 require_once __DIR__ . '/../../src/helpers/common.php';
+use function App\Helpers\admin_login;
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

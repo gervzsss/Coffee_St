@@ -11,7 +11,7 @@
   <title>Catalog Management — Coffee St.</title>
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
   <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
-  <script src="/src/resources/js/admin-catalog.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/admin-catalog.js"></script>
 </head>
 
 <body class="antialiased bg-gray-50 text-slate-800">
@@ -26,7 +26,7 @@
 
   <?php include_once __DIR__ . "/../../src/components/modals/admin-catalog-modal.php"; ?>
 
-  <script src="../../src/resources/js/admin-catalog.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/admin-catalog.js"></script>
 
 </body>
 

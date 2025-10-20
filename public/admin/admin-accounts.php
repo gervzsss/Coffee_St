@@ -1,5 +1,8 @@
 <?php
-// Admin accounts management page
+// Always include the admin-auth-guard first.
+// This loads environment, config, session, and helper functions.
+// Do not include bootstrap.php directly.
+require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
 include_once __DIR__ . "/../../src/views/admin/admin-account-info.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +11,7 @@ include_once __DIR__ . "/../../src/views/admin/admin-account-info.php"; ?>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Accounts Management — Coffee St.</title>
-    <?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
+    <?php /* guard is loaded above */ ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
 </head>
@@ -19,7 +22,7 @@ include_once __DIR__ . "/../../src/views/admin/admin-account-info.php"; ?>
 
     <!-- Scripts -->
     <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
-    <script src="../../src/resources/js/admin-account.js"></script>
+    <script src="/COFFEE_ST/src/resources/js/admin-account.js"></script>
 </body>
 
 </html>

@@ -26,14 +26,26 @@ function db(): \PDO
   if ($pdo === null) {
     $config = require __DIR__ . '/../config/config.php';
     $db = $config['db'] ?? [];
+    // Defensive check: ensure credentials are present; helps catch missing bootstrap/.env early
+    $username = $db['username'] ?? '';
+    $password = $db['password'] ?? '';
+    $database = $db['database'] ?? '';
+    $host = $db['host'] ?? '127.0.0.1';
+    $port = $db['port'] ?? '3306';
+    $charset = $db['charset'] ?? 'utf8mb4';
+    if ($username === '' || $database === '') {
+      throw new \RuntimeException(
+        'Database configuration is missing (DB_USERNAME and/or DB_DATABASE). Ensure src/config/bootstrap.php loads Dotenv and .env contains DB_* values.'
+      );
+    }
     $dsn = sprintf(
       'mysql:host=%s;port=%s;dbname=%s;charset=%s',
-      $db['host'] ?? '127.0.0.1',
-      $db['port'] ?? '3306',
-      $db['database'] ?? '',
-      $db['charset'] ?? 'utf8mb4'
+      $host,
+      $port,
+      $database,
+      $charset
     );
-    $pdo = new \PDO($dsn, $db['username'] ?? '', $db['password'] ?? '', $db['options'] ?? []);
+    $pdo = new \PDO($dsn, $username, $password, $db['options'] ?? []);
   }
   return $pdo;
 }

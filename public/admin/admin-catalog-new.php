@@ -1,7 +1,10 @@
 <?php
+// Always include the admin-auth-guard first.
+// This loads environment, config, session, and helper functions.
+// Do not include bootstrap.php directly.
+require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
 // Admin catalog management page
 ?>
-<?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
 <!doctype html>
 <html lang="en">
 

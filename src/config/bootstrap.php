@@ -19,6 +19,7 @@
 
 declare(strict_types=1);
 
+// Ensure Dotenv is loaded before anything else
 if (!defined('BASE_PATH')) {
   define('BASE_PATH', dirname(__DIR__, 2));
 }
@@ -28,6 +29,7 @@ if (file_exists($autoloadPath)) {
   require_once $autoloadPath;
 }
 
+// Load .env variables BEFORE any config or helper is loaded
 if (class_exists('Dotenv\\Dotenv')) {
   $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
   $dotenv->safeLoad();

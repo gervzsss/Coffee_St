@@ -1,7 +1,8 @@
 <?php
-require_once __DIR__ . "/../../src/config/bootstrap.php";
-require_once __DIR__ . "/../../src/includes/admin-auth-guard.php";
-require_once __DIR__ . "/../../src/repositories/repositories.php";
+// Always include the admin-auth-guard first.
+// This loads environment, config, session, and helper functions.
+// Do not include bootstrap.php directly.
+require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
