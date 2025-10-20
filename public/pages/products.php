@@ -30,7 +30,7 @@ $year = date('Y');
   <?php include __DIR__ . '/../../src/components/modals/add-to-cart-modal.php'; ?>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script src="/COFFEE_ST/src/resources/js/products.js"></script>
   <script src="/COFFEE_ST/src/resources/js/add-to-cart-modal.js"></script>

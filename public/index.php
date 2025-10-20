@@ -13,7 +13,7 @@ $year = date("Y");
   <title><?php echo htmlspecialchars($title); ?></title>
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </head>

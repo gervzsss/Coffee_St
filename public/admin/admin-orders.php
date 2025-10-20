@@ -62,7 +62,7 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
 
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script src="../../src/resources/js/admin-order.js"></script>
   <script src="../../src/resources/js/admin-navbar.js"></script>
 </body>

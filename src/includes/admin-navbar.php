@@ -120,5 +120,6 @@ function nav_active($file, $current)
 </nav>
 
 <!-- jQuery and admin.js -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+	integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="../../src/resources/js/admin-navbar.js"></script>
