@@ -1,8 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once BASE_PATH . '/src/repositories/repositories.php';
+use App\Controllers\OrderController;
 use App\Repositories\OrderRepository;
+use App\Repositories\CartRepository;
 use function App\Helpers\current_user;
 use function App\Helpers\db;
 use function App\Helpers\is_authenticated;
@@ -13,8 +14,15 @@ if (!is_authenticated()) {
 }
 
 $title = 'My Orders - Coffee St.';
-$repo = new OrderRepository(db());
-$orders = $repo->listForUser((int) current_user()['id']);
+$controller = new OrderController(new CartRepository(db()), new OrderRepository(db()));
+$resp = $controller->list();
+$orders = [];
+if (($resp['success'] ?? false) && isset($resp['orders'])) {
+  // Convert arrays back to lightweight objects for view compatibility or use arrays directly
+  $orders = array_map(function ($r) {
+    return (object) $r;
+  }, $resp['orders']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +35,7 @@ $orders = $repo->listForUser((int) current_user()['id']);
 </head>
 
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
-  <?php include __DIR__ . '/../../src/includes/header.php'; ?>
+  <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
 
   <main class="mx-auto max-w-5xl px-4 py-32">
     <h1 class="text-3xl md:text-4xl font-bold text-[#30442B] mb-6">My Orders</h1>
@@ -66,8 +74,9 @@ $orders = $repo->listForUser((int) current_user()['id']);
     <?php endif; ?>
   </main>
 
-  <?php include __DIR__ . '/../../src/includes/footer.php'; ?>
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <?php require_once __DIR__ . '/../../src/includes/footer.php'; ?>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script src="/COFFEE_ST/src/resources/js/login-validation.js"></script>
 </body>

@@ -10,7 +10,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Catalog Management — Coffee St.</title>
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src=\"/COFFEE_ST/src/resources/jquery-3.7.1.min.js\"><\\/script>')</script>
   <script src="/COFFEE_ST/src/resources/js/admin-catalog.js"></script>
 </head>
 

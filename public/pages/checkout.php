@@ -56,70 +56,16 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
 </head>
 
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
-  <?php include __DIR__ . '/../../src/includes/header.php'; ?>
+  <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
 
   <main class="mx-auto max-w-5xl px-4 py-32">
-    <h1 class="text-3xl md:text-4xl font-bold text-[#30442B] mb-6">Checkout</h1>
-    <?php if (empty($items)): ?>
-      <div class="rounded-lg border bg-white p-6 shadow-sm">
-        <p class="text-neutral-700">Your cart is empty. <a href="/COFFEE_ST/public/pages/products.php"
-            class="text-[#30442B] underline">Continue shopping</a>.</p>
-      </div>
-    <?php else: ?>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <section class="md:col-span-2 space-y-4">
-          <div class="rounded-lg border bg-white p-6 shadow-sm">
-            <h2 class="text-lg font-semibold mb-4">Order Items</h2>
-            <ul class="divide-y">
-              <?php foreach ($items as $it):
-                $p = $productRepo->findById($it->product_id); ?>
-                <li class="py-3 flex justify-between">
-                  <span class="text-neutral-800"><?php echo htmlspecialchars($p?->name ?? ''); ?> ×
-                    <?php echo (int) ($it->quantity ?? 0); ?></span>
-                  <span class="font-medium">₱<?php echo number_format($it->unit_price * $it->quantity, 2); ?></span>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-          </div>
-          <div class="rounded-lg border bg-white p-6 shadow-sm">
-            <h2 class="text-lg font-semibold mb-4">Delivery Details</h2>
-            <p class="text-sm text-neutral-700">Shipping to: <?php echo htmlspecialchars($user['address'] ?? ''); ?></p>
-            <p class="text-sm text-neutral-700">Contact: <?php echo htmlspecialchars($user['phone'] ?? ''); ?></p>
-          </div>
-        </section>
-        <aside>
-          <div class="rounded-lg border bg-white p-6 shadow-sm sticky top-28">
-            <h2 class="text-lg font-semibold mb-4">Payment Summary</h2>
-            <dl class="space-y-1 text-sm">
-              <div class="flex justify-between">
-                <dt>Subtotal</dt>
-                <dd>₱<?php echo number_format($subtotal, 2); ?></dd>
-              </div>
-              <div class="flex justify-between">
-                <dt>Delivery Fee</dt>
-                <dd>₱<?php echo number_format($deliveryFee, 2); ?></dd>
-              </div>
-              <div class="flex justify-between">
-                <dt>Tax</dt>
-                <dd>₱<?php echo number_format($tax, 2); ?></dd>
-              </div>
-            </dl>
-            <div class="flex justify-between items-center mt-3 text-lg font-semibold">
-              <span>Total</span><span>₱<?php echo number_format($total, 2); ?></span>
-            </div>
-            <button id="place-order"
-              class="cursor-pointer mt-6 w-full py-3 rounded bg-[#30442B] text-white hover:bg-[#3d5a38] transition">Place
-              Order</button>
-            <p id="place-order-status" class="text-sm text-neutral-600 mt-3 hidden"></p>
-          </div>
-        </aside>
-      </div>
-    <?php endif; ?>
+    <?php include __DIR__ . '/../../src/views/checkout-content.php'; ?>
   </main>
 
-  <?php include __DIR__ . '/../../src/includes/footer.php'; ?>
+  <?php require_once __DIR__ . '/../../src/includes/footer.php'; ?>
 
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script>
     $(function () {

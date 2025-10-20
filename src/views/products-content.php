@@ -2,12 +2,15 @@
 if (!defined("BASE_PATH")) {
   define("BASE_PATH", dirname(__DIR__, 2));
 }
-require_once BASE_PATH . '/src/helpers/common.php';
-use function App\Helpers\db;
+require_once BASE_PATH . '/src/config/bootstrap.php';
+use App\Controllers\ProductController;
 use App\Repositories\ProductRepository;
+use function App\Helpers\db;
 
-$productRepository = new ProductRepository(db());
-$products = $productRepository->getAllActive();
+// Use controller to fetch data for the view
+$productController = new ProductController(new ProductRepository(db()));
+$vm = $productController->listData();
+$products = $vm['products'] ?? [];
 ?>
 
 <!-- Header Section with Search -->

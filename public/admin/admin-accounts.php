@@ -21,7 +21,8 @@ include_once __DIR__ . "/../../src/views/admin/admin-account-info.php"; ?>
     <?php renderAdminContent(); ?>
 
     <!-- Scripts -->
-    <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
     <script src="/COFFEE_ST/src/resources/js/admin-account.js"></script>
 </body>
 

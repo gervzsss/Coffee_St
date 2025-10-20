@@ -12,7 +12,8 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Catalog Management — Coffee St.</title>
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
 </head>
 

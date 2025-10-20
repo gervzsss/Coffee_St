@@ -16,7 +16,7 @@ $year = date('Y');
 
 <body class="font-poppins">
 
-  <?php include __DIR__ . '/../../src/includes/header.php'; ?>
+  <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
 
   <main class="pt-24 min-h-screen bg-white">
 
@@ -24,12 +24,13 @@ $year = date('Y');
 
   </main>
 
-  <?php include __DIR__ . '/../../src/includes/footer.php'; ?>
+  <?php require_once __DIR__ . '/../../src/includes/footer.php'; ?>
 
   <?php include __DIR__ . '/../../src/components/modals/auth-modals.php'; ?>
   <?php include __DIR__ . '/../../src/components/modals/add-to-cart-modal.php'; ?>
 
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script src="/COFFEE_ST/src/resources/js/products.js"></script>
   <script src="/COFFEE_ST/src/resources/js/add-to-cart-modal.js"></script>

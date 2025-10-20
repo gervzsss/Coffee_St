@@ -1,8 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once BASE_PATH . '/src/repositories/repositories.php';
+use App\Controllers\OrderController;
 use App\Repositories\OrderRepository;
+use App\Repositories\CartRepository;
 use function App\Helpers\current_user;
 use function App\Helpers\db;
 use function App\Helpers\is_authenticated;
@@ -13,20 +14,14 @@ if (!is_authenticated()) {
 }
 
 $orderId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-$repo = new OrderRepository(db());
-$orders = $repo->listForUser((int) current_user()['id']);
-$order = null;
-foreach ($orders as $o) {
-  if ((int) $o->id === $orderId) {
-    $order = $o;
-    break;
-  }
-}
-if (!$order) {
+$controller = new OrderController(new CartRepository(db()), new OrderRepository(db()));
+$resp = $controller->detailData($orderId);
+if (!(($resp['success'] ?? false) && isset($resp['order']))) {
   header('Location: /COFFEE_ST/public/pages/orders.php');
   exit;
 }
-$items = $repo->getOrderItems($orderId);
+$order = (object) $resp['order'];
+$items = $resp['items'] ?? [];
 $title = 'Order #' . $orderId . ' - Coffee St.';
 ?>
 <!DOCTYPE html>
@@ -40,7 +35,7 @@ $title = 'Order #' . $orderId . ' - Coffee St.';
 </head>
 
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
-  <?php include __DIR__ . '/../../src/includes/header.php'; ?>
+  <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
   <main class="mx-auto max-w-5xl px-4 py-32">
     <h1 class="text-3xl font-bold text-[#30442B] mb-6">Order #<?php echo (int) $orderId; ?></h1>
     <div class="rounded-lg border bg-white p-6 shadow-sm">
@@ -91,8 +86,9 @@ $title = 'Order #' . $orderId . ' - Coffee St.';
       </div>
     </div>
   </main>
-  <?php include __DIR__ . '/../../src/includes/footer.php'; ?>
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <?php require_once __DIR__ . '/../../src/includes/footer.php'; ?>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script src="/COFFEE_ST/src/resources/js/login-validation.js"></script>
 </body>

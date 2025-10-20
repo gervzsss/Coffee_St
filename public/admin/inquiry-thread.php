@@ -13,7 +13,8 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
   <title>Inquiry Thread — Coffee St.</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
 </head>
 
 <body class="antialiased bg-gray-50/50 text-slate-800">

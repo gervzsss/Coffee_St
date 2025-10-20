@@ -12,14 +12,15 @@ $year = date("Y");
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><?php echo htmlspecialchars($title); ?></title>
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </head>
 
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
 
-  <?php include __DIR__ . "/../src/includes/header.php"; ?>
+  <?php require_once __DIR__ . "/../src/includes/header.php"; ?>
 
   <main class="pt-24">
 
@@ -33,7 +34,7 @@ $year = date("Y");
 
   </main>
 
-  <?php include __DIR__ . "/../src/includes/footer.php"; ?>
+  <?php require_once __DIR__ . "/../src/includes/footer.php"; ?>
 
   <?php include __DIR__ . "/../src/components/modals/auth-modals.php"; ?>
 

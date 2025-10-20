@@ -1,32 +1,26 @@
 <?php
 
 require_once __DIR__ . '/../../src/config/bootstrap.php';
-require_once BASE_PATH . '/src/repositories/repositories.php';
+use App\Controllers\CartController;
 use App\Repositories\CartRepository;
 use App\Repositories\ProductRepository;
-use function App\Helpers\current_user;
 use function App\Helpers\db;
 
 $title = 'Cart - Coffee St.';
 
-$user = current_user();
-$cartRepo = new CartRepository(db());
-$productRepo = new ProductRepository(db());
+$controller = new CartController(new CartRepository(db()), new ProductRepository(db()));
+$vm = $controller->viewData();
 
-$cart = null;
-$items = [];
-$subtotal = 0.0;
-if ($user) {
-  $cart = $cartRepo->getOrCreateActiveCart((int) $user['id']);
-  $details = $cartRepo->getCartDetails($cart->id ?? 0);
-  $items = $details['items'];
-  $subtotal = $details['subtotal'];
-}
-
-$deliveryFee = 1.78;
-$tax = round($subtotal * 0.08, 2);
-$total = round($subtotal + $deliveryFee + $tax, 2);
+// Normalize view variables
+$isAuthenticated = (bool) ($vm['isAuthenticated'] ?? false);
+$items = $vm['items'] ?? [];
+$products = $vm['products'] ?? [];
+$subtotal = (float) ($vm['subtotal'] ?? 0.0);
+$deliveryFee = (float) ($vm['deliveryFee'] ?? 1.78);
+$tax = (float) ($vm['tax'] ?? 0.0);
+$total = (float) ($vm['total'] ?? 0.0);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,13 +32,13 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
 </head>
 
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
-  <?php include __DIR__ . '/../../src/includes/header.php'; ?>
+  <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
 
   <main class="mx-auto max-w-6xl px-4 py-32">
     <h1 class="text-4xl font-extrabold text-[#30442B] mb-2">YOUR CART</h1>
     <p class="text-neutral-600">Review your order and proceed to checkout</p>
 
-    <?php if (!$user): ?>
+    <?php if (!$isAuthenticated): ?>
       <div class="mt-8 rounded-lg border bg-white p-6 shadow-sm">
         <p class="text-neutral-700">Please <a href="#login-modal" data-open-login="login"
             class="text-[#30442B] underline">login</a> to view your cart.</p>
@@ -65,7 +59,8 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
             </div>
           <?php else: ?>
             <?php foreach ($items as $it): ?>
-              <?php $p = $productRepo->findById($it->product_id); ?>
+              <?php $pid = (int) ($it['product_id'] ?? $it->product_id ?? 0);
+              $p = isset($products[$pid]) ? (object) $products[$pid] : null; ?>
               <div class="rounded-lg border bg-white p-4 shadow-sm">
                 <div class="flex items-center gap-3">
                   <input type="checkbox" class="h-5 w-5 text-[#30442B]" checked />
@@ -74,13 +69,15 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
                   <div class="flex-1">
                     <div class="flex justify-between">
                       <h3 class="font-semibold text-lg"><?php echo htmlspecialchars($p?->name ?? ''); ?></h3>
-                      <span class="font-semibold">₱<?php echo number_format($it->unit_price * $it->quantity, 2); ?></span>
+                      <span
+                        class="font-semibold">₱<?php echo number_format(((float) ($it['unit_price'] ?? $it->unit_price ?? 0) + (float) ($it['price_delta'] ?? $it->price_delta ?? 0)) * (int) ($it['quantity'] ?? $it->quantity ?? 0), 2); ?></span>
                     </div>
-                    <div class="mt-3 flex items-center gap-3" data-product-id="<?php echo (int) $it->product_id; ?>">
+                    <div class="mt-3 flex items-center gap-3"
+                      data-product-id="<?php echo (int) ($it['product_id'] ?? $it->product_id ?? 0); ?>">
                       <button class="decrease-qty h-8 w-8 rounded-full border flex items-center justify-center"
                         aria-label="Decrease">−</button>
                       <input type="text" class="qty-input w-12 text-center border rounded"
-                        value="<?php echo (int) $it->quantity; ?>" />
+                        value="<?php echo (int) ($it['quantity'] ?? $it->quantity ?? 0); ?>" />
                       <button class="increase-qty h-8 w-8 rounded-full border flex items-center justify-center"
                         aria-label="Increase">+</button>
                       <button class="remove-item text-red-600 text-sm flex items-center gap-1"><span>🗑</span>Remove</button>
@@ -129,11 +126,12 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
     <?php endif; ?>
   </main>
 
-  <?php include __DIR__ . '/../../src/includes/footer.php'; ?>
+  <?php require_once __DIR__ . '/../../src/includes/footer.php'; ?>
 
   <?php include __DIR__ . '/../../src/components/modals/auth-modals.php'; ?>
 
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-IZyGUneEXE1GB6LhCE2Pv9umTASEwAF/5HlhLSP7Klw=" crossorigin="anonymous"></script>
   <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script src="/COFFEE_ST/src/resources/js/login-validation.js"></script>
   <script src="/COFFEE_ST/src/resources/js/cart-ui.js"></script>

@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-
-
 namespace App\Controllers;
 
 use App\Repositories\CartRepository;
@@ -132,5 +130,32 @@ class OrderController
     $uid = $this->requireUserId();
     $orders = $this->orders->listForUser($uid);
     return ['success' => true, 'orders' => array_map(fn($o) => $o->toArray(), $orders)];
+  }
+
+  /**
+   * Build a view model for a single order belonging to the current user.
+   * @param int $orderId
+   * @return array{success:bool, order?: array, items?: array}
+   */
+  public function detailData(int $orderId): array
+  {
+    $uid = $this->requireUserId();
+    $orders = $this->orders->listForUser($uid);
+    $order = null;
+    foreach ($orders as $o) {
+      if ((int) ($o->id ?? 0) === $orderId) {
+        $order = $o;
+        break;
+      }
+    }
+    if (!$order) {
+      return ['success' => false, 'error' => 'Order not found'];
+    }
+    $items = $this->orders->getOrderItems($orderId);
+    return [
+      'success' => true,
+      'order' => $order->toArray(),
+      'items' => $items,
+    ];
   }
 }
