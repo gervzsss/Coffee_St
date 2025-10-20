@@ -32,7 +32,7 @@ if (isset($_GET["subject"])) {
 <body class="min-h-screen bg-neutral-50 font-poppins text-neutral-900">
   <?php require_once __DIR__ . "/../../src/includes/header.php"; ?>
 
-  <main class="flex flex-col">
+  <main class="flex flex-col pt-20 md:pt-24">
 
     <?php include __DIR__ . "/../../src/views/contact-sections.php"; ?>
 

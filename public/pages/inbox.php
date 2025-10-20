@@ -35,7 +35,9 @@ if ($email !== '') {
 
 <body class="min-h-screen bg-neutral-50 font-poppins text-neutral-900">
   <?php require_once __DIR__ . "/../../src/includes/header.php"; ?>
-  <?php include __DIR__ . "/../../src/views/inbox-content.php"; ?>
+  <main class="pt-20 md:pt-24">
+    <?php include __DIR__ . "/../../src/views/inbox-content.php"; ?>
+  </main>
   <?php require_once __DIR__ . "/../../src/includes/footer.php"; ?>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"

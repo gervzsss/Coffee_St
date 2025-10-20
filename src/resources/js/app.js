@@ -9,6 +9,20 @@ $(function () {
     $("#mobile-menu").slideToggle();
   });
 
+  // Close mobile menu when a nav link is clicked
+  $(document).on("click", "#mobile-menu a", function () {
+    if ($(window).width() < 768) {
+      $("#mobile-menu").slideUp();
+    }
+  });
+
+  // Ensure mobile menu is hidden when resizing to md and above
+  $(window).on("resize", function () {
+    if ($(window).width() >= 768) {
+      $("#mobile-menu").hide();
+    }
+  });
+
   // Scroll progress bar
   $(window).on("scroll", function () {
     var scrollTop = $(window).scrollTop();

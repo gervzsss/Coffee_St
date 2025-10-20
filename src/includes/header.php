@@ -2,6 +2,8 @@
 // Header partial: Navigation and related UI
 // Uses Tailwind CSS utilities and jQuery for interactivity
 // Active link helper is defined in src/components/nav-active.php
+// NOTE: Old navbar visual style restored (brand size/position, link spacing, search width)
+// while retaining responsive/mobile features and toggle behavior.
 
 require_once __DIR__ . "/../components/nav-active.php";
 
@@ -12,13 +14,14 @@ $authenticatedUser = current_user();
 ?>
 
 <nav class="bg-white shadow-sm fixed w-full z-50 border-b border-gray-100">
-  <div class="flex justify-between items-center h-24 px-6">
-    <div class="absolute left-6 md:left-12 lg:left-24 xl:left-32 flex items-center gap-6">
+  <div class="relative flex justify-between items-center h-20 md:h-24 px-4 sm:px-6">
+    <div class="md:absolute left-4 sm:left-6 md:left-12 lg:left-24 xl:left-32 flex items-center gap-4 sm:gap-6">
       <!-- Brand -->
       <a href="/COFFEE_ST/public/index.php" class="flex items-center gap-6">
-        <img src="/COFFEE_ST/public/assets/stcoffeelogo.png" alt="Coffee St. Logo" class="h-16 w-16 object-contain" />
+        <img src="/COFFEE_ST/public/assets/stcoffeelogo.png" alt="Coffee St. Logo"
+          class="h-12 w-12 md:h-16 md:w-16 object-contain" />
         <span
-          class="font-outfit text-[48px] font-bold text-[#30442B] tracking-tight leading-none transition-all duration-300 hover:text-[#30442B] hover:tracking-normal">
+          class="font-outfit text-3xl sm:text-4xl md:text-[48px] font-bold text-[#30442B] tracking-tight leading-none transition-all duration-300 hover:text-[#30442B] hover:tracking-normal">
           Coffee St.
         </span>
       </a>

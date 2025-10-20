@@ -34,7 +34,7 @@ $total = (float) ($vm['total'] ?? 0.0);
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
   <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
 
-  <main class="mx-auto max-w-6xl px-4 py-32">
+  <main class="mx-auto max-w-6xl px-4 pt-24 md:pt-28 pb-16">
     <h1 class="text-4xl font-extrabold text-[#30442B] mb-2">YOUR CART</h1>
     <p class="text-neutral-600">Review your order and proceed to checkout</p>
 

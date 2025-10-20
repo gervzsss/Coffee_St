@@ -58,7 +58,7 @@ $total = round($subtotal + $deliveryFee + $tax, 2);
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
   <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
 
-  <main class="mx-auto max-w-5xl px-4 py-32">
+  <main class="mx-auto max-w-5xl px-4 pt-24 md:pt-28 pb-16">
     <?php include __DIR__ . '/../../src/views/checkout-content.php'; ?>
   </main>
 

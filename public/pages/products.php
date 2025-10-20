@@ -18,7 +18,7 @@ $year = date('Y');
 
   <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
 
-  <main class="pt-24 min-h-screen bg-white">
+  <main class="pt-20 md:pt-24 min-h-screen bg-white">
 
     <?php include __DIR__ . '/../../src/views/products-content.php'; ?>
 

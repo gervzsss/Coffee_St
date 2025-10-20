@@ -37,7 +37,7 @@ if (($resp['success'] ?? false) && isset($resp['orders'])) {
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
   <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
 
-  <main class="mx-auto max-w-5xl px-4 py-32">
+  <main class="mx-auto max-w-5xl px-4 pt-24 md:pt-28 pb-16">
     <h1 class="text-3xl md:text-4xl font-bold text-[#30442B] mb-6">My Orders</h1>
     <?php if (empty($orders)): ?>
       <div class="rounded-lg border bg-white p-6 shadow-sm">

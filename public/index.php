@@ -22,7 +22,7 @@ $year = date("Y");
 
   <?php require_once __DIR__ . "/../src/includes/header.php"; ?>
 
-  <main class="pt-24">
+  <main class="pt-20 md:pt-24">
 
     <?php include __DIR__ . "/../src/includes/hero.php"; ?>
 

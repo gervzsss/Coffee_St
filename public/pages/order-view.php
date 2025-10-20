@@ -36,7 +36,7 @@ $title = 'Order #' . $orderId . ' - Coffee St.';
 
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
   <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
-  <main class="mx-auto max-w-5xl px-4 py-32">
+  <main class="mx-auto max-w-5xl px-4 pt-24 md:pt-28 pb-16">
     <h1 class="text-3xl font-bold text-[#30442B] mb-6">Order #<?php echo (int) $orderId; ?></h1>
     <div class="rounded-lg border bg-white p-6 shadow-sm">
       <p class="text-sm text-neutral-600 mb-4">Placed on

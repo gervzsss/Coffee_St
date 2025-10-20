@@ -41,3 +41,22 @@
     font-family: 'Playfair Display', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
   }
 }
+
+/* Reusable component styles using Tailwind's @layer components */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full border-2 border-[#30442B] bg-[#30442B] text-white font-medium transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30 px-4 py-2 text-sm sm:text-base md:px-6 md:py-2.5;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-full border-2 border-[#30442B] text-[#30442B] font-medium transition duration-300 hover:text-white hover:bg-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/20 px-4 py-2 text-sm sm:text-base md:px-6 md:py-2.5;
+  }
+
+  .card {
+    @apply rounded-2xl shadow-lg bg-white border border-gray-100 overflow-hidden;
+  }
+
+  .container-responsive {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
