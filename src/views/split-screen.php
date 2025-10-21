@@ -1,4 +1,4 @@
-<section class="transform py-20 opacity-100 md:opacity-0 md:translate-y-10" id="split-screen-section">
+<section class="transform py-20 opacity-0 translate-y-10" id="split-screen-section">
   <div class="mx-auto max-w-7xl">
     <div class="flex flex-col items-center md:flex-row">
       <!-- Left Side - Image -->

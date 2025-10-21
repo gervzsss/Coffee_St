@@ -189,13 +189,16 @@ $(function () {
     );
   }
 
+
   function handleSplitScreenAnimation() {
     var $section = $("#split-screen-section");
     if (!$section.length) return;
-    if (!$section.hasClass("animated") && isInViewportJQ($section)) {
-      $section.addClass("animated");
-      $section.animate({ opacity: 1 }, 800).css("transform", "translateY(0)");
-      // Remove scroll listener after animation completes
+    if ($section.data("revealed")) return;
+    // Use partial viewport detection for better mobile experience
+    if (isInViewportJQPartial($section, 0.5)) {
+      $section.data("revealed", true);
+      $section.animate({ opacity: 1 }, 800);
+      $section.css("transform", "translateY(0)");
       $(window).off("scroll", handleSplitScreenAnimation);
     }
   }
