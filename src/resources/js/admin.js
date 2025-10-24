@@ -439,19 +439,19 @@ $(document).ready(function () {
     return {
       open: () => {
         $modal.removeClass("hidden");
+        // ensure starting state is hidden then transition to visible
         requestAnimationFrame(() => {
-          $backdrop.addClass("opacity-100");
+          $backdrop.removeClass("opacity-0").addClass("opacity-100");
           $content
-            .addClass("opacity-100")
-            .removeClass("translate-y-4 scale-95")
-            .addClass("translate-y-0 scale-100");
+            .removeClass("opacity-0 translate-y-4 scale-95")
+            .addClass("opacity-100 translate-y-0 scale-100");
         });
       },
       close: () => {
-        $backdrop.removeClass("opacity-100");
+        $backdrop.removeClass("opacity-100").addClass("opacity-0");
         $content
           .removeClass("opacity-100 translate-y-0 scale-100")
-          .addClass("translate-y-4 scale-95");
+          .addClass("opacity-0 translate-y-4 scale-95");
         setTimeout(() => {
           $modal.addClass("hidden");
         }, 300);
@@ -492,12 +492,43 @@ $(document).ready(function () {
   $(document).on("click", "#modalContent", function (e) {
     e.stopPropagation();
   });
+  $(document).on("click", "#editModalContent", function (e) {
+    e.stopPropagation();
+  });
+  // Close when clicking wrapper (outside content area)
+  $(document).on("click", "#addModalWrapper", function (e) {
+    // If clicking directly on wrapper, not inside the modal card, close
+    if ($(e.target).is("#addModalWrapper")) {
+      modals.add.close();
+    }
+  });
+  $(document).on("click", "#historyModalContent", function (e) {
+    e.stopPropagation();
+  });
+  $(document).on("click", "#unavailableModalContent", function (e) {
+    $(document).on("click", "#editModalWrapper", function (e) {
+      if ($(e.target).is("#editModalWrapper")) {
+        modals.edit.close();
+      }
+    });
+    e.stopPropagation();
+  });
   $(document).on("click", "#modalBackdrop", function (e) {
     e.preventDefault();
+    $(document).on("click", "#historyModalWrapper", function (e) {
+      if ($(e.target).is("#historyModalWrapper")) {
+        modals.history.close();
+      }
+    });
     modals.add.close();
   });
   $(document).on("click", "#editModalBackdrop", function (e) {
     e.preventDefault();
+    $(document).on("click", "#unavailableModalWrapper", function (e) {
+      if ($(e.target).is("#unavailableModalWrapper")) {
+        modals.unavailable.close();
+      }
+    });
     modals.edit.close();
   });
   $(document).on("click", "#historyModalBackdrop", function (e) {
@@ -546,64 +577,139 @@ $(document).ready(function () {
 
   $("#addProductForm").submit(function (e) {
     e.preventDefault();
-    modals.add.close();
+    const fd = new FormData();
+    const name = $("#productName").val();
+    const price = $("#productPrice").val();
+    const category = $("#productCategory").val();
+    const description = $("#productDescription").val();
+    const fileEl = document.getElementById("productImage");
+    const file = fileEl && fileEl.files ? fileEl.files[0] : null;
+    fd.append("productName", name);
+    fd.append("productPrice", price);
+    fd.append("productCategory", category);
+    fd.append("productDescription", description);
+    if (file) fd.append("product_image", file);
+    $.ajax({
+      url: "/COFFEE_ST/public/api/admin/add-product.php",
+      method: "POST",
+      data: fd,
+      processData: false,
+      contentType: false,
+      dataType: "json",
+    })
+      .done(function (resp) {
+        if (resp && resp.ok) {
+          location.reload();
+        } else {
+          alert((resp && resp.error) || "Failed to add product");
+        }
+      })
+      .fail(function (xhr) {
+        const msg =
+          (xhr.responseJSON && xhr.responseJSON.error) ||
+          xhr.statusText ||
+          "Failed to add product";
+        alert(msg);
+      })
+      .always(function () {
+        modals.add.close();
+      });
   });
   $(document).on("click", ".edit-product", function (e) {
     e.preventDefault();
     e.stopPropagation();
     const productId = $(this).data("id");
     $("#editProductForm").data("product-id", productId);
-    const mockData = {
-      name: "Latte",
-      price: 4.5,
-      category: "coffee",
-      description: "Smooth espresso with steamed milk",
-      image: "/path/to/image.jpg",
-    };
-    $("#editProductName").val(mockData.name);
-    $("#editProductPrice").val(mockData.price);
-    $("#editProductCategory").val(mockData.category);
-    $("#editProductDescription").val(mockData.description);
-    $("#editImagePreview").attr("src", mockData.image);
-    modals.edit.open();
+    $.getJSON("/COFFEE_ST/public/api/admin/get-product.php", { id: productId })
+      .done(function (resp) {
+        if (!resp || !resp.ok) {
+          alert((resp && resp.error) || "Unable to load product");
+          return;
+        }
+        const p = resp.product || {};
+        $("#editProductName").val(p.name || "");
+        $("#editProductPrice").val(p.price || "");
+        $("#editProductCategory").val(p.category || "");
+        $("#editProductDescription").val(p.description || "");
+        if (p.image_url) {
+          $("#editImagePreview").attr("src", p.image_url);
+          $("#editPreviewContainer").removeClass("hidden");
+        } else {
+          $("#editImagePreview").attr("src", "");
+          $("#editPreviewContainer").addClass("hidden");
+        }
+        modals.edit.open();
+      })
+      .fail(function () {
+        alert("Failed to load product");
+      });
   });
   $(document).on("click", ".close-edit-modal, #editModalBackdrop", function () {
     modals.edit.close();
   });
+  // Preview selected image in Edit modal
+  $(document).on("change", "#editProductImage", function (e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      $("#editImagePreview").attr("src", ev.target.result);
+      $("#editPreviewContainer").removeClass("hidden");
+    };
+    reader.readAsDataURL(file);
+  });
   $("#editProductForm").submit(function (e) {
     e.preventDefault();
     const productId = $(this).data("product-id");
+    const fd = new FormData();
+    fd.append("product_id", productId);
+    fd.append("productName", $("#editProductName").val());
+    fd.append("productPrice", $("#editProductPrice").val());
+    fd.append("productCategory", $("#editProductCategory").val());
+    fd.append("productDescription", $("#editProductDescription").val());
     const fileInput = document.getElementById("editProductImage");
     const file = fileInput && fileInput.files ? fileInput.files[0] : null;
-    if (file && productId) {
-      const fd = new FormData();
-      fd.append("product_id", productId);
-      fd.append("product_image", file);
-      $.ajax({
-        url: "/COFFEE_ST/public/api/admin/upload-image.php",
-        method: "POST",
-        data: fd,
-        processData: false,
-        contentType: false,
-        dataType: "json",
+    if (file) fd.append("product_image", file);
+    $.ajax({
+      url: "/COFFEE_ST/public/api/admin/edit-product.php",
+      method: "POST",
+      data: fd,
+      processData: false,
+      contentType: false,
+      dataType: "json",
+    })
+      .done(function (resp) {
+        if (resp && resp.ok) {
+          location.reload();
+        } else {
+          alert((resp && resp.error) || "Failed to update product");
+        }
       })
-        .done(function (resp) {
-          if (resp && resp.ok) {
-            alert("Image updated successfully.");
-          } else {
-            alert((resp && resp.error) || "Upload failed.");
-          }
-        })
-        .fail(function (xhr) {
-          const msg = (xhr.responseJSON && xhr.responseJSON.error) || xhr.statusText || "Upload failed";
-          alert(msg);
-        })
-        .always(function () {
-          modals.edit.close();
-        });
-    } else {
-      modals.edit.close();
-    }
+      .fail(function (xhr) {
+        const msg =
+          (xhr.responseJSON && xhr.responseJSON.error) ||
+          xhr.statusText ||
+          "Failed to update product";
+        alert(msg);
+      })
+      .always(function () {
+        modals.edit.close();
+      });
+  });
+
+  // Toggle availability
+  $(document).on("change", ".toggle-available", function () {
+    const productId = $(this).data("id");
+    const available = $(this).is(":checked") ? 1 : 0;
+    $.ajax({
+      url: "/COFFEE_ST/public/api/admin/mark-unavailable.php",
+      method: "POST",
+      dataType: "json",
+      data: { product_id: productId, available: available },
+    }).fail(function () {
+      alert("Failed to update availability");
+    });
   });
   $(document).on("click", ".mark-unavailable", function (e) {
     e.preventDefault();
@@ -691,6 +797,24 @@ $(document).ready(function () {
         .fadeOut(300, function () {
           $(this).remove();
         });
+    }
+  });
+
+  // Close any open catalog modal on Escape
+  $(document).on("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (!$("#addProductModal").hasClass("hidden")) {
+        modals.add.close();
+      }
+      if (!$("#editProductModal").hasClass("hidden")) {
+        modals.edit.close();
+      }
+      if (!$("#unavailableModal").hasClass("hidden")) {
+        modals.unavailable.close();
+      }
+      if (!$("#historyModal").hasClass("hidden")) {
+        modals.history.close();
+      }
     }
   });
 });

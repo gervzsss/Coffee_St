@@ -2,11 +2,11 @@
 <div id="addProductModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
   aria-modal="true">
   <!-- Modal Backdrop -->
-  <div class="bg-opacity-50 fixed inset-0 bg-gray-900 opacity-0 backdrop-blur-sm transition-opacity duration-300"
-    id="modalBackdrop"></div>
+  <div class="fixed inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300" id="modalBackdrop">
+  </div>
 
-  <!-- Modal Content -->
-  <div class="fixed inset-0 flex items-center justify-center p-4">
+  <!-- Modal Content Wrapper (captures outside clicks) -->
+  <div id="addModalWrapper" class="fixed inset-0 flex items-center justify-center p-4">
     <div
       class="w-full max-w-[32rem] translate-y-4 scale-95 transform rounded-2xl bg-white opacity-0 shadow-2xl transition-all duration-300"
       id="modalContent">
@@ -117,9 +117,9 @@
 <!-- Edit Product Modal -->
 <div id="editProductModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
   aria-modal="true">
-  <div class="bg-opacity-50 fixed inset-0 bg-gray-900 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+  <div class="fixed inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
     id="editModalBackdrop"></div>
-  <div class="fixed inset-0 flex items-center justify-center p-4">
+  <div id="editModalWrapper" class="fixed inset-0 flex items-center justify-center p-4">
     <div
       class="w-full max-w-[32rem] translate-y-4 scale-95 transform rounded-2xl bg-white opacity-0 shadow-2xl transition-all duration-300"
       id="editModalContent">
@@ -206,9 +206,9 @@
 <!-- Mark as Unavailable Modal -->
 <div id="unavailableModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
   aria-modal="true">
-  <div class="bg-opacity-50 fixed inset-0 bg-gray-900 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+  <div class="fixed inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
     id="unavailableModalBackdrop"></div>
-  <div class="fixed inset-0 flex items-center justify-center p-4">
+  <div id="unavailableModalWrapper" class="fixed inset-0 flex items-center justify-center p-4">
     <div
       class="w-full max-w-[32rem] translate-y-4 scale-95 transform rounded-2xl bg-white opacity-0 shadow-2xl transition-all duration-300"
       id="unavailableModalContent">
@@ -257,9 +257,9 @@
 <!-- Product History Modal -->
 <div id="historyModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
   aria-modal="true">
-  <div class="bg-opacity-50 fixed inset-0 bg-gray-900 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+  <div class="fixed inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
     id="historyModalBackdrop"></div>
-  <div class="fixed inset-0 flex items-center justify-center p-4">
+  <div id="historyModalWrapper" class="fixed inset-0 flex items-center justify-center p-4">
     <div
       class="w-full max-w-[32rem] translate-y-4 scale-95 transform rounded-2xl bg-white opacity-0 shadow-2xl transition-all duration-300"
       id="historyModalContent">

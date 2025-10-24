@@ -86,6 +86,20 @@
   </div>
 </div>
 
+<?php
+if (!defined('BASE_PATH')) {
+  define('BASE_PATH', dirname(__DIR__, 3));
+}
+require_once BASE_PATH . '/src/config/bootstrap.php';
+use function App\Helpers\db;
+try {
+  $pdo = db();
+  $rows = $pdo->query('SELECT id, name, category, description, price, image_url, is_active FROM products ORDER BY created_at DESC')->fetchAll() ?: [];
+} catch (Throwable $e) {
+  $rows = [];
+}
+?>
+
 <!-- Products Table -->
 <div class="content-card bg-white rounded-xl shadow-lg p-6 transition-all duration-300">
   <div class="flex justify-between items-center mb-6">
@@ -125,62 +139,78 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
-        <!-- Sample Product Row -->
-        <tr class="hover:bg-gray-50 transition-colors duration-200">
-          <td class="py-4 px-4">
-            <div class="h-12 w-12 rounded-lg bg-gray-200"></div>
-          </td>
-          <td class="py-4 px-4 font-medium">Espresso</td>
-          <td class="py-4 px-4 text-gray-600">Coffee</td>
-          <td class="py-4 px-4 font-medium">$3.50</td>
-          <td class="py-4 px-4 text-gray-600">Rich and bold single shot</td>
-          <td class="py-4 px-4">
-            <span class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">Available</span>
-          </td>
-          <td class="py-4 px-4">
-            <div class="flex justify-center">
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" value="" class="sr-only peer" checked>
-                <div
-                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[#30442B] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#30442B]">
+        <?php if (empty($rows)): ?>
+          <tr>
+            <td colspan="9" class="py-6 text-center text-gray-500">No products yet. Click "Add Products" to create your
+              first item.</td>
+          </tr>
+        <?php else: ?>
+          <?php foreach ($rows as $p): ?>
+            <tr class="hover:bg-gray-50 transition-colors duration-200">
+              <td class="py-4 px-4">
+                <?php if (!empty($p['image_url'])): ?>
+                  <img src="<?= htmlspecialchars($p['image_url']) ?>" alt="<?= htmlspecialchars($p['name']) ?>"
+                    class="h-12 w-12 rounded-lg object-cover" />
+                <?php else: ?>
+                  <div class="h-12 w-12 rounded-lg bg-gray-200"></div>
+                <?php endif; ?>
+              </td>
+              <td class="py-4 px-4 font-medium"><?= htmlspecialchars($p['name']) ?></td>
+              <td class="py-4 px-4 text-gray-600"><?= htmlspecialchars($p['category']) ?></td>
+              <td class="py-4 px-4 font-medium">₱<?= number_format((float) $p['price'], 2) ?></td>
+              <td class="py-4 px-4 text-gray-600 max-w-md truncate" title="<?= htmlspecialchars($p['description']) ?>">
+                <?= htmlspecialchars($p['description']) ?></td>
+              <td class="py-4 px-4">
+                <?php if ((int) $p['is_active'] === 1): ?>
+                  <span class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">Available</span>
+                <?php else: ?>
+                  <span class="px-3 py-1 text-sm rounded-full bg-gray-200 text-gray-700">Unavailable</span>
+                <?php endif; ?>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex justify-center">
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer toggle-available" data-id="<?= (int) $p['id'] ?>" <?= ((int) $p['is_active'] === 1) ? 'checked' : '' ?> />
+                    <div
+                      class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[#30442B] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#30442B]">
+                    </div>
+                  </label>
                 </div>
-              </label>
-            </div>
-          </td>
-          <td class="py-4 px-4">
-            <div class="flex justify-center">
-              <span class="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-800">No</span>
-            </div>
-          </td>
-          <td class="py-4 px-4">
-            <div class="flex justify-center gap-2">
-              <button class="view-history p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                title="History" data-id="1">
-                <svg class="w-5 h-5 text-[#30442B] hover:text-[#967259]" fill="none" stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </button>
-              <button class="edit-product p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                title="Edit" data-id="1">
-                <svg class="w-5 h-5 text-[#30442B] hover:text-[#967259]" fill="none" stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-              </button>
-              <button class="mark-unavailable p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                title="Mark as Unavailable" data-id="1">
-                <svg class="w-5 h-5 text-[#30442B] hover:text-[#967259]" fill="none" stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            </div>
-          </td>
-        </tr>
+              </td>
+              <td class="py-4 px-4 text-center">
+                <span class="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-800">—</span>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex justify-center gap-2">
+                  <button class="view-history p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                    title="History" data-id="<?= (int) $p['id'] ?>">
+                    <svg class="w-5 h-5 text-[#30442B] hover:text-[#967259]" fill="none" stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </button>
+                  <button class="edit-product p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                    title="Edit" data-id="<?= (int) $p['id'] ?>">
+                    <svg class="w-5 h-5 text-[#30442B] hover:text-[#967259]" fill="none" stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                  </button>
+                  <button class="mark-unavailable p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                    title="Mark as Unavailable" data-id="<?= (int) $p['id'] ?>">
+                    <svg class="w-5 h-5 text-[#30442B] hover:text-[#967259]" fill="none" stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php endif; ?>
       </tbody>
     </table>
   </div>
