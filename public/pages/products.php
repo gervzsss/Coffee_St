@@ -24,9 +24,9 @@ $year = date("Y");
 
   <?php include __DIR__ . '/../../src/includes/user-scripts.php'; ?>
 
-  <script src="/COFFEE_ST/src/resources/js/cart.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/cart.js" defer></script>
 
-  <script src="/COFFEE_ST/src/resources/js/products.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/products.js" defer></script>
 
 </body>
 

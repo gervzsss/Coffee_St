@@ -36,7 +36,7 @@ $data = $controller->getViewData($singleParam);
 
   <?php include __DIR__ . '/../../src/includes/user-scripts.php'; ?>
 
-  <script src="/COFFEE_ST/src/resources/js/checkout.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/checkout.js" defer></script>
 
 </body>
 

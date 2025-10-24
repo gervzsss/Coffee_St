@@ -8,5 +8,9 @@
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"></script>
+  <script>
+    if (!window.jQuery) {
+      document.write('<script src="/COFFEE_ST/src/resources/jquery-3.7.1.min.js"><\\/script>');
+    }
+  </script>
 </head>

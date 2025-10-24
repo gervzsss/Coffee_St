@@ -36,7 +36,7 @@ if (isset($_GET["subject"])) {
 
   <?php include __DIR__ . '/../../src/includes/user-scripts.php'; ?>
 
-  <script src="/COFFEE_ST/src/resources/js/contact-form.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/contact-form.js" defer></script>
 
 </body>
 

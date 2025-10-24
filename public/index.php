@@ -29,9 +29,9 @@ $year = date("Y");
 
   <?php include __DIR__ . "/../src/components/modals/auth-modals.php"; ?>
 
-  <script src="/COFFEE_ST/src/resources/js/home.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/home.js" defer></script>
 
-  <script src="/COFFEE_ST/src/resources/js/cart.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/cart.js" defer></script>
 
   <?php include __DIR__ . "/../src/includes/user-scripts.php"; ?>
 

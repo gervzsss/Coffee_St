@@ -37,7 +37,7 @@ $total = (float) ($vm['total'] ?? 0.0);
 
   <?php include __DIR__ . '/../../src/includes/user-scripts.php'; ?>
 
-  <script src="/COFFEE_ST/src/resources/js/cart.js"></script>
+  <script src="/COFFEE_ST/src/resources/js/cart.js" defer></script>
 
 </body>
 
