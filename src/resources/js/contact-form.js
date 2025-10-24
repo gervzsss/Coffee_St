@@ -97,8 +97,9 @@ $(function () {
     e.preventDefault();
     formSubmitted = true;
     var allValid = true;
-    $(fieldSelector.split(",")).each(function () {
-      var id = $(this).trim().replace("#", "");
+    $(fieldSelector).each(function () {
+      var id = (this && this.id) ? this.id : $(this).attr("id");
+      id = $.trim(id || "");
       var $f = $("#" + id);
       var err = validateField(id);
       setFieldError($f, err);

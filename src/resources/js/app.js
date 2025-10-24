@@ -36,17 +36,6 @@ $(function () {
     $("#scroll-progress").css("width", progress + "%");
   });
 
-  if (window.IS_AUTH) {
-    $.get("/COFFEE_ST/public/api/cart.php?action=get")
-      .done(function (resp) {
-        if (resp && resp.success) {
-          $(".cart-count").text(resp.summary.count || 0);
-        }
-      })
-      .fail(function (xhr) {
-      });
-  }
-
   $(document).on("click", "#inbox-link", function (e) {
     if (!window.IS_AUTH) {
       e.preventDefault();
