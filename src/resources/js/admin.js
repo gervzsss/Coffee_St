@@ -552,6 +552,7 @@ $(document).ready(function () {
     e.preventDefault();
     e.stopPropagation();
     const productId = $(this).data("id");
+    $("#editProductForm").data("product-id", productId);
     const mockData = {
       name: "Latte",
       price: 4.5,
@@ -571,7 +572,38 @@ $(document).ready(function () {
   });
   $("#editProductForm").submit(function (e) {
     e.preventDefault();
-    modals.edit.close();
+    const productId = $(this).data("product-id");
+    const fileInput = document.getElementById("editProductImage");
+    const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+    if (file && productId) {
+      const fd = new FormData();
+      fd.append("product_id", productId);
+      fd.append("product_image", file);
+      $.ajax({
+        url: "/COFFEE_ST/public/api/admin/upload-image.php",
+        method: "POST",
+        data: fd,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+      })
+        .done(function (resp) {
+          if (resp && resp.ok) {
+            alert("Image updated successfully.");
+          } else {
+            alert((resp && resp.error) || "Upload failed.");
+          }
+        })
+        .fail(function (xhr) {
+          const msg = (xhr.responseJSON && xhr.responseJSON.error) || xhr.statusText || "Upload failed";
+          alert(msg);
+        })
+        .always(function () {
+          modals.edit.close();
+        });
+    } else {
+      modals.edit.close();
+    }
   });
   $(document).on("click", ".mark-unavailable", function (e) {
     e.preventDefault();

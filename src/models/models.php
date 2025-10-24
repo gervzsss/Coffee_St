@@ -12,6 +12,7 @@ class Product
   public string $description;
   public float $price;
   public string $image;
+  public ?string $image_url = null;
   public bool $is_active;
   public ?string $created_at;
   public ?string $updated_at;
@@ -33,6 +34,7 @@ class Product
     $this->description = $description;
     $this->price = $price;
     $this->image = $image;
+    $this->image_url = null;
     $this->is_active = $is_active;
     $this->created_at = $created_at;
     $this->updated_at = $updated_at;
@@ -40,7 +42,7 @@ class Product
 
   public static function fromArray(array $row): self
   {
-    return new self(
+    $obj = new self(
       (int) ($row['id'] ?? 0),
       (string) ($row['category'] ?? ''),
       (string) ($row['name'] ?? ''),
@@ -51,6 +53,8 @@ class Product
       $row['created_at'] ?? null,
       $row['updated_at'] ?? null,
     );
+    $obj->image_url = isset($row['image_url']) ? ($row['image_url'] !== '' ? (string) $row['image_url'] : null) : null;
+    return $obj;
   }
 
   public function toArray(): array
@@ -62,10 +66,16 @@ class Product
       'description' => $this->description,
       'price' => $this->price,
       'image' => $this->image,
+      'image_url' => $this->image_url,
       'is_active' => $this->is_active,
       'created_at' => $this->created_at,
       'updated_at' => $this->updated_at,
     ];
+  }
+
+  public function displayImage(): string
+  {
+    return $this->image_url && $this->image_url !== '' ? $this->image_url : $this->image;
   }
 }
 
