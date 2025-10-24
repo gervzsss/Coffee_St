@@ -1,9 +1,5 @@
-<?php
-// Always include the admin-auth-guard first.
-// This loads environment, config, session, and helper functions.
-// Do not include bootstrap.php directly.
-require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
-?>
+<?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,15 +9,19 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
   <title>Inquiry Thread — Coffee St.</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <?php include_once __DIR__ . '/../../src/includes/admin-scripts.php'; ?>
 </head>
 
 <body class="antialiased bg-gray-50/50 text-slate-800">
+
   <?php include_once __DIR__ . "/../../src/includes/admin-navbar.php"; ?>
+
   <main class="max-w-4xl mx-auto my-12 bg-white rounded-2xl shadow-sm border border-gray-100">
+
     <?php include __DIR__ . "/../../src/views/admin/inquiry-thread.php"; ?>
+
   </main>
+
 </body>
 
 </html>

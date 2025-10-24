@@ -1,6 +1,3 @@
-<?php
-// Authentication modals shared across pages.
-?>
 <div id="modal-overlay"
   class="fixed inset-0 z-50 hidden items-center justify-center bg-neutral-950/70 px-4 py-10 sm:py-16 backdrop-blur-sm">
   <!-- Login Modal -->

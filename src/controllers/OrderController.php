@@ -8,21 +8,12 @@ use App\Repositories\OrderRepository;
 use function App\Helpers\current_user;
 use function App\Helpers\db;
 
-/**
- * Controller for order actions (checkout, list).
- */
 class OrderController
 {
   public function __construct(private CartRepository $carts, private OrderRepository $orders)
   {
   }
 
-  /**
-   * Get the current user's ID or throw if not authenticated.
-   *
-   * @return int
-   * @throws \RuntimeException
-   */
   private function requireUserId(): int
   {
     $user = current_user();
@@ -32,12 +23,6 @@ class OrderController
     return (int) $user['id'];
   }
 
-  /**
-   * Handle checkout and order creation.
-   *
-   * @param array $payload
-   * @return array
-   */
   public function checkout(array $payload): array
   {
     $uid = $this->requireUserId();
@@ -66,10 +51,8 @@ class OrderController
       $subtotal = round($subtotal, 2);
     }
 
-    // Build snapshot
     $itemsSnapshot = [];
     foreach ($items as $it) {
-      // get product name for snapshot using merged helpers db()
       $pstmt = db()->prepare('SELECT name FROM products WHERE id = :id');
       $pstmt->execute(['id' => $it->product_id]);
       $pname = ($pstmt->fetch()['name'] ?? '') ?: '';
@@ -82,7 +65,6 @@ class OrderController
         'line_total' => round(($it->unit_price + $delta) * $it->quantity, 2),
       ];
     }
-    // Load order config from unified config
     $config = defined('BASE_PATH')
       ? require BASE_PATH . '/src/config/config.php'
       : ['order' => ['delivery_fee' => 1.78, 'tax_rate' => 0.08]];
@@ -101,11 +83,9 @@ class OrderController
 
     $orderId = $this->orders->createFromCart($uid, $snapshot);
 
-    // mock payment: mark as paid immediately
     $upd = db()->prepare('UPDATE orders SET status = "paid", tax_rate = :rate, tax_amount = :tax WHERE id = :id');
     $upd->execute(['id' => $orderId, 'rate' => $taxRate, 'tax' => $tax]);
 
-    // finalize cart
     if ($singleProductId) {
       $this->carts->removeItem($cart->id ?? 0, $singleProductId);
       $remaining = $this->carts->getCartDetails($cart->id ?? 0);
@@ -120,11 +100,6 @@ class OrderController
     return ['success' => true, 'order_id' => $orderId];
   }
 
-  /**
-   * List all orders for the current user.
-   *
-   * @return array
-   */
   public function list(): array
   {
     $uid = $this->requireUserId();
@@ -132,11 +107,6 @@ class OrderController
     return ['success' => true, 'orders' => array_map(fn($o) => $o->toArray(), $orders)];
   }
 
-  /**
-   * Build a view model for a single order belonging to the current user.
-   * @param int $orderId
-   * @return array{success:bool, order?: array, items?: array}
-   */
   public function detailData(int $orderId): array
   {
     $uid = $this->requireUserId();

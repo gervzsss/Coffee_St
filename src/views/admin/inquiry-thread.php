@@ -1,25 +1,19 @@
 <?php
 use function App\Helpers\db;
-// src/views/admin/inquiry-thread.php
 use App\Repositories\InquiryRepository;
 
-/** @var int $threadId */
 $threadId = isset($_GET['thread_id']) ? intval($_GET['thread_id']) : 0;
 if (!$threadId) {
   echo '<div class="p-6 text-red-600">Invalid thread reference.</div>';
   return;
 }
 
-/** @var InquiryRepository $repo */
 $repo = new InquiryRepository(db());
-/** @var array|null $threadData */
 $threadData = $repo->getThreadWithMessages($threadId);
-// Mark as viewed by admin when opening the thread
 if ($threadData) {
   try {
     $repo->markThreadViewedByAdmin($threadId);
   } catch (\Throwable $e) {
-    // non-fatal
   }
 }
 if (!$threadData) {
@@ -27,23 +21,15 @@ if (!$threadData) {
   return;
 }
 
-/** @var array $thread */
 $thread = $threadData['thread'] ?? [];
-/** @var array $messages */
 $messages = is_array($threadData['messages'] ?? null) ? $threadData['messages'] : [];
-/** @var string $subject */
 $subject = trim((string) ($thread['subject'] ?? ''));
-/** @var string $status */
 $status = ucfirst((string) ($thread['status'] ?? 'pending'));
-/** @var string|null $openedAt */
 $openedAt = $thread['created_at'] ?? null;
-/** @var string|null $updatedAt */
 $updatedAt = $thread['last_message_at'] ?? null;
-/** @var string $customerName */
 $customerName = isset($thread['user_id']) && $thread['user_id']
   ? trim(sprintf('%s %s', $thread['first_name'] ?? '', $thread['last_name'] ?? ''))
   : ($thread['guest_name'] ?? 'Guest');
-/** @var string $customerEmail */
 $customerEmail = isset($thread['user_id']) && $thread['user_id'] ? ($thread['user_email'] ?? '') : ($thread['guest_email'] ?? '');
 ?>
 <div class="admin-inquiry-thread p-6">
@@ -78,7 +64,6 @@ $customerEmail = isset($thread['user_id']) && $thread['user_id'] ? ($thread['use
   <div class="space-y-6">
     <?php foreach ($messages as $message): ?>
       <?php
-      /** @var array $message */
       $senderType = isset($message['sender_type']) ? $message['sender_type'] : '';
       $isAdmin = $senderType === 'admin';
       $avatarClass = $isAdmin ? 'bg-[#30442B] text-white' : 'bg-blue-100 text-blue-800';

@@ -3,23 +3,6 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
-/**
- * Common helper functions and constants for Coffee_St.
- *
- * Includes:
- * - Database connection helper: db()
- * - User auth session helpers: login_user(), logout_user(), is_authenticated(), current_user()
- * - Admin auth helpers: admin_login(), admin_logout(), is_admin_authenticated()
- *
- * Relies on merged config at src/config/config.php
- */
-
-// -------------------------
-// Database helper
-// -------------------------
-/**
- * Returns a shared PDO connection using config from src/config/config.php
- */
 function db(): \PDO
 {
   static $pdo = null;
@@ -50,12 +33,8 @@ function db(): \PDO
   return $pdo;
 }
 
-// -------------------------
-// User auth helpers
-// -------------------------
 const AUTH_SESSION_KEY = 'auth_user';
 
-/** Store minimal user payload in session */
 function login_user(array $user): void
 {
   if (session_status() === PHP_SESSION_ACTIVE) {
@@ -69,7 +48,6 @@ function login_user(array $user): void
   ];
 }
 
-/** Clear user session */
 function logout_user(): void
 {
   if (session_status() === PHP_SESSION_ACTIVE) {
@@ -78,24 +56,18 @@ function logout_user(): void
   unset($_SESSION[AUTH_SESSION_KEY]);
 }
 
-/** Is visitor authenticated? */
 function is_authenticated(): bool
 {
   return isset($_SESSION[AUTH_SESSION_KEY]['id']);
 }
 
-/** Current user payload or null */
 function current_user(): ?array
 {
   return $_SESSION[AUTH_SESSION_KEY] ?? null;
 }
 
-// -------------------------
-// Admin auth helpers
-// -------------------------
 const ADMIN_SESSION_KEY = 'admin_auth';
 
-/** Attempt admin login using admin config */
 function admin_login(string $email, string $password): bool
 {
   $config = require __DIR__ . '/../config/config.php';
@@ -113,7 +85,6 @@ function admin_login(string $email, string $password): bool
   return false;
 }
 
-/** Log out admin */
 function admin_logout(): void
 {
   unset($_SESSION[ADMIN_SESSION_KEY]);
@@ -122,7 +93,6 @@ function admin_logout(): void
   }
 }
 
-/** Check admin auth */
 function is_admin_authenticated(): bool
 {
   return isset($_SESSION[ADMIN_SESSION_KEY]['logged_in']) && $_SESSION[ADMIN_SESSION_KEY]['logged_in'] === true;

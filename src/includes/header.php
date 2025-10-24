@@ -1,9 +1,4 @@
 <?php
-// Header partial: Navigation and related UI
-// Uses Tailwind CSS utilities and jQuery for interactivity
-// Active link helper is defined in src/components/nav-active.php
-// NOTE: Old navbar visual style restored (brand size/position, link spacing, search width)
-// while retaining responsive/mobile features and toggle behavior.
 
 require_once __DIR__ . "/../components/nav-active.php";
 
@@ -270,12 +265,11 @@ $authenticatedUser = current_user();
   <div id="scroll-progress" class="h-full bg-[#30442B] w-0 transition-all duration-300 rounded-full"></div>
 </div>
 
-<!-- Auth flag for frontend scripts -->
 <script>
   window.__isAuthenticated = <?php echo json_encode((bool) $authenticatedUser); ?>;
-  // jQuery-friendly alias
+
   window.IS_AUTH = window.__isAuthenticated;
-  // expose login trigger selector for consistency
+
   window.__openLoginSelector = '[data-open-login="login"]';
-  // no-op if jQuery not loaded yet
+
 </script>

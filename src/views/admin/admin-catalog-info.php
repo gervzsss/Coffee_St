@@ -181,7 +181,6 @@
             </div>
           </td>
         </tr>
-        <!-- Add more product rows here -->
       </tbody>
     </table>
   </div>

@@ -1,10 +1,5 @@
-<?php
-// Always include the admin-auth-guard first.
-// This loads environment, config, session, and helper functions.
-// Do not include bootstrap.php directly.
-require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
-// Admin catalog management page
-?>
+<?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
+
 <!doctype html>
 <html lang="en">
 
@@ -12,12 +7,12 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Catalog Management — Coffee St.</title>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
+  <?php include_once __DIR__ . '/../../src/includes/admin-scripts.php'; ?>
 </head>
 
 <body class="antialiased bg-gray-50 text-slate-800">
+
   <?php include_once __DIR__ . "/../../src/includes/admin-navbar.php"; ?>
 
   <!-- Main Content Section -->
@@ -109,19 +104,16 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
         };
       }
 
-      // Initialize all modals
       const addModal = initModal('addProductModal', 'modalBackdrop', 'modalContent');
       const editModal = initModal('editProductModal', 'editModalBackdrop', 'editModalContent');
       const unavailableModal = initModal('unavailableModal', 'unavailableModalBackdrop', 'unavailableModalContent');
       const historyModal = initModal('historyModal', 'historyModalBackdrop', 'historyModalContent');
 
-      // Event Handlers
       $('.open-modal').click(() => addModal.open());
       $('.close-modal').click(() => addModal.close());
 
       $('.edit-product').click(function () {
         const productId = $(this).data('id');
-        // Fetch and populate product data
         editModal.open();
       });
       $('.close-edit-modal').click(() => editModal.close());
@@ -134,21 +126,19 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
 
       $('.view-history').click(function () {
         const productId = $(this).data('id');
-        // Fetch and populate history data
         historyModal.open();
       });
       $('.close-history-modal').click(() => historyModal.close());
 
-      // Close on backdrop click
       $('#modalBackdrop').click(() => addModal.close());
       $('#editModalBackdrop').click(() => editModal.close());
       $('#unavailableModalBackdrop').click(() => unavailableModal.close());
       $('#historyModalBackdrop').click(() => historyModal.close());
 
-      // Prevent modal content clicks from closing the modal
       $('.modal-content').click(e => e.stopPropagation());
     });
   </script>
+
 </body>
 
 </html>

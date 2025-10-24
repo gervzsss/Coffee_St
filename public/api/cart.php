@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 require_once __DIR__ . '/../../src/config/bootstrap.php';
 require_once BASE_PATH . '/src/controllers/CartController.php';
 use App\Controllers\CartController;
@@ -16,7 +15,6 @@ if (!\App\Helpers\is_authenticated()) {
   echo json_encode(['success' => false, 'error' => 'Please login to manage your cart.']);
   exit;
 }
-
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $action = $_GET['action'] ?? ($_POST['action'] ?? 'get');

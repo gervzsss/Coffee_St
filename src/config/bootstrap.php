@@ -1,25 +1,7 @@
 <?php
-/**
- * Global bootstrap for Coffee_St.
- *
- * - Loads Composer autoload, environment variables, and starts the session.
- * - Sets up timezone and session security.
- * - Loads core helpers and config.
- *
- * Environment variables required:
- *   - APP_TIMEZONE
- *   - SESSION_SECURE_COOKIE
- *   - SESSION_LIFETIME
- *   - SESSION_SAMESITE
- *   - DB_* (see db.php)
- *   - ADMIN_EMAIL, ADMIN_PASSWORD_HASH
- *
- * @return void
- */
 
 declare(strict_types=1);
 
-// Ensure Dotenv is loaded before anything else
 if (!defined('BASE_PATH')) {
   define('BASE_PATH', dirname(__DIR__, 2));
 }
@@ -29,18 +11,15 @@ if (file_exists($autoloadPath)) {
   require_once $autoloadPath;
 }
 
-// Load .env variables BEFORE any config or helper is loaded
 if (class_exists('Dotenv\\Dotenv')) {
   $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
   $dotenv->safeLoad();
 }
 
-// Default timezone (adjust as needed)
 if (!ini_get('date.timezone')) {
   date_default_timezone_set($_ENV['APP_TIMEZONE'] ?? 'UTC');
 }
 
-// Harden PHP sessions for authentication flows.
 if (session_status() === PHP_SESSION_NONE) {
   $cookieParams = session_get_cookie_params();
   $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_ENV['SESSION_SECURE_COOKIE'] ?? '0') === '1';
@@ -58,6 +37,5 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once BASE_PATH . '/src/helpers/common.php';
-// Common helpers include user/admin auth and db() connection.
 require_once BASE_PATH . '/src/models/models.php';
 require_once BASE_PATH . '/src/repositories/repositories.php';

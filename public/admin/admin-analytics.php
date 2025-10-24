@@ -1,7 +1,5 @@
 <?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
-<?php
-// Admin analytics page
-?>
+
 <!doctype html>
 <html lang="en">
 
@@ -13,6 +11,7 @@
 </head>
 
 <body class="antialiased bg-gray-50 text-slate-800">
+
   <?php include_once __DIR__ . "/../../src/includes/admin-navbar.php"; ?>
 
   <div class="main-content min-h-screen p-6 ml-64 transition-all duration-300 ease-in-out">
@@ -40,6 +39,7 @@
       </div>
     </div>
   </div>
+
 </body>
 
 </html>

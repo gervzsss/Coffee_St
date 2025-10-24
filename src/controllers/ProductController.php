@@ -15,9 +15,6 @@ class ProductController
     }
   }
 
-  /**
-   * Return products for listing views.
-   * @return array{products: array}\n   */
   public function listData(): array
   {
     $products = $this->repo->getAllActive();

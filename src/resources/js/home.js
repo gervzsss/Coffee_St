@@ -1,20 +1,15 @@
-// jQuery-only interactions for Coffee_St.
-// Keep this file free of frameworks; use Tailwind classes for state (e.g., 'hidden').
-
 $(function () {
-  // Featured products minimal carousel (no external libs)
   (function () {
     var $container = $("#featured-carousel");
     var $track = $container.find(".featured-track");
     if (!$track.length) return;
 
-    // Smooth transform
-    var TRANSITION = "transform 450ms cubic-bezier(0.22, 0.61, 0.36, 1)"; // ease-out with better momentum
+    var TRANSITION = "transform 450ms cubic-bezier(0.22, 0.61, 0.36, 1)";
     $track.css({ willChange: "transform" });
 
     var $baseSlides = $track.children(".featured-slide").clone();
     var COUNT = $baseSlides.length;
-    if (COUNT < 2) return; // nothing to loop
+    if (COUNT < 2) return;
 
     var index = 0;
     var visible = 1;
@@ -24,7 +19,7 @@ $(function () {
     function computeStep($contextTrack) {
       var g = parseInt($contextTrack.css("gap"), 10);
       if (isNaN(g)) g = parseInt($contextTrack.css("column-gap"), 10);
-      if (isNaN(g)) g = 32; // gap-8 fallback
+      if (isNaN(g)) g = 32;
       var slideW =
         $contextTrack.children(".featured-slide").first().outerWidth() || 0;
       return slideW + g;
@@ -33,7 +28,7 @@ $(function () {
     function setTransformInstant(offsetPx) {
       $track.css("transition", "none");
       $track.css("transform", "translateX(" + -offsetPx + "px)");
-      void $track.width(); // force reflow via jQuery
+      void $track.width();
       $track.css("transition", TRANSITION).css("will-change", "transform");
     }
 
@@ -67,19 +62,15 @@ $(function () {
       }
     }
 
-    // Build clones equal to visible count at both ends
     function initCarousel() {
       stopAutoplay();
-      // reset track to originals only
       $track.empty().append($baseSlides.clone());
       COUNT = $baseSlides.length;
 
-      // determine visible
       var step = computeStep($track);
       var containerW = $container.innerWidth();
       visible = Math.max(1, Math.round(containerW / (step || 1)));
       if (COUNT <= visible) {
-        // not enough slides; disable nav and autoplay
         $(".featured-prev, .featured-next").addClass(
           "opacity-0 pointer-events-none",
         );
@@ -92,21 +83,18 @@ $(function () {
         );
       }
 
-      // prepend last 'visible' slides
       for (var i = COUNT - visible; i < COUNT; i++) {
         $track.prepend($baseSlides.eq(i).clone(true).addClass("is-clone"));
       }
-      // append first 'visible' slides
       for (var j = 0; j < visible; j++) {
         $track.append($baseSlides.eq(j).clone(true).addClass("is-clone"));
       }
 
-      index = visible; // start at first real slide
+      index = visible;
       goToIndex(true);
       startAutoplay();
     }
 
-    // Bind controls once
     $(".featured-next")
       .off("click.fc")
       .on("click.fc", function () {
@@ -125,7 +113,6 @@ $(function () {
     $container.on("mouseenter", stopAutoplay);
     $container.on("mouseleave", startAutoplay);
 
-    // Snap logic for variable visible
     $track
       .off("transitionend.fc webkitTransitionEnd.fc oTransitionEnd.fc")
       .on(
@@ -145,7 +132,6 @@ $(function () {
         },
       );
 
-    // Init now and on resize (debounced)
     var resizeTimer = null;
     function reinit() {
       initCarousel();
@@ -159,7 +145,6 @@ $(function () {
     });
   })();
 
-  // Add to Cart button visual feedback only (count updates after API success elsewhere)
   $(document).on("click", ".add-to-cart", function () {
     var $btn = $(this);
     $btn.addClass("scale-95");
@@ -168,7 +153,6 @@ $(function () {
     }, 150);
   });
 
-  // Split-screen section reveal on viewport
   function isInViewportJQ($el) {
     if (!$el || !$el.length) return false;
     var winTop = $(window).scrollTop();
@@ -189,12 +173,10 @@ $(function () {
     );
   }
 
-
   function handleSplitScreenAnimation() {
     var $section = $("#split-screen-section");
     if (!$section.length) return;
     if ($section.data("revealed")) return;
-    // Use partial viewport detection for better mobile experience
     if (isInViewportJQPartial($section, 0.5)) {
       $section.data("revealed", true);
       $section.animate({ opacity: 1 }, 800);
@@ -203,15 +185,12 @@ $(function () {
     }
   }
 
-  // Initial check and bind
   handleSplitScreenAnimation();
   $(window).on("scroll", handleSplitScreenAnimation);
 
-  // Benefits grid reveal
   function isInViewportJQPartial($el, ratio) {
-    // Trigger when a certain ratio of element is within viewport (0..1)
     if (!$el || !$el.length) return false;
-    ratio = typeof ratio === "number" ? ratio : 0.6; // default 60% visible
+    ratio = typeof ratio === "number" ? ratio : 0.6;
     var winTop = $(window).scrollTop();
     var winBottom = winTop + $(window).height();
     var off = $el.offset();

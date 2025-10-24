@@ -10,11 +10,6 @@ use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\CartItem;
 
-/**
- * Aggregated repositories for Coffee_St.
- * Includes: ProductRepository, UserRepository, OrderRepository, CartRepository, VariantRepository, InquiryRepository
- */
-
 // ------------------------- ProductRepository -------------------------
 class ProductRepository
 {
@@ -22,7 +17,6 @@ class ProductRepository
   {
   }
 
-  /** @return Product[] */
   public function getAllActive(): array
   {
     $stmt = $this->connection->prepare(
@@ -36,7 +30,6 @@ class ProductRepository
     return array_map(static fn(array $row): Product => Product::fromArray($row), $rows);
   }
 
-  /** @return array<string, Product[]> */
   public function getActiveGroupedByCategory(): array
   {
     $products = $this->getAllActive();
@@ -163,7 +156,6 @@ class OrderRepository
     }
   }
 
-  /** @return Order[] */
   public function listForUser(int $userId): array
   {
     $stmt = $this->connection->prepare('SELECT * FROM orders WHERE user_id = :uid ORDER BY created_at DESC');
@@ -172,7 +164,6 @@ class OrderRepository
     return array_map(static fn(array $r) => Order::fromArray($r), $rows ?: []);
   }
 
-  /** @return array<int, array> */
   public function getOrderItems(int $orderId): array
   {
     $stmt = $this->connection->prepare('SELECT * FROM order_items WHERE order_id = :oid');
@@ -203,7 +194,6 @@ class CartRepository
     return new Cart($id, $userId, 'active', $now, $now);
   }
 
-  /** @return array{items: CartItem[], subtotal: float, count: int} */
   public function getCartDetails(int $cartId): array
   {
     $stmt = $this->connection->prepare('SELECT * FROM cart_items WHERE cart_id = :cid');
@@ -326,7 +316,6 @@ class VariantRepository
   {
   }
 
-  /** @return array<int, array{group_name:string,name:string,price_delta:float,id:int}> */
   public function getActiveByProduct(int $productId): array
   {
     $stmt = $this->connection->prepare('SELECT id, group_name, name, price_delta FROM product_variants WHERE product_id = :pid AND is_active = 1 ORDER BY group_name, name');

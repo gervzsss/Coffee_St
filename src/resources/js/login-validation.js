@@ -3,54 +3,19 @@ $(document).ready(function () {
   function initializeModalLogic() {
     let formSubmitted = false;
 
-    function ensureToastContainer() {
-      let $c = $("#toast-container");
-      if (!$c.length) {
-        $c = $(
-          '<div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-3"></div>',
-        );
-        $("body").append($c);
+    function showToast(msg) {
+      if (window.Toast && typeof window.Toast.success === "function") {
+        window.Toast.success(msg);
+      } else {
+        alert(msg);
       }
-      return $c;
     }
-    function showToast(message) {
-      if (typeof window.showToast === "function")
-        return window.showToast(message);
-      const $c = ensureToastContainer();
-      const $toast = $(
-        '<div class="pointer-events-auto select-none rounded-2xl bg-[#30442B] px-5 py-3 text-sm font-medium text-white shadow-xl shadow-[#30442B]/20 ring-1 ring-white/15 opacity-0 -translate-y-2 transition duration-300"></div>',
-      ).html(
-        '<div class="flex items-center gap-3"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white"><svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></span><span class="leading-tight">' +
-        message +
-        "</span></div>",
-      );
-      $c.append($toast);
-      requestAnimationFrame(() => {
-        $toast
-          .removeClass("opacity-0 -translate-y-2")
-          .addClass("opacity-100 translate-y-0");
-      });
-      setTimeout(() => {
-        $toast.addClass("opacity-0 -translate-y-2");
-        setTimeout(() => $toast.remove(), 300);
-      }, 2800);
-    }
-
-    function showErrorToast(message) {
-      const $c = ensureToastContainer();
-      const $toast = $(
-        '<div class="pointer-events-auto select-none rounded-2xl bg-red-500 px-5 py-3 text-sm font-medium text-white shadow-xl shadow-red-800/20 ring-1 ring-white/15 opacity-0 -translate-y-2 transition duration-300"></div>',
-      ).text(message);
-      $c.append($toast);
-      requestAnimationFrame(() => {
-        $toast
-          .removeClass("opacity-0 -translate-y-2")
-          .addClass("opacity-100 translate-y-0");
-      });
-      setTimeout(() => {
-        $toast.addClass("opacity-0 -translate-y-2");
-        setTimeout(() => $toast.remove(), 300);
-      }, 3200);
+    function showErrorToast(msg) {
+      if (window.Toast && typeof window.Toast.error === "function") {
+        window.Toast.error(msg);
+      } else {
+        alert(msg);
+      }
     }
 
     const routes = {
@@ -81,9 +46,7 @@ $(document).ready(function () {
     });
 
     // --- validation regex ---
-    const nameRegex = /^[A-Za-z\s.\-']+$/;
-    const emailRegex = /^[A-Za-z0-9._\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/;
-    const phoneRegex = /^\+?\d+$/;
+    const hasValidators = !!window.Validators;
 
     function setFieldError($field, message) {
       const id = $field.attr("id");
@@ -106,7 +69,7 @@ $(document).ready(function () {
       const $f = $("#login-email");
       const v = $.trim($f.val());
       if (!v) return (setFieldError($f, "Email is required."), false);
-      if (!emailRegex.test(v))
+      if (hasValidators && !Validators.email(v))
         return (setFieldError($f, "Enter a valid email."), false);
       setFieldError($f, null);
       return true;
@@ -125,7 +88,7 @@ $(document).ready(function () {
       const $f = $("#reg-first");
       const v = $.trim($f.val());
       if (!v) return (setFieldError($f, "First name required."), false);
-      if (!nameRegex.test(v))
+      if (hasValidators && !Validators.name(v))
         return (setFieldError($f, "Invalid characters."), false);
       setFieldError($f, null);
       return true;
@@ -134,7 +97,7 @@ $(document).ready(function () {
       const $f = $("#reg-last");
       const v = $.trim($f.val());
       if (!v) return (setFieldError($f, "Last name required."), false);
-      if (!nameRegex.test(v))
+      if (hasValidators && !Validators.name(v))
         return (setFieldError($f, "Invalid characters."), false);
       setFieldError($f, null);
       return true;
@@ -150,7 +113,7 @@ $(document).ready(function () {
       const $f = $("#reg-email");
       const v = $.trim($f.val());
       if (!v) return (setFieldError($f, "Email required."), false);
-      if (!emailRegex.test(v))
+      if (hasValidators && !Validators.email(v))
         return (setFieldError($f, "Enter a valid email."), false);
       setFieldError($f, null);
       return true;
@@ -159,7 +122,7 @@ $(document).ready(function () {
       const $f = $("#reg-phone");
       const v = $.trim($f.val());
       if (!v) return (setFieldError($f, "Contact number required."), false);
-      if (!phoneRegex.test(v))
+      if (hasValidators && !Validators.phone(v))
         return (setFieldError($f, "Digits only (optional +)."), false);
       setFieldError($f, null);
       return true;
@@ -301,8 +264,6 @@ $(document).ready(function () {
       openModal("#login-modal");
     });
 
-    // close on overlay click intentionally disabled to avoid accidental dismissals
-
     // close on escape
     $(document).on("keydown", function (e) {
       if (e.key === "Escape") closeModals();
@@ -381,7 +342,6 @@ $(document).ready(function () {
           });
 
           if (res.success) {
-            // Mark that login just succeeded so other scripts can replay queued actions after reload
             try {
               sessionStorage.setItem("loginJustSucceeded", "1");
             } catch (e) { }

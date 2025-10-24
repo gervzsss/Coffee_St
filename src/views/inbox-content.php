@@ -1,7 +1,3 @@
-<?php
-// Expects: $threads, $repo
-?>
-
 <main class="max-w-3xl mx-auto py-12 px-4">
   <h1 class="text-3xl font-bold mb-8">Your Messages</h1>
   <?php if (!$threads): ?>

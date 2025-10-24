@@ -1,14 +1,11 @@
-// jQuery-only filtering and search for products page (strictly jQuery, no vanilla DOM)
 $(function () {
   var currentCategory = "all";
   var currentSearch = "";
 
-  // Cache product cards and grid
   var $grid = $("#products-grid");
   if (!$grid.length) return;
   var $allCards = $grid.children(".product-card");
 
-  // Create or reuse a full-width no-results element inside the grid
   var $noResults = $("#no-results");
   if (!$noResults.length) {
     $noResults = $(
@@ -20,10 +17,8 @@ $(function () {
     $grid.append($noResults);
   }
 
-  // Prevent flash by hiding grid until the first render pass completes
   $grid.css("visibility", "hidden");
 
-  // Activate a category: uses data-active attribute (for CSS styling)
   function activateCategory(category) {
     $(".category-btn").attr("data-active", "false");
     $(".category-btn[data-category='" + category + "']").attr(
@@ -37,10 +32,8 @@ $(function () {
   }
 
   function filterProducts() {
-    // Start by showing all cards
     $allCards.show();
 
-    // Category filter
     if (currentCategory && currentCategory !== "all") {
       $allCards.each(function () {
         var $c = $(this);
@@ -50,12 +43,11 @@ $(function () {
       });
     }
 
-    // Search filter
     if (currentSearch) {
       var q = normalize(currentSearch);
       $allCards.each(function () {
         var $c = $(this);
-        if (!$c.is(":visible")) return; // already hidden by category
+        if (!$c.is(":visible")) return;
         var name = normalize($c.find("h3").text());
         var description = normalize($c.find("p").text());
         if (name.indexOf(q) === -1 && description.indexOf(q) === -1) {
@@ -64,7 +56,6 @@ $(function () {
       });
     }
 
-    // No-results visibility
     var visibleCount = $allCards.filter(":visible").length;
     if (visibleCount === 0) {
       $noResults.removeClass("hidden");
@@ -72,24 +63,20 @@ $(function () {
       $noResults.addClass("hidden");
     }
 
-    // Reveal grid after first pass
     $grid.css("visibility", "visible");
   }
 
-  // Category button click handler
   $(document).on("click", ".category-btn", function () {
     currentCategory = $(this).data("category") || "all";
     activateCategory(currentCategory);
     filterProducts();
   });
 
-  // Search input handler
   $(document).on("input", "#product-search", function () {
     currentSearch = $(this).val();
     filterProducts();
   });
 
-  // Initial state
   activateCategory("all");
   filterProducts();
 });

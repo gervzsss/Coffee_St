@@ -1,15 +1,6 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Unified configuration for Coffee_St.
- *
- * Sections:
- * - db: database connection details
- * - admin: admin account configuration
- * - order: order-related settings (fees, tax)
- */
-
 return [
   'db' => [
     'host' => $_ENV['DB_HOST'] ?? '127.0.0.1',

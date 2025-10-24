@@ -1,9 +1,4 @@
-<?php
-// Always include the admin-auth-guard first.
-// This loads environment, config, session, and helper functions.
-// Do not include bootstrap.php directly.
-require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
-?>
+<?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,14 +11,14 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
 </head>
 
 <body class="antialiased bg-gray-50 text-slate-800">
-  <!-- Include Admin Navbar -->
+
   <?php include "../../src/includes/admin-navbar.php"; ?>
 
-  <?php
-  include "../../src/views/admin/admin-order-info.php";
+  <?php include "../../src/views/admin/admin-order-info.php";
+
   renderAdminHeader();
 
-  // Sample order data (In a real application, this would come from a database)
+  // Sample order data
   $orders = [
     [
       "id" => "ORD-1234",
@@ -48,11 +43,11 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
     ],
   ];
 
-  // Render each order card
   foreach ($orders as $order) {
     renderOrderCard($order);
   }
   ?>
+
   </div>
   </div>
   </div>
@@ -60,11 +55,8 @@ require_once __DIR__ . '/../../src/includes/admin-auth-guard.php';
 
   <?php renderOrderModal(); ?>
 
-  <!-- Scripts -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <script src="../../src/resources/js/admin-order.js"></script>
-  <script src="../../src/resources/js/admin-navbar.js"></script>
+  <?php include_once __DIR__ . '/../../src/includes/admin-scripts.php'; ?>
+
 </body>
 
 </html>

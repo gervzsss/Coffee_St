@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-
-
 namespace App\Controllers;
 
 use App\Repositories\CartRepository;
@@ -10,30 +8,19 @@ use App\Repositories\ProductRepository;
 use function App\Helpers\current_user;
 use function App\Helpers\db;
 
-/**
- * Controller for cart actions (add, setQty, remove, get).
- */
 class CartController
 {
   public function __construct(private CartRepository $repo, private ?ProductRepository $products = null)
   {
-    // Allow backward-compatible construction from existing API usage by lazily creating ProductRepository
     if ($this->products === null) {
       try {
         $this->products = new ProductRepository(db());
       } catch (\Throwable $e) {
-        // If db() is not available in some contexts (e.g., during certain tests), leave as null
         $this->products = null;
       }
     }
   }
 
-  /**
-   * Get the current user's ID or throw if not authenticated.
-   *
-   * @return int
-   * @throws \RuntimeException
-   */
   private function requireUserId(): int
   {
     $user = current_user();
@@ -43,12 +30,6 @@ class CartController
     return (int) $user['id'];
   }
 
-  /**
-   * Add an item to the cart.
-   *
-   * @param array $payload
-   * @return array
-   */
   public function add(array $payload): array
   {
     $uid = $this->requireUserId();
@@ -65,12 +46,6 @@ class CartController
     ];
   }
 
-  /**
-   * Set the quantity of an item in the cart.
-   *
-   * @param array $payload
-   * @return array
-   */
   public function setQty(array $payload): array
   {
     $uid = $this->requireUserId();
@@ -82,12 +57,6 @@ class CartController
     return ['success' => true, 'summary' => $summary];
   }
 
-  /**
-   * Remove an item from the cart.
-   *
-   * @param array $payload
-   * @return array
-   */
   public function remove(array $payload): array
   {
     $uid = $this->requireUserId();
@@ -98,11 +67,6 @@ class CartController
     return ['success' => true, 'summary' => $summary];
   }
 
-  /**
-   * Get the current user's cart.
-   *
-   * @return array
-   */
   public function get(): array
   {
     $uid = $this->requireUserId();
@@ -111,17 +75,6 @@ class CartController
     return ['success' => true, 'cart' => $cart->toArray(), 'summary' => $summary];
   }
 
-  /**
-   * Build a view model for rendering the cart page without throwing on guests.
-   * Returns keys:
-   * - isAuthenticated: bool
-   * - items: array<int, array{product_id:int, quantity:int, unit_price:float, price_delta:float, variant_name:?string}>
-   * - products: array<int, array{id:int,name:string,image:string,price:float}>
-   * - subtotal: float
-   * - deliveryFee: float
-   * - tax: float
-   * - total: float
-   */
   public function viewData(): array
   {
     $user = current_user();
@@ -182,10 +135,6 @@ class CartController
     ];
   }
 
-  /**
-   * Load unified configuration.
-   * @return array
-   */
   private function loadConfig(): array
   {
     try {
@@ -195,7 +144,6 @@ class CartController
         return $cfg;
       }
     } catch (\Throwable $e) {
-      // fall through
     }
     return [
       'order' => [

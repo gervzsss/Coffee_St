@@ -1,7 +1,3 @@
-<?php
-// Expects: $items, $user, $productRepo, $subtotal, $deliveryFee, $tax, $total
-?>
-
 <h1 class="text-3xl md:text-4xl font-bold text-[#30442B] mb-6">Checkout</h1>
 <?php if (empty($items)): ?>
   <div class="rounded-lg border bg-white p-6 shadow-sm">

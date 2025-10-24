@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 ?>
+
 <!doctype html>
 <html lang="en">
 
@@ -26,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body class="antialiased bg-black">
+
   <main class="relative min-h-screen w-full">
     <!-- Background Image with Overlay -->
     <div
@@ -91,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     </div>
   </main>
+
 </body>
 
 </html>

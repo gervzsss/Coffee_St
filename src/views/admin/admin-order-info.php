@@ -120,7 +120,8 @@ function renderOrderModal()
               <div class="p-6">
                 <h3 class="text-xl font-semibold text-gray-800 mb-2">Confirm Status Change</h3>
                 <p class="text-gray-600 mb-2">Change order status from <span id="oldStatus" class="font-medium"></span> to
-                  <span id="newStatus" class="font-medium"></span>?</p>
+                  <span id="newStatus" class="font-medium"></span>?
+                </p>
                 <p class="text-sm text-gray-500">Are you sure you want to change the order status? This action will be
                   logged.</p>
 
@@ -129,10 +130,9 @@ function renderOrderModal()
                   <label for="cancellationReason" class="block text-sm font-medium text-gray-700 mb-2">
                     Reason for Cancellation <span class="text-red-500">*</span>
                   </label>
-                  <textarea id="cancellationReason" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-gray-700 
-                                     focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B]/20 
-                                     resize-none transition-all duration-200" rows="3"
-                    placeholder="Please provide a reason for cancelling this order..."></textarea>
+                  <textarea id="cancellationReason"
+                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B]/20 resize-none transition-all duration-200"
+                    rows="3" placeholder="Please provide a reason for cancelling this order..."></textarea>
                   <p id="reasonError" class="hidden mt-1 text-sm text-red-600">Please provide a reason for cancellation.
                   </p>
                 </div>
@@ -299,9 +299,8 @@ function renderOrderCard($order)
               </div>
             <?php endif; ?>
             <div class="mt-6">
-              <select class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 font-medium 
-                          focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B]/20 
-                          hover:bg-gray-50/80 transition-colors cursor-pointer"
+              <select
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B]/20 hover:bg-gray-50/80 transition-colors cursor-pointer"
                 onchange="updateOrderStatus(this, '<?= $order["id"] ?>')" aria-label="Change order status">
                 <option value="Pending" <?= $status === "Pending"
                   ? "selected"

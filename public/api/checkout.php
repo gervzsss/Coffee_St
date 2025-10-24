@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 require_once __DIR__ . '/../../src/config/bootstrap.php';
 require_once BASE_PATH . '/src/controllers/OrderController.php';
 use App\Controllers\OrderController;

@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . '/../../src/config/bootstrap.php';
 use App\Controllers\OrderController;
 use App\Repositories\OrderRepository;
@@ -24,73 +23,23 @@ $order = (object) $resp['order'];
 $items = $resp['items'] ?? [];
 $title = 'Order #' . $orderId . ' - Coffee St.';
 ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?php echo htmlspecialchars($title); ?></title>
-  <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
-</head>
+<?php include __DIR__ . "/../../src/includes/head.php"; ?>
 
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
+
   <?php require_once __DIR__ . '/../../src/includes/header.php'; ?>
+
   <main class="mx-auto max-w-5xl px-4 pt-24 md:pt-28 pb-16">
-    <h1 class="text-3xl font-bold text-[#30442B] mb-6">Order #<?php echo (int) $orderId; ?></h1>
-    <div class="rounded-lg border bg-white p-6 shadow-sm">
-      <p class="text-sm text-neutral-600 mb-4">Placed on
-        <?php echo htmlspecialchars(date('M j, Y g:i A', strtotime($order->created_at ?? 'now'))); ?> • Status: <span
-          class="font-medium text-[#30442B] uppercase"><?php echo htmlspecialchars($order->status); ?></span>
-      </p>
-      <table class="w-full text-sm">
-        <thead class="text-neutral-500 border-b">
-          <tr>
-            <th class="text-left py-2">Item</th>
-            <th class="text-right">Qty</th>
-            <th class="text-right">Unit</th>
-            <th class="text-right">Line</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($items as $it): ?>
-            <tr class="border-b last:border-0">
-              <td class="py-2">
-                <div class="font-medium"><?php echo htmlspecialchars($it['product_name'] ?? ''); ?></div>
-                <?php if (!empty($it['variant_name'])): ?>
-                  <div class="text-xs text-neutral-500"><?php echo htmlspecialchars($it['variant_name'] ?? ''); ?></div>
-                <?php endif; ?>
-              </td>
-              <td class="text-right"><?php echo (int) ($it['quantity'] ?? 0); ?></td>
-              <td class="text-right">
-                ₱<?php echo number_format(((float) ($it['unit_price'] ?? 0) + (float) ($it['price_delta'] ?? 0)), 2); ?>
-              </td>
-              <td class="text-right">₱<?php echo number_format((float) ($it['line_total'] ?? 0), 2); ?></td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-      <div class="mt-4 space-y-1 text-sm">
-        <div class="flex justify-between">
-          <span>Subtotal</span><span>₱<?php echo number_format($order->subtotal, 2); ?></span>
-        </div>
-        <div class="flex justify-between">
-          <span>Delivery</span><span>₱<?php echo number_format($order->delivery_fee, 2); ?></span>
-        </div>
-        <div class="flex justify-between"><span>Tax
-            (<?php echo number_format((float) ($order->tax_rate ?? 0) * 100, 2); ?>%)</span><span>₱<?php echo number_format((float) ($order->tax_amount ?? $order->tax), 2); ?></span>
-        </div>
-        <div class="flex justify-between font-semibold text-lg pt-2">
-          <span>Total</span><span>₱<?php echo number_format($order->total, 2); ?></span>
-        </div>
-      </div>
-    </div>
+
+    <?php include __DIR__ . '/../../src/views/order-view-content.php'; ?>
+
   </main>
+
   <?php require_once __DIR__ . '/../../src/includes/footer.php'; ?>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <script src="/COFFEE_ST/src/resources/js/app.js"></script>
-  <script src="/COFFEE_ST/src/resources/js/login-validation.js"></script>
+
+  <?php include __DIR__ . '/../../src/includes/user-scripts.php'; ?>
+
 </body>
 
 </html>

@@ -1,22 +1,13 @@
 <?php
 require_once __DIR__ . "/../src/config/bootstrap.php";
-
 $title = "Coffee St. - Your Premium Coffee Destination";
 $year = date("Y");
 ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?php echo htmlspecialchars($title); ?></title>
-  <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-</head>
+<?php include __DIR__ . "/../src/includes/head.php"; ?>
+
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 <body class="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
 
@@ -38,10 +29,11 @@ $year = date("Y");
 
   <?php include __DIR__ . "/../src/components/modals/auth-modals.php"; ?>
 
-  <script src="/COFFEE_ST/src/resources/js/app.js"></script>
   <script src="/COFFEE_ST/src/resources/js/home.js"></script>
-  <script src="/COFFEE_ST/src/resources/js/add-to-cart-modal.js"></script>
-  <script src="/COFFEE_ST/src/resources/js/login-validation.js"></script>
+
+  <script src="/COFFEE_ST/src/resources/js/cart.js"></script>
+
+  <?php include __DIR__ . "/../src/includes/user-scripts.php"; ?>
 
 </body>
 

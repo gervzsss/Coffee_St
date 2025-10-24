@@ -1,12 +1,11 @@
 <?php
-// Determine current page filename for active state
 $currentFile = basename($_SERVER["PHP_SELF"] ?? "");
 function nav_active($file, $current)
 {
 	return $current === $file ? "bg-white/10 text-white font-semibold" : "";
 }
 ?>
-<!-- Admin Vertical Navbar (Tailwind CSS) -->
+
 <nav
 	class="admin-sidebar fixed top-0 left-0 h-screen z-30 flex flex-col bg-[#30442B] text-white shadow-lg transition-all duration-300 ease-in-out w-64">
 	<!-- Toggle Button -->
@@ -119,7 +118,4 @@ function nav_active($file, $current)
 	</ul>
 </nav>
 
-<!-- jQuery and admin.js -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"
-	integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script src="../../src/resources/js/admin-navbar.js"></script>
+<?php include_once __DIR__ . '/admin-scripts.php'; ?>

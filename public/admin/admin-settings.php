@@ -1,4 +1,5 @@
 <?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
+
 <!doctype html>
 <html lang="en">
 
@@ -10,9 +11,10 @@
 </head>
 
 <body class="bg-gray-50 text-slate-800 antialiased">
+
   <?php include_once __DIR__ . "/../../src/includes/admin-navbar.php"; ?>
 
-  <div class="main-content ml-64 min-h-screen p-6 transition-all duration-300 ease-in-out">
+  <main class="main-content ml-64 min-h-screen p-6 transition-all duration-300 ease-in-out">
     <div class="mx-auto max-w-screen-2xl">
       <!-- Header -->
       <div
@@ -42,7 +44,8 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
+
 </body>
 
 </html>

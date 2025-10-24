@@ -3,11 +3,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-/**
- * Aggregated model classes for Coffee_St.
- * Includes: Product, User, Cart, CartItem, Order, OrderItem
- */
-
 // ------------------------- Product -------------------------
 class Product
 {

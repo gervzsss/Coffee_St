@@ -1,7 +1,5 @@
 <?php require_once __DIR__ . '/../../src/includes/admin-auth-guard.php'; ?>
-<?php
-// Admin catalog management page
-?>
+
 <!doctype html>
 <html lang="en">
 
@@ -10,12 +8,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Catalog Management — Coffee St.</title>
   <link rel="stylesheet" href="/COFFEE_ST/dist/styles.css" />
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <script src="/COFFEE_ST/src/resources/js/admin-catalog.js"></script>
+  <?php include_once __DIR__ . '/../../src/includes/admin-scripts.php'; ?>
 </head>
 
 <body class="antialiased bg-gray-50 text-slate-800">
+
   <?php include_once __DIR__ . "/../../src/includes/admin-navbar.php"; ?>
 
   <div class="main-content min-h-screen p-6 ml-64 transition-all duration-300 ease-in-out">
@@ -26,8 +23,6 @@
   </div>
 
   <?php include_once __DIR__ . "/../../src/components/modals/admin-catalog-modal.php"; ?>
-
-  <script src="/COFFEE_ST/src/resources/js/admin-catalog.js"></script>
 
 </body>
 
