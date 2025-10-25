@@ -3,27 +3,32 @@ $(function () {
     $(".cart-count").text(count || 0);
   }
 
+  function updateItemLineTotal($item) {
+    var unit = parseFloat($item.attr('data-unit-price')) || 0;
+    var delta = parseFloat($item.attr('data-price-delta')) || 0;
+    var qty = parseInt($item.find('.qty-input').val(), 10) || 1;
+    qty = Math.max(1, qty);
+    var total = (unit + delta) * qty;
+    $item.find('.line-total').text(total.toFixed(2));
+  }
+
+  function setRemoveSelectedEnabled() {
+    var hasSel = $(".item-select:checked").length > 0;
+    $("#remove-selected").prop("disabled", !hasSel);
+  }
+
   // Compute and update summary values based on currently selected items on the cart page
   function updateSelectedSummary() {
     var $items = $(".cart-item");
-    if (!$items.length) return;
-    // Recompute each item's line total in the DOM
-    $items.each(function () {
-      var $it = $(this);
-      var unit = parseFloat($it.attr('data-unit-price')) || 0;
-      var delta = parseFloat($it.attr('data-price-delta')) || 0;
-      var qty = parseInt($it.find('.qty-input').val(), 10); if (!qty || qty < 1) qty = 1;
-      var line = (unit + delta) * qty;
-      $it.find('.line-total').text('₱' + line.toFixed(2));
-    });
-    // Sum only selected items for the summary, per current behavior
+    if (!$items.length) {
+      return;
+    }
     var subtotal = 0;
     $(".item-select:checked").each(function () {
       var $item = $(this).closest(".cart-item");
       var unit = parseFloat($item.attr("data-unit-price")) || 0;
       var delta = parseFloat($item.attr("data-price-delta")) || 0;
-      var qty = parseInt($item.find(".qty-input").val(), 10) || 1;
-      if (qty < 1) qty = 1;
+      var qty = parseInt($item.find(".qty-input").val(), 10) || 0;
       subtotal += (unit + delta) * qty;
     });
     // read delivery fee from DOM and compute tax at 8% (same as server)
@@ -292,7 +297,7 @@ $(function () {
       var current = parseInt($input.val(), 10) || 1;
       current = $(this).hasClass("increase-qty")
         ? current + 1
-        : Math.max(1, current - 1);
+        : Math.max(0, current - 1);
       $input.val(current);
       $.post("/COFFEE_ST/public/api/cart.php?action=setQty", {
         product_id: pid,
@@ -341,6 +346,8 @@ $(function () {
     var q = parseInt($input.val(), 10) || 1;
     q = $(this).hasClass("increase-qty") ? q + 1 : Math.max(1, q - 1);
     $input.val(q);
+    // Update line total immediately
+    updateItemLineTotal($wrap.closest('.cart-item'));
     $.post("/COFFEE_ST/public/api/cart.php?action=setQty", {
       product_id: pid,
       quantity: q,
@@ -352,6 +359,24 @@ $(function () {
         // No reload: keep UI live
       }
     });
+  });
+
+  // Direct quantity input change on cart page
+  $(document).on('input change', '.cart-item .qty-input', function () {
+    // Skip modal input handler
+    if ($(this).closest('#cart-modal').length) return;
+    var $wrap = $(this).closest('[data-product-id]');
+    var pid = parseInt($wrap.attr('data-product-id'), 10);
+    var val = parseInt($(this).val(), 10);
+    if (!val || val < 1) { val = 1; $(this).val(val); }
+    updateItemLineTotal($wrap.closest('.cart-item'));
+    $.post('/COFFEE_ST/public/api/cart.php?action=setQty', { product_id: pid, quantity: val })
+      .done(function (resp) {
+        if (resp && resp.success) {
+          recalc(resp.summary);
+          updateSelectedSummary();
+        }
+      });
   });
 
   $(document).on("click", ".remove-item", function () {
@@ -372,6 +397,7 @@ $(function () {
         var checked = $(".item-select:checked").length;
         $("#select-all").prop("checked", total > 0 && total === checked);
         updateSelectedSummary();
+        setRemoveSelectedEnabled();
         // Also remove from persisted selection
         try {
           var store = JSON.parse(sessionStorage.getItem("cartSelectedIds") || "[]");
@@ -419,6 +445,7 @@ $(function () {
     var checked = $(this).prop("checked");
     $(".item-select").prop("checked", checked);
     updateSelectedSummary();
+    setRemoveSelectedEnabled();
     try {
       var ids = checked ? $(".cart-item").map(function () { return parseInt($(this).attr("data-product-id"), 10) || null; }).get().filter(Boolean) : [];
       sessionStorage.setItem("cartSelectedIds", JSON.stringify(ids));
@@ -430,7 +457,7 @@ $(function () {
     var checked = $(".item-select:checked").length;
     $("#select-all").prop("checked", total === checked);
     updateSelectedSummary();
-    $("#cart-remove-selected").prop('disabled', checked === 0);
+    setRemoveSelectedEnabled();
     try {
       var store = JSON.parse(sessionStorage.getItem("cartSelectedIds") || "[]");
       var $item = $(this).closest(".cart-item");
@@ -460,10 +487,48 @@ $(function () {
       var total = $(".item-select").length;
       var checked = $(".item-select:checked").length;
       $("#select-all").prop("checked", total > 0 && total === checked);
-      $("#cart-remove-selected").prop('disabled', checked === 0);
     }
   } catch (e) { }
   updateSelectedSummary();
+  setRemoveSelectedEnabled();
+
+  // Bulk remove selected items
+  $(document).on('click', '#remove-selected', function () {
+    var ids = $(".item-select:checked").map(function () {
+      return parseInt($(this).closest('.cart-item').attr('data-product-id'), 10) || null;
+    }).get().filter(function (x) { return x !== null; });
+    if (!ids.length) {
+      if (window.Toast && typeof window.Toast.error === 'function') {
+        window.Toast.error('No items selected to remove.');
+      }
+      return;
+    }
+    var requests = [];
+    var lastSummary = null;
+    ids.forEach(function (pid) {
+      requests.push($.post('/COFFEE_ST/public/api/cart.php?action=remove', { product_id: pid })
+        .done(function (resp) { if (resp && resp.success) { lastSummary = resp.summary || lastSummary; } }));
+    });
+    $.when.apply($, requests).always(function () {
+      // Remove items from DOM
+      ids.forEach(function (pid) {
+        $(".cart-item[data-product-id='" + pid + "']").remove();
+      });
+      // Update selection state and summary
+      var total = $(".item-select").length;
+      var checked = $(".item-select:checked").length;
+      $("#select-all").prop("checked", total > 0 && total === checked);
+      if (lastSummary) recalc(lastSummary);
+      updateSelectedSummary();
+      setRemoveSelectedEnabled();
+      // Clean persisted selection
+      try {
+        var store = JSON.parse(sessionStorage.getItem('cartSelectedIds') || '[]');
+        ids.forEach(function (pid) { var i = store.indexOf(pid); if (i >= 0) store.splice(i, 1); });
+        sessionStorage.setItem('cartSelectedIds', JSON.stringify(store));
+      } catch (e) { }
+    });
+  });
 
   // Display any queued toast message from sessionStorage (e.g., redirect from checkout)
   try {
@@ -478,37 +543,4 @@ $(function () {
       }
     }
   } catch (e) { }
-
-  // Bulk remove selected items
-  $(document).on('click', '#cart-remove-selected', function () {
-    var ids = $(".item-select:checked").map(function () {
-      return parseInt($(this).closest('.cart-item').attr('data-product-id'), 10) || null;
-    }).get().filter(function (x) { return x !== null; });
-    if (!ids.length) return;
-    var reqs = [];
-    $.each(ids, function (_, pid) {
-      reqs.push($.post('/COFFEE_ST/public/api/cart.php?action=remove', { product_id: pid }));
-    });
-    $.when.apply($, reqs).always(function () {
-      // Remove from DOM and session selection
-      $(".item-select:checked").each(function () {
-        var $ci = $(this).closest('.cart-item');
-        var pid = parseInt($ci.attr('data-product-id'), 10);
-        $ci.remove();
-        try {
-          var store = JSON.parse(sessionStorage.getItem('cartSelectedIds') || '[]');
-          var idx = store.indexOf(pid); if (idx >= 0) { store.splice(idx, 1); sessionStorage.setItem('cartSelectedIds', JSON.stringify(store)); }
-        } catch (e) { }
-      });
-      // Refresh controls and summary
-      var total = $(".item-select").length;
-      var checked = $(".item-select:checked").length;
-      $("#select-all").prop("checked", total > 0 && total === checked);
-      $("#cart-remove-selected").prop('disabled', checked === 0);
-      updateSelectedSummary();
-      if (!$('.cart-item').length) {
-        if (window.Toast && Toast.success) Toast.success('All selected items removed.');
-      }
-    });
-  });
 });

@@ -16,11 +16,11 @@
           <span class="text-sm text-neutral-700">Select All Items
             (<?php echo array_sum(array_map(fn($i) => (int) ($i->quantity ?? 0), $items)); ?>)</span>
         </div>
-        <button id="cart-remove-selected"
-          class="inline-flex items-center gap-2 rounded border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
+        <button id="remove-selected"
+          class="inline-flex items-center gap-2 rounded border border-red-500 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled>
           <span>🗑</span>
-          Remove Selected
+          <span>Remove Selected</span>
         </button>
       </div>
 
@@ -47,15 +47,16 @@
               <div class="flex-1">
                 <div class="flex justify-between">
                   <h3 class="font-semibold text-lg"><?php echo htmlspecialchars($p?->name ?? ''); ?></h3>
-                  <span
-                    class="line-total font-semibold">₱<?php echo number_format(((float) ($it['unit_price'] ?? $it->unit_price ?? 0) + (float) ($it['price_delta'] ?? $it->price_delta ?? 0)) * (int) ($it['quantity'] ?? $it->quantity ?? 0), 2); ?></span>
+                  <span class="font-semibold">₱<span class="line-total">
+                      <?php echo number_format(((float) ($it['unit_price'] ?? $it->unit_price ?? 0) + (float) ($it['price_delta'] ?? $it->price_delta ?? 0)) * (int) ($it['quantity'] ?? $it->quantity ?? 0), 2); ?>
+                    </span></span>
                 </div>
                 <div class="mt-3 flex items-center gap-3"
                   data-product-id="<?php echo (int) ($it['product_id'] ?? $it->product_id ?? 0); ?>">
                   <button class="decrease-qty h-8 w-8 rounded-full border flex items-center justify-center"
                     aria-label="Decrease">−</button>
-                  <input type="text" class="qty-input w-12 text-center border rounded"
-                    value="<?php echo (int) ($it['quantity'] ?? $it->quantity ?? 0); ?>" />
+                  <input type="text" inputmode="numeric" pattern="[0-9]*" class="qty-input w-12 text-center border rounded"
+                    minlength="1" value="<?php echo (int) ($it['quantity'] ?? $it->quantity ?? 0); ?>" />
                   <button class="increase-qty h-8 w-8 rounded-full border flex items-center justify-center"
                     aria-label="Increase">+</button>
                   <button class="remove-item text-red-600 text-sm flex items-center gap-1"><span>🗑</span>Remove</button>
