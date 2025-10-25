@@ -10,10 +10,18 @@
   <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
     <!-- Items -->
     <section class="lg:col-span-2 space-y-4">
-      <div class="rounded-lg border bg-white p-4 flex items-center gap-3">
-        <input type="checkbox" class="h-5 w-5 text-[#30442B]" checked />
-        <span class="text-sm text-neutral-700">Select All Items
-          (<?php echo array_sum(array_map(fn($i) => (int) ($i->quantity ?? 0), $items)); ?>)</span>
+      <div class="rounded-lg border bg-white p-4 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <input type="checkbox" id="select-all" class="h-5 w-5 text-[#30442B]" checked />
+          <span class="text-sm text-neutral-700">Select All Items
+            (<?php echo array_sum(array_map(fn($i) => (int) ($i->quantity ?? 0), $items)); ?>)</span>
+        </div>
+        <button id="cart-remove-selected"
+          class="inline-flex items-center gap-2 rounded border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
+          disabled>
+          <span>🗑</span>
+          Remove Selected
+        </button>
       </div>
 
       <?php if (empty($items)): ?>
@@ -24,16 +32,23 @@
         <?php foreach ($items as $it): ?>
           <?php $pid = (int) ($it['product_id'] ?? $it->product_id ?? 0);
           $p = isset($products[$pid]) ? (object) $products[$pid] : null; ?>
-          <div class="rounded-lg border bg-white p-4 shadow-sm">
+          <div class="rounded-lg border bg-white p-4 shadow-sm cart-item"
+            data-product-id="<?php echo (int) ($it['product_id'] ?? $it->product_id ?? 0); ?>"
+            data-unit-price="<?php echo (float) ($it['unit_price'] ?? $it->unit_price ?? 0); ?>"
+            data-price-delta="<?php echo (float) ($it['price_delta'] ?? $it->price_delta ?? 0); ?>">
             <div class="flex items-center gap-3">
-              <input type="checkbox" class="h-5 w-5 text-[#30442B]" checked />
-              <img src="<?php echo htmlspecialchars($p?->image ?? '/COFFEE_ST/public/assets/placeholder.png'); ?>"
-                alt="<?php echo htmlspecialchars($p?->name ?? ''); ?>" class="h-20 w-20 object-cover rounded" />
+              <input type="checkbox" class="h-5 w-5 text-[#30442B] item-select" checked />
+              <?php if (!empty($p?->image_url)): ?>
+                <img src="<?php echo htmlspecialchars($p->image_url); ?>" alt="<?php echo htmlspecialchars($p?->name ?? ''); ?>"
+                  class="h-20 w-20 object-cover rounded" />
+              <?php else: ?>
+                <div class="h-20 w-20 rounded bg-gray-200"></div>
+              <?php endif; ?>
               <div class="flex-1">
                 <div class="flex justify-between">
                   <h3 class="font-semibold text-lg"><?php echo htmlspecialchars($p?->name ?? ''); ?></h3>
                   <span
-                    class="font-semibold">₱<?php echo number_format(((float) ($it['unit_price'] ?? $it->unit_price ?? 0) + (float) ($it['price_delta'] ?? $it->price_delta ?? 0)) * (int) ($it['quantity'] ?? $it->quantity ?? 0), 2); ?></span>
+                    class="line-total font-semibold">₱<?php echo number_format(((float) ($it['unit_price'] ?? $it->unit_price ?? 0) + (float) ($it['price_delta'] ?? $it->price_delta ?? 0)) * (int) ($it['quantity'] ?? $it->quantity ?? 0), 2); ?></span>
                 </div>
                 <div class="mt-3 flex items-center gap-3"
                   data-product-id="<?php echo (int) ($it['product_id'] ?? $it->product_id ?? 0); ?>">

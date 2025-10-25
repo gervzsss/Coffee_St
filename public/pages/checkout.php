@@ -16,7 +16,14 @@ $title = 'Checkout - Coffee St.';
 $productRepo = new ProductRepository(db());
 $controller = new CheckoutController(new CartRepository(db()), $productRepo);
 $singleParam = filter_input(INPUT_GET, 'single', FILTER_VALIDATE_INT);
-$data = $controller->getViewData($singleParam);
+$selectedRaw = isset($_GET['selected']) ? (string) $_GET['selected'] : '';
+$selectedIds = [];
+if ($selectedRaw !== '') {
+  // parse CSV of ints
+  $parts = array_filter(array_map('trim', explode(',', $selectedRaw)));
+  $selectedIds = array_values(array_filter(array_map('intval', $parts), static fn($v) => $v > 0));
+}
+$data = $controller->getViewData($singleParam ?: null, !empty($selectedIds) ? $selectedIds : null);
 
 ?>
 

@@ -110,7 +110,9 @@ class CartController
           $productMap[$pid] = [
             'id' => (int) $p->id,
             'name' => (string) $p->name,
-            'image' => (string) $p->image,
+            // Prefer Cloudinary URL if present; keep legacy image field for compatibility
+            'image_url' => (string) ($p->image_url ?? ''),
+            'image' => (string) ($p->image ?? ''),
             'price' => (float) $p->price,
           ];
         }

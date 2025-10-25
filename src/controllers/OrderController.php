@@ -31,12 +31,21 @@ class OrderController
     $singleProductId = isset($payload['single_product_id']) && $payload['single_product_id']
       ? (int) $payload['single_product_id']
       : null;
+    $selectedIds = isset($payload['selected_product_ids']) && is_array($payload['selected_product_ids'])
+      ? array_values(array_unique(array_map('intval', $payload['selected_product_ids'])))
+      : null;
 
     $items = $details['items'];
     if ($singleProductId) {
       $items = array_values(array_filter($items, static fn($it) => (int) $it->product_id === $singleProductId));
       if (empty($items)) {
         return ['success' => false, 'error' => 'Selected item is no longer in your cart.'];
+      }
+    } elseif ($selectedIds && count($selectedIds) > 0) {
+      $lookup = array_fill_keys($selectedIds, true);
+      $items = array_values(array_filter($items, static fn($it) => isset($lookup[(int) $it->product_id])));
+      if (empty($items)) {
+        return ['success' => false, 'error' => 'Selected items are no longer in your cart.'];
       }
     }
 
@@ -45,7 +54,7 @@ class OrderController
       $lineUnit = (float) $it->unit_price + (float) $it->price_delta;
       $subtotal += $lineUnit * (int) $it->quantity;
     }
-    if (!$singleProductId) {
+    if (!$singleProductId && !($selectedIds && count($selectedIds) > 0)) {
       $subtotal = $details['subtotal'];
     } else {
       $subtotal = round($subtotal, 2);
@@ -88,6 +97,14 @@ class OrderController
 
     if ($singleProductId) {
       $this->carts->removeItem($cart->id ?? 0, $singleProductId);
+      $remaining = $this->carts->getCartDetails($cart->id ?? 0);
+      if (($remaining['count'] ?? 0) <= 0) {
+        $this->carts->markConverted($cart->id ?? 0);
+      }
+    } elseif ($selectedIds && count($selectedIds) > 0) {
+      foreach ($selectedIds as $pid) {
+        $this->carts->removeItem($cart->id ?? 0, (int) $pid);
+      }
       $remaining = $this->carts->getCartDetails($cart->id ?? 0);
       if (($remaining['count'] ?? 0) <= 0) {
         $this->carts->markConverted($cart->id ?? 0);

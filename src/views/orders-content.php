@@ -21,7 +21,7 @@
             <td class="p-4 font-medium">#<?php echo (int) ($o->id ?? 0); ?></td>
             <td class="p-4"><?php echo htmlspecialchars(date('M j, Y g:i A', strtotime($o->created_at ?? 'now'))); ?>
             </td>
-            <td class="p-4 text-right">$<?php echo number_format($o->total ?? 0, 2); ?></td>
+            <td class="p-4 text-right">₱<?php echo number_format($o->total ?? 0, 2); ?></td>
             <td class="p-4 text-right">₱<?php echo number_format($o->total ?? 0, 2); ?></td>
             <td class="p-4 uppercase text-[#30442B]"><?php echo htmlspecialchars($o->status ?? ''); ?></td>
             <td class="p-4 text-right"><a class="text-[#30442B] underline"

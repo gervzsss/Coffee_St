@@ -14,7 +14,7 @@ class CheckoutController
   {
   }
 
-  public function getViewData(?int $singleProductId = null): array
+  public function getViewData(?int $singleProductId = null, ?array $selectedIds = null): array
   {
     $user = current_user() ?? [];
     $uid = (int) ($user['id'] ?? 0);
@@ -24,15 +24,23 @@ class CheckoutController
     $items = $details['items'] ?? [];
 
     $singleMode = $singleProductId ? true : false;
+    $selectedMode = ($selectedIds !== null && count($selectedIds) > 0);
     if ($singleMode) {
       $items = array_values(array_filter($items, static fn($it) => (int) $it->product_id === $singleProductId));
       if (empty($items)) {
         $singleMode = false;
         $singleProductId = null;
       }
+    } elseif ($selectedMode) {
+      $lookup = array_fill_keys(array_map('intval', $selectedIds), true);
+      $items = array_values(array_filter($items, static fn($it) => isset($lookup[(int) $it->product_id])));
+      if (empty($items)) {
+        $selectedMode = false;
+        $selectedIds = null;
+      }
     }
 
-    if ($singleMode) {
+    if ($singleMode || $selectedMode) {
       $subtotal = 0.0;
       foreach ($items as $line) {
         $lineUnit = (float) $line->unit_price + (float) $line->price_delta;
@@ -59,6 +67,8 @@ class CheckoutController
       'total' => $total,
       'singleMode' => $singleMode,
       'singleProductId' => $singleProductId,
+      'selectedMode' => $selectedMode,
+      'selectedIds' => $selectedIds,
       // Also expose repositories when needed by views
       'productRepo' => $this->products,
     ];

@@ -286,7 +286,7 @@ $(document).ready(function () {
     $("#replyError").addClass("hidden").text("");
     activeReplyButton = null;
   });
-  $(".confirm-ban").on("click", function () {
+  $("#banConfirmBtn").on("click", function () {
     alert("User has been deleted successfully");
     hideModal("banConfirmModal");
   });
@@ -370,7 +370,7 @@ $(document).ready(function () {
     if ($(this).is(":checked")) passwordFields.attr("type", "text");
     else passwordFields.attr("type", "password");
   });
-  $(".close-modal, .cancel-ban").on("click", function (e) {
+  $("#userDetailsCloseBtn, #banCancelBtn").on("click", function (e) {
     e.preventDefault();
     hideModal("userDetailsModal");
     hideModal("banConfirmModal");
@@ -484,7 +484,7 @@ $(document).ready(function () {
       modals.add.open();
     },
   );
-  $(document).on("click", ".close-modal, #modalBackdrop", function (e) {
+  $(document).on("click", "#addProductCloseBtn, #addProductCancelBtn, #modalBackdrop", function (e) {
     e.preventDefault();
     e.stopPropagation();
     modals.add.close();
@@ -644,7 +644,7 @@ $(document).ready(function () {
         alert("Failed to load product");
       });
   });
-  $(document).on("click", ".close-edit-modal, #editModalBackdrop", function () {
+  $(document).on("click", "#editProductCloseBtn, #editProductCancelBtn, #editModalBackdrop", function () {
     modals.edit.close();
   });
   // Preview selected image in Edit modal
@@ -717,7 +717,7 @@ $(document).ready(function () {
     $("#unavailableReason").val("");
     modals.unavailable.open();
   });
-  $(document).on("click", ".close-unavailable-modal", function (e) {
+  $(document).on("click", "#unavailableCloseBtn, #unavailableCancelBtn", function (e) {
     e.preventDefault();
     e.stopPropagation();
     modals.unavailable.close();
@@ -777,7 +777,7 @@ $(document).ready(function () {
     $("#historyEditList").html(editListHtml);
     modals.history.open();
   });
-  $(document).on("click", ".close-history-modal", function (e) {
+  $(document).on("click", "#historyCloseBtn, #historyFooterCloseBtn", function (e) {
     e.preventDefault();
     e.stopPropagation();
     modals.history.close();

@@ -30,6 +30,25 @@ try {
     'delivery_fee' => (float) ($_POST['delivery_fee'] ?? 1.78),
     'tax' => isset($_POST['tax']) ? (float) $_POST['tax'] : null,
     'single_product_id' => !empty($_POST['single_product_id']) ? (int) $_POST['single_product_id'] : null,
+    // New: accept selected product ids as JSON array
+    'selected_product_ids' => (function () {
+      if (!isset($_POST['selected_product_ids']))
+        return null;
+      $raw = $_POST['selected_product_ids'];
+      if (is_string($raw)) {
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+          return array_values(array_filter(array_map('intval', $decoded), static fn($v) => $v > 0));
+        }
+        // fallback: comma separated
+        $parts = array_filter(array_map('trim', explode(',', $raw)));
+        return array_values(array_filter(array_map('intval', $parts), static fn($v) => $v > 0));
+      }
+      if (is_array($raw)) {
+        return array_values(array_filter(array_map('intval', $raw), static fn($v) => $v > 0));
+      }
+      return null;
+    })(),
   ];
   echo json_encode($controller->checkout($payload));
 } catch (Throwable $e) {

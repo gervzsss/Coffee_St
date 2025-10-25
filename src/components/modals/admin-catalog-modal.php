@@ -14,8 +14,8 @@
       <div class="relative px-6 pt-6">
         <div class="flex items-center justify-between">
           <h2 class="text-2xl font-bold text-gray-900">Add New Product</h2>
-          <button type="button"
-            class="cursor-pointer close-modal absolute top-4 right-4 rounded-full p-2 text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-600">
+          <button type="button" id="addProductCloseBtn"
+            class="absolute top-4 right-4 cursor-pointer rounded-full p-2 text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-600">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -102,12 +102,12 @@
 
       <!-- Modal Footer -->
       <div class="flex justify-end gap-3 rounded-b-2xl bg-gray-50 px-6 py-4">
-        <button type="button"
-          class="cursor-pointer close-modal rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-[#30442B] focus:outline-none">
+        <button type="button" id="addProductCancelBtn"
+          class="cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-[#30442B] focus:outline-none">
           Cancel
         </button>
         <button type="submit" form="addProductForm" id="add-product-btn"
-          class="cursor-pointer flex items-center gap-2 rounded-lg bg-[#30442B] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#22301e] focus:ring-2 focus:ring-[#30442B] focus:ring-offset-2 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed">
+          class="flex cursor-pointer items-center gap-2 rounded-lg bg-[#30442B] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#22301e] focus:ring-2 focus:ring-[#30442B] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
@@ -119,10 +119,10 @@
 </div>
 
 <!-- Add Product Processing Overlay -->
-<div id="add-product-spinner" class="hidden fixed inset-0 z-[60] bg-black/40 items-center justify-center">
+<div id="add-product-spinner" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/40">
   <div class="flex flex-col items-center gap-3">
-    <div class="h-12 w-12 rounded-full border-4 border-gray-200 border-t-[#30442B] animate-spin"></div>
-    <p class="text-white text-sm">Adding product…</p>
+    <div class="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-[#30442B]"></div>
+    <p class="text-sm text-white">Adding product…</p>
   </div>
   <span class="sr-only">Product is being added</span>
   <div aria-live="polite" class="sr-only">Loading</div>
@@ -140,7 +140,7 @@
       <div class="relative px-6 pt-6">
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-semibold text-gray-900">Edit Product</h2>
-          <button type="button" class="cursor-pointer close-edit-modal text-gray-400 hover:text-gray-500">
+          <button type="button" id="editProductCloseBtn" class="cursor-pointer text-gray-400 hover:text-gray-500">
             <span class="sr-only">Close</span>
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -208,8 +208,8 @@
       </div>
 
       <div class="flex justify-end gap-3 rounded-b-2xl bg-gray-50 px-6 py-4">
-        <button type="button"
-          class="cursor-pointer close-edit-modal rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-[#30442B] focus:outline-none">
+        <button type="button" id="editProductCancelBtn"
+          class="cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-[#30442B] focus:outline-none">
           Cancel
         </button>
         <button type="submit" form="editProductForm"
@@ -235,7 +235,7 @@
           <h2 class="text-xl font-semibold text-gray-900">
             Mark as Unavailable
           </h2>
-          <button type="button" class="cursor-pointer close-unavailable-modal text-gray-400 hover:text-gray-500">
+          <button type="button" id="unavailableCloseBtn" class="cursor-pointer text-gray-400 hover:text-gray-500">
             <span class="sr-only">Close</span>
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -259,8 +259,8 @@
       </div>
 
       <div class="flex justify-end gap-3 rounded-b-2xl bg-gray-50 px-6 py-4">
-        <button type="button"
-          class="close-unavailable-modal cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-[#30442B] focus:outline-none">
+        <button type="button" id="unavailableCancelBtn"
+          class="cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-[#30442B] focus:outline-none">
           Cancel
         </button>
         <button type="submit" form="unavailableForm"
@@ -284,7 +284,7 @@
       <div class="relative px-6 pt-6">
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-semibold text-gray-900">Product History</h2>
-          <button type="button" class="cursor-pointer close-history-modal text-gray-400 hover:text-gray-500">
+          <button type="button" id="historyCloseBtn" class="cursor-pointer text-gray-400 hover:text-gray-500">
             <span class="sr-only">Close</span>
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -356,8 +356,8 @@
       </div>
 
       <div class="flex justify-end rounded-b-2xl bg-gray-50 px-6 py-4">
-        <button type="button"
-          class="close-history-modal cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-[#30442B] focus:outline-none">
+        <button type="button" id="historyFooterCloseBtn"
+          class="cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-[#30442B] focus:outline-none">
           Close
         </button>
       </div>

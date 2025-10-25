@@ -11,7 +11,7 @@ function renderUserDetailsModal()
           <h2 class="text-xl font-bold text-gray-800">
             User Details - <span id="modalUserName" class="text-[#30442B]"></span>
           </h2>
-          <button class="close-modal rounded-full p-2 transition-all hover:bg-gray-100">
+          <button id="userDetailsCloseBtn" class="rounded-full p-2 transition-all hover:bg-gray-100">
             <i class="fas fa-times text-gray-400"></i>
           </button>
         </div>
@@ -96,12 +96,12 @@ function renderBanConfirmModal()
         </p>
 
         <div class="flex items-center justify-center gap-3">
-          <button
-            class="cancel-ban cursor-pointer rounded-xl bg-gray-100 px-8 py-3 text-sm font-medium text-gray-700 transition-all hover:bg-gray-200">
+          <button id="banCancelBtn"
+            class="cursor-pointer rounded-xl bg-gray-100 px-8 py-3 text-sm font-medium text-gray-700 transition-all hover:bg-gray-200">
             Cancel
           </button>
-          <button
-            class="confirm-ban cursor-pointer rounded-xl bg-[#30442B] px-8 py-3 text-sm font-medium text-white transition-all hover:bg-[#3a5336]">
+          <button id="banConfirmBtn"
+            class="cursor-pointer rounded-xl bg-[#30442B] px-8 py-3 text-sm font-medium text-white transition-all hover:bg-[#3a5336]">
             Confirm
           </button>
         </div>

@@ -53,10 +53,13 @@
     });
 
     // Also hide overlay if the modal is closed manually for any reason
-    $(document).on("click", ".close-modal, #modalBackdrop, #addModalWrapper", function () {
-      inProgress = false;
-      hideOverlay();
-      enableButton();
-    });
+    $(document).on(
+      "click",
+      "#addProductCloseBtn, #addProductCancelBtn, #modalBackdrop, #addModalWrapper",
+      function () {
+        inProgress = false;
+        hideOverlay();
+        enableButton();
+      });
   });
 })(jQuery);
