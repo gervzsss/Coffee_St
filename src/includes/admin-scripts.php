@@ -10,3 +10,4 @@
 <script src="/COFFEE_ST/src/resources/js/utils/validators.js" defer></script>
 <script src="/COFFEE_ST/src/resources/js/utils/modal-utils.js" defer></script>
 <script src="/COFFEE_ST/src/resources/js/admin.js" defer></script>
+<script src="/COFFEE_ST/src/resources/js/admin-catalog.js" defer></script>

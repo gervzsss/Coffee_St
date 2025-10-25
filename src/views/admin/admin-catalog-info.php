@@ -61,9 +61,13 @@
         <select
           class="w-full appearance-none pl-4 pr-10 py-3 rounded-lg border border-[#415536] bg-white focus:border-[#415536] focus:ring-1 focus:ring-[#415536] text-gray-800 text-sm transition-all duration-300">
           <option value="">CATEGORIES</option>
-          <option value="coffee">Coffee</option>
-          <option value="tea">Tea</option>
+          <option value="hot-coffee">Hot Coffee</option>
+          <option value="iced-coffee">Iced Coffee</option>
+          <option value="frappe">Frappe</option>
+          <option value="non-coffee">Non-Coffee</option>
           <option value="pastries">Pastries</option>
+          <option value="cakes">Cakes</option>
+          <option value="buns">Buns</option>
         </select>
         <svg class="w-5 h-5 text-gray-400 absolute right-3 top-3.5" fill="none" stroke="currentColor"
           viewBox="0 0 24 24">
@@ -106,14 +110,14 @@ try {
     <h2 class="text-xl font-semibold text-gray-800">Active Products (All)</h2>
     <div class="flex gap-3">
       <button
-        class="open-modal px-6 py-2.5 bg-[#30442B] text-white rounded-lg hover:bg-[#22301e] transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg">
+        class="cursor-pointer open-modal px-6 py-2.5 bg-[#30442B] text-white rounded-lg hover:bg-[#22301e] transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>
         <span>Add Products</span>
       </button>
       <button
-        class="px-6 py-2.5 bg-[#30442B] text-white rounded-lg hover:bg-[#22301e] transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg">
+        class="cursor-pointer px-6 py-2.5 bg-[#30442B] text-white rounded-lg hover:bg-[#22301e] transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
@@ -159,7 +163,8 @@ try {
               <td class="py-4 px-4 text-gray-600"><?= htmlspecialchars($p['category']) ?></td>
               <td class="py-4 px-4 font-medium">₱<?= number_format((float) $p['price'], 2) ?></td>
               <td class="py-4 px-4 text-gray-600 max-w-md truncate" title="<?= htmlspecialchars($p['description']) ?>">
-                <?= htmlspecialchars($p['description']) ?></td>
+                <?= htmlspecialchars($p['description']) ?>
+              </td>
               <td class="py-4 px-4">
                 <?php if ((int) $p['is_active'] === 1): ?>
                   <span class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">Available</span>
@@ -182,7 +187,8 @@ try {
               </td>
               <td class="py-4 px-4">
                 <div class="flex justify-center gap-2">
-                  <button class="view-history p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                  <button
+                    class="view-history cursor-pointer p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
                     title="History" data-id="<?= (int) $p['id'] ?>">
                     <svg class="w-5 h-5 text-[#30442B] hover:text-[#967259]" fill="none" stroke="currentColor"
                       viewBox="0 0 24 24">
@@ -190,7 +196,8 @@ try {
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </button>
-                  <button class="edit-product p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                  <button
+                    class="edit-product cursor-pointer p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
                     title="Edit" data-id="<?= (int) $p['id'] ?>">
                     <svg class="w-5 h-5 text-[#30442B] hover:text-[#967259]" fill="none" stroke="currentColor"
                       viewBox="0 0 24 24">
@@ -198,7 +205,8 @@ try {
                         d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
                   </button>
-                  <button class="mark-unavailable p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                  <button
+                    class="mark-unavailable cursor-pointer p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
                     title="Mark as Unavailable" data-id="<?= (int) $p['id'] ?>">
                     <svg class="w-5 h-5 text-[#30442B] hover:text-[#967259]" fill="none" stroke="currentColor"
                       viewBox="0 0 24 24">
