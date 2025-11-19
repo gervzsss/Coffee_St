@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { getResponsiveImageUrl } from '../api/cloudinary';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axiosInstance from '../api/axios';
 
 export default function ProductCard({ product }) {
-  const { user } = useAuth();
+  const { user, openAuthModal } = useAuth();
+  const { showToast } = useToast();
   const [isAdding, setIsAdding] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -14,8 +16,8 @@ export default function ProductCard({ product }) {
 
   const handleAddToCart = async (variantId = null) => {
     if (!user) {
-      // Show auth modal or redirect to login
-      alert('Please log in to add items to cart');
+      showToast('Please log in to add items to cart', { type: 'warning', dismissible: true });
+      openAuthModal('login');
       return;
     }
 
@@ -39,10 +41,13 @@ export default function ProductCard({ product }) {
       // Dispatch cart update event
       window.dispatchEvent(new Event('cartUpdated'));
       
+      showToast(`${product.name} added to cart!`, { type: 'success', dismissible: true });
+      
       setTimeout(() => setAddedToCart(false), 2000);
     } catch (error) {
       console.error('Error adding to cart:', error);
-      alert(error.response?.data?.message || 'Failed to add to cart');
+      const errorMessage = error.response?.data?.message || 'Failed to add to cart';
+      showToast(errorMessage, { type: 'error', dismissible: true, duration: 4000 });
     } finally {
       setIsAdding(false);
     }
@@ -144,7 +149,7 @@ export default function ProductCard({ product }) {
             <button
               onClick={handleAddToCartClick}
               disabled={isAdding || addedToCart}
-              className={`flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white transition-colors duration-300 ${
+              className={`flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white transition-all duration-150 active:scale-95 ${
                 addedToCart
                   ? 'bg-green-500 cursor-default'
                   : isAdding

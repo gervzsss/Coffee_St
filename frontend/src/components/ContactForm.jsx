@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import api from '../api/axios';
+import { useToast } from '../context/ToastContext';
 
 export default function ContactForm() {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -76,6 +78,12 @@ export default function ContactForm() {
       });
       setErrors({});
 
+      showToast('Message sent successfully! We\'ll respond within 24 hours.', { 
+        type: 'success', 
+        dismissible: true, 
+        duration: 5000 
+      });
+
       // Hide success message after 8 seconds
       setTimeout(() => {
         setSubmitSuccess(false);
@@ -83,8 +91,10 @@ export default function ContactForm() {
       }, 8000);
     } catch (error) {
       console.error('Error submitting contact form:', error);
+      const errorMessage = error.response?.data?.message || 'Failed to send message. Please try again later.';
+      showToast(errorMessage, { type: 'error', dismissible: true, duration: 4000 });
       setErrors({
-        submit: 'Failed to send message. Please try again later.',
+        submit: errorMessage,
       });
     } finally {
       setIsSubmitting(false);

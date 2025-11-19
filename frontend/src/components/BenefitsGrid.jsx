@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useInView } from 'framer-motion';
+import { useRef } from 'react';
 
 export default function BenefitsGrid() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
+
   const benefits = [
     {
       id: 1,
@@ -142,8 +148,30 @@ export default function BenefitsGrid() {
     },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut',
+      },
+    },
+  };
+
   return (
-    <section className="bg-[#FDFBF6] px-4 py-16 md:px-8">
+    <section ref={ref} className="bg-[#FDFBF6] px-4 py-16 md:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold text-[#30442B] md:text-4xl">
@@ -170,10 +198,16 @@ export default function BenefitsGrid() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+        >
           {benefits.map((benefit) => (
-            <div
+            <motion.div
               key={benefit.id}
+              variants={cardVariants}
               className="benefit-card transform rounded-xl bg-white p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg"
             >
               <div className="icon-container mb-4 text-center">
@@ -183,9 +217,9 @@ export default function BenefitsGrid() {
                 {benefit.title}
               </h3>
               <p className="text-center text-gray-600">{benefit.description}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

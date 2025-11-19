@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import api from '../api/axios';
 import logo from '../assets/stcoffeelogo.png';
 
 export default function Header() {
+  const { showToast } = useToast();
   const [cartCount, setCartCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -58,8 +60,10 @@ export default function Header() {
     try {
       await logout();
       setCartCount(0);
+      showToast('Logged out successfully', { type: 'info', dismissible: true });
     } catch (error) {
       console.error('Logout error:', error);
+      showToast('Logout failed. Please try again.', { type: 'error', dismissible: true });
     }
   };
 

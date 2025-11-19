@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
+  const { showToast } = useToast();
   const [mode, setMode] = useState(initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -52,6 +54,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
 
     try {
       await login(loginEmail, loginPassword);
+      showToast('Welcome back! Login successful.', { type: 'success', dismissible: true });
       onClose();
       resetForms();
     } catch (err) {
@@ -59,7 +62,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
       if (errorData?.errors) {
         setErrors(errorData.errors);
       } else {
-        setErrors({ general: errorData?.message || 'Login failed. Please check your credentials.' });
+        const errorMessage = errorData?.message || 'Login failed. Please check your credentials.';
+        setErrors({ general: errorMessage });
+        showToast(errorMessage, { type: 'error', dismissible: true, duration: 4000 });
       }
     } finally {
       setLoading(false);
@@ -73,6 +78,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
 
     if (signupPassword !== passwordConfirmation) {
       setErrors({ password_confirmation: ['Passwords do not match'] });
+      showToast('Passwords do not match', { type: 'error', dismissible: true });
       setLoading(false);
       return;
     }
@@ -80,6 +86,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
     try {
       const fullName = `${firstName} ${lastName}`;
       await signup(fullName, signupEmail, signupPassword, passwordConfirmation, address, phone);
+      showToast('Account created successfully! Welcome to Coffee St.', { type: 'success', dismissible: true, duration: 4000 });
       onClose();
       resetForms();
     } catch (err) {
@@ -87,7 +94,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
       if (errorData?.errors) {
         setErrors(errorData.errors);
       } else {
-        setErrors({ general: errorData?.message || 'Signup failed. Please try again.' });
+        const errorMessage = errorData?.message || 'Signup failed. Please try again.';
+        setErrors({ general: errorMessage });
+        showToast(errorMessage, { type: 'error', dismissible: true, duration: 4000 });
       }
     } finally {
       setLoading(false);
