@@ -1,0 +1,95 @@
+services:
+  # MySQL Database Service
+  db:
+    image: mysql:8.0
+    container_name: coffe_st_db
+    restart: unless-stopped
+    ports:
+      - "4306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - coffe_st_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Laravel Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: coffe_st_backend
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+      - backend_storage:/var/www/html/storage
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - coffe_st_network
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  # Nginx Web Server for Backend (Optional - if using nginx instead of artisan serve)
+  nginx:
+    image: nginx:alpine
+    container_name: coffe_st_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - backend
+    networks:
+      - coffe_st_network
+
+  # React Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: coffe_st_frontend
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - coffe_st_network
+
+  # Redis Cache Service (Optional but recommended for Laravel)
+  redis:
+    image: redis:alpine
+    container_name: coffe_st_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - coffe_st_network
+
+networks:
+  coffe_st_network:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+  backend_storage:
+    driver: local
+  redis_data:
+    driver: local
