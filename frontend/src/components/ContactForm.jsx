@@ -12,31 +12,59 @@ export default function ContactForm() {
   });
 
   const [errors, setErrors] = useState({});
+  const [fieldInteraction, setFieldInteraction] = useState({});
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [threadId, setThreadId] = useState(null);
 
+  // Validation regex (matching jQuery logic)
+  const nameRegex = /^[A-Za-z\s.\-']+$/;
+  const emailRegex = /^[A-Za-z0-9._\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/;
+
+  // Field validators
+  const validators = {
+    name: (value) => {
+      const trimmed = value.trim();
+      if (!trimmed) return 'Name is required.';
+      if (!nameRegex.test(trimmed)) return 'Please enter a valid name.';
+      return null;
+    },
+    email: (value) => {
+      const trimmed = value.trim();
+      if (!trimmed) return 'Email is required.';
+      if (!emailRegex.test(trimmed))
+        return 'Please enter a valid email address.';
+      return null;
+    },
+    subject: (value) => {
+      const trimmed = value.trim();
+      if (!trimmed) return 'Subject is required.';
+      if (trimmed.length < 3) return 'Subject should be at least 3 characters.';
+      return null;
+    },
+    message: (value) => {
+      const trimmed = value.trim();
+      if (!trimmed) return 'Message is required.';
+      if (trimmed.length < 10)
+        return 'Message should be at least 10 characters.';
+      return null;
+    },
+  };
+
+  const validateField = (name, value) => {
+    const validator = validators[name];
+    return validator ? validator(value) : null;
+  };
+
   const validateForm = () => {
     const newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    if (!formData.subject.trim()) {
-      newErrors.subject = 'Subject is required';
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-    }
-
+    Object.keys(formData).forEach((fieldName) => {
+      const error = validateField(fieldName, formData[fieldName]);
+      if (error) {
+        newErrors[fieldName] = error;
+      }
+    });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -48,17 +76,43 @@ export default function ContactForm() {
       [name]: value,
     }));
 
-    // Clear error for this field when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }));
+    // Mark field as interacted
+    setFieldInteraction((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
+
+    // Live validation on input
+    const error = validateField(name, value);
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    // Only validate on blur if form was submitted or field was interacted with
+    if (!formSubmitted && !fieldInteraction[name]) return;
+
+    const error = validateField(name, value);
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
+
+  const handleKeyDown = (e) => {
+    // Prevent Enter from submitting unless in textarea
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+      e.preventDefault();
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormSubmitted(true);
 
     if (!validateForm()) {
       return;
@@ -77,11 +131,13 @@ export default function ContactForm() {
         message: '',
       });
       setErrors({});
+      setFormSubmitted(false);
+      setFieldInteraction({});
 
-      showToast('Message sent successfully! We\'ll respond within 24 hours.', { 
-        type: 'success', 
-        dismissible: true, 
-        duration: 5000 
+      showToast("Message sent successfully! We'll respond within 24 hours.", {
+        type: 'success',
+        dismissible: true,
+        duration: 5000,
       });
 
       // Hide success message after 8 seconds
@@ -91,8 +147,14 @@ export default function ContactForm() {
       }, 8000);
     } catch (error) {
       console.error('Error submitting contact form:', error);
-      const errorMessage = error.response?.data?.message || 'Failed to send message. Please try again later.';
-      showToast(errorMessage, { type: 'error', dismissible: true, duration: 4000 });
+      const errorMessage =
+        error.response?.data?.message ||
+        'Failed to send message. Please try again later.';
+      showToast(errorMessage, {
+        type: 'error',
+        dismissible: true,
+        duration: 4000,
+      });
       setErrors({
         submit: errorMessage,
       });
@@ -101,13 +163,27 @@ export default function ContactForm() {
     }
   };
 
+  // Helper to get input classes with conditional error styling
+  const getInputClasses = (fieldName) => {
+    const baseClasses =
+      'mt-2 w-full rounded-2xl border bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:outline-none focus:ring-4';
+    const errorClasses = errors[fieldName]
+      ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20'
+      : 'border-neutral-200 focus:border-[#30442B] focus:ring-[#30442B]/15';
+    return `${baseClasses} ${errorClasses}`;
+  };
+
   return (
     <div className="flex-1">
       <div className="relative overflow-hidden rounded-3xl bg-white/95 p-6 shadow-2xl shadow-[#30442B]/10 ring-1 ring-[#30442B]/10 sm:p-10">
         <div className="absolute -top-20 -right-16 h-48 w-48 rounded-full bg-amber-100 opacity-60 blur-3xl"></div>
         <div className="relative">
-          <h2 className="font-outfit text-3xl font-semibold text-[#30442B]">Send us a message</h2>
-          <p className="mt-3 text-sm text-neutral-500">All fields are required so we can serve you better.</p>
+          <h2 className="font-outfit text-3xl font-semibold text-[#30442B]">
+            Send us a message
+          </h2>
+          <p className="mt-3 text-sm text-neutral-500">
+            All fields are required so we can serve you better.
+          </p>
 
           {submitSuccess && (
             <div className="mt-6 rounded-2xl bg-green-50 border border-green-200 p-4 text-green-800">
@@ -115,7 +191,8 @@ export default function ContactForm() {
               <p className="text-sm mt-1">We'll respond within 24 hours.</p>
               {threadId && (
                 <p className="text-xs mt-2 text-green-700">
-                  Reference ID: <span className="font-mono font-semibold">{threadId}</span>
+                  Reference ID:{' '}
+                  <span className="font-mono font-semibold">{threadId}</span>
                 </p>
               )}
             </div>
@@ -127,7 +204,12 @@ export default function ContactForm() {
             </div>
           )}
 
-          <form id="contact-form" className="mt-8 space-y-7" onSubmit={handleSubmit} noValidate>
+          <form
+            id="contact-form"
+            className="mt-8 space-y-7"
+            onSubmit={handleSubmit}
+            noValidate
+          >
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
                 <label
@@ -143,12 +225,17 @@ export default function ContactForm() {
                   autoComplete="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="mt-2 w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/15"
+                  onBlur={handleBlur}
+                  onKeyDown={handleKeyDown}
+                  className={getInputClasses('name')}
                   placeholder="Your full name"
                   aria-describedby="contact-name-error"
                 />
                 {errors.name && (
-                  <p id="contact-name-error" className="mt-2 text-sm font-medium text-red-500">
+                  <p
+                    id="contact-name-error"
+                    className="mt-2 text-sm font-medium text-red-500"
+                  >
                     {errors.name}
                   </p>
                 )}
@@ -167,12 +254,17 @@ export default function ContactForm() {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="mt-2 w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/15"
+                  onBlur={handleBlur}
+                  onKeyDown={handleKeyDown}
+                  className={getInputClasses('email')}
                   placeholder="name@example.com"
                   aria-describedby="contact-email-error"
                 />
                 {errors.email && (
-                  <p id="contact-email-error" className="mt-2 text-sm font-medium text-red-500">
+                  <p
+                    id="contact-email-error"
+                    className="mt-2 text-sm font-medium text-red-500"
+                  >
                     {errors.email}
                   </p>
                 )}
@@ -192,12 +284,17 @@ export default function ContactForm() {
                 autoComplete="off"
                 value={formData.subject}
                 onChange={handleChange}
-                className="mt-2 w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/15"
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                className={getInputClasses('subject')}
                 placeholder="Let us know how we can help"
                 aria-describedby="contact-subject-error"
               />
               {errors.subject && (
-                <p id="contact-subject-error" className="mt-2 text-sm font-medium text-red-500">
+                <p
+                  id="contact-subject-error"
+                  className="mt-2 text-sm font-medium text-red-500"
+                >
                   {errors.subject}
                 </p>
               )}
@@ -216,18 +313,25 @@ export default function ContactForm() {
                 autoComplete="off"
                 value={formData.message}
                 onChange={handleChange}
-                className="mt-2 w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/15"
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                className={getInputClasses('message')}
                 placeholder="Share the details so we can tailor our reply"
                 aria-describedby="contact-message-error"
               ></textarea>
               {errors.message && (
-                <p id="contact-message-error" className="mt-2 text-sm font-medium text-red-500">
+                <p
+                  id="contact-message-error"
+                  className="mt-2 text-sm font-medium text-red-500"
+                >
                   {errors.message}
                 </p>
               )}
             </div>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-neutral-500">We'll respond within 24 hours — promise.</p>
+              <p className="text-sm text-neutral-500">
+                We'll respond within 24 hours — promise.
+              </p>
               <button
                 type="submit"
                 disabled={isSubmitting}
