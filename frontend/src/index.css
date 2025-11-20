@@ -13,6 +13,44 @@
     font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto,
       'Helvetica Neue', Arial;
   }
+
+  /* Custom Scrollbar Styling */
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #30442B #f5f5f5;
+  }
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #30442B;
+    border-radius: 8px;
+    border: 2px solid #f5f5f5;
+    transition: background 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #405939;
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: #253319;
+  }
+
+  /* Horizontal scrollbar styling (if needed) */
+  ::-webkit-scrollbar-corner {
+    background: #f5f5f5;
+  }
 }
 
 @layer utilities {
