@@ -9,7 +9,6 @@ export default function Header() {
   const { showToast } = useToast();
   const [cartCount, setCartCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [scrollProgress, setScrollProgress] = useState(0);
   
   const location = useLocation();
@@ -64,15 +63,6 @@ export default function Header() {
     } catch (error) {
       console.error('Logout error:', error);
       showToast('Logout failed. Please try again.', { type: 'error', dismissible: true });
-    }
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      // Navigate to products with search query
-      // This can be implemented when you add the products page
-      console.log('Searching for:', searchQuery);
     }
   };
 
@@ -151,39 +141,6 @@ export default function Header() {
 
           {/* Right Side Elements */}
           <div className="flex items-center gap-8">
-            {/* Search Box */}
-            <div className="hidden md:flex items-center relative group">
-              <form onSubmit={handleSearch}>
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-52 h-11 pl-12 pr-4 rounded-full bg-white border-2 border-gray-200/80 text-[#30442B] placeholder-gray-400 font-outfit text-[15px] tracking-wide transition-all duration-300 ease-out focus:border-[#30442B] focus:outline-none focus:ring-4 focus:ring-[#30442B]/10 group-hover:border-[#30442B]"
-                />
-                <button
-                  type="submit"
-                  className="absolute left-4 text-gray-400 transition-all duration-300 ease-out group-hover:text-[#30442B] group-focus-within:text-[#30442B] transform group-hover:scale-110 group-hover:rotate-12"
-                  aria-label="Search"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
-              </form>
-            </div>
-
             {/* Cart */}
             <Link to="/cart" className="relative flex items-center gap-2 group">
               <div className="relative flex items-center gap-2.5 py-2 px-4 rounded-full transition-all duration-300 ease-out bg-transparent hover:bg-[#30442B]/5">
@@ -270,41 +227,6 @@ export default function Header() {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden pb-8 px-6 bg-white border-t border-gray-100">
-            {/* Mobile Search */}
-            <div className="pt-6 pb-4">
-              <div className="relative group">
-                <form onSubmit={handleSearch}>
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-12 pl-12 pr-4 rounded-full bg-white border-2 border-gray-100 text-gray-700 placeholder-gray-400 font-outfit text-base transition-all duration-300 ease-in-out focus:border-[#30442B] focus:outline-none focus:ring-2 focus:ring-[#30442B]/10 group-hover:border-[#30442B]/30"
-                  />
-                  <button
-                    type="submit"
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-300 ease-in-out group-hover:text-[#30442B] group-focus-within:text-[#30442B] transform group-hover:scale-110"
-                    aria-label="Search"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </button>
-                </form>
-              </div>
-            </div>
-
             {/* Mobile Navigation Links */}
             <div className="flex flex-col space-y-6 pt-4">
               {navLinks.map((link) => (
