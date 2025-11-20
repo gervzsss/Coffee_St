@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 
-export default function CategorySidebar({ 
-  categories, 
-  selectedCategory, 
+export default function CategorySidebar({
+  categories,
+  selectedCategory,
   onCategoryChange,
-  productCounts = {} 
+  productCounts = {},
 }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -14,8 +14,8 @@ export default function CategorySidebar({
   }, [selectedCategory]);
 
   // Group categories by section
-  const drinkCategories = categories.filter(c => c.section === 'drinks');
-  const pastryCategories = categories.filter(c => c.section === 'pastries');
+  const drinkCategories = categories.filter((c) => c.section === 'drinks');
+  const pastryCategories = categories.filter((c) => c.section === 'pastries');
 
   const CategoryButton = ({ category, count, isAllProducts = false }) => (
     <button
@@ -26,9 +26,9 @@ export default function CategorySidebar({
         selectedCategory === category.value ? 'bg-[#30442B]/5' : ''
       }`}
     >
-      <span className="flex items-center gap-4">
-        <span className="text-xl">{category.icon}</span>
-        <span className="font-medium">{category.label}</span>
+      <span className="flex items-center gap-4 category-label">
+        <span className="category-icon text-xl">{category.icon}</span>
+        <span className="category-text font-medium">{category.label}</span>
       </span>
     </button>
   );
@@ -73,7 +73,7 @@ export default function CategorySidebar({
       )}
 
       {/* Sidebar */}
-      <aside
+      <nav
         className={`
           fixed lg:sticky lg:top-28
           w-full lg:w-80 xl:w-96
@@ -81,16 +81,22 @@ export default function CategorySidebar({
           bg-white
           rounded-none lg:rounded-xl
           shadow-xl
+          p-6
           z-40 lg:z-0
           transform lg:transform-none
           transition-transform duration-300
           overflow-y-auto
           border border-gray-100
           lg:max-h-[calc(100vh-140px)]
-          ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          lg:overflow-y-auto
+          ${
+            isMobileOpen
+              ? 'translate-x-0'
+              : '-translate-x-full lg:translate-x-0'
+          }
         `}
       >
-        <div className="p-6">
+        <div>
           {/* Mobile Header */}
           <div className="lg:hidden flex items-center justify-between mb-4 pb-4 border-b">
             <h2 className="text-xl font-bold text-[#30442B]">Categories</h2>
@@ -115,7 +121,7 @@ export default function CategorySidebar({
           </div>
 
           {/* Drinks Section */}
-          <div className="space-y-8 mb-12">
+          <div className="space-y-6 mb-8">
             {/* All Products - Above Drinks Header */}
             <div className="mb-4">
               <CategoryButton
@@ -125,10 +131,12 @@ export default function CategorySidebar({
             </div>
 
             {/* Drinks Header */}
-            <h3 className="text-[#30442B] font-bold text-3xl px-2 mb-6">Drinks</h3>
+            <h3 className="text-[#30442B] font-bold text-3xl px-2 mb-4">
+              Drinks
+            </h3>
 
             {/* Drinks Categories */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               {drinkCategories.map((category) => (
                 <CategoryButton
                   key={category.value}
@@ -140,14 +148,14 @@ export default function CategorySidebar({
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-gray-200 mb-8"></div>
+          <div className="h-px bg-gray-200 mb-6"></div>
 
           {/* Pastries Section */}
-          <div className="space-y-6">
-            <h3 className="text-[#30442B] font-bold text-2xl px-2 mb-6">
+          <div className="space-y-4">
+            <h3 className="text-[#30442B] font-bold text-2xl px-2 mb-4">
               Pastries & Desserts
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {pastryCategories.map((category) => (
                 <CategoryButton
                   key={category.value}
@@ -157,13 +165,8 @@ export default function CategorySidebar({
               ))}
             </div>
           </div>
-
-          {/* Mobile Indicator */}
-          <div className="lg:hidden text-sm text-gray-400 text-center mt-8">
-            <span>Scroll horizontally to see more categories →</span>
-          </div>
         </div>
-      </aside>
+      </nav>
     </>
   );
 }

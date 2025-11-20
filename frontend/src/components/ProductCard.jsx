@@ -12,11 +12,15 @@ export default function ProductCard({ product }) {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [showVariantModal, setShowVariantModal] = useState(false);
 
-  const hasVariants = product.active_variants && product.active_variants.length > 0;
+  const hasVariants =
+    product.active_variants && product.active_variants.length > 0;
 
   const handleAddToCart = async (variantId = null) => {
     if (!user) {
-      showToast('Please log in to add items to cart', { type: 'warning', dismissible: true });
+      showToast('Please log in to add items to cart', {
+        type: 'warning',
+        dismissible: true,
+      });
       openAuthModal('login');
       return;
     }
@@ -27,27 +31,35 @@ export default function ProductCard({ product }) {
         product_id: product.id,
         quantity: 1,
       };
-      
+
       if (variantId) {
         payload.variant_id = variantId;
       }
 
       await axiosInstance.post('/cart', payload);
-      
+
       setAddedToCart(true);
       setShowVariantModal(false);
       setSelectedVariant(null);
-      
+
       // Dispatch cart update event
       window.dispatchEvent(new Event('cartUpdated'));
-      
-      showToast(`${product.name} added to cart!`, { type: 'success', dismissible: true });
-      
+
+      showToast(`${product.name} added to cart!`, {
+        type: 'success',
+        dismissible: true,
+      });
+
       setTimeout(() => setAddedToCart(false), 2000);
     } catch (error) {
       console.error('Error adding to cart:', error);
-      const errorMessage = error.response?.data?.message || 'Failed to add to cart';
-      showToast(errorMessage, { type: 'error', dismissible: true, duration: 4000 });
+      const errorMessage =
+        error.response?.data?.message || 'Failed to add to cart';
+      showToast(errorMessage, {
+        type: 'error',
+        dismissible: true,
+        duration: 4000,
+      });
     } finally {
       setIsAdding(false);
     }
@@ -78,7 +90,7 @@ export default function ProductCard({ product }) {
   };
 
   // Get optimized image URL
-  const imageUrl = product.image_url 
+  const imageUrl = product.image_url
     ? getResponsiveImageUrl(product.image_url, 800)
     : '/assets/americano.png'; // Fallback image
 
@@ -100,7 +112,7 @@ export default function ProductCard({ product }) {
           </div>
           {/* Gradient overlay on hover */}
           <div className="absolute inset-0 bg-linear-to-r from-[#30442B]/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-          
+
           {/* Added to cart overlay */}
           {addedToCart && (
             <div className="absolute inset-0 bg-green-500 bg-opacity-90 flex items-center justify-center">
@@ -127,11 +139,11 @@ export default function ProductCard({ product }) {
         {/* Product Details */}
         <div className="flex flex-1 flex-col bg-white p-6">
           <div className="mb-2">
-            <h3 className="text-xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-[#30442B]">
+            <h3 className="font-playfair text-xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-[#30442B]">
               {product.name}
             </h3>
           </div>
-          
+
           <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-gray-600">
             {product.description}
           </p>
@@ -140,12 +152,14 @@ export default function ProductCard({ product }) {
           <div className="mt-auto flex items-center justify-between pt-2">
             <span className="text-xl font-bold text-[#30442B]">
               {hasVariants ? (
-                <span className="text-base">From ₱{parseFloat(product.price).toFixed(2)}</span>
+                <span className="text-base">
+                  From ₱{parseFloat(product.price).toFixed(2)}
+                </span>
               ) : (
                 `₱${parseFloat(product.price).toFixed(2)}`
               )}
             </span>
-            
+
             <button
               onClick={handleAddToCartClick}
               disabled={isAdding || addedToCart}
@@ -157,7 +171,12 @@ export default function ProductCard({ product }) {
                   : 'bg-[#30442B] hover:bg-[#405939]'
               }`}
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -173,19 +192,37 @@ export default function ProductCard({ product }) {
 
       {/* Variant Selection Modal */}
       {showVariantModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={() => setShowVariantModal(false)}>
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setShowVariantModal(false)}
+        >
+          <div
+            className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h3 className="text-xl font-bold text-[#30442B]">{product.name}</h3>
+                <h3 className="text-xl font-bold text-[#30442B]">
+                  {product.name}
+                </h3>
                 <p className="text-sm text-gray-600 mt-1">Select a variant</p>
               </div>
               <button
                 onClick={() => setShowVariantModal(false)}
                 className="text-gray-400 hover:text-gray-600 transition"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -208,7 +245,8 @@ export default function ProductCard({ product }) {
                       </p>
                       {variant.price_delta !== 0 && (
                         <p className="text-sm text-gray-500 mt-1">
-                          {variant.price_delta > 0 ? '+' : ''}₱{variant.price_delta.toFixed(2)}
+                          {variant.price_delta > 0 ? '+' : ''}₱
+                          {variant.price_delta.toFixed(2)}
                         </p>
                       )}
                     </div>

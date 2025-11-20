@@ -40,14 +40,14 @@ export default function Products() {
       setLoading(true);
       const response = await axiosInstance.get('/products');
       setProducts(response.data);
-      
+
       // Calculate product counts per category
       const counts = response.data.reduce((acc, product) => {
         acc[product.category] = (acc[product.category] || 0) + 1;
         return acc;
       }, {});
       setProductCounts(counts);
-      
+
       setError(null);
     } catch (err) {
       console.error('Error fetching products:', err);
@@ -97,7 +97,7 @@ export default function Products() {
       <Header />
       <div className="pt-20 min-h-screen bg-gray-50">
         {/* Header Section with Search */}
-        <div className="w-full bg-[#30442B] py-6">
+        <div className="w-full bg-[#30442B] py-8">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -183,17 +183,14 @@ export default function Products() {
 
               {/* Products Grid */}
               {!loading && !error && filteredProducts.length > 0 && (
-                <>
-                  <div className="mb-4 text-gray-600">
-                    Showing {filteredProducts.length} product
-                    {filteredProducts.length !== 1 ? 's' : ''}
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                    {filteredProducts.map((product) => (
-                      <ProductCard key={product.id} product={product} />
-                    ))}
-                  </div>
-                </>
+                <div
+                  className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
+                  style={{ gridAutoRows: '1fr' }}
+                >
+                  {filteredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
               )}
             </main>
           </div>
