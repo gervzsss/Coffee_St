@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
+import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
 import { validators } from '../utils/authValidators';
-import { useFieldValidation } from '../utils/useFieldValidation';
+import { useFieldValidation } from '../hooks/useFieldValidation';
 
 export default function SignupForm({ onClose, onSwitchToLogin }) {
   const { showToast } = useToast();
@@ -35,7 +35,6 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
     markFormSubmitted();
     setErrors({});
 
-    // Validate all fields
     const firstNameError = validators.firstName(firstName);
     const lastNameError = validators.lastName(lastName);
     const addressError = validators.address(address);
@@ -94,7 +93,6 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
         const errorMsg =
           errorData?.message || Object.values(errorData.errors)[0][0];
         if (errorMsg.toLowerCase().includes('email')) {
-          // Email error handled by errors state
         } else {
           showToast(errorMsg, {
             type: 'error',

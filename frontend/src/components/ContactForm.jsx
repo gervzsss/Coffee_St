@@ -1,177 +1,17 @@
-import { useState } from 'react';
-import api from '../api/axios';
-import { useToast } from '../context/ToastContext';
+import { useContactForm } from '../hooks';
+import { preventEnterSubmit, getInputClasses } from '../utils/formHelpers';
 
 export default function ContactForm() {
-  const { showToast } = useToast();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
-
-  const [errors, setErrors] = useState({});
-  const [fieldInteraction, setFieldInteraction] = useState({});
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [threadId, setThreadId] = useState(null);
-
-  // Validation regex (matching jQuery logic)
-  const nameRegex = /^[A-Za-z\s.\-']+$/;
-  const emailRegex = /^[A-Za-z0-9._\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/;
-
-  // Field validators
-  const validators = {
-    name: (value) => {
-      const trimmed = value.trim();
-      if (!trimmed) return 'Name is required.';
-      if (!nameRegex.test(trimmed)) return 'Please enter a valid name.';
-      return null;
-    },
-    email: (value) => {
-      const trimmed = value.trim();
-      if (!trimmed) return 'Email is required.';
-      if (!emailRegex.test(trimmed))
-        return 'Please enter a valid email address.';
-      return null;
-    },
-    subject: (value) => {
-      const trimmed = value.trim();
-      if (!trimmed) return 'Subject is required.';
-      if (trimmed.length < 3) return 'Subject should be at least 3 characters.';
-      return null;
-    },
-    message: (value) => {
-      const trimmed = value.trim();
-      if (!trimmed) return 'Message is required.';
-      if (trimmed.length < 10)
-        return 'Message should be at least 10 characters.';
-      return null;
-    },
-  };
-
-  const validateField = (name, value) => {
-    const validator = validators[name];
-    return validator ? validator(value) : null;
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    Object.keys(formData).forEach((fieldName) => {
-      const error = validateField(fieldName, formData[fieldName]);
-      if (error) {
-        newErrors[fieldName] = error;
-      }
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Mark field as interacted
-    setFieldInteraction((prev) => ({
-      ...prev,
-      [name]: true,
-    }));
-
-    // Live validation on input
-    const error = validateField(name, value);
-    setErrors((prev) => ({
-      ...prev,
-      [name]: error,
-    }));
-  };
-
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-
-    // Only validate on blur if form was submitted or field was interacted with
-    if (!formSubmitted && !fieldInteraction[name]) return;
-
-    const error = validateField(name, value);
-    setErrors((prev) => ({
-      ...prev,
-      [name]: error,
-    }));
-  };
-
-  const handleKeyDown = (e) => {
-    // Prevent Enter from submitting unless in textarea
-    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-      e.preventDefault();
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const response = await api.post('/contact', formData);
-      setSubmitSuccess(true);
-      setThreadId(response.data.thread_id);
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-      });
-      setErrors({});
-      setFormSubmitted(false);
-      setFieldInteraction({});
-
-      showToast("Message sent successfully! We'll respond within 24 hours.", {
-        type: 'success',
-        dismissible: true,
-        duration: 5000,
-      });
-
-      // Hide success message after 8 seconds
-      setTimeout(() => {
-        setSubmitSuccess(false);
-        setThreadId(null);
-      }, 8000);
-    } catch (error) {
-      console.error('Error submitting contact form:', error);
-      const errorMessage =
-        error.response?.data?.message ||
-        'Failed to send message. Please try again later.';
-      showToast(errorMessage, {
-        type: 'error',
-        dismissible: true,
-        duration: 4000,
-      });
-      setErrors({
-        submit: errorMessage,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Helper to get input classes with conditional error styling
-  const getInputClasses = (fieldName) => {
-    const baseClasses =
-      'mt-2 w-full rounded-2xl border bg-white px-4 py-3 text-[15px] font-medium text-neutral-900 shadow-sm transition focus:outline-none focus:ring-4';
-    const errorClasses = errors[fieldName]
-      ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20'
-      : 'border-neutral-200 focus:border-[#30442B] focus:ring-[#30442B]/15';
-    return `${baseClasses} ${errorClasses}`;
-  };
+  const {
+    formData,
+    errors,
+    isSubmitting,
+    submitSuccess,
+    threadId,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  } = useContactForm();
 
   return (
     <div className="flex-1">
@@ -226,8 +66,8 @@ export default function ContactForm() {
                   value={formData.name}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  onKeyDown={handleKeyDown}
-                  className={getInputClasses('name')}
+                  onKeyDown={preventEnterSubmit}
+                  className={getInputClasses('name', errors)}
                   placeholder="Your full name"
                   aria-describedby="contact-name-error"
                 />
@@ -255,8 +95,8 @@ export default function ContactForm() {
                   value={formData.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  onKeyDown={handleKeyDown}
-                  className={getInputClasses('email')}
+                  onKeyDown={preventEnterSubmit}
+                  className={getInputClasses('email', errors)}
                   placeholder="name@example.com"
                   aria-describedby="contact-email-error"
                 />
@@ -285,8 +125,8 @@ export default function ContactForm() {
                 value={formData.subject}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
-                className={getInputClasses('subject')}
+                onKeyDown={preventEnterSubmit}
+                className={getInputClasses('subject', errors)}
                 placeholder="Let us know how we can help"
                 aria-describedby="contact-subject-error"
               />
@@ -314,8 +154,8 @@ export default function ContactForm() {
                 value={formData.message}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
-                className={getInputClasses('message')}
+                onKeyDown={preventEnterSubmit}
+                className={getInputClasses('message', errors)}
                 placeholder="Share the details so we can tailor our reply"
                 aria-describedby="contact-message-error"
               ></textarea>

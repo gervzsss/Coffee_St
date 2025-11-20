@@ -7,7 +7,6 @@ import cheesecakeImg from '../assets/cheesecake.png';
 import whiteMochaImg from '../assets/white_mocha.png';
 import cinammonImg from '../assets/cinammon.png';
 
-
 export default function FeaturedProducts() {
   const products = [
     {

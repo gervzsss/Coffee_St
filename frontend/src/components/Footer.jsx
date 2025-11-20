@@ -11,7 +11,8 @@ export default function Footer() {
           <div className="col-span-1">
             <h3 className="font-outfit text-2xl font-bold mb-4">Coffee St.</h3>
             <p className="text-gray-300">
-              Your premium coffee destination, serving artisanal brews and unforgettable moments.
+              Your premium coffee destination, serving artisanal brews and
+              unforgettable moments.
             </p>
           </div>
 

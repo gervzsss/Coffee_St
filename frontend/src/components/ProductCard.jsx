@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { getResponsiveImageUrl } from '../api/cloudinary';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
-import axiosInstance from '../api/axios';
+import { getResponsiveImageUrl } from '../services/cloudinaryService';
+import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
+import api from '../services/apiClient';
 
 export default function ProductCard({ product }) {
   const { user, openAuthModal } = useAuth();
@@ -36,13 +36,12 @@ export default function ProductCard({ product }) {
         payload.variant_id = variantId;
       }
 
-      await axiosInstance.post('/cart', payload);
+      await api.post('/cart', payload);
 
       setAddedToCart(true);
       setShowVariantModal(false);
       setSelectedVariant(null);
 
-      // Dispatch cart update event
       window.dispatchEvent(new Event('cartUpdated'));
 
       showToast(`${product.name} added to cart!`, {
@@ -89,7 +88,6 @@ export default function ProductCard({ product }) {
     return basePrice + delta;
   };
 
-  // Get optimized image URL
   const imageUrl = product.image_url
     ? getResponsiveImageUrl(product.image_url, 800)
     : '/assets/americano.png'; // Fallback image

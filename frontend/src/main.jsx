@@ -7,9 +7,10 @@ import Products from './pages/Products.jsx';
 import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
 import Cart from './pages/Cart.jsx';
-import { AuthProvider, useAuth } from './context/AuthContext.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
 import { CartProvider } from './context/CartContext.jsx';
 import { ToastProvider } from './context/ToastContext.jsx';
+import { useAuth } from './hooks/useAuth.js';
 import AuthModal from './components/AuthModal.jsx';
 
 function AppContent() {

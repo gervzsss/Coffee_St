@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import axiosInstance from '../api/axios';
+import api from '../services/apiClient';
 import CategorySidebar from '../components/CategorySidebar';
 import ProductsHeader from '../components/ProductsHeader';
 import ProductsGrid from '../components/ProductsGrid';
@@ -39,7 +39,7 @@ export default function Products() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/products');
+      const response = await api.get('/products');
       setProducts(response.data);
 
       // Calculate product counts per category

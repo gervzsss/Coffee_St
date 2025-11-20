@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
+import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
 import { validators } from '../utils/authValidators';
-import { useFieldValidation } from '../utils/useFieldValidation';
+import { useFieldValidation } from '../hooks/useFieldValidation';
 
 export default function LoginForm({ onClose, onSwitchToSignup }) {
   const { showToast } = useToast();
@@ -29,7 +29,6 @@ export default function LoginForm({ onClose, onSwitchToSignup }) {
     markFormSubmitted();
     setErrors({});
 
-    // Validate all fields
     const emailError = validators.loginEmail(loginEmail);
     const passwordError = validators.loginPassword(loginPassword);
 

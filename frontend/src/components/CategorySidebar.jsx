@@ -8,12 +8,10 @@ export default function CategorySidebar({
 }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Close mobile menu when category changes
   useEffect(() => {
     setIsMobileOpen(false);
   }, [selectedCategory]);
 
-  // Group categories by section
   const drinkCategories = categories.filter((c) => c.section === 'drinks');
   const pastryCategories = categories.filter((c) => c.section === 'pastries');
 

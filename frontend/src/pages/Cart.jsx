@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import api from '../api/axios';
-import { useAuth } from '../context/AuthContext';
+import api from '../services/apiClient';
+import { useAuth } from '../hooks/useAuth';
 import coffeeBeansImg from '../assets/coffeebeans.png';
 
 export default function Cart() {
@@ -135,8 +135,6 @@ export default function Cart() {
       </>
     );
   }
-
-
 
   // Empty Cart or Guest User
   if (!isAuthenticated) {

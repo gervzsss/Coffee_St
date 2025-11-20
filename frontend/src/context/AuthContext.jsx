@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../api/axios';
+import { createContext, useState, useEffect } from 'react';
+import * as authService from '../services/authService';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       fetchUser();
     } else {
       setLoading(false);
@@ -20,31 +19,28 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const fetchUser = async () => {
-    try {
-      const response = await api.get('/user');
-      setUser(response.data);
-    } catch (error) {
-      console.error('Failed to fetch user:', error);
+    const result = await authService.fetchUser();
+    if (result.success) {
+      setUser(result.data);
+    } else {
+      console.error('Failed to fetch user:', result.error);
       logout();
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const login = async (email, password) => {
-    const response = await api.post('/login', { email, password });
-    const { user, token } = response.data;
-    
-    localStorage.setItem('token', token);
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    setToken(token);
-    setUser(user);
-    
-    return response.data;
+    const result = await authService.login(email, password);
+    if (result.success) {
+      setToken(result.data.token);
+      setUser(result.data.user);
+      return result.data;
+    }
+    throw new Error(result.error);
   };
 
   const signup = async (name, email, password, password_confirmation, address, phone) => {
-    const response = await api.post('/signup', {
+    const result = await authService.signup({
       name,
       email,
       password,
@@ -52,29 +48,18 @@ export const AuthProvider = ({ children }) => {
       address,
       phone,
     });
-    const { user, token } = response.data;
-    
-    localStorage.setItem('token', token);
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    setToken(token);
-    setUser(user);
-    
-    return response.data;
+    if (result.success) {
+      setToken(result.data.token);
+      setUser(result.data.user);
+      return result.data;
+    }
+    throw new Error(result.error);
   };
 
   const logout = async () => {
-    try {
-      if (token) {
-        await api.post('/logout');
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      localStorage.removeItem('token');
-      delete api.defaults.headers.common['Authorization'];
-      setToken(null);
-      setUser(null);
-    }
+    await authService.logout();
+    setToken(null);
+    setUser(null);
   };
 
   const openAuthModal = (mode = 'login') => {
@@ -101,12 +86,4 @@ export const AuthProvider = ({ children }) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };

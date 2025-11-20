@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
-import api from '../api/axios';
+import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
+import api from '../services/apiClient';
 import logo from '../assets/stcoffeelogo.png';
 
 export default function Header() {
@@ -10,11 +10,10 @@ export default function Header() {
   const [cartCount, setCartCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  
+
   const location = useLocation();
   const { user, isAuthenticated, logout, openAuthModal } = useAuth();
 
-  // Fetch cart count on mount and when auth changes
   useEffect(() => {
     if (isAuthenticated) {
       fetchCartCount();
@@ -22,7 +21,6 @@ export default function Header() {
       setCartCount(0);
     }
 
-    // Listen for cart updates
     const handleCartUpdate = () => {
       if (isAuthenticated) {
         fetchCartCount();
@@ -33,10 +31,11 @@ export default function Header() {
     return () => window.removeEventListener('cartUpdated', handleCartUpdate);
   }, [isAuthenticated]);
 
-  // Update scroll progress
   useEffect(() => {
     const handleScroll = () => {
-      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const windowHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
       const scrolled = (window.scrollY / windowHeight) * 100;
       setScrollProgress(scrolled);
     };
@@ -62,7 +61,10 @@ export default function Header() {
       showToast('Logged out successfully', { type: 'info', dismissible: true });
     } catch (error) {
       console.error('Logout error:', error);
-      showToast('Logout failed. Please try again.', { type: 'error', dismissible: true });
+      showToast('Logout failed. Please try again.', {
+        type: 'error',
+        dismissible: true,
+      });
     }
   };
 

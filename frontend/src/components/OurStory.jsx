@@ -33,7 +33,8 @@ export default function OurStory() {
                 <p className="w-full text-lg leading-loose hyphens-auto backdrop-blur-sm">
                   Our dedication to quality extends beyond the cup. We work
                   directly with farmers, ensuring fair practices and sustainable
-                  relationships that benefit everyone in the coffee supply chain.
+                  relationships that benefit everyone in the coffee supply
+                  chain.
                 </p>
               </div>
             </div>

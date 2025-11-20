@@ -2,21 +2,14 @@ import { useState, useEffect } from 'react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 
-/**
- * AuthModal - Modal wrapper for authentication forms
- * Handles modal display, animations, and mode switching between login/signup
- */
 export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
   const [mode, setMode] = useState(initialMode);
 
-  // Modal lifecycle effects
   useEffect(() => {
     if (isOpen) {
       setMode(initialMode);
-      // Lock body scroll
       document.body.style.overflow = 'hidden';
     } else {
-      // Unlock body scroll
       document.body.style.overflow = '';
     }
 
@@ -25,7 +18,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
     };
   }, [isOpen, initialMode]);
 
-  // Escape key handler
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape' && isOpen) {
@@ -37,7 +29,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
-  // Mode switching handlers
   const switchToSignup = () => {
     setMode('signup');
   };
@@ -46,7 +37,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
     setMode('login');
   };
 
-  // Overlay click handler
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();

@@ -1,23 +1,11 @@
-/**
- * Authentication validation patterns and functions
- * Centralized validation logic for login and signup forms
- * Matches backend Laravel validation rules
- */
-
-// Validation patterns matching legacy jQuery and backend
 export const PATTERNS = {
   name: /^[A-Za-z\s.\-']+$/,
   email: /^[A-Za-z0-9._\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/,
   phone: /^\+?\d+$/,
 };
 
-// Minimum password length (update here and in backend AuthController.php)
 export const MIN_PASSWORD_LENGTH = 6;
 
-/**
- * Validation functions for all auth form fields
- * Each validator returns error message string or null if valid
- */
 export const validators = {
   loginEmail: (value) => {
     const v = value.trim();
