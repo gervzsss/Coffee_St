@@ -49,7 +49,10 @@ export default function Header() {
       const response = await api.get('/cart/count');
       setCartCount(response.data.count || 0);
     } catch (error) {
-      console.error('Failed to fetch cart count:', error);
+      // Silently fail on 401 (user not authenticated)
+      if (error.response?.status !== 401) {
+        console.error('Failed to fetch cart count:', error);
+      }
       setCartCount(0);
     }
   };

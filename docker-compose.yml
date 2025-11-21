@@ -2,19 +2,19 @@ services:
   # MySQL Database Service
   db:
     image: mysql:8.0
-    container_name: coffe_st_db
+    container_name: coffee_st_db
     restart: unless-stopped
     ports:
       - "4306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: Mysqlpass@
-      MYSQL_DATABASE: coffe_st_db
-      MYSQL_USER: coffe_st_user
+      MYSQL_DATABASE: coffee_st_db
+      MYSQL_USER: coffee_st_user
       MYSQL_PASSWORD: Mysqlpass@
     volumes:
       - db_data:/var/lib/mysql
     networks:
-      - coffe_st_network
+      - coffee_st_network
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
@@ -26,7 +26,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: coffe_st_backend
+    container_name: coffee_st_backend
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
@@ -36,7 +36,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      APP_NAME: "Coffe St"
+      APP_NAME: "Coffee St"
       APP_ENV: local
       APP_KEY: base64:XcWQg4VO2wpY9nrf2kkxo4LzcA8FLNjH4JbX3b0nS9E=
       APP_DEBUG: "true"
@@ -48,8 +48,8 @@ services:
       DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
-      DB_DATABASE: coffe_st_db
-      DB_USERNAME: coffe_st_user
+      DB_DATABASE: coffee_st_db
+      DB_USERNAME: coffee_st_user
       DB_PASSWORD: Mysqlpass@
 
       BROADCAST_DRIVER: log
@@ -70,17 +70,17 @@ services:
       MAIL_PASSWORD: null
       MAIL_ENCRYPTION: null
       MAIL_FROM_ADDRESS: "hello@example.com"
-      MAIL_FROM_NAME: "Coffe St"
+      MAIL_FROM_NAME: "Coffee St"
     depends_on:
       db:
         condition: service_healthy
     networks:
-      - coffe_st_network
+      - coffee_st_network
 
   # Nginx Web Server for Backend (Optional - if using nginx instead of artisan serve)
   nginx:
     image: nginx:alpine
-    container_name: coffe_st_nginx
+    container_name: coffee_st_nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -90,14 +90,14 @@ services:
     depends_on:
       - backend
     networks:
-      - coffe_st_network
+      - coffee_st_network
 
   # React Frontend Service
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: coffe_st_frontend
+    container_name: coffee_st_frontend
     restart: unless-stopped
     volumes:
       - ./frontend:/app
@@ -111,22 +111,22 @@ services:
     depends_on:
       - backend
     networks:
-      - coffe_st_network
+      - coffee_st_network
 
   # Redis Cache Service (Optional but recommended for Laravel)
   redis:
     image: redis:alpine
-    container_name: coffe_st_redis
+    container_name: coffee_st_redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
-      - coffe_st_network
+      - coffee_st_network
 
 networks:
-  coffe_st_network:
+  coffee_st_network:
     driver: bridge
 
 volumes:

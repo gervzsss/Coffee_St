@@ -43,9 +43,7 @@ export default function Cart() {
     try {
       await api.put(`/cart/${itemId}`, { quantity });
       setCartItems((prev) =>
-        prev.map((item) =>
-          item.id === itemId ? { ...item, quantity } : item
-        )
+        prev.map((item) => (item.id === itemId ? { ...item, quantity } : item))
       );
       window.dispatchEvent(new Event('cartUpdated'));
     } catch (err) {
@@ -74,7 +72,9 @@ export default function Cart() {
     const itemsToRemove = Array.from(selectedItems);
     try {
       await Promise.all(itemsToRemove.map((id) => api.delete(`/cart/${id}`)));
-      setCartItems((prev) => prev.filter((item) => !selectedItems.has(item.id)));
+      setCartItems((prev) =>
+        prev.filter((item) => !selectedItems.has(item.id))
+      );
       setSelectedItems(new Set());
       window.dispatchEvent(new Event('cartUpdated'));
     } catch (err) {
@@ -143,14 +143,30 @@ export default function Cart() {
         <Header />
         <main className="min-h-screen bg-gray-50 pt-32 px-6 pb-12">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl md:text-4xl font-bold text-[#30442B]">Your Cart</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#30442B]">
+              Your Cart
+            </h1>
             <div className="mt-8">
               <div className="rounded-lg border bg-white p-12 shadow-sm text-center">
-                <svg className="w-24 h-24 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                <svg
+                  className="w-24 h-24 mx-auto mb-4 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  ></path>
                 </svg>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Please log in to view your cart</h2>
-                <p className="text-gray-600 mb-6">You need to be logged in to add items and view your cart.</p>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Please log in to view your cart
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  You need to be logged in to add items and view your cart.
+                </p>
                 <button
                   onClick={() => openAuthModal('login')}
                   className="bg-[#30442B] text-white px-6 py-3 cursor-pointer rounded-lg hover:bg-[#405939] transition-colors"
@@ -173,14 +189,30 @@ export default function Cart() {
         <Header />
         <main className="min-h-screen bg-gray-50 pt-32 px-6 pb-12">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl md:text-4xl font-bold text-[#30442B]">Your Cart</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#30442B]">
+              Your Cart
+            </h1>
             <div className="mt-8">
               <div className="rounded-lg border bg-white p-12 shadow-sm text-center">
-                <svg className="w-24 h-24 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                <svg
+                  className="w-24 h-24 mx-auto mb-4 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  ></path>
                 </svg>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Your cart is empty</h2>
-                <p className="text-gray-600 mb-6">Start shopping to add items to your cart!</p>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Your cart is empty
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Start shopping to add items to your cart!
+                </p>
                 <Link
                   to="/products"
                   className="inline-flex items-center px-6 py-3 bg-[#30442B] text-white rounded-lg hover:bg-[#405939] transition-colors"
@@ -201,7 +233,9 @@ export default function Cart() {
       <Header />
       <main className="min-h-screen bg-gray-50 pt-32 px-6 pb-12">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#30442B] mb-8">Your Cart</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#30442B] mb-8">
+            Your Cart
+          </h1>
 
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -218,20 +252,27 @@ export default function Cart() {
                   <label className="inline-flex items-center gap-2 cursor-pointer text-sm text-[#30442B] font-medium">
                     <input
                       type="checkbox"
-                      checked={selectedItems.size === cartItems.length && cartItems.length > 0}
+                      checked={
+                        selectedItems.size === cartItems.length &&
+                        cartItems.length > 0
+                      }
                       onChange={toggleSelectAll}
                       className="h-4 w-4 rounded border-neutral-300 text-[#30442B] focus:ring-[#30442B] cursor-pointer"
                     />
                     <span>Select All Items ({cartItems.length})</span>
                   </label>
-                  <p className="text-xs text-neutral-500">{cartItems.length} items in your cart</p>
+                  <p className="text-xs text-neutral-500">
+                    {cartItems.length} items in your cart
+                  </p>
                 </div>
                 <button
                   type="button"
                   onClick={removeSelectedItems}
                   disabled={selectedItems.size === 0}
                   className={`inline-flex items-center gap-2 rounded border border-red-500 px-3 py-1.5 text-sm font-medium text-red-600 ${
-                    selectedItems.size === 0 ? 'opacity-60 cursor-not-allowed' : 'hover:bg-red-50 cursor-pointer'
+                    selectedItems.size === 0
+                      ? 'opacity-60 cursor-not-allowed'
+                      : 'hover:bg-red-50 cursor-pointer'
                   }`}
                 >
                   <span aria-hidden="true">🗑</span>
@@ -242,7 +283,10 @@ export default function Cart() {
               {/* Cart Items */}
               <div className="space-y-4">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="rounded-lg border bg-white p-4 shadow-sm">
+                  <div
+                    key={item.id}
+                    className="rounded-lg border bg-white p-4 shadow-sm"
+                  >
                     <div className="flex items-center gap-4">
                       <label className="flex h-5 w-5 items-center justify-center">
                         <input
@@ -260,15 +304,49 @@ export default function Cart() {
                       <div className="flex-1">
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <div>
-                            <h3 className="font-semibold text-lg text-[#30442B]">{item.name}</h3>
-                            {item.variant_name && (
-                              <p className="text-sm text-neutral-600 mt-1">{item.variant_name}</p>
+                            <h3 className="font-semibold text-lg text-[#30442B]">
+                              {item.name}
+                            </h3>
+                            {/* New customization summary */}
+                            {item.customization_summary && (
+                              <p className="text-sm text-neutral-600 mt-1">
+                                {item.customization_summary}
+                              </p>
                             )}
-                            <p className="text-sm text-neutral-500">
+                            {/* Legacy variant name fallback */}
+                            {!item.customization_summary &&
+                              item.variant_name && (
+                                <p className="text-sm text-neutral-600 mt-1">
+                                  {item.variant_name}
+                                </p>
+                              )}
+                            {/* Show selected variants as pills */}
+                            {item.selected_variants &&
+                              item.selected_variants.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-2">
+                                  {item.selected_variants.map(
+                                    (variant, idx) => (
+                                      <span
+                                        key={idx}
+                                        className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-800"
+                                      >
+                                        {variant.name}
+                                        {variant.price_delta > 0 && (
+                                          <span className="ml-1 font-medium">
+                                            +₱{parseFloat(variant.price_delta).toFixed(2)}
+                                          </span>
+                                        )}
+                                      </span>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                            <p className="text-sm text-neutral-500 mt-2">
                               ₱{item.unit_price.toFixed(2)} each
                               {item.price_delta !== 0 && (
                                 <span className="ml-1 text-neutral-400">
-                                  ({item.price_delta > 0 ? '+' : ''}₱{item.price_delta.toFixed(2)})
+                                  ({item.price_delta > 0 ? '+' : ''}₱
+                                  {item.price_delta.toFixed(2)})
                                 </span>
                               )}
                             </p>
@@ -280,7 +358,9 @@ export default function Cart() {
                         <div className="mt-4 flex flex-wrap items-center gap-3">
                           <div className="flex items-center gap-2">
                             <button
-                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity - 1)
+                              }
                               className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B]"
                             >
                               -
@@ -293,7 +373,9 @@ export default function Cart() {
                               min="1"
                             />
                             <button
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity + 1)
+                              }
                               className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B]"
                             >
                               +
@@ -328,11 +410,15 @@ export default function Cart() {
             <aside className="lg:col-span-1">
               <div className="rounded-lg border bg-white p-6 shadow-sm sticky top-28 space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-[#30442B]">Order Summary</h2>
+                  <h2 className="text-lg font-semibold text-[#30442B]">
+                    Order Summary
+                  </h2>
                   <p className="text-sm text-neutral-500">
                     {selectedItems.size === 0
                       ? 'No items selected.'
-                      : `${selectedItems.size} item${selectedItems.size > 1 ? 's' : ''} selected.`}
+                      : `${selectedItems.size} item${
+                          selectedItems.size > 1 ? 's' : ''
+                        } selected.`}
                   </p>
                 </div>
                 <dl className="space-y-2 text-sm text-neutral-700">
@@ -359,7 +445,9 @@ export default function Cart() {
                 >
                   Proceed to Checkout
                 </button>
-                <p className="text-xs text-neutral-500">Estimated delivery: 25-35 minutes</p>
+                <p className="text-xs text-neutral-500">
+                  Estimated delivery: 25-35 minutes
+                </p>
               </div>
             </aside>
           </div>

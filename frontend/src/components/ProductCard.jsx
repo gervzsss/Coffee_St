@@ -1,5 +1,6 @@
 import { getResponsiveImageUrl } from '../services/cloudinaryService';
 import { useProductCard } from '../hooks';
+import ProductCustomizationModal from './ProductCustomizationModal';
 
 export default function ProductCard({ product }) {
   const {
@@ -7,12 +8,15 @@ export default function ProductCard({ product }) {
     addedToCart,
     selectedVariant,
     showVariantModal,
+    showCustomizationModal,
     hasVariants,
     calculatePrice,
     handleAddToCartClick,
     handleVariantSelect,
     handleConfirmVariant,
     closeVariantModal,
+    closeCustomizationModal,
+    handleAddToCartWithVariants,
   } = useProductCard(product);
 
   const imageUrl = product.image_url
@@ -205,6 +209,14 @@ export default function ProductCard({ product }) {
           </div>
         </div>
       )}
+
+      {/* New Customization Modal */}
+      <ProductCustomizationModal
+        isOpen={showCustomizationModal}
+        onClose={closeCustomizationModal}
+        product={product}
+        onAddToCart={handleAddToCartWithVariants}
+      />
     </>
   );
 }

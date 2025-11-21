@@ -40,6 +40,22 @@ class Product extends Model
     }
 
     /**
+     * Get the variant groups for the product.
+     */
+    public function variantGroups()
+    {
+        return $this->hasMany(ProductVariantGroup::class);
+    }
+
+    /**
+     * Get the active variant groups for the product.
+     */
+    public function activeVariantGroups()
+    {
+        return $this->hasMany(ProductVariantGroup::class)->where('is_active', true)->orderBy('display_order');
+    }
+
+    /**
      * Get the cart items for the product.
      */
     public function cartItems()

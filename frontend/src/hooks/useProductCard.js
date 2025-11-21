@@ -11,9 +11,13 @@ export const useProductCard = (product) => {
   const [addedToCart, setAddedToCart] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [showVariantModal, setShowVariantModal] = useState(false);
+  const [showCustomizationModal, setShowCustomizationModal] = useState(false);
 
   const hasVariants =
     product.active_variants && product.active_variants.length > 0;
+  
+  const hasVariantGroups =
+    product.active_variant_groups && product.active_variant_groups.length > 0;
 
   const calculatePrice = (variant = null) => {
     const basePrice = parseFloat(product.price);
@@ -21,6 +25,48 @@ export const useProductCard = (product) => {
     return basePrice + delta;
   };
 
+  // New multi-variant system handler
+  const handleAddToCartWithVariants = async (cartData) => {
+    if (!user) {
+      showToast('Please log in to add items to cart', {
+        type: 'warning',
+        dismissible: true,
+      });
+      openAuthModal('login');
+      return;
+    }
+
+    setIsAdding(true);
+    try {
+      await api.post('/cart', cartData);
+
+      setAddedToCart(true);
+      setShowCustomizationModal(false);
+
+      window.dispatchEvent(new Event('cartUpdated'));
+
+      showToast(`${product.name} added to cart!`, {
+        type: 'success',
+        dismissible: true,
+      });
+
+      setTimeout(() => setAddedToCart(false), 2000);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      const errorMessage =
+        error.response?.data?.message || 'Failed to add to cart';
+      showToast(errorMessage, {
+        type: 'error',
+        dismissible: true,
+        duration: 4000,
+      });
+      throw error;
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  // Legacy single variant system handler
   const handleAddToCart = async (variantId = null) => {
     if (!user) {
       showToast('Please log in to add items to cart', {
@@ -71,9 +117,16 @@ export const useProductCard = (product) => {
   };
 
   const handleAddToCartClick = () => {
-    if (hasVariants) {
+    // Use new customization modal if product has variant groups
+    if (hasVariantGroups) {
+      setShowCustomizationModal(true);
+    }
+    // Fallback to legacy modal if only old-style variants exist
+    else if (hasVariants) {
       setShowVariantModal(true);
-    } else {
+    }
+    // No variants - add directly
+    else {
       handleAddToCart();
     }
   };
@@ -93,17 +146,25 @@ export const useProductCard = (product) => {
     setSelectedVariant(null);
   };
 
+  const closeCustomizationModal = () => {
+    setShowCustomizationModal(false);
+  };
+
   return {
     isAdding,
     addedToCart,
     selectedVariant,
     showVariantModal,
+    showCustomizationModal,
     hasVariants,
+    hasVariantGroups,
     calculatePrice,
     handleAddToCart,
     handleAddToCartClick,
     handleVariantSelect,
     handleConfirmVariant,
     closeVariantModal,
+    closeCustomizationModal,
+    handleAddToCartWithVariants,
   };
 };

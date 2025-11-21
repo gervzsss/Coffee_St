@@ -50,10 +50,24 @@ class CartItem extends Model
     }
 
     /**
+     * Get the selected variants for the cart item.
+     */
+    public function selectedVariants()
+    {
+        return $this->hasMany(CartItemVariant::class);
+    }
+
+    /**
      * Calculate the total price for this cart item.
      */
     public function getLineTotalAttribute(): float
     {
-        return ($this->unit_price + $this->price_delta) * $this->quantity;
+        // Calculate base price with old variant system price_delta
+        $basePrice = $this->unit_price + $this->price_delta;
+        
+        // Add price deltas from new variant system
+        $variantsDelta = $this->selectedVariants()->sum('price_delta');
+        
+        return ($basePrice + $variantsDelta) * $this->quantity;
     }
 }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\CartItemVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -43,21 +45,33 @@ class CartController extends Controller
         }
         
         $items = CartItem::where('cart_id', $cart->id)
-            ->with(['product', 'variant'])
+            ->with(['product', 'variant', 'selectedVariants.variant'])
             ->get()
             ->map(function ($item) {
+                // Build variants array from new system
+                $selectedVariants = $item->selectedVariants->map(function ($sv) {
+                    return [
+                        'id' => $sv->variant_id,
+                        'group_name' => $sv->variant_group_name,
+                        'name' => $sv->variant_name,
+                        'price_delta' => $sv->price_delta,
+                    ];
+                });
+
                 return [
                     'id' => $item->id,
                     'product_id' => $item->product_id,
-                    'variant_id' => $item->variant_id,
-                    'variant_name' => $item->variant_name,
+                    'variant_id' => $item->variant_id, // Legacy field
+                    'variant_name' => $item->variant_name, // Legacy field
                     'name' => $item->product->name ?? 'Unknown Product',
                     'description' => $item->product->description ?? '',
                     'image_url' => $item->product->image_url ?? null,
                     'unit_price' => $item->unit_price,
-                    'price_delta' => $item->price_delta,
+                    'price_delta' => $item->price_delta, // Legacy field
                     'quantity' => $item->quantity,
                     'line_total' => $item->line_total,
+                    'selected_variants' => $selectedVariants,
+                    'customization_summary' => $item->customization_summary,
                 ];
             });
         
@@ -72,7 +86,12 @@ class CartController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
-            'variant_id' => 'nullable|exists:product_variants,id',
+            'variant_id' => 'nullable|exists:product_variants,id', // Legacy support
+            'variants' => 'nullable|array', // New multi-variant system
+            'variants.*.id' => 'required_with:variants|exists:product_variants,id',
+            'variants.*.group_name' => 'required_with:variants|string',
+            'variants.*.name' => 'required_with:variants|string',
+            'variants.*.price_delta' => 'required_with:variants|numeric',
         ]);
 
         $user = Auth::user();
@@ -91,45 +110,93 @@ class CartController extends Controller
                 'status' => 'active',
             ]
         );
-        
-        // Get variant if provided
-        $variant = null;
-        $priceDelta = 0;
-        $variantName = null;
-        
-        if ($request->variant_id) {
-            $variant = \App\Models\ProductVariant::findOrFail($request->variant_id);
-            $priceDelta = $variant->price_delta;
-            $variantName = $variant->group_name . ': ' . $variant->name;
+
+        DB::beginTransaction();
+        try {
+            // Handle legacy single variant system
+            $variant = null;
+            $priceDelta = 0;
+            $variantName = null;
+            
+            if ($request->variant_id) {
+                $variant = \App\Models\ProductVariant::findOrFail($request->variant_id);
+                $priceDelta = $variant->price_delta;
+                $variantName = $variant->group_name . ': ' . $variant->name;
+            }
+            
+            // Create customization summary
+            $customizationSummary = null;
+            if ($request->has('variants') && count($request->variants) > 0) {
+                $summaryParts = [];
+                foreach ($request->variants as $v) {
+                    $summaryParts[] = $v['group_name'] . ': ' . $v['name'];
+                }
+                $customizationSummary = implode(' | ', $summaryParts);
+            } elseif ($variantName) {
+                $customizationSummary = $variantName;
+            }
+            
+            // Check if item with same variants already exists
+            $cartItem = CartItem::where('cart_id', $cart->id)
+                ->where('product_id', $request->product_id)
+                ->where('variant_id', $request->variant_id)
+                ->first();
+            
+            // For multi-variant system, we need to check if variants match
+            if ($cartItem && $request->has('variants')) {
+                $existingVariantIds = $cartItem->selectedVariants->pluck('variant_id')->sort()->values()->toArray();
+                $newVariantIds = collect($request->variants)->pluck('id')->sort()->values()->toArray();
+                
+                // If variants don't match, treat as new item
+                if ($existingVariantIds !== $newVariantIds) {
+                    $cartItem = null;
+                }
+            }
+            
+            if ($cartItem) {
+                // Update quantity
+                $cartItem->quantity += $request->quantity;
+                $cartItem->save();
+            } else {
+                // Create new cart item with product price and variant delta
+                $cartItem = CartItem::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $request->product_id,
+                    'variant_id' => $request->variant_id,
+                    'variant_name' => $variantName,
+                    'quantity' => $request->quantity,
+                    'unit_price' => $product->price,
+                    'price_delta' => $priceDelta,
+                    'customization_summary' => $customizationSummary,
+                ]);
+                
+                // Save selected variants in the new system
+                if ($request->has('variants') && count($request->variants) > 0) {
+                    foreach ($request->variants as $variantData) {
+                        CartItemVariant::create([
+                            'cart_item_id' => $cartItem->id,
+                            'variant_id' => $variantData['id'],
+                            'variant_group_name' => $variantData['group_name'],
+                            'variant_name' => $variantData['name'],
+                            'price_delta' => $variantData['price_delta'],
+                        ]);
+                    }
+                }
+            }
+            
+            DB::commit();
+            
+            return response()->json([
+                'message' => 'Item added to cart',
+                'item' => $cartItem->load('selectedVariants'),
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to add item to cart',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        
-        // Check if item already exists
-        $cartItem = CartItem::where('cart_id', $cart->id)
-            ->where('product_id', $request->product_id)
-            ->where('variant_id', $request->variant_id)
-            ->first();
-        
-        if ($cartItem) {
-            // Update quantity
-            $cartItem->quantity += $request->quantity;
-            $cartItem->save();
-        } else {
-            // Create new cart item with product price and variant delta
-            $cartItem = CartItem::create([
-                'cart_id' => $cart->id,
-                'product_id' => $request->product_id,
-                'variant_id' => $request->variant_id,
-                'variant_name' => $variantName,
-                'quantity' => $request->quantity,
-                'unit_price' => $product->price,
-                'price_delta' => $priceDelta,
-            ]);
-        }
-        
-        return response()->json([
-            'message' => 'Item added to cart',
-            'item' => $cartItem,
-        ], 201);
     }
 
     /**

@@ -25,6 +25,7 @@ Route::post('/login', [AuthController::class, 'login']);
 // Public Product Routes
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
+Route::get('/products/{id}/variant-groups', [ProductController::class, 'variantGroups']);
 
 // Public Contact Route
 Route::post('/contact', [ContactController::class, 'store']);

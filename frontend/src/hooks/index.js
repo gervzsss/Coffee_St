@@ -7,3 +7,4 @@ export { useContactForm } from './useContactForm';
 export { useLoginForm } from './useLoginForm';
 export { useSignupForm } from './useSignupForm';
 export { useProductCard } from './useProductCard';
+export { default as useProductCustomization } from './useProductCustomization';

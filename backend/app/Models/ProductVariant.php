@@ -31,6 +31,14 @@ class ProductVariant extends Model
     }
 
     /**
+     * Get the variant group that owns the variant.
+     */
+    public function variantGroup()
+    {
+        return $this->belongsTo(ProductVariantGroup::class, 'variant_group_id');
+    }
+
+    /**
      * Get the cart items using this variant.
      */
     public function cartItems()

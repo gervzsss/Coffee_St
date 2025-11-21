@@ -51,4 +51,12 @@ class OrderItem extends Model
     {
         return $this->belongsTo(ProductVariant::class, 'variant_id');
     }
+
+    /**
+     * Get the selected variants for the order item.
+     */
+    public function selectedVariants()
+    {
+        return $this->hasMany(OrderItemVariant::class);
+    }
 }

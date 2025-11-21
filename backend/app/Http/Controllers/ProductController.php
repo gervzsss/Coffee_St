@@ -12,7 +12,8 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::where('is_active', true)->with('activeVariants');
+        $query = Product::where('is_active', true)
+            ->with(['activeVariants', 'activeVariantGroups.activeVariants']);
         
         // Filter by category if provided
         if ($request->has('category') && $request->category !== '') {
@@ -33,12 +34,32 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with('activeVariants')->find($id);
+        $product = Product::with(['activeVariants', 'activeVariantGroups.activeVariants'])->find($id);
         
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
         
         return response()->json($product);
+    }
+
+    /**
+     * Get variant groups for a specific product
+     */
+    public function variantGroups($id)
+    {
+        $product = Product::with(['activeVariantGroups.activeVariants' => function ($query) {
+            $query->orderBy('name');
+        }])->find($id);
+        
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+        
+        return response()->json([
+            'product_id' => $product->id,
+            'product_name' => $product->name,
+            'variant_groups' => $product->activeVariantGroups,
+        ]);
     }
 }
