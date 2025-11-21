@@ -1,82 +1,21 @@
-import { useState, useRef } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { useToast } from '../hooks/useToast';
-import { validators } from '../utils/authValidators';
-import { useFieldValidation } from '../hooks/useFieldValidation';
+import { useLoginForm } from '../hooks';
+import { getInputClasses, preventEnterSubmit } from '../utils/formHelpers';
 
 export default function LoginForm({ onClose, onSwitchToSignup }) {
-  const { showToast } = useToast();
-  const { login } = useAuth();
-  const firstInputRef = useRef(null);
-
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const {
+    loginEmail,
+    loginPassword,
+    showPassword,
+    loading,
     errors,
-    setErrors,
-    handleFieldChange,
-    handleFieldBlur,
-    getInputClasses,
-    resetValidation,
-    markFormSubmitted,
-  } = useFieldValidation();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    markFormSubmitted();
-    setErrors({});
-
-    const emailError = validators.loginEmail(loginEmail);
-    const passwordError = validators.loginPassword(loginPassword);
-
-    if (emailError || passwordError) {
-      setErrors({
-        email: emailError ? [emailError] : null,
-        password: passwordError ? [passwordError] : null,
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      await login(loginEmail, loginPassword);
-      const userName = loginEmail.split('@')[0];
-      showToast(`Welcome back, ${userName}!`, {
-        type: 'success',
-        dismissible: true,
-        duration: 3000,
-      });
-      onClose();
-      resetForm();
-    } catch (err) {
-      const errorData = err.response?.data;
-      if (errorData?.errors) {
-        setErrors(errorData.errors);
-      } else {
-        const errorMessage =
-          errorData?.message || 'Login failed. Please check your credentials.';
-        setErrors({ password: [errorMessage] });
-        showToast(errorMessage, {
-          type: 'error',
-          dismissible: true,
-          duration: 4000,
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const resetForm = () => {
-    setLoginEmail('');
-    setLoginPassword('');
-    setShowPassword(false);
-    resetValidation();
-  };
+    firstInputRef,
+    handleChangeEmail,
+    handleChangePassword,
+    handleBlurEmail,
+    handleBlurPassword,
+    handleSubmit,
+    toggleShowPassword,
+  } = useLoginForm(onClose);
 
   return (
     <div className="flex flex-col gap-8">
@@ -119,19 +58,10 @@ export default function LoginForm({ onClose, onSwitchToSignup }) {
               type="email"
               name="email"
               value={loginEmail}
-              onChange={(e) => {
-                setLoginEmail(e.target.value);
-                handleFieldChange(
-                  'email',
-                  e.target.value,
-                  validators.loginEmail
-                );
-              }}
-              onBlur={(e) =>
-                handleFieldBlur('email', e.target.value, validators.loginEmail)
-              }
+              onChange={handleChangeEmail}
+              onBlur={handleBlurEmail}
               autoComplete="email"
-              className={getInputClasses('email')}
+              className={getInputClasses('email', errors)}
               placeholder="name@example.com"
               disabled={loading}
             />
@@ -159,29 +89,16 @@ export default function LoginForm({ onClose, onSwitchToSignup }) {
               type={showPassword ? 'text' : 'password'}
               name="password"
               value={loginPassword}
-              onChange={(e) => {
-                setLoginPassword(e.target.value);
-                handleFieldChange(
-                  'password',
-                  e.target.value,
-                  validators.loginPassword
-                );
-              }}
-              onBlur={(e) =>
-                handleFieldBlur(
-                  'password',
-                  e.target.value,
-                  validators.loginPassword
-                )
-              }
+              onChange={handleChangePassword}
+              onBlur={handleBlurPassword}
               autoComplete="current-password"
-              className={`${getInputClasses('password')} pr-12`}
+              className={`${getInputClasses('password', errors)} pr-12`}
               placeholder="Enter your password"
               disabled={loading}
             />
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={toggleShowPassword}
               className="cursor-pointer password-toggle absolute inset-y-0 right-3 flex items-center justify-center rounded-full p-2 text-neutral-400 transition duration-200 hover:bg-neutral-100 hover:text-[#30442B] focus:outline-none focus:ring-2 focus:ring-[#30442B]/40"
               aria-label="Toggle password visibility"
               data-target="#login-password"
