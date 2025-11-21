@@ -1,92 +1,19 @@
-import { useState } from 'react';
 import { getResponsiveImageUrl } from '../services/cloudinaryService';
-import { useAuth } from '../hooks/useAuth';
-import { useToast } from '../hooks/useToast';
-import api from '../services/apiClient';
+import { useProductCard } from '../hooks';
 
 export default function ProductCard({ product }) {
-  const { user, openAuthModal } = useAuth();
-  const { showToast } = useToast();
-  const [isAdding, setIsAdding] = useState(false);
-  const [addedToCart, setAddedToCart] = useState(false);
-  const [selectedVariant, setSelectedVariant] = useState(null);
-  const [showVariantModal, setShowVariantModal] = useState(false);
-
-  const hasVariants =
-    product.active_variants && product.active_variants.length > 0;
-
-  const handleAddToCart = async (variantId = null) => {
-    if (!user) {
-      showToast('Please log in to add items to cart', {
-        type: 'warning',
-        dismissible: true,
-      });
-      openAuthModal('login');
-      return;
-    }
-
-    setIsAdding(true);
-    try {
-      const payload = {
-        product_id: product.id,
-        quantity: 1,
-      };
-
-      if (variantId) {
-        payload.variant_id = variantId;
-      }
-
-      await api.post('/cart', payload);
-
-      setAddedToCart(true);
-      setShowVariantModal(false);
-      setSelectedVariant(null);
-
-      window.dispatchEvent(new Event('cartUpdated'));
-
-      showToast(`${product.name} added to cart!`, {
-        type: 'success',
-        dismissible: true,
-      });
-
-      setTimeout(() => setAddedToCart(false), 2000);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      const errorMessage =
-        error.response?.data?.message || 'Failed to add to cart';
-      showToast(errorMessage, {
-        type: 'error',
-        dismissible: true,
-        duration: 4000,
-      });
-    } finally {
-      setIsAdding(false);
-    }
-  };
-
-  const handleAddToCartClick = () => {
-    if (hasVariants) {
-      setShowVariantModal(true);
-    } else {
-      handleAddToCart();
-    }
-  };
-
-  const handleVariantSelect = (variant) => {
-    setSelectedVariant(variant);
-  };
-
-  const handleConfirmVariant = () => {
-    if (selectedVariant) {
-      handleAddToCart(selectedVariant.id);
-    }
-  };
-
-  const calculatePrice = (variant = null) => {
-    const basePrice = parseFloat(product.price);
-    const delta = variant ? parseFloat(variant.price_delta) : 0;
-    return basePrice + delta;
-  };
+  const {
+    isAdding,
+    addedToCart,
+    selectedVariant,
+    showVariantModal,
+    hasVariants,
+    calculatePrice,
+    handleAddToCartClick,
+    handleVariantSelect,
+    handleConfirmVariant,
+    closeVariantModal,
+  } = useProductCard(product);
 
   const imageUrl = product.image_url
     ? getResponsiveImageUrl(product.image_url, 800)
@@ -192,7 +119,7 @@ export default function ProductCard({ product }) {
       {showVariantModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-          onClick={() => setShowVariantModal(false)}
+          onClick={closeVariantModal}
         >
           <div
             className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl"
@@ -206,7 +133,7 @@ export default function ProductCard({ product }) {
                 <p className="text-sm text-gray-600 mt-1">Select a variant</p>
               </div>
               <button
-                onClick={() => setShowVariantModal(false)}
+                onClick={closeVariantModal}
                 className="text-gray-400 hover:text-gray-600 transition"
               >
                 <svg
@@ -258,7 +185,7 @@ export default function ProductCard({ product }) {
 
             <div className="flex gap-3">
               <button
-                onClick={() => setShowVariantModal(false)}
+                onClick={closeVariantModal}
                 className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition"
               >
                 Cancel

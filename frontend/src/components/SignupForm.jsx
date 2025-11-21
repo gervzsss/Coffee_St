@@ -1,132 +1,38 @@
-import { useState, useRef } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { useToast } from '../hooks/useToast';
-import { validators } from '../utils/authValidators';
-import { useFieldValidation } from '../hooks/useFieldValidation';
+import { useSignupForm } from '../hooks';
+import { getInputClasses } from '../utils/formHelpers';
 
 export default function SignupForm({ onClose, onSwitchToLogin }) {
-  const { showToast } = useToast();
-  const { signup } = useAuth();
-  const firstInputRef = useRef(null);
-
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [address, setAddress] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const {
+    firstName,
+    lastName,
+    address,
+    signupEmail,
+    phone,
+    signupPassword,
+    passwordConfirmation,
+    showPassword,
+    showConfirmPassword,
+    loading,
     errors,
-    setErrors,
-    handleFieldChange,
-    handleFieldBlur,
-    getInputClasses,
-    resetValidation,
-    markFormSubmitted,
-  } = useFieldValidation();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    markFormSubmitted();
-    setErrors({});
-
-    const firstNameError = validators.firstName(firstName);
-    const lastNameError = validators.lastName(lastName);
-    const addressError = validators.address(address);
-    const emailError = validators.email(signupEmail);
-    const phoneError = validators.phone(phone);
-    const passwordError = validators.password(signupPassword);
-    const confirmError = validators.passwordConfirm(
-      passwordConfirmation,
-      signupPassword
-    );
-
-    if (
-      firstNameError ||
-      lastNameError ||
-      addressError ||
-      emailError ||
-      phoneError ||
-      passwordError ||
-      confirmError
-    ) {
-      setErrors({
-        first_name: firstNameError ? [firstNameError] : null,
-        last_name: lastNameError ? [lastNameError] : null,
-        address: addressError ? [addressError] : null,
-        email: emailError ? [emailError] : null,
-        phone: phoneError ? [phoneError] : null,
-        password: passwordError ? [passwordError] : null,
-        password_confirmation: confirmError ? [confirmError] : null,
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const fullName = `${firstName} ${lastName}`;
-      await signup(
-        fullName,
-        signupEmail,
-        signupPassword,
-        passwordConfirmation,
-        address,
-        phone
-      );
-      showToast(`Welcome to Coffee St., ${firstName}!`, {
-        type: 'success',
-        dismissible: true,
-        duration: 4000,
-      });
-      onClose();
-      resetForm();
-    } catch (err) {
-      const errorData = err.response?.data;
-      if (errorData?.errors) {
-        setErrors(errorData.errors);
-        const errorMsg =
-          errorData?.message || Object.values(errorData.errors)[0][0];
-        if (errorMsg.toLowerCase().includes('email')) {
-        } else {
-          showToast(errorMsg, {
-            type: 'error',
-            dismissible: true,
-            duration: 4000,
-          });
-        }
-      } else {
-        const errorMessage =
-          errorData?.message || 'Signup failed. Please try again.';
-        setErrors({ general: errorMessage });
-        showToast(errorMessage, {
-          type: 'error',
-          dismissible: true,
-          duration: 4000,
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const resetForm = () => {
-    setFirstName('');
-    setLastName('');
-    setAddress('');
-    setSignupEmail('');
-    setPhone('');
-    setSignupPassword('');
-    setPasswordConfirmation('');
-    setShowPassword(false);
-    setShowConfirmPassword(false);
-    resetValidation();
-  };
+    firstInputRef,
+    handleChangeFirstName,
+    handleChangeLastName,
+    handleChangeAddress,
+    handleChangeEmail,
+    handleChangePhone,
+    handleChangePassword,
+    handleChangePasswordConfirmation,
+    handleBlurFirstName,
+    handleBlurLastName,
+    handleBlurAddress,
+    handleBlurEmail,
+    handleBlurPhone,
+    handleBlurPassword,
+    handleBlurPasswordConfirmation,
+    handleSubmit,
+    toggleShowPassword,
+    toggleShowConfirmPassword,
+  } = useSignupForm(onClose);
 
   return (
     <div className="flex flex-col gap-8">
@@ -168,23 +74,10 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
               type="text"
               name="first-name"
               value={firstName}
-              onChange={(e) => {
-                setFirstName(e.target.value);
-                handleFieldChange(
-                  'first_name',
-                  e.target.value,
-                  validators.firstName
-                );
-              }}
-              onBlur={(e) =>
-                handleFieldBlur(
-                  'first_name',
-                  e.target.value,
-                  validators.firstName
-                )
-              }
+              onChange={handleChangeFirstName}
+              onBlur={handleBlurFirstName}
               autoComplete="given-name"
-              className={getInputClasses('first_name')}
+              className={getInputClasses('first_name', errors)}
               placeholder="Jane"
               disabled={loading}
             />
@@ -209,23 +102,10 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
               type="text"
               name="last-name"
               value={lastName}
-              onChange={(e) => {
-                setLastName(e.target.value);
-                handleFieldChange(
-                  'last_name',
-                  e.target.value,
-                  validators.lastName
-                );
-              }}
-              onBlur={(e) =>
-                handleFieldBlur(
-                  'last_name',
-                  e.target.value,
-                  validators.lastName
-                )
-              }
+              onChange={handleChangeLastName}
+              onBlur={handleBlurLastName}
               autoComplete="family-name"
-              className={getInputClasses('last_name')}
+              className={getInputClasses('last_name', errors)}
               placeholder="Doe"
               disabled={loading}
             />
@@ -252,15 +132,10 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
             type="text"
             name="address"
             value={address}
-            onChange={(e) => {
-              setAddress(e.target.value);
-              handleFieldChange('address', e.target.value, validators.address);
-            }}
-            onBlur={(e) =>
-              handleFieldBlur('address', e.target.value, validators.address)
-            }
+            onChange={handleChangeAddress}
+            onBlur={handleBlurAddress}
             autoComplete="street-address"
-            className={getInputClasses('address')}
+            className={getInputClasses('address', errors)}
             placeholder="123 Coffee Lane, City"
             disabled={loading}
           />
@@ -287,15 +162,10 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
               type="email"
               name="email"
               value={signupEmail}
-              onChange={(e) => {
-                setSignupEmail(e.target.value);
-                handleFieldChange('email', e.target.value, validators.email);
-              }}
-              onBlur={(e) =>
-                handleFieldBlur('email', e.target.value, validators.email)
-              }
+              onChange={handleChangeEmail}
+              onBlur={handleBlurEmail}
               autoComplete="email"
-              className={getInputClasses('email')}
+              className={getInputClasses('email', errors)}
               placeholder="name@example.com"
               disabled={loading}
             />
@@ -320,15 +190,10 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
               type="tel"
               name="phone"
               value={phone}
-              onChange={(e) => {
-                setPhone(e.target.value);
-                handleFieldChange('phone', e.target.value, validators.phone);
-              }}
-              onBlur={(e) =>
-                handleFieldBlur('phone', e.target.value, validators.phone)
-              }
+              onChange={handleChangePhone}
+              onBlur={handleBlurPhone}
               autoComplete="tel"
-              className={getInputClasses('phone')}
+              className={getInputClasses('phone', errors)}
               placeholder="+63 900 000 0000"
               disabled={loading}
             />
@@ -357,38 +222,16 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={signupPassword}
-                onChange={(e) => {
-                  setSignupPassword(e.target.value);
-                  handleFieldChange(
-                    'password',
-                    e.target.value,
-                    validators.password
-                  );
-                  // Revalidate confirm if it has value
-                  if (passwordConfirmation) {
-                    handleFieldChange(
-                      'password_confirmation',
-                      passwordConfirmation,
-                      validators.passwordConfirm,
-                      e.target.value
-                    );
-                  }
-                }}
-                onBlur={(e) =>
-                  handleFieldBlur(
-                    'password',
-                    e.target.value,
-                    validators.password
-                  )
-                }
+                onChange={handleChangePassword}
+                onBlur={handleBlurPassword}
                 autoComplete="new-password"
-                className={`${getInputClasses('password')} pr-12`}
+                className={`${getInputClasses('password', errors)} pr-12`}
                 placeholder="Create a password"
                 disabled={loading}
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={toggleShowPassword}
                 className="cursor-pointer password-toggle absolute inset-y-0 right-3 flex items-center justify-center rounded-full p-2 text-neutral-400 transition duration-200 hover:bg-neutral-100 hover:text-[#30442B] focus:outline-none focus:ring-2 focus:ring-[#30442B]/40"
                 aria-label="Toggle password visibility"
                 data-target="#reg-pass"
@@ -453,31 +296,19 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
                 type={showConfirmPassword ? 'text' : 'password'}
                 name="password_confirmation"
                 value={passwordConfirmation}
-                onChange={(e) => {
-                  setPasswordConfirmation(e.target.value);
-                  handleFieldChange(
-                    'password_confirmation',
-                    e.target.value,
-                    validators.passwordConfirm,
-                    signupPassword
-                  );
-                }}
-                onBlur={(e) =>
-                  handleFieldBlur(
-                    'password_confirmation',
-                    e.target.value,
-                    validators.passwordConfirm,
-                    signupPassword
-                  )
-                }
+                onChange={handleChangePasswordConfirmation}
+                onBlur={handleBlurPasswordConfirmation}
                 autoComplete="new-password"
-                className={`${getInputClasses('password_confirmation')} pr-12`}
+                className={`${getInputClasses(
+                  'password_confirmation',
+                  errors
+                )} pr-12`}
                 placeholder="Repeat password"
                 disabled={loading}
               />
               <button
                 type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                onClick={toggleShowConfirmPassword}
                 className="cursor-pointer password-toggle absolute inset-y-0 right-3 flex items-center justify-center rounded-full p-2 text-neutral-400 transition duration-200 hover:bg-neutral-100 hover:text-[#30442B] focus:outline-none focus:ring-2 focus:ring-[#30442B]/40"
                 aria-label="Toggle password visibility"
                 data-target="#reg-pass-confirm"

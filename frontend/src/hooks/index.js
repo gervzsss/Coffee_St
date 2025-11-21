@@ -5,3 +5,5 @@ export { useToast } from './useToast';
 export { useFieldValidation } from './useFieldValidation';
 export { useContactForm } from './useContactForm';
 export { useLoginForm } from './useLoginForm';
+export { useSignupForm } from './useSignupForm';
+export { useProductCard } from './useProductCard';
