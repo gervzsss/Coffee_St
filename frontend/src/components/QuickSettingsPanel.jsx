@@ -16,9 +16,9 @@ export default function QuickSettingsPanel({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+    <div className="rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900 flex items-center justify-between">
+        <h3 className="font-outfit text-lg font-semibold text-gray-900 flex items-center justify-between">
           QUICK SETTINGS
         </h3>
       </div>

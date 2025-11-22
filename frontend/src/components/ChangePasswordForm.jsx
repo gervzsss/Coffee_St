@@ -109,7 +109,7 @@ export default function ChangePasswordForm({ onBack }) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+    <div className="rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 overflow-hidden">
       {/* Header */}
       <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
         <div className="flex items-center gap-3">

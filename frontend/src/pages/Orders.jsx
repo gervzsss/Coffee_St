@@ -2,6 +2,7 @@ import { useAuth } from '../hooks/useAuth';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EmptyState from '../components/EmptyState';
+import contactHeaderImg from '../assets/contact_header.png';
 
 export default function Orders() {
   const { user } = useAuth();
@@ -14,24 +15,36 @@ export default function Orders() {
       <Header />
       <main className="pt-20 min-h-screen bg-gray-50">
         {/* Hero Section */}
-        <section className="bg-[#30442B] py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        <section className="relative isolate pt-24">
+          <div className="absolute inset-0">
+            <img
+              src={contactHeaderImg}
+              alt="Coffee background"
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="absolute inset-0 bg-[#1a2319]/80 mix-blend-multiply"></div>
+          
+          <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-6 px-6 py-24 text-white sm:px-10">
+            <div>
+              <span className="inline-flex items-center rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-amber-200">
+                Order History
+              </span>
+              <h1 className="mt-6 font-outfit text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
                 My Orders
               </h1>
-              <p className="text-lg text-white/90">
-                Track your order history and current deliveries
+              <p className="mt-6 max-w-xl text-base text-white/80 sm:text-lg">
+                Track your order history and current deliveries. View detailed receipts and order again with one click.
               </p>
             </div>
           </div>
         </section>
 
         {/* Orders Content */}
-        <section className="py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto">
-              {orders.length === 0 ? (
+        <section className="relative -mt-12 pb-24">
+          <div className="mx-auto max-w-6xl px-6 sm:px-10">
+            {orders.length === 0 ? (
+              <div className="space-y-6">
                 <EmptyState
                   icon={
                     <svg
@@ -53,60 +66,70 @@ export default function Orders() {
                   actionText="Browse Menu"
                   actionTo="/products"
                 />
-              ) : (
-                <div className="space-y-4">
-                  {/* Future: Order cards will be rendered here */}
-                  <div className="bg-white rounded-lg shadow-md p-6">
-                    <p className="text-gray-600">Your orders will appear here</p>
-                  </div>
-                </div>
-              )}
 
-              {/* Coming Soon Info Card */}
-              <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <div className="flex items-start gap-4">
-                  <svg
-                    className="w-6 h-6 text-blue-500 shrink-0 mt-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <div>
-                    <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                      Order Management Coming Soon
-                    </h3>
-                    <p className="text-blue-700">
-                      We're working on adding full order tracking features including:
-                    </p>
-                    <ul className="mt-2 space-y-1 text-blue-700">
-                      <li className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                        Real-time order status updates
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                        Order history with detailed receipts
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                        Re-order your favorites with one click
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                        Delivery tracking and estimated arrival times
-                      </li>
-                    </ul>
+                {/* Coming Soon Info Card */}
+                <div className="rounded-3xl bg-white p-8 shadow-lg ring-1 ring-gray-900/5">
+                  <div className="flex items-start gap-6">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50">
+                      <svg
+                        className="h-7 w-7 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-outfit text-xl font-semibold text-gray-900 mb-3">
+                        Order Management Coming Soon
+                      </h3>
+                      <p className="text-gray-600 mb-4 leading-relaxed">
+                        We're working on adding full order tracking features to enhance your experience:
+                      </p>
+                      <ul className="space-y-2.5 text-gray-600">
+                        <li className="flex items-center gap-3">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
+                            <span className="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
+                          </span>
+                          Real-time order status updates
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
+                            <span className="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
+                          </span>
+                          Order history with detailed receipts
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
+                            <span className="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
+                          </span>
+                          Re-order your favorites with one click
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
+                            <span className="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
+                          </span>
+                          Delivery tracking and estimated arrival times
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Future: Order cards will be rendered here */}
+                <div className="rounded-3xl bg-white p-8 shadow-lg ring-1 ring-gray-900/5">
+                  <p className="text-gray-600">Your orders will appear here</p>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </main>

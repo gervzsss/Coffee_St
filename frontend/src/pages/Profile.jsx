@@ -62,37 +62,35 @@ export default function Profile() {
         <ProfileHero user={user} />
 
         {/* Profile Content - 2 Column Layout */}
-        <section className="py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Column - Order History (Desktop only) */}
-                <div className="hidden lg:block lg:col-span-1">
+        <section className="relative -mt-12 pb-24">
+          <div className="mx-auto max-w-7xl px-6 sm:px-10">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column - Order History (Desktop only) */}
+              <div className="hidden lg:block lg:col-span-1">
+                <OrderHistoryCard />
+              </div>
+
+              {/* Right Column - Profile Information & Settings */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Dynamic Content Area */}
+                {activeView === 'profile-info' ? (
+                  <ProfileInformationForm user={user} onUserUpdate={handleUserUpdate} />
+                ) : (
+                  <ChangePasswordForm onBack={handleBackToProfile} />
+                )}
+
+                {/* Quick Settings Panel */}
+                <QuickSettingsPanel
+                  onChangePassword={handleChangePassword}
+                  onDeleteAccount={handleDeleteAccount}
+                  onLogout={handleLogout}
+                  onLanguageChange={handleLanguageChange}
+                  currentLanguage={user?.language_preference || 'en'}
+                />
+
+                {/* Order History Card (Mobile - below settings) */}
+                <div className="lg:hidden">
                   <OrderHistoryCard />
-                </div>
-
-                {/* Right Column - Profile Information & Settings */}
-                <div className="lg:col-span-2 space-y-8">
-                  {/* Dynamic Content Area */}
-                  {activeView === 'profile-info' ? (
-                    <ProfileInformationForm user={user} onUserUpdate={handleUserUpdate} />
-                  ) : (
-                    <ChangePasswordForm onBack={handleBackToProfile} />
-                  )}
-
-                  {/* Quick Settings Panel */}
-                  <QuickSettingsPanel
-                    onChangePassword={handleChangePassword}
-                    onDeleteAccount={handleDeleteAccount}
-                    onLogout={handleLogout}
-                    onLanguageChange={handleLanguageChange}
-                    currentLanguage={user?.language_preference || 'en'}
-                  />
-
-                  {/* Order History Card (Mobile - below settings) */}
-                  <div className="lg:hidden">
-                    <OrderHistoryCard />
-                  </div>
                 </div>
               </div>
             </div>

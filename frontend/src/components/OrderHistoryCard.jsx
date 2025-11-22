@@ -57,7 +57,7 @@ export default function OrderHistoryCard() {
       <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Order History</h3>
+            <h3 className="font-outfit text-lg font-semibold text-gray-900">Order History</h3>
             <p className="text-sm text-gray-500">Latest system events and updates</p>
           </div>
           <Link
