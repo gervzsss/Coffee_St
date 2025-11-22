@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Package, LogOut } from 'lucide-react';
+import { User, Package, Mail, LogOut } from 'lucide-react';
 
 export default function ProfileDropdown({ userName, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -79,6 +79,13 @@ export default function ProfileDropdown({ userName, onLogout }) {
       icon: Package,
       label: 'Orders',
       path: '/orders',
+      color: 'text-[#30442B]',
+      hoverBg: 'hover:bg-[#30442B]/5',
+    },
+    {
+      icon: Mail,
+      label: 'Messages',
+      path: '/messages',
       color: 'text-[#30442B]',
       hoverBg: 'hover:bg-[#30442B]/5',
     },
