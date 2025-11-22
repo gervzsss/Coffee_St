@@ -223,9 +223,18 @@ class CartController extends Controller
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
         
+        // Return updated item with recalculated line_total
+        $cartItem->load('selectedVariants');
+        
         return response()->json([
             'message' => 'Cart item updated',
-            'item' => $cartItem,
+            'item' => [
+                'id' => $cartItem->id,
+                'quantity' => $cartItem->quantity,
+                'line_total' => $cartItem->line_total,
+                'unit_price' => $cartItem->unit_price,
+                'price_delta' => $cartItem->price_delta,
+            ],
         ]);
     }
 

@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ProductCustomizationModal from '../components/ProductCustomizationModal';
 import api from '../services/apiClient';
+import { getResponsiveImageUrl } from '../services/cloudinaryService';
 import { useAuth } from '../hooks/useAuth';
 import coffeeBeansImg from '../assets/coffeebeans.png';
 
@@ -11,6 +13,9 @@ export default function Cart() {
   const [selectedItems, setSelectedItems] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [editingItemId, setEditingItemId] = useState(null);
   const { isAuthenticated, openAuthModal } = useAuth();
 
   const TAX_RATE = 0.12; // 12% tax
@@ -40,15 +45,33 @@ export default function Cart() {
 
   const updateQuantity = async (itemId, quantity) => {
     if (quantity < 1) return;
+    
+    // Optimistic update - calculate new line_total immediately
+    setCartItems((prev) =>
+      prev.map((item) => {
+        if (item.id === itemId) {
+          const variantsDelta = item.selected_variants
+            ? item.selected_variants.reduce((sum, v) => sum + parseFloat(v.price_delta || 0), 0)
+            : 0;
+          const newLineTotal = (item.unit_price + item.price_delta + variantsDelta) * quantity;
+          return { ...item, quantity, line_total: newLineTotal };
+        }
+        return item;
+      })
+    );
+    
     try {
-      await api.put(`/cart/${itemId}`, { quantity });
+      // Sync with backend and use server-calculated total
+      const response = await api.put(`/cart/${itemId}`, { quantity });
       setCartItems((prev) =>
-        prev.map((item) => (item.id === itemId ? { ...item, quantity } : item))
+        prev.map((item) => (item.id === itemId ? { ...item, ...response.data.item } : item))
       );
       window.dispatchEvent(new Event('cartUpdated'));
     } catch (err) {
       console.error('Failed to update quantity:', err);
       setError('Failed to update quantity');
+      // Revert optimistic update on error
+      fetchCartItems();
     }
   };
 
@@ -81,6 +104,59 @@ export default function Cart() {
       console.error('Failed to remove selected items:', err);
       setError('Failed to remove selected items');
     }
+  };
+
+  const handleEditItem = async (item) => {
+    if (!item.selected_variants || item.selected_variants.length === 0) {
+      return; // Don't show edit for items without variants
+    }
+
+    setEditingItemId(item.id);
+    try {
+      // Fetch full product details to get variant groups
+      const response = await api.get(`/products/${item.product_id}`);
+      setEditingProduct(response.data);
+      setEditingItem(item);
+    } catch (err) {
+      console.error('Failed to fetch product details:', err);
+      setError('Failed to load product details');
+      setEditingItemId(null);
+    }
+  };
+
+  const handleEditSave = async (cartData) => {
+    if (!editingItem) return;
+
+    try {
+      // Delete old cart item
+      await api.delete(`/cart/${editingItem.id}`);
+      
+      // Remove from selected items if it was selected
+      setSelectedItems((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(editingItem.id);
+        return newSet;
+      });
+
+      // Create new cart item with updated configuration
+      await api.post('/cart', cartData);
+
+      // Close modal and refresh cart
+      setEditingItem(null);
+      setEditingProduct(null);
+      setEditingItemId(null);
+      await fetchCartItems();
+    } catch (err) {
+      console.error('Failed to update cart item:', err);
+      setError('Failed to update item');
+      setEditingItemId(null);
+    }
+  };
+
+  const closeEditModal = () => {
+    setEditingItem(null);
+    setEditingProduct(null);
+    setEditingItemId(null);
   };
 
   const toggleSelectAll = () => {
@@ -117,9 +193,9 @@ export default function Cart() {
     return calculateSelectedSubtotal() + calculateTax();
   };
 
-  const getProductImage = (productName) => {
-    // Use a default image for now
-    return coffeeBeansImg;
+  const getProductImage = (imageUrl) => {
+    if (!imageUrl) return coffeeBeansImg;
+    return getResponsiveImageUrl(imageUrl, 160);
   };
 
   if (loading) {
@@ -282,47 +358,60 @@ export default function Cart() {
 
               {/* Cart Items */}
               <div className="space-y-4">
-                {cartItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="rounded-lg border bg-white p-4 shadow-sm"
-                  >
-                    <div className="flex items-center gap-4">
-                      <label className="flex h-5 w-5 items-center justify-center">
-                        <input
-                          type="checkbox"
-                          checked={selectedItems.has(item.id)}
-                          onChange={() => toggleSelectItem(item.id)}
-                          className="h-4 w-4 rounded border-neutral-300 cursor-pointer text-[#30442B] focus:ring-[#30442B]"
+                {cartItems.map((item) => {
+                  const isSelected = selectedItems.has(item.id);
+                  const isEditing = editingItemId === item.id;
+                  const hasVariants = item.selected_variants && item.selected_variants.length > 0;
+                  
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => toggleSelectItem(item.id)}
+                      className={`rounded-lg border bg-white p-4 shadow-sm cursor-pointer transition-all duration-200 hover:bg-neutral-50 ${
+                        isSelected ? 'ring-2 ring-[#30442B]/30' : ''
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <label 
+                          className="flex h-5 w-5 items-center justify-center"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => toggleSelectItem(item.id)}
+                            className="h-4 w-4 rounded border-neutral-300 cursor-pointer text-[#30442B] focus:ring-[#30442B]"
+                          />
+                        </label>
+                        <img
+                          src={getProductImage(item.image_url)}
+                          alt={item.name}
+                          className="h-20 w-20 rounded object-cover"
+                          onError={(e) => {
+                            e.target.src = coffeeBeansImg;
+                          }}
                         />
-                      </label>
-                      <img
-                        src={getProductImage(item.name)}
-                        alt={item.name}
-                        className="h-20 w-20 rounded object-cover"
-                      />
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div>
-                            <h3 className="font-semibold text-lg text-[#30442B]">
-                              {item.name}
-                            </h3>
-                            {/* New customization summary */}
-                            {item.customization_summary && (
-                              <p className="text-sm text-neutral-600 mt-1">
-                                {item.customization_summary}
-                              </p>
-                            )}
-                            {/* Legacy variant name fallback */}
-                            {!item.customization_summary &&
-                              item.variant_name && (
+                        <div className="flex-1">
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <div>
+                              <h3 className="font-semibold text-lg text-[#30442B]">
+                                {item.name}
+                              </h3>
+                              {/* New customization summary */}
+                              {item.customization_summary && (
                                 <p className="text-sm text-neutral-600 mt-1">
-                                  {item.variant_name}
+                                  {item.customization_summary}
                                 </p>
                               )}
-                            {/* Show selected variants as pills */}
-                            {item.selected_variants &&
-                              item.selected_variants.length > 0 && (
+                              {/* Legacy variant name fallback */}
+                              {!item.customization_summary &&
+                                item.variant_name && (
+                                  <p className="text-sm text-neutral-600 mt-1">
+                                    {item.variant_name}
+                                  </p>
+                                )}
+                              {/* Show selected variants as pills */}
+                              {hasVariants && (
                                 <div className="flex flex-wrap gap-1 mt-2">
                                   {item.selected_variants.map(
                                     (variant, idx) => (
@@ -341,58 +430,92 @@ export default function Cart() {
                                   )}
                                 </div>
                               )}
-                            <p className="text-sm text-neutral-500 mt-2">
-                              ₱{item.unit_price.toFixed(2)} each
-                              {item.price_delta !== 0 && (
-                                <span className="ml-1 text-neutral-400">
-                                  ({item.price_delta > 0 ? '+' : ''}₱
-                                  {item.price_delta.toFixed(2)})
-                                </span>
-                              )}
-                            </p>
+                              <p className="text-sm text-neutral-500 mt-2">
+                                ₱{item.unit_price.toFixed(2)} each
+                                {item.price_delta !== 0 && (
+                                  <span className="ml-1 text-neutral-400">
+                                    ({item.price_delta > 0 ? '+' : ''}₱
+                                    {item.price_delta.toFixed(2)})
+                                  </span>
+                                )}
+                              </p>
+                            </div>
+                            <span className="text-lg font-semibold text-[#30442B]">
+                              ₱{(item.line_total || 0).toFixed(2)}
+                            </span>
                           </div>
-                          <span className="text-lg font-semibold text-[#30442B]">
-                            ₱{(item.line_total || 0).toFixed(2)}
-                          </span>
-                        </div>
-                        <div className="mt-4 flex flex-wrap items-center gap-3">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() =>
-                                updateQuantity(item.id, item.quantity - 1)
-                              }
-                              className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B]"
+                          <div className="mt-4 flex flex-wrap items-center gap-3">
+                            <div 
+                              className="flex items-center gap-2"
+                              onClick={(e) => e.stopPropagation()}
                             >
-                              -
-                            </button>
-                            <input
-                              type="number"
-                              value={item.quantity}
-                              readOnly
-                              className="w-14 text-center border border-neutral-200 rounded-lg text-neutral-700"
-                              min="1"
-                            />
+                              <button
+                                onClick={() =>
+                                  updateQuantity(item.id, item.quantity - 1)
+                                }
+                                disabled={item.quantity <= 1}
+                                className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B] disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                -
+                              </button>
+                              <input
+                                type="number"
+                                value={item.quantity}
+                                readOnly
+                                className="w-14 text-center border border-neutral-200 rounded-lg text-neutral-700"
+                                min="1"
+                              />
+                              <button
+                                onClick={() =>
+                                  updateQuantity(item.id, item.quantity + 1)
+                                }
+                                className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B]"
+                              >
+                                +
+                              </button>
+                            </div>
+                            {hasVariants && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditItem(item);
+                                }}
+                                disabled={isEditing}
+                                className={`text-sm flex items-center gap-1 ${
+                                  isEditing
+                                    ? 'text-neutral-400 cursor-not-allowed'
+                                    : 'text-[#30442B] hover:text-[#405939] cursor-pointer'
+                                }`}
+                              >
+                                {isEditing ? (
+                                  <>
+                                    <span className="inline-block w-4 h-4 border-2 border-[#30442B] border-t-transparent rounded-full animate-spin"></span>
+                                    Loading...
+                                  </>
+                                ) : (
+                                  <>
+                                    <span aria-hidden="true">✏️</span>
+                                    Edit
+                                  </>
+                                )}
+                              </button>
+                            )}
                             <button
-                              onClick={() =>
-                                updateQuantity(item.id, item.quantity + 1)
-                              }
-                              className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B]"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeItem(item.id);
+                              }}
+                              className="text-sm cursor-pointer text-red-600 hover:text-red-700 flex items-center gap-1"
                             >
-                              +
+                              <span aria-hidden="true">🗑</span>
+                              Remove
                             </button>
                           </div>
-                          <button
-                            onClick={() => removeItem(item.id)}
-                            className="text-sm cursor-pointer text-red-600 hover:text-red-700 flex items-center gap-1"
-                          >
-                            <span aria-hidden="true">🗑</span>
-                            Remove
-                          </button>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Continue Shopping */}
@@ -454,6 +577,18 @@ export default function Cart() {
         </div>
       </main>
       <Footer />
+      
+      {/* Edit Modal */}
+      {editingItem && editingProduct && (
+        <ProductCustomizationModal
+          isOpen={true}
+          onClose={closeEditModal}
+          product={editingProduct}
+          onAddToCart={handleEditSave}
+          initialQuantity={editingItem.quantity}
+          initialVariants={editingItem.selected_variants}
+        />
+      )}
     </>
   );
 }

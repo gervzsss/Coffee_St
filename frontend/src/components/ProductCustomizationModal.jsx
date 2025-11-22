@@ -7,8 +7,10 @@ const ProductCustomizationModal = ({
   onClose,
   product,
   onAddToCart,
+  initialQuantity = 1,
+  initialVariants = [],
 }) => {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(initialQuantity);
   const [selectedVariants, setSelectedVariants] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -36,6 +38,48 @@ const ProductCustomizationModal = ({
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
+
+  // Initialize with initial values when editing
+  useEffect(() => {
+    if (isOpen) {
+      setQuantity(initialQuantity);
+      
+      // Pre-select variants if editing
+      if (initialVariants && initialVariants.length > 0 && product) {
+        const preSelected = {};
+        
+        initialVariants.forEach((variant) => {
+          // Find the matching variant group
+          const group = product.active_variant_groups?.find(
+            (g) => g.name === variant.group_name
+          );
+          
+          if (group) {
+            // Find the matching variant in the group
+            const matchingVariant = group.active_variants?.find(
+              (v) => v.id === variant.id
+            );
+            
+            if (matchingVariant) {
+              if (!preSelected[group.id]) {
+                preSelected[group.id] = [];
+              }
+              preSelected[group.id].push({
+                id: matchingVariant.id,
+                name: matchingVariant.name,
+                group_name: group.name,
+                price_delta: matchingVariant.price_delta,
+              });
+            }
+          }
+        });
+        
+        setSelectedVariants(preSelected);
+      } else {
+        setSelectedVariants({});
+      }
+    }
+  }, [isOpen, initialQuantity, initialVariants, product]);
 
   if (!product) return null;
 
