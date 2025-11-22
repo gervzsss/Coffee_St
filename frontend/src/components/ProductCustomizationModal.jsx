@@ -189,8 +189,8 @@ const ProductCustomizationModal = ({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Scroll shadows */}
-            <div className="shadow-top pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-white via-white/80 to-transparent opacity-0 transition-opacity duration-200 z-10"></div>
-            <div className="shadow-bottom pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white via-white/80 to-transparent opacity-0 transition-opacity duration-200 z-10"></div>
+            <div className="shadow-top pointer-events-none absolute inset-x-0 top-0 h-10 bg-linear-to-b from-white via-white/80 to-transparent opacity-0 transition-opacity duration-200 z-10"></div>
+            <div className="shadow-bottom pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-linear-to-t from-white via-white/80 to-transparent opacity-0 transition-opacity duration-200 z-10"></div>
             {/* Close Button */}
             <button
               onClick={onClose}

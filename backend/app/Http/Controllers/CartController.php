@@ -136,25 +136,20 @@ class CartController extends Controller
                 $customizationSummary = $variantName;
             }
             
-            // Check if item with same variants already exists
-            $cartItem = CartItem::where('cart_id', $cart->id)
-                ->where('product_id', $request->product_id)
-                ->where('variant_id', $request->variant_id)
-                ->first();
+            $cartItem = null;
             
-            // For multi-variant system, we need to check if variants match
-            if ($cartItem && $request->has('variants')) {
-                $existingVariantIds = $cartItem->selectedVariants->pluck('variant_id')->sort()->values()->toArray();
-                $newVariantIds = collect($request->variants)->pluck('id')->sort()->values()->toArray();
-                
-                // If variants don't match, treat as new item
-                if ($existingVariantIds !== $newVariantIds) {
-                    $cartItem = null;
-                }
+            // For multi-variant system, always create new items (don't merge)
+            // This allows same product with different variant combinations
+            if (!$request->has('variants') || count($request->variants) === 0) {
+                // Only check for existing items in legacy single-variant system
+                $cartItem = CartItem::where('cart_id', $cart->id)
+                    ->where('product_id', $request->product_id)
+                    ->where('variant_id', $request->variant_id)
+                    ->first();
             }
             
             if ($cartItem) {
-                // Update quantity
+                // Update quantity for legacy system
                 $cartItem->quantity += $request->quantity;
                 $cartItem->save();
             } else {

@@ -117,18 +117,9 @@ export const useProductCard = (product) => {
   };
 
   const handleAddToCartClick = () => {
-    // Use new customization modal if product has variant groups
-    if (hasVariantGroups) {
-      setShowCustomizationModal(true);
-    }
-    // Fallback to legacy modal if only old-style variants exist
-    else if (hasVariants) {
-      setShowVariantModal(true);
-    }
-    // No variants - add directly
-    else {
-      handleAddToCart();
-    }
+    // Always use customization modal for all products
+    // This allows quantity adjustment even for products without variants
+    setShowCustomizationModal(true);
   };
 
   const handleVariantSelect = (variant) => {
