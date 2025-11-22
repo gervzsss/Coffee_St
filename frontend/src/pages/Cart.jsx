@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EmptyState from '../components/EmptyState';
@@ -47,15 +48,19 @@ export default function Cart() {
     handleSave,
   } = useProductEdit(null, setError);
 
+  const [removingSelected, setRemovingSelected] = useState(false);
+
   const handleRemoveItem = async (itemId) => {
     await removeItem(itemId);
     removeFromSelection(itemId);
   };
 
   const handleRemoveSelectedItems = async () => {
+    setRemovingSelected(true);
     const itemsToRemove = Array.from(selectedItems);
     await removeItems(itemsToRemove);
     clearSelection();
+    setRemovingSelected(false);
   };
 
   const handleEditSave = async (cartData) => {
@@ -169,15 +174,24 @@ export default function Cart() {
                 <button
                   type="button"
                   onClick={handleRemoveSelectedItems}
-                  disabled={selectedItems.size === 0}
-                  className={`inline-flex items-center gap-2 rounded border border-red-500 px-3 py-1.5 text-sm font-medium text-red-600 ${
-                    selectedItems.size === 0
+                  disabled={selectedItems.size === 0 || removingSelected}
+                  className={`inline-flex items-center gap-2 rounded border border-red-500 px-3 py-1.5 text-sm font-medium text-red-600 transition-all ${
+                    selectedItems.size === 0 || removingSelected
                       ? 'opacity-60 cursor-not-allowed'
                       : 'hover:bg-red-50 cursor-pointer'
                   }`}
                 >
-                  <span aria-hidden="true">🗑</span>
-                  <span>Remove Selected</span>
+                  {removingSelected ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                      <span>Removing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span aria-hidden="true">🗑</span>
+                      <span>Remove Selected</span>
+                    </>
+                  )}
                 </button>
               </div>
 

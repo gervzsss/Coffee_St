@@ -1,35 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useCart } from '../hooks/useCart';
 import { useToast } from '../hooks/useToast';
-import api from '../services/apiClient';
 import logo from '../assets/stcoffeelogo.png';
 
 export default function Header() {
   const { showToast } = useToast();
-  const [cartCount, setCartCount] = useState(0);
+  const { cartCount } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   const location = useLocation();
   const { user, isAuthenticated, logout, openAuthModal } = useAuth();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchCartCount();
-    } else {
-      setCartCount(0);
-    }
-
-    const handleCartUpdate = () => {
-      if (isAuthenticated) {
-        fetchCartCount();
-      }
-    };
-
-    window.addEventListener('cartUpdated', handleCartUpdate);
-    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
-  }, [isAuthenticated]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,23 +27,9 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const fetchCartCount = async () => {
-    try {
-      const response = await api.get('/cart/count');
-      setCartCount(response.data.count || 0);
-    } catch (error) {
-      // Silently fail on 401 (user not authenticated)
-      if (error.response?.status !== 401) {
-        console.error('Failed to fetch cart count:', error);
-      }
-      setCartCount(0);
-    }
-  };
-
   const handleLogout = async () => {
     try {
       await logout();
-      setCartCount(0);
       showToast('Logged out successfully', { type: 'info', dismissible: true });
     } catch (error) {
       console.error('Logout error:', error);

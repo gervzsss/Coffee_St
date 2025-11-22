@@ -14,14 +14,11 @@
       'Helvetica Neue', Arial;
   }
 
-  /* Custom Scrollbar Styling */
-  /* Firefox */
   * {
     scrollbar-width: thin;
     scrollbar-color: #30442B #f5f5f5;
   }
 
-  /* Webkit browsers (Chrome, Safari, Edge) */
   ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
@@ -47,7 +44,6 @@
     background: #253319;
   }
 
-  /* Horizontal scrollbar styling (if needed) */
   ::-webkit-scrollbar-corner {
     background: #f5f5f5;
   }

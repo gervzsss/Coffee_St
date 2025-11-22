@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Minus, ShoppingCart } from 'lucide-react';
+import { useToast } from '../hooks/useToast';
 
 const ProductCustomizationModal = ({
   isOpen,
@@ -10,6 +11,7 @@ const ProductCustomizationModal = ({
   initialQuantity = 1,
   initialVariants = [],
 }) => {
+  const { showToast } = useToast();
   const [quantity, setQuantity] = useState(initialQuantity);
   const [selectedVariants, setSelectedVariants] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -136,7 +138,10 @@ const ProductCustomizationModal = ({
 
   const handleAddToCart = async () => {
     if (!validateSelections()) {
-      alert('Please select all required options');
+      showToast('Please select all required options', { 
+        type: 'error', 
+        dismissible: true 
+      });
       return;
     }
 
