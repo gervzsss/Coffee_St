@@ -3,7 +3,7 @@ import ProductCard from './ProductCard';
 export default function ProductsGrid({ products, loading, error, onRetry }) {
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-20">
+      <div className="flex justify-center items-center py-32">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#30442B]"></div>
       </div>
     );

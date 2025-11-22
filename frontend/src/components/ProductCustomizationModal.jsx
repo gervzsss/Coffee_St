@@ -394,7 +394,7 @@ const ProductCustomizationModal = ({
                 <button
                   onClick={handleAddToCart}
                   disabled={isSubmitting}
-                  className="px-6 py-3 bg-[#30442B] text-white rounded-lg font-semibold hover:bg-[#405939] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                  className="px-6 py-3 bg-[#30442B] cursor-pointer text-white rounded-lg font-semibold hover:bg-[#405939] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
                 >
                   <ShoppingCart className="w-5 h-5" />
                   <span>{isSubmitting ? 'Adding...' : 'Add to Cart'}</span>

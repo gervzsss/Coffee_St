@@ -66,9 +66,14 @@ export default function Cart() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gray-50 pt-32 px-6">
-          <div className="max-w-7xl mx-auto text-center">
-            <p className="text-gray-500">Loading cart...</p>
+        <main className="min-h-screen bg-gray-50 pt-32 px-6 pb-12">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-3xl md:text-4xl font-bold text-[#30442B] mb-8">
+              Your Cart
+            </h1>
+            <div className="flex justify-center items-center py-32">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#30442B]"></div>
+            </div>
           </div>
         </main>
         <Footer />
