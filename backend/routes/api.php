@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,4 +50,11 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/orders/{id}', [OrderController::class, 'show']);
   Route::post('/orders', [OrderController::class, 'store']);
   Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+
+  // User Profile Routes
+  Route::get('/user/recent-orders', [UserProfileController::class, 'recentOrders']);
+  Route::put('/user/profile', [UserProfileController::class, 'updateProfile']);
+  Route::put('/user/password', [UserProfileController::class, 'updatePassword']);
+  Route::put('/user/language', [UserProfileController::class, 'updateLanguage']);
+  Route::post('/user/soft-delete', [UserProfileController::class, 'softDelete']);
 });
