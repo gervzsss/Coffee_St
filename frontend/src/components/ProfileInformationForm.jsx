@@ -12,6 +12,7 @@ export default function ProfileInformationForm({ user, onUserUpdate }) {
     last_name: '',
     email: '',
     phone: '',
+    address: '',
   });
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export default function ProfileInformationForm({ user, onUserUpdate }) {
         last_name: user.last_name || '',
         email: user.email || '',
         phone: user.phone || '',
+        address: user.address || '',
       });
     }
   }, [user]);
@@ -36,6 +38,7 @@ export default function ProfileInformationForm({ user, onUserUpdate }) {
       last_name: user.last_name || '',
       email: user.email || '',
       phone: user.phone || '',
+      address: user.address || '',
     });
     setIsEditMode(false);
   };
@@ -49,6 +52,7 @@ export default function ProfileInformationForm({ user, onUserUpdate }) {
         first_name: formData.first_name,
         last_name: formData.last_name,
         phone: formData.phone,
+        address: formData.address,
       });
 
       showToast('Profile updated successfully', {
@@ -176,6 +180,30 @@ export default function ProfileInformationForm({ user, onUserUpdate }) {
               <div className="px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
                 <p className="text-gray-800">
                   {formData.phone || 'Not provided'}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Address */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Address
+            </label>
+            {isEditMode ? (
+              <textarea
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors resize-none"
+                placeholder="Enter your complete address"
+                disabled={loading}
+              />
+            ) : (
+              <div className="px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 min-h-20">
+                <p className="text-gray-800 whitespace-pre-wrap">
+                  {formData.address || 'Not provided'}
                 </p>
               </div>
             )}

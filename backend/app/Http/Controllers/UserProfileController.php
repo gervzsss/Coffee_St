@@ -39,6 +39,7 @@ class UserProfileController extends Controller
       'first_name' => 'required|string|max:120',
       'last_name' => 'required|string|max:120',
       'phone' => 'nullable|string|max:50',
+      'address' => 'nullable|string|max:500',
     ]);
 
     $user = $request->user();
