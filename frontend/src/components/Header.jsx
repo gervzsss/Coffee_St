@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useCart } from '../hooks/useCart';
 import { useToast } from '../hooks/useToast';
+import ProfileDropdown from './ProfileDropdown';
 import logo from '../assets/stcoffeelogo.png';
 
 export default function Header() {
@@ -51,6 +52,20 @@ export default function Header() {
   const getUserDisplayName = () => {
     if (user?.name) {
       return user.name.split(' ')[0]; // First name only
+    }
+    return user?.email?.split('@')[0] || 'Guest';
+  };
+
+  const getFormattedUserName = () => {
+    if (user?.first_name && user?.last_name) {
+      return `${user.first_name} ${user.last_name.charAt(0)}.`;
+    }
+    if (user?.name) {
+      const parts = user.name.split(' ');
+      if (parts.length >= 2) {
+        return `${parts[0]} ${parts[1].charAt(0)}.`;
+      }
+      return parts[0];
     }
     return user?.email?.split('@')[0] || 'Guest';
   };
@@ -145,22 +160,11 @@ export default function Header() {
 
             {/* Login / User Profile */}
             {isAuthenticated ? (
-              <div className="hidden md:flex items-center gap-3">
-                <span className="font-outfit text-[16px] text-gray-700">
-                  Welcome,{' '}
-                  <strong className="text-[#30442B]">
-                    {getUserDisplayName()}
-                  </strong>
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="inline-flex items-center px-6 py-2.5 cursor-pointer font-outfit text-[18px] font-medium tracking-wide border-2 border-red-600 text-red-600 rounded-full overflow-hidden relative transition-all duration-300 ease-out hover:text-white hover:border-red-700 hover:shadow-xl group transform hover:-translate-y-0.5"
-                >
-                  <span className="relative z-10 transform transition-transform duration-300 ease-out group-hover:translate-x-1">
-                    Logout
-                  </span>
-                  <div className="absolute inset-0 bg-red-600 transform scale-x-0 origin-left transition-transform duration-300 ease-out group-hover:scale-x-100"></div>
-                </button>
+              <div className="hidden md:flex items-center">
+                <ProfileDropdown
+                  userName={getFormattedUserName()}
+                  onLogout={handleLogout}
+                />
               </div>
             ) : (
               <button

@@ -7,11 +7,14 @@ import Products from './pages/Products.jsx';
 import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
 import Cart from './pages/Cart.jsx';
+import Profile from './pages/Profile.jsx';
+import Orders from './pages/Orders.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { CartProvider } from './context/CartContext.jsx';
 import { ToastProvider } from './context/ToastContext.jsx';
 import { useAuth } from './hooks/useAuth.js';
 import AuthModal from './components/AuthModal.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 function AppContent() {
   const { isAuthModalOpen, closeAuthModal, authModalMode } = useAuth();
@@ -24,6 +27,22 @@ function AppContent() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cart" element={<Cart />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <AuthModal
         isOpen={isAuthModalOpen}
