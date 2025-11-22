@@ -11,6 +11,7 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
+        'order_number',
         'status',
         'subtotal',
         'delivery_fee',
@@ -18,6 +19,10 @@ class Order extends Model
         'tax_amount',
         'tax',
         'total',
+        'delivery_address',
+        'delivery_contact',
+        'delivery_instructions',
+        'payment_method',
     ];
 
     protected $casts = [
@@ -59,5 +64,32 @@ class Order extends Model
         $this->tax_amount = $taxAmount;
         $this->tax = $taxAmount; // Duplicate field for compatibility
         $this->total = $total;
+    }
+
+    /**
+     * Generate a unique order number.
+     * Format: ORD-YYYY-NNNN
+     */
+    public static function generateOrderNumber(): string
+    {
+        $year = now()->year;
+        $prefix = "ORD-{$year}-";
+        
+        // Get the last order number for this year
+        $lastOrder = self::where('order_number', 'LIKE', "{$prefix}%")
+            ->orderBy('order_number', 'desc')
+            ->first();
+        
+        if ($lastOrder) {
+            // Extract the sequence number and increment it
+            $lastSequence = intval(substr($lastOrder->order_number, -4));
+            $newSequence = $lastSequence + 1;
+        } else {
+            // First order of the year
+            $newSequence = 1;
+        }
+        
+        // Format with leading zeros (4 digits)
+        return $prefix . str_pad($newSequence, 4, '0', STR_PAD_LEFT);
     }
 }

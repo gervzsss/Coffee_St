@@ -1,14 +1,46 @@
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useOrders } from '../hooks/useOrders';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EmptyState from '../components/EmptyState';
+import OrderCard from '../components/OrderCard';
+import OrderDetailModal from '../components/OrderDetailModal';
 import contactHeaderImg from '../assets/contact_header.png';
 
 export default function Orders() {
   const { user } = useAuth();
+  const { orders, loading, error } = useOrders();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
-  // Placeholder - no orders yet
-  const orders = [];
+  const statusFilter = searchParams.get('status') || 'all';
+
+  const handleViewDetails = (order) => {
+    setSelectedOrder(order);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setSelectedOrder(null);
+  };
+
+  const handleFilterChange = (status) => {
+    if (status === 'all') {
+      searchParams.delete('status');
+    } else {
+      searchParams.set('status', status);
+    }
+    setSearchParams(searchParams);
+  };
+
+  const filteredOrders =
+    statusFilter === 'all'
+      ? orders
+      : orders.filter((order) => order.status === statusFilter);
 
   return (
     <>
@@ -43,7 +75,17 @@ export default function Orders() {
         {/* Orders Content */}
         <section className="relative -mt-12 pb-24">
           <div className="mx-auto max-w-6xl px-6 sm:px-10">
-            {orders.length === 0 ? (
+            {loading ? (
+              <div className="flex justify-center items-center py-32">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#30442B]"></div>
+              </div>
+            ) : error ? (
+              <div className="rounded-3xl bg-white p-8 shadow-lg ring-1 ring-gray-900/5">
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                  {error}
+                </div>
+              </div>
+            ) : orders.length === 0 ? (
               <div className="space-y-6">
                 <EmptyState
                   icon={
@@ -66,74 +108,87 @@ export default function Orders() {
                   actionText="Browse Menu"
                   actionTo="/products"
                 />
-
-                {/* Coming Soon Info Card */}
-                <div className="rounded-3xl bg-white p-8 shadow-lg ring-1 ring-gray-900/5">
-                  <div className="flex items-start gap-6">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50">
-                      <svg
-                        className="h-7 w-7 text-blue-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Filter Buttons */}
+                <div className="rounded-3xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-sm font-medium text-gray-700">Filter by status:</span>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => handleFilterChange('all')}
+                        className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                          statusFilter === 'all'
+                            ? 'bg-[#30442B] text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-outfit text-xl font-semibold text-gray-900 mb-3">
-                        Order Management Coming Soon
-                      </h3>
-                      <p className="text-gray-600 mb-4 leading-relaxed">
-                        We're working on adding full order tracking features to enhance your experience:
-                      </p>
-                      <ul className="space-y-2.5 text-gray-600">
-                        <li className="flex items-center gap-3">
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
-                            <span className="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
-                          </span>
-                          Real-time order status updates
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
-                            <span className="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
-                          </span>
-                          Order history with detailed receipts
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
-                            <span className="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
-                          </span>
-                          Re-order your favorites with one click
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
-                            <span className="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
-                          </span>
-                          Delivery tracking and estimated arrival times
-                        </li>
-                      </ul>
+                        All Orders
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange('pending')}
+                        className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                          statusFilter === 'pending'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                        }`}
+                      >
+                        Pending
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange('paid')}
+                        className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                          statusFilter === 'paid'
+                            ? 'bg-green-600 text-white'
+                            : 'bg-green-100 text-green-700 hover:bg-green-200'
+                        }`}
+                      >
+                        Completed
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange('cancelled')}
+                        className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                          statusFilter === 'cancelled'
+                            ? 'bg-red-600 text-white'
+                            : 'bg-red-100 text-red-700 hover:bg-red-200'
+                        }`}
+                      >
+                        Cancelled
+                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {/* Future: Order cards will be rendered here */}
-                <div className="rounded-3xl bg-white p-8 shadow-lg ring-1 ring-gray-900/5">
-                  <p className="text-gray-600">Your orders will appear here</p>
-                </div>
+
+                {/* Orders List */}
+                {filteredOrders.length === 0 ? (
+                  <div className="rounded-3xl bg-white p-12 shadow-lg ring-1 ring-gray-900/5 text-center">
+                    <p className="text-gray-600">No orders found with the selected filter.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {filteredOrders.map((order) => (
+                      <OrderCard
+                        key={order.id}
+                        order={order}
+                        onViewDetails={handleViewDetails}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
         </section>
       </main>
       <Footer />
+
+      {/* Order Detail Modal */}
+      <OrderDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseDetailModal}
+        order={selectedOrder}
+      />
     </>
   );
 }

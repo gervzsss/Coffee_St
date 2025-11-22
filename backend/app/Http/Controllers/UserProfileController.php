@@ -13,7 +13,7 @@ class UserProfileController extends Controller
   public function recentOrders(Request $request): JsonResponse
   {
     $orders = Order::where('user_id', $request->user()->id)
-      ->with(['items.product', 'items.variants'])
+      ->with(['items.product', 'items.variant'])
       ->orderBy('created_at', 'desc')
       ->take(4)
       ->get();

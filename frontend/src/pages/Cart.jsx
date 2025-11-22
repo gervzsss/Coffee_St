@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EmptyState from '../components/EmptyState';
@@ -19,6 +20,7 @@ import {
 
 export default function Cart() {
   const { isAuthenticated, openAuthModal } = useAuth();
+  const navigate = useNavigate();
   const {
     cartItems,
     loading,
@@ -65,6 +67,24 @@ export default function Cart() {
 
   const handleEditSave = async (cartData) => {
     await handleSave(cartData, updateCartItem, removeFromSelection);
+  };
+
+  const handleCheckout = () => {
+    // Validate that at least one item is selected
+    if (selectedItems.size === 0) {
+      toast.error('Please select at least one item to checkout');
+      return;
+    }
+
+    // Get selected cart items
+    const selectedCartItems = cartItems.filter((item) =>
+      selectedItems.has(item.id)
+    );
+
+    // Navigate to checkout with selected items
+    navigate('/checkout', {
+      state: { selectedCartItems },
+    });
   };
 
   if (loading) {
@@ -231,9 +251,7 @@ export default function Cart() {
                 tax={calculateTax(cartItems, selectedItems)}
                 taxRate={getTaxRatePercentage()}
                 total={calculateTotal(cartItems, selectedItems)}
-                onCheckout={() => {
-                  /* TODO: Implement checkout */
-                }}
+                onCheckout={handleCheckout}
                 disabled={selectedItems.size === 0}
               />
             </aside>

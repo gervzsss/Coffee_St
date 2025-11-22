@@ -51,6 +51,12 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'selected_items' => 'required|array|min:1',
+            'selected_items.*' => 'required|integer|exists:cart_items,id',
+            'delivery_address' => 'required|string|max:1000',
+            'delivery_contact' => 'required|string|max:20',
+            'delivery_instructions' => 'nullable|string|max:500',
+            'payment_method' => 'required|in:cash,gcash',
             'delivery_fee' => 'nullable|numeric|min:0',
             'tax_rate' => 'nullable|numeric|min:0|max:1',
         ]);
@@ -67,22 +73,38 @@ class OrderController extends Controller
             return response()->json(['message' => 'Cart is empty'], 400);
         }
 
+        // Filter only selected items
+        $selectedItemIds = $request->selected_items;
+        $selectedCartItems = $cart->items->whereIn('id', $selectedItemIds);
+        
+        if ($selectedCartItems->isEmpty()) {
+            return response()->json(['message' => 'No valid items selected'], 400);
+        }
+
         DB::beginTransaction();
         try {
+            // Generate unique order number
+            $orderNumber = Order::generateOrderNumber();
+            
             // Create order
             $order = Order::create([
                 'user_id' => $user->id,
+                'order_number' => $orderNumber,
                 'status' => 'pending',
                 'subtotal' => 0,
-                'delivery_fee' => $request->delivery_fee ?? 0.00,
-                'tax_rate' => $request->tax_rate ?? 0.0800,
+                'delivery_fee' => $request->delivery_fee ?? 50.00,
+                'tax_rate' => $request->tax_rate ?? 0.1200,
                 'tax_amount' => 0,
                 'tax' => 0,
                 'total' => 0,
+                'delivery_address' => $request->delivery_address,
+                'delivery_contact' => $request->delivery_contact,
+                'delivery_instructions' => $request->delivery_instructions,
+                'payment_method' => $request->payment_method,
             ]);
 
-            // Create order items from cart items
-            foreach ($cart->items as $cartItem) {
+            // Create order items from selected cart items
+            foreach ($selectedCartItems as $cartItem) {
                 $lineTotal = ($cartItem->unit_price + $cartItem->price_delta) * $cartItem->quantity;
                 
                 OrderItem::create([
@@ -103,9 +125,16 @@ class OrderController extends Controller
             $order->calculateTotals();
             $order->save();
 
-            // Mark cart as converted
-            $cart->status = 'converted';
-            $cart->save();
+            // Remove selected items from cart
+            foreach ($selectedCartItems as $cartItem) {
+                $cartItem->delete();
+            }
+            
+            // If cart is now empty, mark as converted
+            if ($cart->items()->count() === 0) {
+                $cart->status = 'converted';
+                $cart->save();
+            }
 
             DB::commit();
 
