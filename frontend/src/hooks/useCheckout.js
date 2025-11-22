@@ -4,7 +4,7 @@ import { useToast } from './useToast';
 import { TOAST_DURATION } from '../constants/toastConfig';
 import api from '../services/apiClient';
 
-export function useCheckout(selectedCartItems = []) {
+export function useCheckout(selectedCartItems = [], user = null) {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -18,6 +18,16 @@ export function useCheckout(selectedCartItems = []) {
   });
 
   const [formErrors, setFormErrors] = useState({});
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        delivery_address: user.address || '',
+        delivery_contact: user.phone || '',
+      }));
+    }
+  }, [user]);
 
   const validateForm = () => {
     const errors = {};

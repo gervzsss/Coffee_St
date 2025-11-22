@@ -10,14 +10,14 @@ import OrderSummaryCheckout from '../components/OrderSummaryCheckout';
 import contactHeaderImg from '../assets/contact_header.png';
 
 export default function Checkout() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const selectedCartItems = location.state?.selectedCartItems || [];
 
   const { formData, formErrors, loading, error, updateFormData, submitOrder } =
-    useCheckout(selectedCartItems);
+    useCheckout(selectedCartItems, user);
 
   useEffect(() => {
     if (!isAuthenticated) {
