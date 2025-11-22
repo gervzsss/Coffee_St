@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from './useToast';
+import { TOAST_DURATION } from '../constants/toastConfig';
 import api from '../services/apiClient';
 
 export function useCheckout(selectedCartItems = []) {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     delivery_address: '',
     delivery_contact: '',
@@ -16,7 +19,6 @@ export function useCheckout(selectedCartItems = []) {
 
   const [formErrors, setFormErrors] = useState({});
 
-  // Validate form
   const validateForm = () => {
     const errors = {};
 
@@ -40,7 +42,6 @@ export function useCheckout(selectedCartItems = []) {
     return Object.keys(errors).length === 0;
   };
 
-  // Calculate totals
   const calculateTotals = () => {
     const subtotal = selectedCartItems.reduce((sum, item) => sum + (item.line_total || 0), 0);
     const deliveryFee = 50.00;
@@ -51,7 +52,6 @@ export function useCheckout(selectedCartItems = []) {
     return { subtotal, deliveryFee, taxRate, tax, total };
   };
 
-  // Submit order
   const submitOrder = async () => {
     if (!validateForm()) {
       setError('Please fill in all required fields correctly');
@@ -81,8 +81,13 @@ export function useCheckout(selectedCartItems = []) {
       });
 
       const order = response.data.order;
-      
-      // Navigate to success page with order data
+
+      showToast('Order placed successfully!', {
+        type: 'success',
+        dismissible: true,
+        duration: TOAST_DURATION.SUCCESS,
+      });
+
       navigate(`/order-success/${order.order_number}`, {
         state: { order },
         replace: true,
@@ -91,17 +96,20 @@ export function useCheckout(selectedCartItems = []) {
       return order;
     } catch (err) {
       console.error('Checkout error:', err);
-      setError(err.response?.data?.message || 'Failed to place order. Please try again.');
+      const errorMessage = err.response?.data?.message || 'Failed to place order. Please try again.';
+      setError(errorMessage);
+      showToast(errorMessage, {
+        type: 'error',
+        dismissible: true,
+      });
       return null;
     } finally {
       setLoading(false);
     }
   };
 
-  // Update form data
   const updateFormData = (newData) => {
     setFormData(newData);
-    // Clear errors for updated fields
     const updatedErrors = { ...formErrors };
     Object.keys(newData).forEach(key => {
       if (newData[key] !== formData[key]) {

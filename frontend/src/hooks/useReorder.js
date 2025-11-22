@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { useToast } from './useToast';
+import { TOAST_DURATION } from '../constants/toastConfig';
 import api from '../services/apiClient';
 
 export function useReorder() {
   const [reordering, setReordering] = useState(false);
+  const { showToast } = useToast();
 
   const reorderItems = async (orderItems) => {
     setReordering(true);
@@ -46,17 +48,17 @@ export function useReorder() {
       }
 
       if (addedItems.length > 0) {
-        toast.success(
+        showToast(
           `${addedItems.length} item${addedItems.length > 1 ? 's' : ''} added to cart!`,
-          { duration: 4000 }
+          { type: 'success', dismissible: true, duration: TOAST_DURATION.ERROR }
         );
       }
 
       if (unavailableItems.length > 0) {
-        toast.error(
+        showToast(
           `${unavailableItems.length} item${unavailableItems.length > 1 ? 's are' : ' is'
           } no longer available`,
-          { duration: 5000 }
+          { type: 'error', dismissible: true, duration: TOAST_DURATION.LONG }
         );
       }
 
@@ -67,7 +69,10 @@ export function useReorder() {
       };
     } catch (error) {
       console.error('Error during reorder:', error);
-      toast.error('Failed to reorder items. Please try again.');
+      showToast('Failed to reorder items. Please try again.', {
+        type: 'error',
+        dismissible: true,
+      });
       return {
         success: false,
         addedCount: 0,

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import debounce from 'lodash.debounce';
+import { useToast } from './useToast';
 import api from '../services/apiClient';
 
 export function useCartOperations(isAuthenticated) {
@@ -8,6 +9,7 @@ export function useCartOperations(isAuthenticated) {
   const [error, setError] = useState(null);
   const [loadingItems, setLoadingItems] = useState({});
   const debouncedUpdateRefs = useRef({});
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -62,6 +64,10 @@ export function useCartOperations(isAuthenticated) {
         } catch (err) {
           console.error('Failed to update quantity:', err);
           setError('Failed to update quantity');
+          showToast('Failed to update quantity', {
+            type: 'error',
+            dismissible: true,
+          });
           fetchCartItems();
         } finally {
           setLoadingItems((prev) => ({ ...prev, [itemId]: false }));
@@ -97,6 +103,10 @@ export function useCartOperations(isAuthenticated) {
     } catch (err) {
       console.error('Failed to remove item:', err);
       setError('Failed to remove item');
+      showToast('Failed to remove item', {
+        type: 'error',
+        dismissible: true,
+      });
     }
   };
 
@@ -108,6 +118,10 @@ export function useCartOperations(isAuthenticated) {
     } catch (err) {
       console.error('Failed to remove items:', err);
       setError('Failed to remove items');
+      showToast('Failed to remove items', {
+        type: 'error',
+        dismissible: true,
+      });
     }
   };
 
@@ -121,6 +135,10 @@ export function useCartOperations(isAuthenticated) {
     } catch (err) {
       console.error('Failed to update cart item:', err);
       setError('Failed to update item');
+      showToast('Failed to update item', {
+        type: 'error',
+        dismissible: true,
+      });
       throw err;
     }
   };

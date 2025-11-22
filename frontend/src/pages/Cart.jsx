@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import EmptyState from '../components/EmptyState';
@@ -8,6 +7,7 @@ import CartItem from '../components/CartItem';
 import CartSummary from '../components/CartSummary';
 import ProductCustomizationModal from '../components/ProductCustomizationModal';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
 import { useCartOperations } from '../hooks/useCartOperations';
 import { useCartSelection } from '../hooks/useCartSelection';
 import { useProductEdit } from '../hooks/useProductEdit';
@@ -20,6 +20,7 @@ import {
 
 export default function Cart() {
   const { isAuthenticated, openAuthModal } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const {
     cartItems,
@@ -70,18 +71,18 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    // Validate that at least one item is selected
     if (selectedItems.size === 0) {
-      toast.error('Please select at least one item to checkout');
+      showToast('Please select at least one item to checkout', {
+        type: 'error',
+        dismissible: true,
+      });
       return;
     }
 
-    // Get selected cart items
     const selectedCartItems = cartItems.filter((item) =>
       selectedItems.has(item.id)
     );
 
-    // Navigate to checkout with selected items
     navigate('/checkout', {
       state: { selectedCartItems },
     });
