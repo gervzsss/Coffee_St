@@ -14,7 +14,6 @@ const ProductCustomizationModal = ({
   const [selectedVariants, setSelectedVariants] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Lock body overflow when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -27,7 +26,6 @@ const ProductCustomizationModal = ({
     };
   }, [isOpen]);
 
-  // Handle escape key
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape' && isOpen) {
@@ -39,27 +37,23 @@ const ProductCustomizationModal = ({
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
-  // Initialize with initial values when editing
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && product) {
       setQuantity(initialQuantity);
-      
-      // Pre-select variants if editing
-      if (initialVariants && initialVariants.length > 0 && product) {
+
+      if (initialVariants && initialVariants.length > 0) {
         const preSelected = {};
-        
+
         initialVariants.forEach((variant) => {
-          // Find the matching variant group
           const group = product.active_variant_groups?.find(
             (g) => g.name === variant.group_name
           );
-          
+
           if (group) {
-            // Find the matching variant in the group
             const matchingVariant = group.active_variants?.find(
               (v) => v.id === variant.id
             );
-            
+
             if (matchingVariant) {
               if (!preSelected[group.id]) {
                 preSelected[group.id] = [];
@@ -73,19 +67,18 @@ const ProductCustomizationModal = ({
             }
           }
         });
-        
+
         setSelectedVariants(preSelected);
       } else {
         setSelectedVariants({});
       }
     }
-  }, [isOpen, initialQuantity, initialVariants, product]);
+  }, [isOpen, initialQuantity]);
 
   if (!product) return null;
 
   const variantGroups = product.active_variant_groups || [];
 
-  // Calculate total price including selected variants
   const calculateTotalPrice = () => {
     let total = product.price * quantity;
 
@@ -98,7 +91,6 @@ const ProductCustomizationModal = ({
     return total.toFixed(2);
   };
 
-  // Handle variant selection for single-select groups
   const handleSingleSelect = (groupId, variant) => {
     setSelectedVariants((prev) => ({
       ...prev,
@@ -106,7 +98,6 @@ const ProductCustomizationModal = ({
     }));
   };
 
-  // Handle variant toggle for multi-select groups
   const handleMultiSelect = (groupId, variant) => {
     setSelectedVariants((prev) => {
       const currentSelections = prev[groupId] || [];
@@ -126,13 +117,11 @@ const ProductCustomizationModal = ({
     });
   };
 
-  // Check if a variant is selected
   const isVariantSelected = (groupId, variantId) => {
     const groupSelections = selectedVariants[groupId] || [];
     return groupSelections.some((v) => v.id === variantId);
   };
 
-  // Validate required groups are selected
   const validateSelections = () => {
     for (const group of variantGroups) {
       if (
@@ -154,7 +143,6 @@ const ProductCustomizationModal = ({
     setIsSubmitting(true);
 
     try {
-      // Flatten selected variants into array
       const variantsArray = [];
       Object.values(selectedVariants).forEach((variantArray) => {
         variantArray.forEach((variant) => {
