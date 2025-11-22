@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import debounce from 'lodash.debounce';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductCustomizationModal from '../components/ProductCustomizationModal';
@@ -13,10 +14,13 @@ export default function Cart() {
   const [selectedItems, setSelectedItems] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loadingItems, setLoadingItems] = useState({});
   const [editingItem, setEditingItem] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingItemId, setEditingItemId] = useState(null);
   const { isAuthenticated, openAuthModal } = useAuth();
+  
+  const debouncedUpdateRefs = useRef({});
 
   const TAX_RATE = 0.12; // 12% tax
 
@@ -43,37 +47,69 @@ export default function Cart() {
     }
   };
 
-  const updateQuantity = async (itemId, quantity) => {
+  // Helper to calculate line total optimistically
+  const calculateLineTotal = useCallback((item, quantity) => {
+    const variantsDelta = item.selected_variants
+      ? item.selected_variants.reduce((sum, v) => sum + parseFloat(v.price_delta || 0), 0)
+      : 0;
+    return (item.unit_price + item.price_delta + variantsDelta) * quantity;
+  }, []);
+
+  // Debounced API call function
+  const debouncedApiUpdate = useCallback((itemId, quantity) => {
+    if (!debouncedUpdateRefs.current[itemId]) {
+      debouncedUpdateRefs.current[itemId] = debounce(async (qty) => {
+        try {
+          const response = await api.put(`/cart/${itemId}`, { quantity: qty });
+          setCartItems((prev) =>
+            prev.map((item) => (item.id === itemId ? { ...item, ...response.data.item } : item))
+          );
+          window.dispatchEvent(new Event('cartUpdated'));
+          setError(null);
+        } catch (err) {
+          console.error('Failed to update quantity:', err);
+          setError('Failed to update quantity');
+          // Revert optimistic update on error
+          fetchCartItems();
+        } finally {
+          setLoadingItems((prev) => ({ ...prev, [itemId]: false }));
+        }
+      }, 300);
+    }
+    debouncedUpdateRefs.current[itemId](quantity);
+  }, []);
+
+  const updateQuantity = useCallback((itemId, quantity) => {
     if (quantity < 1) return;
     
-    // Optimistic update - calculate new line_total immediately
+    // Optimistic update - update UI immediately
     setCartItems((prev) =>
       prev.map((item) => {
         if (item.id === itemId) {
-          const variantsDelta = item.selected_variants
-            ? item.selected_variants.reduce((sum, v) => sum + parseFloat(v.price_delta || 0), 0)
-            : 0;
-          const newLineTotal = (item.unit_price + item.price_delta + variantsDelta) * quantity;
+          const newLineTotal = calculateLineTotal(item, quantity);
           return { ...item, quantity, line_total: newLineTotal };
         }
         return item;
       })
     );
     
-    try {
-      // Sync with backend and use server-calculated total
-      const response = await api.put(`/cart/${itemId}`, { quantity });
-      setCartItems((prev) =>
-        prev.map((item) => (item.id === itemId ? { ...item, ...response.data.item } : item))
-      );
-      window.dispatchEvent(new Event('cartUpdated'));
-    } catch (err) {
-      console.error('Failed to update quantity:', err);
-      setError('Failed to update quantity');
-      // Revert optimistic update on error
-      fetchCartItems();
-    }
-  };
+    // Mark item as loading
+    setLoadingItems((prev) => ({ ...prev, [itemId]: true }));
+    
+    // Debounced API call
+    debouncedApiUpdate(itemId, quantity);
+  }, [calculateLineTotal, debouncedApiUpdate]);
+
+  // Cleanup debounced functions on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(debouncedUpdateRefs.current).forEach((debouncedFn) => {
+        if (debouncedFn && debouncedFn.cancel) {
+          debouncedFn.cancel();
+        }
+      });
+    };
+  }, []);
 
   const removeItem = async (itemId) => {
     try {
@@ -446,7 +482,7 @@ export default function Cart() {
                           </div>
                           <div className="mt-4 flex flex-wrap items-center gap-3">
                             <div 
-                              className="flex items-center gap-2"
+                              className="flex items-center gap-2 relative"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <button
@@ -454,22 +490,29 @@ export default function Cart() {
                                   updateQuantity(item.id, item.quantity - 1)
                                 }
                                 disabled={item.quantity <= 1}
-                                className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B] disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B] transition-opacity"
                               >
                                 -
                               </button>
-                              <input
-                                type="number"
-                                value={item.quantity}
-                                readOnly
-                                className="w-14 text-center border border-neutral-200 rounded-lg text-neutral-700"
-                                min="1"
-                              />
+                              <div className="relative">
+                                <input
+                                  type="number"
+                                  value={item.quantity}
+                                  readOnly
+                                  className="w-14 text-center border border-neutral-200 rounded-lg text-neutral-700"
+                                  min="1"
+                                />
+                                {loadingItems[item.id] && (
+                                  <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-lg">
+                                    <div className="w-4 h-4 border-2 border-[#30442B] border-t-transparent rounded-full animate-spin"></div>
+                                  </div>
+                                )}
+                              </div>
                               <button
                                 onClick={() =>
                                   updateQuantity(item.id, item.quantity + 1)
                                 }
-                                className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B]"
+                                className="h-8 w-8 rounded-full border border-neutral-200 flex items-center justify-center cursor-pointer text-lg leading-none text-[#30442B] hover:border-[#30442B] transition-opacity"
                               >
                                 +
                               </button>
