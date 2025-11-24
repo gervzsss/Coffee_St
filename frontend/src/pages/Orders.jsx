@@ -7,7 +7,6 @@ import Footer from '../components/Footer';
 import EmptyState from '../components/EmptyState';
 import OrderCard from '../components/OrderCard';
 import OrderDetailModal from '../components/OrderDetailModal';
-import contactHeaderImg from '../assets/contact_header.png';
 
 export default function Orders() {
   const { user } = useAuth();
@@ -46,35 +45,21 @@ export default function Orders() {
     <>
       <Header />
       <main className="pt-20 min-h-screen bg-gray-50">
-        {/* Hero Section */}
-        <section className="relative isolate pt-24">
-          <div className="absolute inset-0">
-            <img
-              src={contactHeaderImg}
-              alt="Coffee background"
-              className="h-full w-full object-cover"
-            />
+        {/* Compact Orders Header */}
+        <div className="w-full bg-[#30442B] pb-8 pt-12">
+          <div className="container mx-auto px-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-white">
+              My Orders
+            </h1>
+            <p className="text-gray-200 text-sm md:text-base mt-1">
+              Track your order history and current deliveries
+            </p>
           </div>
-          <div className="absolute inset-0 bg-[#1a2319]/80 mix-blend-multiply"></div>
-          
-          <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-6 px-6 py-24 text-white sm:px-10">
-            <div>
-              <span className="inline-flex items-center rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-amber-200">
-                Order History
-              </span>
-              <h1 className="mt-6 font-outfit text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-                My Orders
-              </h1>
-              <p className="mt-6 max-w-xl text-base text-white/80 sm:text-lg">
-                Track your order history and current deliveries. View detailed receipts and order again with one click.
-              </p>
-            </div>
-          </div>
-        </section>
+        </div>
 
         {/* Orders Content */}
-        <section className="relative -mt-12 pb-24">
-          <div className="mx-auto max-w-6xl px-6 sm:px-10">
+        <section className="relative pb-24">
+          <div className="mx-auto max-w-6xl px-6 sm:px-10 mt-8">
             {loading ? (
               <div className="flex justify-center items-center py-32">
                 <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#30442B]"></div>
