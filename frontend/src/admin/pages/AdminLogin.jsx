@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAdminAuth } from '../hooks/useAdminAuth';
+import adminLoginBg from '../../assets/AdminLogin.png';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -30,65 +31,101 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-900 to-gray-800">
-      <div className="max-w-md w-full mx-4">
-        <div className="bg-white rounded-lg shadow-2xl p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Portal</h1>
-            <p className="text-gray-600">Sign in to manage Coffee St.</p>
-          </div>
-
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600">{error}</p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                placeholder="admin@coffeest.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
-        </div>
-
-        <p className="text-center text-gray-400 text-sm mt-6">
-          Coffee St. Admin Panel © 2025
-        </p>
+    <main className="relative min-h-screen w-full">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center scale-x-[-1]"
+        style={{ backgroundImage: `url(${adminLoginBg})` }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div>
       </div>
-    </div>
+
+      {/* Content Container */}
+      <div className="relative min-h-screen flex items-center justify-end">
+        {/* Login Form Container */}
+        <div className="w-full max-w-2xl mx-auto lg:mr-24 px-8 py-12 lg:py-0">
+          <div className="rounded-3xl p-8 lg:p-12">
+            {/* Logo and Header */}
+            <div className="text-center mb-14">
+              <h1 className="text-7xl font-black text-white drop-shadow-lg tracking-tight mb-6">
+                COFFEE ST.
+              </h1>
+              <p className="text-sm text-white/90 uppercase tracking-[0.25em] leading-relaxed drop-shadow">
+                Welcome to the Admin Portal<br />
+                — Please log in to continue.
+              </p>
+            </div>
+
+            {/* Login Form */}
+            <form className="space-y-8" onSubmit={handleSubmit}>
+              {error && (
+                <div className="bg-red-100 text-red-700 rounded-lg px-4 py-3 mb-4 text-center">
+                  {error}
+                </div>
+              )}
+
+              {/* Email Field */}
+              <div className="space-y-3">
+                <label 
+                  htmlFor="email" 
+                  className="block text-xs text-white/90 font-medium uppercase tracking-widest"
+                >
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full px-6 py-4 bg-white/95 rounded-xl placeholder-gray-400 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#30442B]/60 transition-all duration-300"
+                  required
+                />
+              </div>
+
+              {/* Password Field */}
+              <div className="space-y-3">
+                <label 
+                  htmlFor="password" 
+                  className="block text-xs text-white/90 font-medium uppercase tracking-widest"
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full px-6 py-4 bg-white/95 rounded-xl placeholder-gray-400 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-[#30442B]/60 transition-all duration-300"
+                  required
+                />
+              </div>
+
+              {/* Login Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 px-8 bg-[#30442B] hover:bg-[#22301e] rounded-xl text-white font-semibold tracking-widest uppercase text-sm transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-[#30442B]/30 mt-8 border border-transparent hover:border-[#30442B] focus:ring-2 focus:ring-[#30442B]/60 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Logging In...' : 'Log In'}
+              </button>
+
+              {/* Forgot Password Link */}
+              <div className="text-center mt-8">
+                <a 
+                  href="#" 
+                  className="text-sm text-white/70 hover:text-white transition-colors duration-300 tracking-wider"
+                >
+                  Forgot your password?
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
