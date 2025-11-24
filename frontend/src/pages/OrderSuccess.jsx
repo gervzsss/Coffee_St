@@ -48,21 +48,61 @@ export default function OrderSuccess() {
     return method === 'cash' ? 'Cash on Delivery' : 'GCash';
   };
 
+  const confettiColors = [
+    'bg-red-400',
+    'bg-yellow-400',
+    'bg-blue-400',
+    'bg-green-400',
+    'bg-pink-400',
+    'bg-purple-400',
+    'bg-orange-400',
+    'bg-cyan-400',
+    'bg-amber-400',
+    'bg-emerald-400',
+    'bg-fuchsia-400',
+    'bg-lime-400',
+  ];
+
+  const confettiPieces = [...Array(80)].map((_, i) => {
+    const angle = (Math.PI * 2 * i) / 80 + (Math.random() - 0.5) * 0.5;
+    const velocity = 150 + Math.random() * 200;
+    const tx = Math.cos(angle) * velocity;
+    const ty = Math.sin(angle) * velocity - 100;
+
+    return {
+      id: i,
+      color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+      tx,
+      ty,
+      rotation: Math.random() * 360,
+      delay: Math.random() * 0.3,
+      duration: 2.5 + Math.random() * 1.5,
+      isWide: Math.random() > 0.5,
+    };
+  });
+
   return (
     <>
       <Header />
       <main className="pt-20 min-h-screen bg-gray-50">
         {/* Confetti Effect */}
         {showConfetti && (
-          <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-            {[...Array(50)].map((_, i) => (
+          <div
+            className="fixed inset-0 pointer-events-none z-50 overflow-hidden flex items-center justify-center"
+            aria-hidden="true"
+          >
+            {confettiPieces.map((piece) => (
               <div
-                key={i}
-                className="absolute w-2 h-2 bg-linear-to-r from-amber-400 to-[#30442B] rounded-full animate-confetti"
+                key={piece.id}
+                className={`absolute ${piece.color} animate-confetti-burst ${
+                  piece.isWide ? 'w-3 h-8' : 'w-2 h-6'
+                }`}
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${3 + Math.random() * 2}s`,
+                  '--tx': `${piece.tx}px`,
+                  '--ty': `${piece.ty}px`,
+                  '--r': `${piece.rotation}deg`,
+                  animationDelay: `${piece.delay}s`,
+                  animationDuration: `${piece.duration}s`,
                 }}
               />
             ))}
@@ -282,33 +322,6 @@ export default function OrderSuccess() {
         </section>
       </main>
       <Footer />
-
-      <style>{`
-        @keyframes confetti {
-          0% {
-            transform: translateY(-100vh) rotate(0deg);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-          }
-        }
-        .animate-confetti {
-          animation: confetti linear forwards;
-        }
-        @keyframes bounce-slow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 2s ease-in-out infinite;
-        }
-      `}</style>
     </>
   );
 }

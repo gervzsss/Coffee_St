@@ -18,12 +18,14 @@ import { ToastProvider } from './context/ToastContext.jsx';
 import { useAuth } from './hooks/useAuth.js';
 import AuthModal from './components/AuthModal.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 function AppContent() {
   const { isAuthModalOpen, closeAuthModal, authModalMode } = useAuth();
 
   return (
     <>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
