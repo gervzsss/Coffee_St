@@ -29,10 +29,7 @@ export const signup = async (userData) => {
     return { success: true, data: { user, token } };
   } catch (error) {
     console.error('Signup failed:', error);
-    return {
-      success: false,
-      error: error.response?.data?.message || 'Signup failed',
-    };
+    throw error;
   }
 };
 

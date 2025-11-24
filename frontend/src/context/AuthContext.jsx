@@ -48,12 +48,9 @@ export const AuthProvider = ({ children }) => {
       address,
       phone,
     });
-    if (result.success) {
-      setToken(result.data.token);
-      setUser(result.data.user);
-      return result.data;
-    }
-    throw new Error(result.error);
+    setToken(result.data.token);
+    setUser(result.data.user);
+    return result.data;
   };
 
   const logout = async () => {
