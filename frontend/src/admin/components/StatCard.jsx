@@ -1,22 +1,20 @@
-export default function StatCard({ title, value, icon, color = 'amber' }) {
-  const colorClasses = {
-    amber: 'bg-amber-50 text-amber-600',
-    blue: 'bg-blue-50 text-blue-600',
-    green: 'bg-green-50 text-green-600',
-    purple: 'bg-purple-50 text-purple-600',
-  };
-
+export default function StatCard({ title, value, change, trend = 'up' }) {
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
-        </div>
-        <div className={`p-4 rounded-full ${colorClasses[color]}`}>
-          <span className="text-2xl">{icon}</span>
-        </div>
+    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+      <div className="text-sm text-gray-500 uppercase tracking-wide font-medium">
+        {title}
       </div>
+      <div className="mt-3 text-3xl font-bold text-[#30442B]">
+        {value}
+      </div>
+      {change && (
+        <div className="text-sm text-gray-400 mt-2 flex items-center">
+          <span className={trend === 'up' ? 'text-green-500' : 'text-red-500'}>
+            {trend === 'up' ? '↑' : '↓'}
+          </span>
+          <span className="ml-1">{change}</span>
+        </div>
+      )}
     </div>
   );
 }
