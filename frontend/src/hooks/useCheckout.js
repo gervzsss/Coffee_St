@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from './useToast';
+import { useCart } from './useCart';
 import { TOAST_DURATION } from '../constants/toastConfig';
 import api from '../services/apiClient';
 
 export function useCheckout(selectedCartItems = [], user = null) {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { fetchCartCount } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -91,6 +93,9 @@ export function useCheckout(selectedCartItems = [], user = null) {
       });
 
       const order = response.data.order;
+
+      await fetchCartCount();
+      window.dispatchEvent(new Event('cartUpdated'));
 
       showToast('Order placed successfully!', {
         type: 'success',
