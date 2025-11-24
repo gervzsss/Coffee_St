@@ -35,12 +35,10 @@ export default function Inquiries() {
     return filterStatus === 'all' || thread.status === filterStatus;
   });
 
-  const statusCounts = {
-    total: threads.length,
-    pending: threads.filter((t) => t.status === 'pending').length,
-    responded: threads.filter((t) => t.status === 'responded').length,
-    done: threads.filter((t) => t.status === 'done' || t.status === 'resolved')
-      .length,
+  const messageCounts = {
+    total: threads.reduce((sum, t) => sum + (t.messages_count || 0), 0),
+    unread: threads.filter((t) => t.status === 'pending' || t.status === 'open').length,
+    archived: threads.filter((t) => t.status === 'closed' || t.status === 'archived').length,
   };
 
   const getStatusColor = (status) => {
@@ -83,49 +81,32 @@ export default function Inquiries() {
             </p>
           </div>
 
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                  Total Inquiries
-                </span>
+          {/* Statistics Cards - 3 Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300">
+              <div className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
+                Total Messages
               </div>
-              <p className="text-3xl font-bold text-gray-800">
-                {statusCounts.total}
+              <p className="text-4xl font-bold text-gray-900">
+                {messageCounts.total}
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                  Pending
-                </span>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300">
+              <div className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
+                Unread
               </div>
-              <p className="text-3xl font-bold text-gray-800">
-                {statusCounts.pending}
+              <p className="text-4xl font-bold text-gray-900">
+                {messageCounts.unread}
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                  Responded
-                </span>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300">
+              <div className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
+                Archived
               </div>
-              <p className="text-3xl font-bold text-gray-800">
-                {statusCounts.responded}
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                  Resolved
-                </span>
-              </div>
-              <p className="text-3xl font-bold text-gray-800">
-                {statusCounts.done}
+              <p className="text-4xl font-bold text-gray-900">
+                {messageCounts.archived}
               </p>
             </div>
           </div>
@@ -165,77 +146,58 @@ export default function Inquiries() {
                   <p className="text-gray-500">No inquiries found</p>
                 </div>
               ) : (
-                <div className="grid gap-4">
+                <div className="space-y-4">
                   {filteredThreads.map((thread) => (
                     <div
                       key={thread.id}
-                      className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all duration-300 cursor-pointer"
+                      className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer relative"
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-full bg-[#30442B]/10 flex items-center justify-center font-bold text-[#30442B]">
-                            {getInitials(thread.user_name || thread.guest_name)}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-gray-900">
-                              {thread.user_name || thread.guest_name || 'Guest'}
-                            </h3>
-                            <p className="text-sm text-gray-500">
-                              {thread.user_email || thread.guest_email}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs text-gray-500">
-                            {new Date(thread.created_at).toLocaleDateString()}
-                          </span>
-                          <span
-                            className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                              thread.status
-                            )}`}
-                          >
-                            {thread.status?.charAt(0).toUpperCase() +
-                              thread.status?.slice(1)}
-                          </span>
-                        </div>
+                      {/* Reply Icon - Top Right */}
+                      <div className="absolute top-6 right-6">
+                        <svg 
+                          className="w-5 h-5 text-gray-400 hover:text-[#30442B] transition-colors"
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth={2} 
+                            d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" 
+                          />
+                        </svg>
                       </div>
 
-                      <div className="mb-4">
-                        <p className="text-sm font-semibold text-gray-700 mb-2">
-                          Subject: {thread.subject || 'No Subject'}
-                        </p>
-                        <p className="text-sm text-gray-600 line-clamp-2">
-                          {thread.message ||
-                            thread.latest_message ||
-                            'No message content'}
-                        </p>
+                      {/* Message Title */}
+                      <h3 className="font-bold text-gray-900 text-lg mb-3 pr-8">
+                        {thread.subject || 'No Subject'}
+                      </h3>
+
+                      {/* User Info Row */}
+                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                        <span className="font-medium">
+                          {thread.user_name || thread.guest_name || 'Guest'}
+                        </span>
+                        <span className="text-gray-400">
+                          {thread.user_email || thread.guest_email}
+                        </span>
+                        <span className="text-gray-400">
+                          {new Date(thread.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                          })}
+                        </span>
                       </div>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <div className="text-sm text-gray-500">
-                          {thread.messages_count || 0} message
-                          {(thread.messages_count || 0) !== 1 ? 's' : ''}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <select
-                            value={thread.status}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              handleStatusChange(thread.id, e.target.value);
-                            }}
-                            onClick={(e) => e.stopPropagation()}
-                            className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:border-[#30442B] focus:ring-1 focus:ring-[#30442B]"
-                          >
-                            <option value="pending">Pending</option>
-                            <option value="responded">Responded</option>
-                            <option value="resolved">Resolved</option>
-                            <option value="closed">Closed</option>
-                          </select>
-                          <button className="px-4 py-1.5 bg-[#30442B] text-white text-sm rounded-lg hover:bg-[#22301e] transition-colors">
-                            View Thread
-                          </button>
-                        </div>
-                      </div>
+                      {/* Message Content */}
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        {thread.message || thread.latest_message || 'No message content'}
+                      </p>
                     </div>
                   ))}
                 </div>
