@@ -1,4 +1,4 @@
-import contactHeaderImg from '../assets/contact_header.png';
+import contactHeaderImg from '../../assets/contact_header.png';
 
 export default function ContactHero() {
   return (

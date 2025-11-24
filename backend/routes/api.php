@@ -58,3 +58,6 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::put('/user/language', [UserProfileController::class, 'updateLanguage']);
   Route::post('/user/soft-delete', [UserProfileController::class, 'softDelete']);
 });
+
+// Admin Routes
+Route::prefix('admin')->group(base_path('routes/admin.php'));

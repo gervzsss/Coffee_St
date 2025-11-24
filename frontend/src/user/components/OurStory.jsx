@@ -1,4 +1,4 @@
-import journeyImg from '../assets/journeyimage.png';
+import journeyImg from '../../assets/journeyimage.png';
 
 export default function OurStory() {
   return (

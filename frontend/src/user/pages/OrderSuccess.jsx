@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import aboutHeadImg from '../assets/aboutus_head.png';
+import aboutHeadImg from '../../assets/aboutus_head.png';
 
 export default function OrderSuccess() {
   const { orderNumber } = useParams();

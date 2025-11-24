@@ -1,5 +1,5 @@
 import { getResponsiveImageUrl } from '../services/cloudinaryService';
-import coffeeBeansImg from '../assets/coffeebeans.png';
+import coffeeBeansImg from '../../assets/coffeebeans.png';
 
 export default function CartItem({
   item,

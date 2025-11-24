@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import homeHeadImg from '../assets/home_head.png';
+import homeHeadImg from '../../assets/home_head.png';
 
 export default function HeroSection() {
   return (

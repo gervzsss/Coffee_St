@@ -1,7 +1,7 @@
-import sustainabilityImg from '../assets/sustainability.png';
-import bakedDailyImg from '../assets/bakeddaily.png';
-import farmerCoffeeBeanImg from '../assets/farmercoffeebean.png';
-import coffeeBeansImg from '../assets/coffeebeans.png';
+import sustainabilityImg from '../../assets/sustainability.png';
+import bakedDailyImg from '../../assets/bakeddaily.png';
+import farmerCoffeeBeanImg from '../../assets/farmercoffeebean.png';
+import coffeeBeansImg from '../../assets/coffeebeans.png';
 
 export default function OurValues() {
   const values = [

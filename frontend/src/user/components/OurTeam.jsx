@@ -1,4 +1,4 @@
-import baristasImg from '../assets/baristas.png';
+import baristasImg from '../../assets/baristas.png';
 
 export default function OurTeam() {
   const teamMembers = [

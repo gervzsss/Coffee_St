@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
-import homePastriesImg from '../assets/home_pastries.png';
+import homePastriesImg from '../../assets/home_pastries.png';
 
 export default function SplitScreen() {
   const ref = useRef(null);

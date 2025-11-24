@@ -22,6 +22,7 @@ class User extends Authenticatable
         'address',
         'phone',
         'language_preference',
+        'is_admin',
     ];
 
     protected $hidden = [
@@ -34,6 +35,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 

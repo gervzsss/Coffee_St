@@ -2,10 +2,10 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import cafeLatteImg from '../assets/cafe_late.png';
-import cheesecakeImg from '../assets/cheesecake.png';
-import whiteMochaImg from '../assets/white_mocha.png';
-import cinammonImg from '../assets/cinammon.png';
+import cafeLatteImg from '../../assets/cafe_late.png';
+import cheesecakeImg from '../../assets/cheesecake.png';
+import whiteMochaImg from '../../assets/white_mocha.png';
+import cinammonImg from '../../assets/cinammon.png';
 
 export default function FeaturedProducts() {
   const products = [

@@ -1,0 +1,56 @@
+<?php
+
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\InquiryController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Admin API Routes
+|--------------------------------------------------------------------------
+|
+| Here are the admin API routes. These routes require admin authentication.
+|
+*/
+
+// Admin Authentication (Public)
+Route::post('/login', [AuthController::class, 'login']);
+
+// Protected Admin Routes (Require Admin Authentication)
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    // Auth Routes
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'user']);
+
+    // Dashboard
+    Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
+
+    // Products
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::get('/products/{id}', [ProductController::class, 'show']);
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+    // Orders
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+    Route::get('/orders/stats', [OrderController::class, 'stats']);
+
+    // Users
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+
+    // Inquiries
+    Route::get('/inquiries', [InquiryController::class, 'index']);
+    Route::get('/inquiries/{id}', [InquiryController::class, 'show']);
+    Route::post('/inquiries/{id}/messages', [InquiryController::class, 'sendMessage']);
+    Route::patch('/inquiries/{id}/status', [InquiryController::class, 'updateStatus']);
+});
