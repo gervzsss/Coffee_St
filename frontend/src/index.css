@@ -16,7 +16,7 @@
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: #30442B #f5f5f5;
+    scrollbar-color: #30442b #f5f5f5;
   }
 
   ::-webkit-scrollbar {
@@ -30,7 +30,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #30442B;
+    background: #30442b;
     border-radius: 8px;
     border: 2px solid #f5f5f5;
     transition: background 0.3s ease;
@@ -91,5 +91,15 @@
 
   .animate-shimmer {
     animation: shimmer 2s infinite;
+  }
+
+  /* Apply pointer cursor to all buttons */
+  button {
+    cursor: pointer;
+  }
+
+  /* Override for disabled buttons */
+  button:disabled {
+    cursor: not-allowed; /* keeps default behavior for disabled buttons */
   }
 }
