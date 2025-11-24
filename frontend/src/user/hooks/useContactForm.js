@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from './useToast';
+import { useAuth } from './useAuth';
 import { validators } from '../utils/contactValidators';
 import { sendContactMessage } from '../services/contactService';
 
 export const useContactForm = () => {
   const { showToast } = useToast();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -12,6 +14,16 @@ export const useContactForm = () => {
     subject: '',
     message: '',
   });
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+      }));
+    }
+  }, [user]);
 
   const [errors, setErrors] = useState({});
   const [fieldInteraction, setFieldInteraction] = useState({});

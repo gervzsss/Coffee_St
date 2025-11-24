@@ -14,6 +14,7 @@ import OrderSuccess from './user/pages/OrderSuccess.jsx';
 import Profile from './user/pages/Profile.jsx';
 import Orders from './user/pages/Orders.jsx';
 import Messages from './user/pages/Messages.jsx';
+import MessageThread from './user/pages/MessageThread.jsx';
 import { AuthProvider } from './user/context/AuthContext.jsx';
 import { CartProvider } from './user/context/CartContext.jsx';
 import { ToastProvider } from './user/context/ToastContext.jsx';
@@ -81,6 +82,14 @@ function UserAppContent() {
           element={
             <ProtectedRoute>
               <Messages />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/messages/:id"
+          element={
+            <ProtectedRoute>
+              <MessageThread />
             </ProtectedRoute>
           }
         />

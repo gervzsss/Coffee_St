@@ -16,6 +16,7 @@ class ThreadMessage extends Model
         'sender_name',
         'sender_email',
         'message',
+        'created_at',
     ];
 
     protected $casts = [
@@ -23,7 +24,7 @@ class ThreadMessage extends Model
         'created_at' => 'datetime',
     ];
 
-    public $timestamps = false; // Only has created_at
+    public $timestamps = false; // Only has created_at, manually managed
 
     /**
      * Get the thread that owns the message.

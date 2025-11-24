@@ -43,6 +43,7 @@ class ContactController extends Controller
             'sender_name' => $validated['name'],
             'sender_email' => $validated['email'],
             'message' => $validated['message'],
+            'created_at' => now(),
         ]);
 
         // Log the contact form submission

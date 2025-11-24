@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../components/AdminLayout';
+import ThreadModal from '../components/ThreadModal';
 import { getAllThreads, updateThreadStatus } from '../services/inquiryService';
 
 export default function Inquiries() {
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [selectedThreadId, setSelectedThreadId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchThreads();
@@ -37,8 +40,11 @@ export default function Inquiries() {
 
   const messageCounts = {
     total: threads.reduce((sum, t) => sum + (t.messages_count || 0), 0),
-    unread: threads.filter((t) => t.status === 'pending' || t.status === 'open').length,
-    archived: threads.filter((t) => t.status === 'closed' || t.status === 'archived').length,
+    unread: threads.filter((t) => t.status === 'pending' || t.status === 'open')
+      .length,
+    archived: threads.filter(
+      (t) => t.status === 'closed' || t.status === 'archived'
+    ).length,
   };
 
   const getStatusColor = (status) => {
@@ -65,6 +71,20 @@ export default function Inquiries() {
       return (parts[0][0] + parts[1][0]).toUpperCase();
     }
     return name.substring(0, 2).toUpperCase();
+  };
+
+  const handleOpenThread = (threadId) => {
+    setSelectedThreadId(threadId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedThreadId(null);
+  };
+
+  const handleThreadUpdate = () => {
+    fetchThreads();
   };
 
   return (
@@ -150,21 +170,22 @@ export default function Inquiries() {
                   {filteredThreads.map((thread) => (
                     <div
                       key={thread.id}
+                      onClick={() => handleOpenThread(thread.id)}
                       className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer relative"
                     >
                       {/* Reply Icon - Top Right */}
                       <div className="absolute top-6 right-6">
-                        <svg 
+                        <svg
                           className="w-5 h-5 text-gray-400 hover:text-[#30442B] transition-colors"
-                          fill="none" 
-                          stroke="currentColor" 
+                          fill="none"
+                          stroke="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            strokeWidth={2} 
-                            d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" 
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
                           />
                         </svg>
                       </div>
@@ -183,20 +204,25 @@ export default function Inquiries() {
                           {thread.user_email || thread.guest_email}
                         </span>
                         <span className="text-gray-400">
-                          {new Date(thread.created_at).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                          })}
+                          {new Date(thread.created_at).toLocaleDateString(
+                            'en-US',
+                            {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: true,
+                            }
+                          )}
                         </span>
                       </div>
 
                       {/* Message Content */}
                       <p className="text-sm text-gray-700 leading-relaxed">
-                        {thread.message || thread.latest_message || 'No message content'}
+                        {thread.message ||
+                          thread.latest_message ||
+                          'No message content'}
                       </p>
                     </div>
                   ))}
@@ -206,6 +232,14 @@ export default function Inquiries() {
           </div>
         </div>
       </div>
+
+      {/* Thread Modal */}
+      <ThreadModal
+        threadId={selectedThreadId}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onUpdate={handleThreadUpdate}
+      />
     </AdminLayout>
   );
 }

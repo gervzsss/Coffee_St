@@ -1,7 +1,9 @@
 import { useContactForm } from '../hooks';
+import { useAuth } from '../hooks/useAuth';
 import { preventEnterSubmit, getInputClasses } from '../utils/formHelpers';
 
 export default function ContactForm() {
+  const { user } = useAuth();
   const {
     formData,
     errors,
@@ -70,6 +72,8 @@ export default function ContactForm() {
                   className={getInputClasses('name', errors)}
                   placeholder="Your full name"
                   aria-describedby="contact-name-error"
+                  readOnly={!!user}
+                  disabled={!!user}
                 />
                 {errors.name && (
                   <p
@@ -99,6 +103,8 @@ export default function ContactForm() {
                   className={getInputClasses('email', errors)}
                   placeholder="name@example.com"
                   aria-describedby="contact-email-error"
+                  readOnly={!!user}
+                  disabled={!!user}
                 />
                 {errors.email && (
                   <p

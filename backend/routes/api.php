@@ -57,6 +57,11 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::put('/user/password', [UserProfileController::class, 'updatePassword']);
   Route::put('/user/language', [UserProfileController::class, 'updateLanguage']);
   Route::post('/user/soft-delete', [UserProfileController::class, 'softDelete']);
+
+  // Inquiry Routes
+  Route::get('/inquiries', [\App\Http\Controllers\InquiryController::class, 'index']);
+  Route::get('/inquiries/{id}', [\App\Http\Controllers\InquiryController::class, 'show']);
+  Route::post('/inquiries/{id}/messages', [\App\Http\Controllers\InquiryController::class, 'sendMessage']);
 });
 
 // Admin Routes

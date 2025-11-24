@@ -1,6 +1,5 @@
 import adminApi from './apiClient';
 
-// Get all inquiry threads
 export const getAllThreads = async (filters = {}) => {
   try {
     const response = await adminApi.get('/inquiries', { params: filters });
@@ -14,7 +13,6 @@ export const getAllThreads = async (filters = {}) => {
   }
 };
 
-// Get single thread with messages
 export const getThread = async (id) => {
   try {
     const response = await adminApi.get(`/inquiries/${id}`);
@@ -28,11 +26,10 @@ export const getThread = async (id) => {
   }
 };
 
-// Send message in thread
 export const sendMessage = async (threadId, message) => {
   try {
     const response = await adminApi.post(`/inquiries/${threadId}/messages`, { message });
-    return { success: true, data: response.data };
+    return { success: true, data: response.data.data };
   } catch (error) {
     console.error('Failed to send message:', error);
     return {
@@ -42,7 +39,6 @@ export const sendMessage = async (threadId, message) => {
   }
 };
 
-// Update thread status
 export const updateThreadStatus = async (id, status) => {
   try {
     const response = await adminApi.patch(`/inquiries/${id}/status`, { status });
