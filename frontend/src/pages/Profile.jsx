@@ -18,16 +18,6 @@ export default function Profile() {
   const [activeView, setActiveView] = useState('profile-info'); // 'profile-info' | 'change-password'
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const getUserName = () => {
-    if (user?.first_name && user?.last_name) {
-      return `${user.first_name} ${user.last_name}`;
-    }
-    if (user?.name) {
-      return user.name;
-    }
-    return 'User';
-  };
-
   const handleUserUpdate = (updatedUser) => {
     setUser(updatedUser);
   };
@@ -71,10 +61,10 @@ export default function Profile() {
         <div className="w-full bg-[#30442B] pb-8 pt-12">
           <div className="container mx-auto px-4">
             <h1 className="text-2xl md:text-3xl font-bold text-white">
-              {getUserName()}
+              Your Profile
             </h1>
             <p className="text-gray-200 text-sm md:text-base mt-1">
-              {user?.email || 'user@example.com'}
+              Manage your account settings and preferences
             </p>
           </div>
         </div>

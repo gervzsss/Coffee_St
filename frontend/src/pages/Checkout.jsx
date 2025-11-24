@@ -7,7 +7,6 @@ import Footer from '../components/Footer';
 import CheckoutItem from '../components/CheckoutItem';
 import DeliveryForm from '../components/DeliveryForm';
 import OrderSummaryCheckout from '../components/OrderSummaryCheckout';
-import contactHeaderImg from '../assets/contact_header.png';
 
 export default function Checkout() {
   const { isAuthenticated, user } = useAuth();
@@ -42,36 +41,21 @@ export default function Checkout() {
     <>
       <Header />
       <main className="pt-20 min-h-screen bg-gray-50">
-        {/* Hero Section */}
-        <section className="relative isolate pt-24">
-          <div className="absolute inset-0">
-            <img
-              src={contactHeaderImg}
-              alt="Checkout"
-              className="h-full w-full object-cover"
-            />
+        {/* Compact Checkout Header */}
+        <div className="w-full bg-[#30442B] pb-8 pt-12">
+          <div className="container mx-auto px-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-white">
+              Complete Your Order
+            </h1>
+            <p className="text-gray-200 text-sm md:text-base mt-1">
+              Review your items and provide delivery details
+            </p>
           </div>
-          <div className="absolute inset-0 bg-[#1a2319]/80 mix-blend-multiply"></div>
-
-          <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-6 px-6 py-24 text-white sm:px-10">
-            <div>
-              <span className="inline-flex items-center rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-amber-200">
-                Checkout
-              </span>
-              <h1 className="mt-6 font-outfit text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-                Complete Your Order
-              </h1>
-              <p className="mt-6 max-w-xl text-base text-white/80 sm:text-lg">
-                Review your items and provide delivery details to complete your
-                purchase
-              </p>
-            </div>
-          </div>
-        </section>
+        </div>
 
         {/* Checkout Content */}
-        <section className="relative -mt-12 pb-24">
-          <div className="mx-auto max-w-7xl px-6 sm:px-10">
+        <section className="relative pb-24">
+          <div className="mx-auto max-w-7xl px-6 sm:px-10 mt-8">
             {/* Error Message */}
             {error && (
               <div className="mb-6 rounded-2xl bg-red-50 border border-red-200 p-4 flex items-start gap-3">
