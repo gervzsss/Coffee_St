@@ -5,7 +5,6 @@ import { useToast } from '../hooks/useToast';
 import api from '../services/apiClient';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import ProfileHero from '../components/ProfileHero';
 import OrderHistoryCard from '../components/OrderHistoryCard';
 import QuickSettingsPanel from '../components/QuickSettingsPanel';
 import ProfileInformationForm from '../components/ProfileInformationForm';
@@ -18,6 +17,16 @@ export default function Profile() {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState('profile-info'); // 'profile-info' | 'change-password'
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const getUserName = () => {
+    if (user?.first_name && user?.last_name) {
+      return `${user.first_name} ${user.last_name}`;
+    }
+    if (user?.name) {
+      return user.name;
+    }
+    return 'User';
+  };
 
   const handleUserUpdate = (updatedUser) => {
     setUser(updatedUser);
@@ -58,12 +67,21 @@ export default function Profile() {
     <>
       <Header />
       <main className="pt-20 min-h-screen bg-gray-50">
-        {/* Profile Hero Section */}
-        <ProfileHero user={user} />
+        {/* Compact Profile Header */}
+        <div className="w-full bg-[#30442B] pb-8 pt-12">
+          <div className="container mx-auto px-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-white">
+              {getUserName()}
+            </h1>
+            <p className="text-gray-200 text-sm md:text-base mt-1">
+              {user?.email || 'user@example.com'}
+            </p>
+          </div>
+        </div>
 
         {/* Profile Content - 2 Column Layout */}
-        <section className="relative -mt-12 pb-24">
-          <div className="mx-auto max-w-7xl px-6 sm:px-10">
+        <section className="relative pb-24">
+          <div className="mx-auto max-w-7xl px-6 sm:px-10 mt-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column - Order History (Desktop only) */}
               <div className="hidden lg:block lg:col-span-1">
