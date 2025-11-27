@@ -43,9 +43,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/orders/stats', [OrderController::class, 'stats']);
 
     // Users
+    Route::get('/users/metrics', [UserController::class, 'metrics']);
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::patch('/users/{id}/status', [UserController::class, 'updateStatus']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
     // Inquiries

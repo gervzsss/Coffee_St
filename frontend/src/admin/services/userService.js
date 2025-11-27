@@ -1,5 +1,19 @@
 import adminApi from './apiClient';
 
+// Get customer metrics
+export const getCustomerMetrics = async () => {
+  try {
+    const response = await adminApi.get('/users/metrics');
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Failed to fetch customer metrics:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to fetch metrics',
+    };
+  }
+};
+
 // Get all users with filters
 export const getAllUsers = async (filters = {}) => {
   try {
@@ -14,7 +28,7 @@ export const getAllUsers = async (filters = {}) => {
   }
 };
 
-// Get single user
+// Get single user details
 export const getUser = async (id) => {
   try {
     const response = await adminApi.get(`/users/${id}`);
@@ -24,6 +38,20 @@ export const getUser = async (id) => {
     return {
       success: false,
       error: error.response?.data?.message || 'Failed to fetch user',
+    };
+  }
+};
+
+// Update user status (block/unblock)
+export const updateUserStatus = async (id, status) => {
+  try {
+    const response = await adminApi.patch(`/users/${id}/status`, { status });
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Failed to update user status:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to update user status',
     };
   }
 };
@@ -57,8 +85,10 @@ export const deleteUser = async (id) => {
 };
 
 export default {
+  getCustomerMetrics,
   getAllUsers,
   getUser,
+  updateUserStatus,
   updateUser,
   deleteUser,
 };

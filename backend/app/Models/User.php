@@ -23,6 +23,9 @@ class User extends Authenticatable
         'phone',
         'language_preference',
         'is_admin',
+        'status',
+        'failed_orders_count',
+        'status_changed_at',
     ];
 
     protected $hidden = [
@@ -36,6 +39,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'status_changed_at' => 'datetime',
+            'failed_orders_count' => 'integer',
         ];
     }
 
