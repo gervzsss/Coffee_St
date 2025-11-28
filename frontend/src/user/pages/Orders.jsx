@@ -8,6 +8,52 @@ import EmptyState from '../components/EmptyState';
 import OrderCard from '../components/OrderCard';
 import OrderDetailModal from '../components/OrderDetailModal';
 
+// Status configuration matching admin
+const STATUS_CONFIG = {
+  pending: {
+    label: 'Pending',
+    color: 'yellow',
+    bgColor: 'bg-yellow-100',
+    textColor: 'text-yellow-800',
+  },
+  confirmed: {
+    label: 'Confirmed',
+    color: 'blue',
+    bgColor: 'bg-blue-100',
+    textColor: 'text-blue-800',
+  },
+  preparing: {
+    label: 'Preparing',
+    color: 'indigo',
+    bgColor: 'bg-indigo-100',
+    textColor: 'text-indigo-800',
+  },
+  out_for_delivery: {
+    label: 'Out for Delivery',
+    color: 'purple',
+    bgColor: 'bg-purple-100',
+    textColor: 'text-purple-800',
+  },
+  delivered: {
+    label: 'Delivered',
+    color: 'green',
+    bgColor: 'bg-green-100',
+    textColor: 'text-green-800',
+  },
+  failed: {
+    label: 'Failed',
+    color: 'red',
+    bgColor: 'bg-red-100',
+    textColor: 'text-red-800',
+  },
+  cancelled: {
+    label: 'Cancelled',
+    color: 'gray',
+    bgColor: 'bg-gray-100',
+    textColor: 'text-gray-800',
+  },
+};
+
 export default function Orders() {
   const { user } = useAuth();
   const { orders, loading, error } = useOrders();
@@ -36,10 +82,31 @@ export default function Orders() {
     setSearchParams(searchParams);
   };
 
-  const filteredOrders =
-    statusFilter === 'all'
-      ? orders
-      : orders.filter((order) => order.status === statusFilter);
+  // Group filter logic
+  const filteredOrders = orders.filter((order) => {
+    if (statusFilter === 'all') return true;
+    if (statusFilter === 'active') {
+      return ['pending', 'confirmed', 'preparing', 'out_for_delivery'].includes(
+        order.status
+      );
+    }
+    if (statusFilter === 'completed') {
+      return order.status === 'delivered';
+    }
+    if (statusFilter === 'cancelled') {
+      return ['cancelled', 'failed'].includes(order.status);
+    }
+    return order.status === statusFilter;
+  });
+
+  // Count orders by category
+  const activeCount = orders.filter((o) =>
+    ['pending', 'confirmed', 'preparing', 'out_for_delivery'].includes(o.status)
+  ).length;
+  const completedCount = orders.filter((o) => o.status === 'delivered').length;
+  const cancelledCount = orders.filter((o) =>
+    ['cancelled', 'failed'].includes(o.status)
+  ).length;
 
   return (
     <>
@@ -99,7 +166,9 @@ export default function Orders() {
                 {/* Filter Buttons */}
                 <div className="rounded-3xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5">
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-sm font-medium text-gray-700">Filter by status:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Filter by status:
+                    </span>
                     <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => handleFilterChange('all')}
@@ -109,27 +178,27 @@ export default function Orders() {
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
-                        All Orders
+                        All ({orders.length})
                       </button>
                       <button
-                        onClick={() => handleFilterChange('pending')}
+                        onClick={() => handleFilterChange('active')}
                         className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                          statusFilter === 'pending'
+                          statusFilter === 'active'
                             ? 'bg-blue-600 text-white'
                             : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                         }`}
                       >
-                        Pending
+                        Active ({activeCount})
                       </button>
                       <button
-                        onClick={() => handleFilterChange('paid')}
+                        onClick={() => handleFilterChange('completed')}
                         className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                          statusFilter === 'paid'
+                          statusFilter === 'completed'
                             ? 'bg-green-600 text-white'
                             : 'bg-green-100 text-green-700 hover:bg-green-200'
                         }`}
                       >
-                        Completed
+                        Completed ({completedCount})
                       </button>
                       <button
                         onClick={() => handleFilterChange('cancelled')}
@@ -139,7 +208,7 @@ export default function Orders() {
                             : 'bg-red-100 text-red-700 hover:bg-red-200'
                         }`}
                       >
-                        Cancelled
+                        Cancelled ({cancelledCount})
                       </button>
                     </div>
                   </div>
@@ -148,7 +217,9 @@ export default function Orders() {
                 {/* Orders List */}
                 {filteredOrders.length === 0 ? (
                   <div className="rounded-3xl bg-white p-12 shadow-lg ring-1 ring-gray-900/5 text-center">
-                    <p className="text-gray-600">No orders found with the selected filter.</p>
+                    <p className="text-gray-600">
+                      No orders found with the selected filter.
+                    </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -157,6 +228,7 @@ export default function Orders() {
                         key={order.id}
                         order={order}
                         onViewDetails={handleViewDetails}
+                        statusConfig={STATUS_CONFIG}
                       />
                     ))}
                   </div>
@@ -173,6 +245,7 @@ export default function Orders() {
         isOpen={isDetailModalOpen}
         onClose={handleCloseDetailModal}
         order={selectedOrder}
+        statusConfig={STATUS_CONFIG}
       />
     </>
   );

@@ -16,7 +16,8 @@ export const getOrders = async () => {
 export const getOrder = async (orderId) => {
   try {
     const response = await api.get(`/orders/${orderId}`);
-    return { success: true, data: response.data.order };
+    // The backend returns { order: {...} }
+    return { success: true, data: response.data.order || response.data };
   } catch (error) {
     console.error('Failed to fetch order:', error);
     return {
@@ -31,6 +32,7 @@ export const createOrder = async (orderData = {}) => {
     const response = await api.post('/orders', {
       delivery_fee: orderData.delivery_fee || 0,
       tax_rate: orderData.tax_rate || 0.12,
+      ...orderData,
     });
     return { success: true, data: response.data.order };
   } catch (error) {

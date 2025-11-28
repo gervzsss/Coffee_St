@@ -13,7 +13,7 @@ class DashboardController extends Controller
     public function stats()
     {
         $totalOrders = Order::count();
-        $totalRevenue = Order::where('status', 'completed')->sum('total_amount');
+        $totalRevenue = Order::where('status', 'delivered')->sum('total');
         $totalProducts = Product::count();
         $totalUsers = User::where('is_admin', false)->count();
 
@@ -25,8 +25,8 @@ class DashboardController extends Controller
                 return [
                     'id' => $order->id,
                     'order_number' => $order->order_number,
-                    'customer_name' => $order->user->first_name . ' ' . $order->user->last_name,
-                    'total_amount' => $order->total_amount,
+                    'customer_name' => $order->user ? ($order->user->first_name . ' ' . $order->user->last_name) : 'Unknown',
+                    'total' => $order->total,
                     'status' => $order->status,
                 ];
             });
@@ -40,7 +40,7 @@ class DashboardController extends Controller
                 return [
                     'id' => $inquiry->id,
                     'subject' => $inquiry->subject,
-                    'user_name' => $inquiry->user->first_name . ' ' . $inquiry->user->last_name,
+                    'user_name' => $inquiry->user ? ($inquiry->user->first_name . ' ' . $inquiry->user->last_name) : 'Unknown',
                     'status' => $inquiry->status,
                 ];
             });

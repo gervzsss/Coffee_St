@@ -1,32 +1,82 @@
-import { Package, Calendar, Clock, ShoppingCart } from 'lucide-react';
+import {
+  Package,
+  Calendar,
+  Clock,
+  ShoppingCart,
+  Truck,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+} from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { useReorder } from '../hooks/useReorder';
 
-export default function OrderCard({ order, onViewDetails }) {
+// Default status config if not passed
+const DEFAULT_STATUS_CONFIG = {
+  pending: {
+    label: 'Pending',
+    bgColor: 'bg-yellow-100',
+    textColor: 'text-yellow-800',
+  },
+  confirmed: {
+    label: 'Confirmed',
+    bgColor: 'bg-blue-100',
+    textColor: 'text-blue-800',
+  },
+  preparing: {
+    label: 'Preparing',
+    bgColor: 'bg-indigo-100',
+    textColor: 'text-indigo-800',
+  },
+  out_for_delivery: {
+    label: 'Out for Delivery',
+    bgColor: 'bg-purple-100',
+    textColor: 'text-purple-800',
+  },
+  delivered: {
+    label: 'Delivered',
+    bgColor: 'bg-green-100',
+    textColor: 'text-green-800',
+  },
+  failed: { label: 'Failed', bgColor: 'bg-red-100', textColor: 'text-red-800' },
+  cancelled: {
+    label: 'Cancelled',
+    bgColor: 'bg-gray-100',
+    textColor: 'text-gray-800',
+  },
+};
+
+export default function OrderCard({
+  order,
+  onViewDetails,
+  statusConfig = DEFAULT_STATUS_CONFIG,
+}) {
   const navigate = useNavigate();
   const { reorderItems, reordering } = useReorder();
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'paid':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
-      case 'pending':
-      default:
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-    }
+
+  const getStatusConfig = (status) => {
+    return (
+      statusConfig[status] ||
+      statusConfig.pending ||
+      DEFAULT_STATUS_CONFIG.pending
+    );
   };
 
-  const getStatusLabel = (status) => {
+  const getStatusIcon = (status) => {
     switch (status) {
-      case 'paid':
-        return 'Completed';
+      case 'delivered':
+        return <CheckCircle className="w-4 h-4" />;
+      case 'out_for_delivery':
+        return <Truck className="w-4 h-4" />;
+      case 'failed':
       case 'cancelled':
-        return 'Cancelled';
-      case 'pending':
+        return <XCircle className="w-4 h-4" />;
+      case 'preparing':
+      case 'confirmed':
+        return <Package className="w-4 h-4" />;
       default:
-        return 'Pending';
+        return <AlertCircle className="w-4 h-4" />;
     }
   };
 
@@ -85,8 +135,20 @@ export default function OrderCard({ order, onViewDetails }) {
     }
   };
 
+  const config = getStatusConfig(order.status);
+  const isActive = [
+    'pending',
+    'confirmed',
+    'preparing',
+    'out_for_delivery',
+  ].includes(order.status);
+
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 hover:shadow-xl transition-shadow">
+    <div
+      className={`rounded-3xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 hover:shadow-xl transition-shadow ${
+        isActive ? 'border-l-4 border-l-[#30442B]' : ''
+      }`}
+    >
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
         <div>
@@ -107,13 +169,49 @@ export default function OrderCard({ order, onViewDetails }) {
         </div>
 
         <span
-          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide border ${getStatusColor(
-            order.status
-          )}`}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide ${config.bgColor} ${config.textColor}`}
         >
-          {getStatusLabel(order.status)}
+          {getStatusIcon(order.status)}
+          {config.label}
         </span>
       </div>
+
+      {/* Progress indicator for active orders */}
+      {isActive && (
+        <div className="mb-4">
+          <div className="flex items-center gap-1">
+            {['pending', 'confirmed', 'preparing', 'out_for_delivery'].map(
+              (status, index) => {
+                const statusOrder = [
+                  'pending',
+                  'confirmed',
+                  'preparing',
+                  'out_for_delivery',
+                ];
+                const currentIndex = statusOrder.indexOf(order.status);
+                const isCompleted = index <= currentIndex;
+                const isCurrent = status === order.status;
+
+                return (
+                  <div key={status} className="flex-1 flex items-center">
+                    <div
+                      className={`h-1.5 w-full rounded-full transition-colors ${
+                        isCompleted ? 'bg-[#30442B]' : 'bg-gray-200'
+                      }`}
+                    />
+                  </div>
+                );
+              }
+            )}
+          </div>
+          <div className="flex justify-between mt-1 text-xs text-gray-500">
+            <span>Placed</span>
+            <span>Confirmed</span>
+            <span>Preparing</span>
+            <span>Delivery</span>
+          </div>
+        </div>
+      )}
 
       {/* Items Summary */}
       <div className="mb-4 p-4 bg-gray-50 rounded-xl">
@@ -129,7 +227,7 @@ export default function OrderCard({ order, onViewDetails }) {
         <div>
           <p className="text-sm text-gray-600 mb-1">Total Amount</p>
           <p className="text-2xl font-bold text-[#30442B]">
-            ₱{order.total.toFixed(2)}
+            ₱{Number(order.total || order.total_amount || 0).toFixed(2)}
           </p>
         </div>
 
@@ -150,7 +248,7 @@ export default function OrderCard({ order, onViewDetails }) {
             onClick={() => onViewDetails(order)}
             className="px-6 py-2.5 bg-[#30442B] text-white rounded-lg font-semibold hover:bg-[#405939] transition-colors active:scale-95"
           >
-            View Details
+            {isActive ? 'Track Order' : 'View Details'}
           </button>
         </div>
       </div>

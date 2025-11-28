@@ -42,10 +42,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
     // Orders
+    Route::get('/orders/metrics', [OrderController::class, 'metrics']);
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
-    Route::get('/orders/stats', [OrderController::class, 'stats']);
+    Route::post('/orders/upload-proof', [OrderController::class, 'uploadProof']);
 
     // Users
     Route::get('/users/metrics', [UserController::class, 'metrics']);
