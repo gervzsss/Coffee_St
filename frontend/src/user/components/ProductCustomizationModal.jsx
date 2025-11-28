@@ -138,9 +138,9 @@ const ProductCustomizationModal = ({
 
   const handleAddToCart = async () => {
     if (!validateSelections()) {
-      showToast('Please select all required options', { 
-        type: 'error', 
-        dismissible: true 
+      showToast('Please select all required options', {
+        type: 'error',
+        dismissible: true,
       });
       return;
     }
@@ -239,19 +239,48 @@ const ProductCustomizationModal = ({
             </button>
 
             {/* Header */}
-            <div className="flex items-start justify-between px-6 pt-10 sm:px-10 pb-6 border-b border-neutral-200">
-              <div className="flex-1 pr-8">
-                <h2 className="text-2xl font-bold text-neutral-900">
-                  {product.name}
-                </h2>
-                {product.description && (
-                  <p className="mt-1 text-sm text-neutral-600">
-                    {product.description}
-                  </p>
+            <div className="border-b border-neutral-200">
+              <div className="flex items-start gap-4 px-6 pt-6 sm:px-10 pb-6">
+                {/* Product Image Thumbnail */}
+                {product.image_url ? (
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 bg-neutral-100">
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl shrink-0 bg-neutral-100 flex items-center justify-center">
+                    <svg
+                      className="w-8 h-8 text-neutral-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
                 )}
-                <p className="mt-2 text-xl font-semibold text-[#30442B]">
-                  ₱{product.price.toFixed(2)}
-                </p>
+
+                <div className="flex-1 min-w-0 pr-8">
+                  <h2 className="text-2xl font-bold text-neutral-900">
+                    {product.name}
+                  </h2>
+                  {product.description && (
+                    <p className="mt-1 text-sm text-neutral-600 line-clamp-2">
+                      {product.description}
+                    </p>
+                  )}
+                  <p className="mt-2 text-xl font-semibold text-[#30442B]">
+                    ₱{product.price.toFixed(2)}
+                  </p>
+                </div>
               </div>
             </div>
 

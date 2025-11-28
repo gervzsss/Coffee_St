@@ -16,11 +16,16 @@ class Product extends Model
         'category',
         'image_url',
         'is_active',
+        'is_available',
+        'unavailable_reason',
+        'archived_at',
     ];
 
     protected $casts = [
         'price' => 'float',
         'is_active' => 'boolean',
+        'is_available' => 'boolean',
+        'archived_at' => 'datetime',
     ];
 
     /**

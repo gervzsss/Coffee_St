@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\InquiryController;
+use App\Http\Controllers\Admin\ImageUploadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,10 +31,14 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 
     // Products
+    Route::get('/products/metrics', [ProductController::class, 'metrics']);
     Route::get('/products', [ProductController::class, 'index']);
     Route::post('/products', [ProductController::class, 'store']);
     Route::get('/products/{id}', [ProductController::class, 'show']);
     Route::put('/products/{id}', [ProductController::class, 'update']);
+    Route::patch('/products/{id}/availability', [ProductController::class, 'updateAvailability']);
+    Route::post('/products/{id}/archive', [ProductController::class, 'archive']);
+    Route::post('/products/{id}/restore', [ProductController::class, 'restore']);
     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
     // Orders
@@ -55,4 +60,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/inquiries/{id}', [InquiryController::class, 'show']);
     Route::post('/inquiries/{id}/messages', [InquiryController::class, 'sendMessage']);
     Route::patch('/inquiries/{id}/status', [InquiryController::class, 'updateStatus']);
+
+    // Image Upload
+    Route::post('/upload/image', [ImageUploadController::class, 'upload']);
+    Route::delete('/upload/image', [ImageUploadController::class, 'destroy']);
 });

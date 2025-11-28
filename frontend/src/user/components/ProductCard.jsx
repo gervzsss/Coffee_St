@@ -23,16 +23,24 @@ export default function ProductCard({ product }) {
     ? getResponsiveImageUrl(product.image_url, 800)
     : '/assets/americano.png'; // Fallback image
 
+  const isUnavailable = product.is_available === false;
+
   return (
     <>
-      <div className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg">
+      <div
+        className={`group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${
+          isUnavailable ? 'opacity-75' : ''
+        }`}
+      >
         {/* Product Image with dark background */}
         <div className="relative h-72 overflow-hidden bg-[#30442B]">
           <div className="absolute inset-0 flex items-center justify-center p-8">
             <img
               src={imageUrl}
               alt={product.name}
-              className="max-h-48 w-auto transform drop-shadow-xl transition-transform duration-500 group-hover:scale-110"
+              className={`max-h-48 w-auto transform drop-shadow-xl transition-transform duration-500 ${
+                isUnavailable ? 'grayscale' : 'group-hover:scale-110'
+              }`}
               loading="lazy"
               onError={(e) => {
                 e.target.src = '/assets/americano.png';
@@ -40,7 +48,31 @@ export default function ProductCard({ product }) {
             />
           </div>
           {/* Gradient overlay on hover */}
-          <div className="absolute inset-0 bg-linear-to-r from-[#30442B]/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          {!isUnavailable && (
+            <div className="absolute inset-0 bg-linear-to-r from-[#30442B]/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          )}
+
+          {/* Unavailable overlay */}
+          {isUnavailable && (
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+              <div className="text-white text-center px-4">
+                <svg
+                  className="w-12 h-12 mx-auto mb-2 opacity-80"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                  />
+                </svg>
+                <p className="font-semibold text-sm">Currently Unavailable</p>
+              </div>
+            </div>
+          )}
 
           {/* Added to cart overlay */}
           {addedToCart && (
@@ -77,9 +109,23 @@ export default function ProductCard({ product }) {
             {product.description}
           </p>
 
+          {/* Unavailable Reason (if applicable) */}
+          {isUnavailable && product.unavailable_reason && (
+            <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-xs text-amber-700">
+                <span className="font-semibold">Note:</span>{' '}
+                {product.unavailable_reason}
+              </p>
+            </div>
+          )}
+
           {/* Price and Add to Cart */}
           <div className="mt-auto flex items-center justify-between pt-2">
-            <span className="text-xl font-bold text-[#30442B]">
+            <span
+              className={`text-xl font-bold ${
+                isUnavailable ? 'text-gray-400' : 'text-[#30442B]'
+              }`}
+            >
               {hasVariants ? (
                 <span className="text-base">
                   From ₱{parseFloat(product.price).toFixed(2)}
@@ -91,9 +137,11 @@ export default function ProductCard({ product }) {
 
             <button
               onClick={handleAddToCartClick}
-              disabled={isAdding || addedToCart}
+              disabled={isAdding || addedToCart || isUnavailable}
               className={`flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white transition-all duration-150 active:scale-95 ${
-                addedToCart
+                isUnavailable
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : addedToCart
                   ? 'bg-green-500 cursor-default'
                   : isAdding
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -113,7 +161,13 @@ export default function ProductCard({ product }) {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
-              {addedToCart ? '✓ Added' : isAdding ? 'Adding...' : 'Add to Cart'}
+              {isUnavailable
+                ? 'Unavailable'
+                : addedToCart
+                ? '✓ Added'
+                : isAdding
+                ? 'Adding...'
+                : 'Add to Cart'}
             </button>
           </div>
         </div>
@@ -126,22 +180,40 @@ export default function ProductCard({ product }) {
           onClick={closeVariantModal}
         >
           <div
-            className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl"
+            className="bg-white rounded-2xl max-w-md w-full mx-4 shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-[#30442B]">
-                  {product.name}
-                </h3>
-                <p className="text-sm text-gray-600 mt-1">Select a variant</p>
-              </div>
+            {/* Product Image Header */}
+            <div className="relative h-48 bg-gray-100">
+              {product.image_url ? (
+                <img
+                  src={product.image_url}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <svg
+                    className="w-16 h-16 text-gray-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+              )}
               <button
                 onClick={closeVariantModal}
-                className="text-gray-400 hover:text-gray-600 transition"
+                className="absolute top-3 right-3 bg-white/90 hover:bg-white text-gray-600 hover:text-gray-800 rounded-full p-2 transition shadow-md"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -156,55 +228,65 @@ export default function ProductCard({ product }) {
               </button>
             </div>
 
-            <div className="space-y-2 mb-6">
-              {product.active_variants.map((variant) => (
+            {/* Modal Content */}
+            <div className="p-6">
+              <div className="mb-4">
+                <h3 className="text-xl font-bold text-[#30442B]">
+                  {product.name}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">Select a variant</p>
+              </div>
+
+              <div className="space-y-2 mb-6 max-h-48 overflow-y-auto">
+                {product.active_variants.map((variant) => (
+                  <button
+                    key={variant.id}
+                    onClick={() => handleVariantSelect(variant)}
+                    className={`w-full text-left p-4 rounded-lg border-2 transition ${
+                      selectedVariant?.id === variant.id
+                        ? 'border-[#30442B] bg-[#30442B]/5'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-gray-800">
+                          {variant.group_name}: {variant.name}
+                        </p>
+                        {variant.price_delta !== 0 && (
+                          <p className="text-sm text-gray-500 mt-1">
+                            {variant.price_delta > 0 ? '+' : ''}₱
+                            {variant.price_delta.toFixed(2)}
+                          </p>
+                        )}
+                      </div>
+                      <span className="text-lg font-bold text-[#30442B]">
+                        ₱{calculatePrice(variant).toFixed(2)}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex gap-3">
                 <button
-                  key={variant.id}
-                  onClick={() => handleVariantSelect(variant)}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition ${
-                    selectedVariant?.id === variant.id
-                      ? 'border-[#30442B] bg-[#30442B]/5'
-                      : 'border-gray-200 hover:border-gray-300'
+                  onClick={closeVariantModal}
+                  className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmVariant}
+                  disabled={!selectedVariant || isAdding}
+                  className={`flex-1 px-4 py-3 rounded-lg font-medium text-white transition ${
+                    !selectedVariant || isAdding
+                      ? 'bg-gray-300 cursor-not-allowed'
+                      : 'bg-[#30442B] hover:bg-[#405939] cursor-pointer'
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        {variant.group_name}: {variant.name}
-                      </p>
-                      {variant.price_delta !== 0 && (
-                        <p className="text-sm text-gray-500 mt-1">
-                          {variant.price_delta > 0 ? '+' : ''}₱
-                          {variant.price_delta.toFixed(2)}
-                        </p>
-                      )}
-                    </div>
-                    <span className="text-lg font-bold text-[#30442B]">
-                      ₱{calculatePrice(variant).toFixed(2)}
-                    </span>
-                  </div>
+                  {isAdding ? 'Adding...' : 'Add to Cart'}
                 </button>
-              ))}
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={closeVariantModal}
-                className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirmVariant}
-                disabled={!selectedVariant || isAdding}
-                className={`flex-1 px-4 py-3 rounded-lg font-medium text-white transition ${
-                  !selectedVariant || isAdding
-                    ? 'bg-gray-300 cursor-not-allowed'
-                    : 'bg-[#30442B] hover:bg-[#405939] cursor-pointer'
-                }`}
-              >
-                {isAdding ? 'Adding...' : 'Add to Cart'}
-              </button>
+              </div>
             </div>
           </div>
         </div>
