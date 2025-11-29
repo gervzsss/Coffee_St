@@ -6,7 +6,6 @@ import {
   CreditCard,
   Clock,
   Calendar,
-  ShoppingCart,
   CheckCircle,
   Truck,
   XCircle,
@@ -14,9 +13,7 @@ import {
   ChefHat,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../services/apiClient';
-import { useReorder } from '../hooks/useReorder';
 
 // Default status config
 const DEFAULT_STATUS_CONFIG = {
@@ -73,8 +70,6 @@ export default function OrderDetailModal({
   const [order, setOrder] = useState(initialOrder);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const { reorderItems, reordering } = useReorder();
 
   useEffect(() => {
     if (isOpen && initialOrder) {
@@ -150,19 +145,6 @@ export default function OrderDetailModal({
 
   const getPaymentMethodLabel = (method) => {
     return method === 'cash' ? 'Cash on Delivery' : 'GCash';
-  };
-
-  const handleReorder = async () => {
-    if (!order || !order.items || order.items.length === 0) {
-      return;
-    }
-
-    const result = await reorderItems(order.items);
-
-    if (result.success) {
-      onClose();
-      navigate('/cart');
-    }
   };
 
   // Build timeline from order data
@@ -586,29 +568,10 @@ export default function OrderDetailModal({
               )}
 
               {/* Action Buttons */}
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={handleReorder}
-                  disabled={
-                    reordering || !order.items || order.items.length === 0
-                  }
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#30442B] text-white rounded-lg font-semibold hover:bg-[#405939] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {reordering ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Adding to Cart...</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCart className="w-5 h-5" />
-                      <span>Order Again</span>
-                    </>
-                  )}
-                </button>
+              <div className="flex justify-end mt-6">
                 <button
                   onClick={onClose}
-                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                  className="px-6 py-3 bg-[#30442B] text-white rounded-lg font-semibold hover:bg-[#405939] transition-colors"
                 >
                   Close
                 </button>

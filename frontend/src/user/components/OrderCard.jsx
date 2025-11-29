@@ -2,15 +2,12 @@ import {
   Package,
   Calendar,
   Clock,
-  ShoppingCart,
   Truck,
   CheckCircle,
   XCircle,
   AlertCircle,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
-import { useReorder } from '../hooks/useReorder';
 
 // Default status config if not passed
 const DEFAULT_STATUS_CONFIG = {
@@ -52,9 +49,6 @@ export default function OrderCard({
   onViewDetails,
   statusConfig = DEFAULT_STATUS_CONFIG,
 }) {
-  const navigate = useNavigate();
-  const { reorderItems, reordering } = useReorder();
-
   const getStatusConfig = (status) => {
     return (
       statusConfig[status] ||
@@ -119,20 +113,6 @@ export default function OrderCard({
 
   const getPaymentMethodLabel = (method) => {
     return method === 'cash' ? 'Cash on Delivery' : 'GCash';
-  };
-
-  const handleReorder = async (e) => {
-    e.stopPropagation();
-
-    if (!order.items || order.items.length === 0) {
-      return;
-    }
-
-    const result = await reorderItems(order.items);
-
-    if (result.success) {
-      navigate('/cart');
-    }
   };
 
   const config = getStatusConfig(order.status);
@@ -232,18 +212,6 @@ export default function OrderCard({
         </div>
 
         <div className="flex gap-2">
-          <button
-            onClick={handleReorder}
-            disabled={reordering}
-            className="px-4 py-2.5 border-2 border-[#30442B] text-[#30442B] rounded-lg font-semibold hover:bg-[#30442B]/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            title="Add items to cart"
-          >
-            {reordering ? (
-              <div className="w-5 h-5 border-2 border-[#30442B] border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <ShoppingCart className="w-5 h-5" />
-            )}
-          </button>
           <button
             onClick={() => onViewDetails(order)}
             className="px-6 py-2.5 bg-[#30442B] text-white rounded-lg font-semibold hover:bg-[#405939] transition-colors active:scale-95"
