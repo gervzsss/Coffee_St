@@ -7,9 +7,6 @@ import {
   markOrderFailed,
 } from '../services/orderService';
 
-/**
- * Custom hook for managing orders data and operations
- */
 export function useOrders() {
   const [orders, setOrders] = useState([]);
   const [metrics, setMetrics] = useState({
@@ -24,11 +21,9 @@ export function useOrders() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Selected order state
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
-  // Modal states
   const [confirmModal, setConfirmModal] = useState({
     isOpen: false,
     orderId: null,
@@ -87,7 +82,6 @@ export function useOrders() {
     setSelectedOrder(null);
   }, []);
 
-  // Quick status change handler (from dropdown)
   const handleQuickStatusChange = useCallback((orderId, fromStatus, toStatus) => {
     if (toStatus === 'failed') {
       setFailModal({ isOpen: true, orderId });
@@ -96,7 +90,6 @@ export function useOrders() {
     }
   }, []);
 
-  // Confirm status update
   const confirmStatusUpdate = useCallback(async () => {
     const { orderId, toStatus } = confirmModal;
     setUpdating(true);
@@ -159,7 +152,6 @@ export function useOrders() {
     setFailModal({ isOpen: false, orderId: null });
   }, []);
 
-  // Filtered orders
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
       const matchesSearch =
@@ -181,7 +173,6 @@ export function useOrders() {
     });
   }, [orders, searchTerm, filterStatus]);
 
-  // Status cards config
   const statusCards = useMemo(() => [
     { key: 'all', label: 'All Orders', count: metrics.all },
     { key: 'processing', label: 'Processing Orders', count: metrics.processing },
@@ -191,7 +182,6 @@ export function useOrders() {
   ], [metrics]);
 
   return {
-    // State
     orders,
     filteredOrders,
     metrics,
@@ -206,7 +196,6 @@ export function useOrders() {
     updating,
     statusCards,
 
-    // Actions
     setFilterStatus,
     setSearchTerm,
     handleViewOrder,

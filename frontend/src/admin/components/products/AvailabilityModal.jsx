@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { ButtonSpinner } from '../common';
 
-export default function AvailabilityModal({ product, onConfirm, onCancel, isLoading }) {
+export default function AvailabilityModal({
+  product,
+  onConfirm,
+  onCancel,
+  isLoading,
+}) {
   const [reason, setReason] = useState('');
   const isMarkingUnavailable = product?.is_available;
 

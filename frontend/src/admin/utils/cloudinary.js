@@ -1,8 +1,3 @@
-/**
- * Extract Cloudinary public ID from URL
- * @param {string} url - Cloudinary image URL
- * @returns {string|null} Public ID or null if extraction fails
- */
 export const extractPublicId = (url) => {
   if (!url) return null;
   try {

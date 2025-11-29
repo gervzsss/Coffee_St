@@ -1,8 +1,5 @@
 import { STATUS_CONFIG } from '../../constants/orderStatus';
 
-/**
- * Modal for confirming status changes
- */
 export default function ConfirmStatusModal({
   isOpen,
   onClose,

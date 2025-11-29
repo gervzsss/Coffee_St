@@ -4,7 +4,12 @@ import { extractPublicId } from '../../utils/cloudinary';
 import { uploadImage, deleteImage } from '../../services/productService';
 import { ButtonSpinner } from '../common';
 
-export default function ProductFormModal({ product, onSave, onCancel, isLoading }) {
+export default function ProductFormModal({
+  product,
+  onSave,
+  onCancel,
+  isLoading,
+}) {
   const isEdit = !!product;
   const fileInputRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
@@ -162,11 +167,9 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
     let imageUrl = formData.image_url;
     const oldImageUrl = product?.image_url;
 
-    // Upload new image if selected
     if (imageFile) {
       setUploadingImage(true);
 
-      // Delete old image from Cloudinary if replacing
       if (oldImageUrl) {
         const oldPublicId = extractPublicId(oldImageUrl);
         if (oldPublicId) {
@@ -186,7 +189,6 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
       }
       imageUrl = uploadResult.data.url;
     } else if (!imagePreview && oldImageUrl) {
-      // Image was removed (cleared), delete from Cloudinary
       const oldPublicId = extractPublicId(oldImageUrl);
       if (oldPublicId) {
         await deleteImage(oldPublicId);

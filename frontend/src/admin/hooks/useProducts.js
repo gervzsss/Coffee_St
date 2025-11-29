@@ -11,11 +11,7 @@ import {
   deleteProduct,
 } from '../services/productService';
 
-/**
- * Custom hook for managing products state and operations
- */
 export function useProducts() {
-  // Data state
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
@@ -25,13 +21,11 @@ export function useProducts() {
     not_available_products: 0,
   });
 
-  // Filter state
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [showArchived, setShowArchived] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  // Modal state
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
@@ -41,7 +35,6 @@ export function useProducts() {
   const [isRestoring, setIsRestoring] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
-  // Debounce search term
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchTerm);
@@ -49,7 +42,6 @@ export function useProducts() {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Fetch data when filters change
   useEffect(() => {
     fetchData();
   }, [debouncedSearch, filterCategory, showArchived]);
@@ -74,7 +66,6 @@ export function useProducts() {
     setLoading(false);
   };
 
-  // View Details
   const handleViewDetails = async (productId) => {
     const result = await getProduct(productId);
     if (result.success) {
@@ -88,7 +79,6 @@ export function useProducts() {
     setSelectedProduct(null);
   };
 
-  // Add/Edit Product
   const handleAddProduct = () => {
     setSelectedProduct(null);
     setShowFormModal(true);
@@ -123,7 +113,6 @@ export function useProducts() {
     setSelectedProduct(null);
   };
 
-  // Availability
   const handleAvailabilityClick = (product) => {
     setSelectedProduct(product);
     setShowAvailabilityModal(true);
@@ -150,7 +139,6 @@ export function useProducts() {
     setSelectedProduct(null);
   };
 
-  // Archive/Restore
   const handleArchiveClick = (product, restore = false) => {
     setSelectedProduct(product);
     setIsRestoring(restore);
@@ -176,7 +164,6 @@ export function useProducts() {
     setSelectedProduct(null);
   };
 
-  // Delete
   const handleDeleteClick = (product) => {
     setSelectedProduct(product);
     setShowDeleteModal(true);
@@ -201,18 +188,15 @@ export function useProducts() {
     setSelectedProduct(null);
   };
 
-  // Toggle archived view
   const toggleArchivedView = () => {
     setShowArchived(!showArchived);
   };
 
   return {
-    // Data
     products,
     loading,
     metrics,
 
-    // Filters
     searchTerm,
     setSearchTerm,
     filterCategory,
@@ -220,7 +204,6 @@ export function useProducts() {
     showArchived,
     toggleArchivedView,
 
-    // Modal state
     selectedProduct,
     showDetailsModal,
     showFormModal,
@@ -230,7 +213,6 @@ export function useProducts() {
     isRestoring,
     actionLoading,
 
-    // Actions
     handleViewDetails,
     closeDetailsModal,
     handleAddProduct,

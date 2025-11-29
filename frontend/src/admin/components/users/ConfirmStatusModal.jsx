@@ -1,6 +1,12 @@
 import { ButtonSpinner } from '../common';
 
-export default function ConfirmStatusModal({ user, action, onConfirm, onCancel, isLoading }) {
+export default function ConfirmStatusModal({
+  user,
+  action,
+  onConfirm,
+  onCancel,
+  isLoading,
+}) {
   if (!user) return null;
 
   const isBlocking = action === 'block';
@@ -12,7 +18,8 @@ export default function ConfirmStatusModal({ user, action, onConfirm, onCancel, 
           Confirm Status Change
         </h2>
         <p className="text-gray-600 mb-6">
-          Are you sure you want to {isBlocking ? 'block' : 'unblock'} this user? This action will be logged.
+          Are you sure you want to {isBlocking ? 'block' : 'unblock'} this user?
+          This action will be logged.
         </p>
         <div className="flex gap-3 justify-end">
           <button

@@ -1,8 +1,3 @@
-/**
- * Get Tailwind CSS classes for order/general status
- * @param {string} status - The status value
- * @returns {string} Tailwind CSS classes
- */
 export function getStatusColor(status) {
   switch (status) {
     case 'open':
@@ -27,11 +22,6 @@ export function getStatusColor(status) {
   }
 }
 
-/**
- * Get Tailwind CSS classes for inquiry status
- * @param {string} status - The inquiry status value
- * @returns {string} Tailwind CSS classes
- */
 export function getInquiryStatusColor(status) {
   switch (status) {
     case 'open':

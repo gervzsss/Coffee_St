@@ -1,6 +1,5 @@
 import adminApi from './apiClient';
 
-// Get customer metrics
 export const getCustomerMetrics = async () => {
   try {
     const response = await adminApi.get('/users/metrics');
@@ -14,7 +13,6 @@ export const getCustomerMetrics = async () => {
   }
 };
 
-// Get all users with filters
 export const getAllUsers = async (filters = {}) => {
   try {
     const response = await adminApi.get('/users', { params: filters });
@@ -28,7 +26,6 @@ export const getAllUsers = async (filters = {}) => {
   }
 };
 
-// Get single user details
 export const getUser = async (id) => {
   try {
     const response = await adminApi.get(`/users/${id}`);
@@ -42,7 +39,6 @@ export const getUser = async (id) => {
   }
 };
 
-// Update user status (block/unblock)
 export const updateUserStatus = async (id, status) => {
   try {
     const response = await adminApi.patch(`/users/${id}/status`, { status });
@@ -56,7 +52,6 @@ export const updateUserStatus = async (id, status) => {
   }
 };
 
-// Update user
 export const updateUser = async (id, userData) => {
   try {
     const response = await adminApi.put(`/users/${id}`, userData);
@@ -70,7 +65,6 @@ export const updateUser = async (id, userData) => {
   }
 };
 
-// Delete user
 export const deleteUser = async (id) => {
   try {
     const response = await adminApi.delete(`/users/${id}`);

@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { ButtonSpinner } from '../common';
 
-export default function DeleteConfirmModal({ product, onConfirm, onCancel, isLoading }) {
+export default function DeleteConfirmModal({
+  product,
+  onConfirm,
+  onCancel,
+  isLoading,
+}) {
   const [confirmText, setConfirmText] = useState('');
   const productName = product?.name || '';
   const hasOrders = product?.has_orders || false;
   const canDelete = confirmText === productName && !hasOrders;
 
-  // If product has orders, show info modal instead of delete confirmation
   if (hasOrders) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -40,10 +44,12 @@ export default function DeleteConfirmModal({ product, onConfirm, onCancel, isLoa
 
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
             <p className="text-sm text-amber-800">
-              <strong>"{productName}"</strong> cannot be permanently deleted because it has been ordered by customers.
+              <strong>"{productName}"</strong> cannot be permanently deleted
+              because it has been ordered by customers.
             </p>
             <p className="text-sm text-amber-700 mt-2">
-              To maintain order history integrity and accurate sales records, products with orders must be kept in the database.
+              To maintain order history integrity and accurate sales records,
+              products with orders must be kept in the database.
             </p>
           </div>
 
@@ -52,7 +58,9 @@ export default function DeleteConfirmModal({ product, onConfirm, onCancel, isLoa
               💡 Recommended: Keep it archived
             </p>
             <p className="text-sm text-blue-700">
-              Archived products are hidden from customers and the active catalog, but their order history is preserved for reporting and reference.
+              Archived products are hidden from customers and the active
+              catalog, but their order history is preserved for reporting and
+              reference.
             </p>
           </div>
 

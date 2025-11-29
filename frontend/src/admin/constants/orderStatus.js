@@ -1,6 +1,3 @@
-/**
- * Order status configuration with styling
- */
 export const STATUS_CONFIG = {
   pending: {
     label: 'Pending',
@@ -53,9 +50,6 @@ export const STATUS_CONFIG = {
   },
 };
 
-/**
- * Status flow - defines valid status transitions
- */
 export const STATUS_FLOW = {
   pending: ['confirmed', 'cancelled'],
   confirmed: ['preparing', 'cancelled'],
@@ -66,20 +60,10 @@ export const STATUS_FLOW = {
   cancelled: [],
 };
 
-/**
- * Get status configuration by status key
- * @param {string} status - The status key
- * @returns {object} Status configuration object
- */
 export function getStatusConfig(status) {
   return STATUS_CONFIG[status] || STATUS_CONFIG.pending;
 }
 
-/**
- * Get next available statuses for a given status
- * @param {string} status - The current status
- * @returns {string[]} Array of valid next statuses
- */
 export function getNextStatuses(status) {
   return STATUS_FLOW[status] || [];
 }

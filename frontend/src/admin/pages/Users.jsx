@@ -4,28 +4,23 @@ import { useUsers } from '../hooks';
 
 export default function Users() {
   const {
-    // Data
     displayedUsers,
     loading,
     metrics,
-    // Filters
     searchTerm,
     setSearchTerm,
     showBlocked,
     toggleBlockedView,
-    // Modal state
     selectedUser,
     showDetailsModal,
     showConfirmModal,
     confirmAction,
     actionLoading,
-    // Actions
     handleViewDetails,
     closeDetailsModal,
     handleStatusChange,
     confirmStatusChange,
     closeConfirmModal,
-    // Helpers
     getWarningText,
   } = useUsers();
 

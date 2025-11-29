@@ -1,10 +1,11 @@
 import { STATUS_CONFIG } from '../../constants/orderStatus';
 import StatusDropdown from './StatusDropdown';
 
-/**
- * Order card component displaying order summary
- */
-export default function OrderCard({ order, onViewDetails, onQuickStatusChange }) {
+export default function OrderCard({
+  order,
+  onViewDetails,
+  onQuickStatusChange,
+}) {
   const statusConfig = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
 
   const getEstimatedPrepTime = () => {
@@ -40,21 +41,53 @@ export default function OrderCard({ order, onViewDetails, onQuickStatusChange })
       {/* Customer & Order Info */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
         <div className="flex items-center gap-1.5">
-          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          <svg
+            className="w-4 h-4 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
           </svg>
           <span>{order.customer?.name || 'Unknown'}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            className="w-4 h-4 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
-          <span>{order.time_ago || new Date(order.created_at).toLocaleDateString()}</span>
+          <span>
+            {order.time_ago || new Date(order.created_at).toLocaleDateString()}
+          </span>
         </div>
         {order.status === 'pending' && (
           <div className="flex items-center gap-1.5 text-orange-600">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <span>{getEstimatedPrepTime()}</span>
           </div>
@@ -63,9 +96,24 @@ export default function OrderCard({ order, onViewDetails, onQuickStatusChange })
 
       {/* Address */}
       <div className="flex items-start gap-1.5 text-sm text-gray-600 mb-4">
-        <svg className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        <svg
+          className="w-4 h-4 text-gray-400 mt-0.5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+          />
         </svg>
         <span>{order.delivery_address || 'No address provided'}</span>
       </div>
@@ -74,7 +122,9 @@ export default function OrderCard({ order, onViewDetails, onQuickStatusChange })
       {order.items && order.items.length > 0 && (
         <div className="border border-gray-200 rounded-lg mb-4 overflow-hidden">
           <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
-            <span className="text-sm font-medium text-gray-700">Order Items</span>
+            <span className="text-sm font-medium text-gray-700">
+              Order Items
+            </span>
           </div>
           <div className="divide-y divide-gray-100">
             {order.items.map((item, index) => (
@@ -87,9 +137,14 @@ export default function OrderCard({ order, onViewDetails, onQuickStatusChange })
                     {item.variants && item.variants.length > 0 && (
                       <div className="mt-1 space-y-0.5">
                         {item.variants.map((v, i) => (
-                          <p key={i} className="text-sm text-gray-500 flex items-center gap-1">
+                          <p
+                            key={i}
+                            className="text-sm text-gray-500 flex items-center gap-1"
+                          >
                             <span className="text-orange-500">+</span>
-                            <span className="text-gray-400">{v.group_name}:</span>
+                            <span className="text-gray-400">
+                              {v.group_name}:
+                            </span>
                             <span className="text-gray-600">{v.name}</span>
                             {v.price_delta > 0 && (
                               <span className="text-gray-400 text-xs">

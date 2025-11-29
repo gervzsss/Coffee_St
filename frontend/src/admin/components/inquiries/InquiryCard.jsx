@@ -1,8 +1,5 @@
 import { formatDateTime } from '../../utils/formatDate';
 
-/**
- * Reply icon component
- */
 function ReplyIcon() {
   return (
     <svg
@@ -21,14 +18,11 @@ function ReplyIcon() {
   );
 }
 
-/**
- * Inquiry card component for displaying a thread preview
- * @param {{ thread: object, onClick: () => void }} props
- */
 export default function InquiryCard({ thread, onClick }) {
   const userName = thread.user_name || thread.guest_name || 'Guest';
   const userEmail = thread.user_email || thread.guest_email;
-  const message = thread.message || thread.latest_message || 'No message content';
+  const message =
+    thread.message || thread.latest_message || 'No message content';
 
   return (
     <div

@@ -1,6 +1,5 @@
 import adminApi from './apiClient';
 
-// Get catalog metrics
 export const getProductMetrics = async () => {
   try {
     const response = await adminApi.get('/products/metrics');
@@ -14,7 +13,6 @@ export const getProductMetrics = async () => {
   }
 };
 
-// Get all products with filters
 export const getAllProducts = async (filters = {}) => {
   try {
     const response = await adminApi.get('/products', { params: filters });
@@ -28,7 +26,6 @@ export const getAllProducts = async (filters = {}) => {
   }
 };
 
-// Get single product with details
 export const getProduct = async (id) => {
   try {
     const response = await adminApi.get(`/products/${id}`);
@@ -42,7 +39,6 @@ export const getProduct = async (id) => {
   }
 };
 
-// Create product
 export const createProduct = async (productData) => {
   try {
     const response = await adminApi.post('/products', productData);
@@ -56,7 +52,6 @@ export const createProduct = async (productData) => {
   }
 };
 
-// Update product
 export const updateProduct = async (id, productData) => {
   try {
     const response = await adminApi.put(`/products/${id}`, productData);
@@ -70,7 +65,6 @@ export const updateProduct = async (id, productData) => {
   }
 };
 
-// Update product availability
 export const updateProductAvailability = async (id, isAvailable, reason = null) => {
   try {
     const response = await adminApi.patch(`/products/${id}/availability`, {
@@ -87,7 +81,6 @@ export const updateProductAvailability = async (id, isAvailable, reason = null) 
   }
 };
 
-// Archive product
 export const archiveProduct = async (id) => {
   try {
     const response = await adminApi.post(`/products/${id}/archive`);
@@ -101,7 +94,6 @@ export const archiveProduct = async (id) => {
   }
 };
 
-// Restore archived product
 export const restoreProduct = async (id) => {
   try {
     const response = await adminApi.post(`/products/${id}/restore`);
@@ -115,7 +107,6 @@ export const restoreProduct = async (id) => {
   }
 };
 
-// Delete product
 export const deleteProduct = async (id) => {
   try {
     const response = await adminApi.delete(`/products/${id}`);
@@ -129,7 +120,6 @@ export const deleteProduct = async (id) => {
   }
 };
 
-// Upload image to Cloudinary
 export const uploadImage = async (file) => {
   try {
     const formData = new FormData();
@@ -150,7 +140,6 @@ export const uploadImage = async (file) => {
   }
 };
 
-// Delete image from Cloudinary
 export const deleteImage = async (publicId) => {
   try {
     const response = await adminApi.delete('/upload/image', {

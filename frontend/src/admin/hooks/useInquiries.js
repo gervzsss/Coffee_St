@@ -1,10 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { getAllThreads, updateThreadStatus } from '../services/inquiryService';
 
-/**
- * Custom hook for managing inquiries/threads data
- * @returns {object} Inquiries state and actions
- */
 export function useInquiries() {
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,15 +10,15 @@ export function useInquiries() {
   const fetchThreads = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     const result = await getAllThreads();
-    
+
     if (result.success) {
       setThreads(result.data);
     } else {
       setError(result.error || 'Failed to fetch threads');
     }
-    
+
     setLoading(false);
   }, []);
 
@@ -32,7 +28,7 @@ export function useInquiries() {
 
   const handleStatusChange = useCallback(async (threadId, newStatus) => {
     const result = await updateThreadStatus(threadId, newStatus);
-    
+
     if (result.success) {
       setThreads((prevThreads) =>
         prevThreads.map((thread) =>
@@ -41,17 +37,15 @@ export function useInquiries() {
       );
       return true;
     }
-    
+
     return false;
   }, []);
 
-  // Filtered threads based on status
   const filteredThreads = useMemo(() => {
     if (filterStatus === 'all') return threads;
     return threads.filter((thread) => thread.status === filterStatus);
   }, [threads, filterStatus]);
 
-  // Computed message counts
   const messageCounts = useMemo(() => ({
     total: threads.reduce((sum, t) => sum + (t.messages_count || 0), 0),
     unread: threads.filter((t) => t.status === 'pending' || t.status === 'open').length,
@@ -59,15 +53,13 @@ export function useInquiries() {
   }), [threads]);
 
   return {
-    // State
     threads,
     filteredThreads,
     loading,
     error,
     filterStatus,
     messageCounts,
-    
-    // Actions
+
     setFilterStatus,
     handleStatusChange,
     refetch: fetchThreads,

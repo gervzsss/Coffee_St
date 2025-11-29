@@ -6,11 +6,7 @@ import {
   updateUserStatus,
 } from '../services/userService';
 
-/**
- * Custom hook for managing users state and operations
- */
 export function useUsers() {
-  // Data state
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
@@ -19,19 +15,16 @@ export function useUsers() {
     banned_users: 0,
   });
 
-  // Filter state
   const [searchTerm, setSearchTerm] = useState('');
   const [showBlocked, setShowBlocked] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  // Modal state
   const [selectedUser, setSelectedUser] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
-  // Debounce search term
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchTerm);
@@ -39,7 +32,6 @@ export function useUsers() {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Fetch data when search changes
   useEffect(() => {
     fetchData();
   }, [debouncedSearch]);
@@ -63,7 +55,6 @@ export function useUsers() {
     setLoading(false);
   };
 
-  // Computed: Filter users based on showBlocked toggle
   const displayedUsers = users.filter((user) => {
     if (showBlocked) {
       return user.status === 'restricted';
@@ -71,7 +62,6 @@ export function useUsers() {
     return user.status === 'active';
   });
 
-  // View Details
   const handleViewDetails = async (userId) => {
     const result = await getUser(userId);
     if (result.success) {
@@ -85,7 +75,6 @@ export function useUsers() {
     setSelectedUser(null);
   };
 
-  // Status Change (Block/Unblock)
   const handleStatusChange = (user, action) => {
     setSelectedUser(user);
     setConfirmAction(action);
@@ -115,12 +104,10 @@ export function useUsers() {
     setConfirmAction(null);
   };
 
-  // Toggle blocked view
   const toggleBlockedView = () => {
     setShowBlocked(!showBlocked);
   };
 
-  // Helper function for warning text
   const getWarningText = (user) => {
     if (user.failed_orders_count > 0) {
       return `${user.failed_orders_count} Failed Orders`;
@@ -129,33 +116,28 @@ export function useUsers() {
   };
 
   return {
-    // Data
     users,
     displayedUsers,
     loading,
     metrics,
 
-    // Filters
     searchTerm,
     setSearchTerm,
     showBlocked,
     toggleBlockedView,
 
-    // Modal state
     selectedUser,
     showDetailsModal,
     showConfirmModal,
     confirmAction,
     actionLoading,
 
-    // Actions
     handleViewDetails,
     closeDetailsModal,
     handleStatusChange,
     confirmStatusChange,
     closeConfirmModal,
 
-    // Helpers
     getWarningText,
   };
 }

@@ -1,6 +1,5 @@
 import adminApi from './apiClient';
 
-// Get order metrics
 export const getOrderMetrics = async () => {
   try {
     const response = await adminApi.get('/orders/metrics');
@@ -14,7 +13,6 @@ export const getOrderMetrics = async () => {
   }
 };
 
-// Get all orders with filters and pagination
 export const getAllOrders = async (filters = {}) => {
   try {
     const response = await adminApi.get('/orders', { params: filters });
@@ -28,7 +26,6 @@ export const getAllOrders = async (filters = {}) => {
   }
 };
 
-// Get single order
 export const getOrder = async (id) => {
   try {
     const response = await adminApi.get(`/orders/${id}`);
@@ -42,7 +39,6 @@ export const getOrder = async (id) => {
   }
 };
 
-// Update order status
 export const updateOrderStatus = async (id, statusData) => {
   try {
     const response = await adminApi.patch(`/orders/${id}/status`, statusData);
@@ -56,7 +52,6 @@ export const updateOrderStatus = async (id, statusData) => {
   }
 };
 
-// Mark order as failed with reason
 export const markOrderFailed = async (id, failureReason) => {
   try {
     const response = await adminApi.patch(`/orders/${id}/status`, {
@@ -73,7 +68,6 @@ export const markOrderFailed = async (id, failureReason) => {
   }
 };
 
-// Upload delivery proof image
 export const uploadDeliveryProof = async (file) => {
   try {
     const formData = new FormData();

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 
-/**
- * Modal for entering failure reason when marking an order as failed
- */
-export default function FailureReasonModal({ isOpen, onClose, onConfirm, loading }) {
+export default function FailureReasonModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  loading,
+}) {
   const [reason, setReason] = useState('');
 
   if (!isOpen) return null;

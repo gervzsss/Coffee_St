@@ -1,6 +1,5 @@
 import adminApi from './apiClient';
 
-// Get dashboard statistics
 export const getDashboardStats = async () => {
   try {
     const response = await adminApi.get('/dashboard/stats');

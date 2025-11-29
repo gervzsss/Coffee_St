@@ -1,7 +1,3 @@
-/**
- * Recent activity list component showing latest orders
- * @param {{ orders: Array<{ id: number, order_number: string, total_amount: number, status: string }>, maxItems?: number }} props
- */
 export default function RecentActivityList({ orders = [], maxItems = 4 }) {
   const displayedOrders = orders.slice(0, maxItems);
   const hasOrders = displayedOrders.length > 0;

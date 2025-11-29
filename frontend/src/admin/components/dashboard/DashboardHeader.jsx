@@ -1,9 +1,5 @@
 import { formatCurrentDate } from '../../utils/formatDate';
 
-/**
- * Dashboard header component with welcome message and date
- * @param {{ adminName: string }} props
- */
 export default function DashboardHeader({ adminName = 'Admin' }) {
   const currentDate = formatCurrentDate();
 

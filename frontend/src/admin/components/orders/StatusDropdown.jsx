@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { STATUS_CONFIG, STATUS_FLOW } from '../../constants/orderStatus';
 
-/**
- * Dropdown component for quick status changes
- */
 export default function StatusDropdown({ order, onStatusChange, disabled }) {
   const [isOpen, setIsOpen] = useState(false);
   const currentConfig = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
@@ -33,7 +30,9 @@ export default function StatusDropdown({ order, onStatusChange, disabled }) {
         <span>{currentConfig.label}</span>
         {nextStatuses.length > 0 && (
           <svg
-            className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            className={`w-5 h-5 transition-transform ${
+              isOpen ? 'rotate-180' : ''
+            }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

@@ -1,5 +1,9 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
-import { adminLogin, adminLogout, fetchAdminUser } from '../services/authService';
+import {
+  adminLogin,
+  adminLogout,
+  fetchAdminUser,
+} from '../services/authService';
 
 export const AdminAuthContext = createContext();
 
@@ -8,7 +12,6 @@ export function AdminAuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // Initialize auth state from token
   useEffect(() => {
     const initAuth = async () => {
       const token = localStorage.getItem('admin_token');
@@ -26,7 +29,6 @@ export function AdminAuthProvider({ children }) {
     initAuth();
   }, []);
 
-  // Listen for unauthorized events
   useEffect(() => {
     const handleUnauthorized = () => {
       setAdmin(null);
@@ -34,7 +36,8 @@ export function AdminAuthProvider({ children }) {
     };
 
     window.addEventListener('admin:unauthorized', handleUnauthorized);
-    return () => window.removeEventListener('admin:unauthorized', handleUnauthorized);
+    return () =>
+      window.removeEventListener('admin:unauthorized', handleUnauthorized);
   }, []);
 
   const login = useCallback(async (email, password) => {
