@@ -53,15 +53,11 @@ services:
       DB_PASSWORD: Mysqlpass@
 
       BROADCAST_DRIVER: log
-      CACHE_DRIVER: redis
+      CACHE_DRIVER: database
       FILESYSTEM_DISK: local
       QUEUE_CONNECTION: sync
-      SESSION_DRIVER: redis
+      SESSION_DRIVER: database
       SESSION_LIFETIME: 120
-
-      REDIS_HOST: redis
-      REDIS_PASSWORD: null
-      REDIS_PORT: 6379
 
       MAIL_MAILER: smtp
       MAIL_HOST: mailhog
@@ -113,18 +109,6 @@ services:
     networks:
       - coffee_st_network
 
-  # Redis Cache Service (Optional but recommended for Laravel)
-  redis:
-    image: redis:alpine
-    container_name: coffee_st_redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - coffee_st_network
-
 networks:
   coffee_st_network:
     driver: bridge
@@ -135,6 +119,4 @@ volumes:
   backend_vendor:
     driver: local
   backend_storage:
-    driver: local
-  redis_data:
     driver: local
