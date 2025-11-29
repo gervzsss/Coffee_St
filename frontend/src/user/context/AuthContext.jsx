@@ -39,7 +39,14 @@ export const AuthProvider = ({ children }) => {
     throw new Error(result.error);
   };
 
-  const signup = async (name, email, password, password_confirmation, address, phone) => {
+  const signup = async (
+    name,
+    email,
+    password,
+    password_confirmation,
+    address,
+    phone
+  ) => {
     const result = await authService.signup({
       name,
       email,

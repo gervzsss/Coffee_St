@@ -11,7 +11,7 @@ const useProductCustomization = (onAddToCartCallback) => {
 
   const closeCustomizationModal = () => {
     setIsModalOpen(false);
-    setTimeout(() => setSelectedProduct(null), 300); // Delay to allow exit animation
+    setTimeout(() => setSelectedProduct(null), 300);
   };
 
   const handleAddToCart = async (cartData) => {
@@ -29,4 +29,5 @@ const useProductCustomization = (onAddToCartCallback) => {
   };
 };
 
+export { useProductCustomization };
 export default useProductCustomization;

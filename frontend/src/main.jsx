@@ -25,9 +25,8 @@ import { AuthProvider } from './user/context/AuthContext.jsx';
 import { CartProvider } from './user/context/CartContext.jsx';
 import { ToastProvider } from './user/context/ToastContext.jsx';
 import { useAuth } from './user/hooks/useAuth.js';
-import AuthModal from './user/components/AuthModal.jsx';
-import ProtectedRoute from './user/components/ProtectedRoute.jsx';
-import ScrollToTop from './user/components/ScrollToTop.jsx';
+import { AuthModal } from './user/components/auth';
+import { ProtectedRoute, ScrollToTop } from './user/components/layout';
 
 const AdminLogin = lazy(() => import('./admin/pages/AdminLogin.jsx'));
 const Dashboard = lazy(() => import('./admin/pages/Dashboard.jsx'));
@@ -115,6 +114,7 @@ function AdminAppContent() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
+        <Route index element={<AdminLogin />} />
         <Route path="login" element={<AdminLogin />} />
         <Route
           path="dashboard"

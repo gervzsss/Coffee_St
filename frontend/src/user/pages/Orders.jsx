@@ -2,11 +2,9 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useOrders } from '../hooks/useOrders';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import EmptyState from '../components/EmptyState';
-import OrderCard from '../components/OrderCard';
-import OrderDetailModal from '../components/OrderDetailModal';
+import { Header, Footer } from '../components/layout';
+import { EmptyState } from '../components/common';
+import { OrderCard, OrderDetailModal } from '../components/orders';
 
 // Status configuration matching admin
 const STATUS_CONFIG = {

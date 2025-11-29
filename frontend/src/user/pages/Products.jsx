@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import CategorySidebar from '../components/CategorySidebar';
-import ProductsHeader from '../components/ProductsHeader';
-import ProductsGrid from '../components/ProductsGrid';
+import { Header, Footer } from '../components/layout';
+import {
+  CategorySidebar,
+  ProductsHeader,
+  ProductsGrid,
+} from '../components/products';
 import { useProducts } from '../hooks/useProducts';
 import { filterProducts } from '../utils/filterProducts';
 import { CATEGORIES } from '../constants/categories';

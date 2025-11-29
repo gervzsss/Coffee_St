@@ -1,9 +1,5 @@
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import AboutHero from '../components/AboutHero';
-import OurStory from '../components/OurStory';
-import OurValues from '../components/OurValues';
-import OurTeam from '../components/OurTeam';
+import { Header, Footer } from '../components/layout';
+import { AboutHero, OurStory, OurValues, OurTeam } from '../components/about';
 
 export default function About() {
   return (

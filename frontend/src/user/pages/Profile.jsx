@@ -3,19 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import api from '../services/apiClient';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import OrderHistoryCard from '../components/OrderHistoryCard';
-import QuickSettingsPanel from '../components/QuickSettingsPanel';
-import ProfileInformationForm from '../components/ProfileInformationForm';
-import ChangePasswordForm from '../components/ChangePasswordForm';
-import DeleteAccountModal from '../components/DeleteAccountModal';
+import { Header, Footer } from '../components/layout';
+import { OrderHistoryCard } from '../components/orders';
+import {
+  QuickSettingsPanel,
+  ProfileInformationForm,
+  ChangePasswordForm,
+  DeleteAccountModal,
+} from '../components/profile';
 
 export default function Profile() {
   const { user, setUser, logout } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
-  const [activeView, setActiveView] = useState('profile-info'); // 'profile-info' | 'change-password'
+  const [activeView, setActiveView] = useState('profile-info');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleUserUpdate = (updatedUser) => {
@@ -46,10 +47,16 @@ export default function Profile() {
   const handleLanguageChange = async (language) => {
     try {
       await api.put('/user/language', { language });
-      showToast('Language preference saved', { type: 'success', dismissible: true });
+      showToast('Language preference saved', {
+        type: 'success',
+        dismissible: true,
+      });
     } catch (error) {
       console.error('Language change error:', error);
-      showToast('Failed to save language preference', { type: 'error', dismissible: true });
+      showToast('Failed to save language preference', {
+        type: 'error',
+        dismissible: true,
+      });
     }
   };
 
@@ -82,7 +89,10 @@ export default function Profile() {
               <div className="lg:col-span-2 space-y-6">
                 {/* Dynamic Content Area */}
                 {activeView === 'profile-info' ? (
-                  <ProfileInformationForm user={user} onUserUpdate={handleUserUpdate} />
+                  <ProfileInformationForm
+                    user={user}
+                    onUserUpdate={handleUserUpdate}
+                  />
                 ) : (
                   <ChangePasswordForm onBack={handleBackToProfile} />
                 )}

@@ -5,3 +5,4 @@ export * as cartService from './cartService';
 export * as orderService from './orderService';
 export * as cloudinaryService from './cloudinaryService';
 export * as contactService from './contactService';
+export * as inquiryService from './inquiryService';

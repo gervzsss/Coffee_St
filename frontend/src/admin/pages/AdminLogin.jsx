@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAdminAuth } from '../hooks/useAdminAuth';
-import adminLoginBg from '../../assets/AdminLogin.png';
+import adminLoginBg from '../../assets/AdminLogin.webp';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');

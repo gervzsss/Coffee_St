@@ -15,7 +15,7 @@ export const useProductCard = (product) => {
 
   const hasVariants =
     product.active_variants && product.active_variants.length > 0;
-  
+
   const hasVariantGroups =
     product.active_variant_groups && product.active_variant_groups.length > 0;
 
@@ -25,7 +25,6 @@ export const useProductCard = (product) => {
     return basePrice + delta;
   };
 
-  // New multi-variant system handler
   const handleAddToCartWithVariants = async (cartData) => {
     if (!user) {
       showToast('Please log in to add items to cart', {
@@ -66,7 +65,6 @@ export const useProductCard = (product) => {
     }
   };
 
-  // Legacy single variant system handler
   const handleAddToCart = async (variantId = null) => {
     if (!user) {
       showToast('Please log in to add items to cart', {
@@ -117,8 +115,6 @@ export const useProductCard = (product) => {
   };
 
   const handleAddToCartClick = () => {
-    // Always use customization modal for all products
-    // This allows quantity adjustment even for products without variants
     setShowCustomizationModal(true);
   };
 

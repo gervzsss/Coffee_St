@@ -16,7 +16,6 @@ export const getOrders = async () => {
 export const getOrder = async (orderId) => {
   try {
     const response = await api.get(`/orders/${orderId}`);
-    // The backend returns { order: {...} }
     return { success: true, data: response.data.order || response.data };
   } catch (error) {
     console.error('Failed to fetch order:', error);

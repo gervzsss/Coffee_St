@@ -1,9 +1,10 @@
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import ContactHero from '../components/ContactHero';
-import ContactInfoCard from '../components/ContactInfoCard';
-import StoreHoursCard from '../components/StoreHoursCard';
-import ContactForm from '../components/ContactForm';
+import { Header, Footer } from '../components/layout';
+import {
+  ContactHero,
+  ContactInfoCard,
+  StoreHoursCard,
+  ContactForm,
+} from '../components/contact';
 
 export default function Contact() {
   return (

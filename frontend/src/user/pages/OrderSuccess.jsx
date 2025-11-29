@@ -8,9 +8,8 @@ import {
   CreditCard,
   Clock,
 } from 'lucide-react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import aboutHeadImg from '../../assets/aboutus_head.png';
+import { Header, Footer } from '../components/layout';
+import aboutHeadImg from '../../assets/aboutus_head.webp';
 
 export default function OrderSuccess() {
   const { orderNumber } = useParams();

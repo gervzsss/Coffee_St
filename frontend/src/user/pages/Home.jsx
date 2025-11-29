@@ -1,9 +1,7 @@
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import HeroSection from '../components/HeroSection';
-import FeaturedProducts from '../components/FeaturedProducts';
-import SplitScreen from '../components/SplitScreen';
-import BenefitsGrid from '../components/BenefitsGrid';
+import { Header, Footer } from '../components/layout';
+import { HeroSection, FeaturedProducts } from '../components/home';
+import { SplitScreen } from '../components/common';
+import { BenefitsGrid } from '../components/about';
 
 export default function Home() {
   return (

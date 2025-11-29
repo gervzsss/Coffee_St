@@ -1,5 +1,5 @@
 import { createContext, useState, useCallback } from 'react';
-import Toast from '../components/Toast';
+import { Toast } from '../components/common';
 
 export const ToastContext = createContext(null);
 
@@ -19,7 +19,6 @@ export function ToastProvider({ children }) {
 
     setToasts((prev) => [...prev, toast]);
 
-    // Auto-remove toast after duration
     setTimeout(() => {
       removeToast(id);
     }, toast.duration);

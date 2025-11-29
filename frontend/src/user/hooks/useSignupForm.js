@@ -164,11 +164,8 @@ export const useSignupForm = (onClose) => {
     } catch (err) {
       const errorData = err.response?.data;
       if (errorData?.errors) {
-        // Set field-specific errors from backend validation
-        // Show inline errors only, no toast for validation errors
         setErrors(errorData.errors);
       } else {
-        // Handle general errors with toast
         const errorMessage =
           errorData?.message || 'Signup failed. Please try again.';
         setErrors({ general: errorMessage });

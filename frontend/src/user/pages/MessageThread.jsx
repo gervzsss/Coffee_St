@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { Header, Footer } from '../components/layout';
 import { getThread, sendReply } from '../services/inquiryService';
 import { useToast } from '../hooks/useToast';
 

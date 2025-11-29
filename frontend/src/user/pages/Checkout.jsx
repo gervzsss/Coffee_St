@@ -2,11 +2,12 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useCheckout } from '../hooks/useCheckout';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import CheckoutItem from '../components/CheckoutItem';
-import DeliveryForm from '../components/DeliveryForm';
-import OrderSummaryCheckout from '../components/OrderSummaryCheckout';
+import { Header, Footer } from '../components/layout';
+import {
+  CheckoutItem,
+  DeliveryForm,
+  OrderSummaryCheckout,
+} from '../components/checkout';
 
 export default function Checkout() {
   const { isAuthenticated, user } = useAuth();

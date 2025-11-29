@@ -1,11 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import EmptyState from '../components/EmptyState';
-import CartItem from '../components/CartItem';
-import CartSummary from '../components/CartSummary';
-import ProductCustomizationModal from '../components/ProductCustomizationModal';
+import { Header, Footer } from '../components/layout';
+import { EmptyState } from '../components/common';
+import { CartItem, CartSummary } from '../components/cart';
+import { ProductCustomizationModal } from '../components/products';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { useCartOperations } from '../hooks/useCartOperations';

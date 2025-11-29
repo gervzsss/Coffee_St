@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import EmptyState from '../components/EmptyState';
+import { Header, Footer } from '../components/layout';
+import { EmptyState } from '../components/common';
 import { getUserThreads } from '../services/inquiryService';
 
 export default function Messages() {
