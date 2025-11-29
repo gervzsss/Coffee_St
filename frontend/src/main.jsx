@@ -37,7 +37,7 @@ const AdminUsers = lazy(() => import('./admin/pages/Users.jsx'));
 const Inquiries = lazy(() => import('./admin/pages/Inquiries.jsx'));
 
 import { AdminAuthProvider } from './admin/context/AdminAuthContext.jsx';
-import AdminProtectedRoute from './admin/components/AdminProtectedRoute.jsx';
+import { AdminProtectedRoute } from './admin/components/layout';
 
 function UserAppContent() {
   const { isAuthModalOpen, closeAuthModal, authModalMode } = useAuth();

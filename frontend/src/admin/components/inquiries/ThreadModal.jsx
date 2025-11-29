@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { getThread, sendMessage } from '../services/inquiryService';
+import { getThread, sendMessage } from '../../services/inquiryService';
 
 export default function ThreadModal({ threadId, isOpen, onClose, onUpdate }) {
   const [thread, setThread] = useState(null);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAdminAuth } from '../hooks/useAdminAuth';
+import { useAdminAuth } from '../../hooks/useAdminAuth';
 
 export default function AdminSidebar() {
   const { admin, logout } = useAdminAuth();
