@@ -380,7 +380,70 @@ function ArchiveModal({ product, onConfirm, onCancel, isLoading, isRestore }) {
 function DeleteConfirmModal({ product, onConfirm, onCancel, isLoading }) {
   const [confirmText, setConfirmText] = useState('');
   const productName = product?.name || '';
-  const canDelete = confirmText === productName;
+  const hasOrders = product?.has_orders || false;
+  const canDelete = confirmText === productName && !hasOrders;
+
+  // If product has orders, show info modal instead of delete confirmation
+  if (hasOrders) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl max-w-md w-full p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+              <svg
+                className="w-6 h-6 text-amber-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">
+                Cannot Delete Product
+              </h2>
+              <p className="text-sm text-amber-600 font-medium">
+                This product has order history
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+            <p className="text-sm text-amber-800">
+              <strong>"{productName}"</strong> cannot be permanently deleted because it has been ordered by customers.
+            </p>
+            <p className="text-sm text-amber-700 mt-2">
+              To maintain order history integrity and accurate sales records, products with orders must be kept in the database.
+            </p>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <p className="text-sm text-blue-800 font-medium mb-1">
+              💡 Recommended: Keep it archived
+            </p>
+            <p className="text-sm text-blue-700">
+              Archived products are hidden from customers and the active catalog, but their order history is preserved for reporting and reference.
+            </p>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              onClick={onCancel}
+              className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -1637,8 +1700,16 @@ export default function Products() {
                             {showArchived && (
                               <button
                                 onClick={() => handleDeleteClick(product)}
-                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                                title="Delete Permanently"
+                                className={`p-2 rounded-lg ${
+                                  product.has_orders
+                                    ? 'text-gray-400 hover:bg-gray-100 cursor-help'
+                                    : 'text-red-600 hover:bg-red-50'
+                                }`}
+                                title={
+                                  product.has_orders
+                                    ? 'Cannot delete - has order history (click for details)'
+                                    : 'Delete Permanently'
+                                }
                               >
                                 <svg
                                   className="w-5 h-5"

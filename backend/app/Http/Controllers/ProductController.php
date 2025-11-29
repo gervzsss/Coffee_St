@@ -58,6 +58,14 @@ class ProductController extends Controller
             return response()->json(['message' => 'Product not found'], 404);
         }
 
+        // Check if product is archived (not available for ordering/reordering)
+        if ($product->archived_at !== null) {
+            return response()->json([
+                'message' => 'Product is no longer available',
+                'archived' => true
+            ], 404);
+        }
+
         return response()->json($product);
     }
 

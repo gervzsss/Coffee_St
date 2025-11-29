@@ -29,8 +29,47 @@ export function useReorder() {
             quantity: item.quantity,
           };
 
-          if (item.variant_id) {
-            const variant = product.variants?.find((v) => v.id === item.variant_id);
+          // Check if item has selected_variants (new multi-variant system)
+          if (item.selected_variants && item.selected_variants.length > 0) {
+            // Validate that all variants still exist and are active
+            const validVariants = [];
+            let hasInvalidVariant = false;
+
+            for (const selectedVariant of item.selected_variants) {
+              // Find the variant in the product's active variant groups
+              let variantFound = false;
+              for (const group of product.active_variant_groups || []) {
+                const matchingVariant = (group.active_variants || []).find(
+                  (v) => v.id === selectedVariant.variant_id
+                );
+                if (matchingVariant) {
+                  validVariants.push({
+                    id: matchingVariant.id,
+                    group_name: selectedVariant.variant_group_name,
+                    name: matchingVariant.name,
+                    price_delta: matchingVariant.price_delta,
+                  });
+                  variantFound = true;
+                  break;
+                }
+              }
+              if (!variantFound) {
+                hasInvalidVariant = true;
+              }
+            }
+
+            if (hasInvalidVariant && validVariants.length === 0) {
+              // All variants are no longer available
+              unavailableItems.push(`${item.product_name} (customizations no longer available)`);
+              continue;
+            }
+
+            if (validVariants.length > 0) {
+              cartData.variants = validVariants;
+            }
+          } else if (item.variant_id) {
+            // Legacy single variant support
+            const variant = product.active_variants?.find((v) => v.id === item.variant_id);
             if (variant) {
               cartData.variant_id = item.variant_id;
             } else {
@@ -43,7 +82,12 @@ export function useReorder() {
           addedItems.push(item.product_name);
         } catch (err) {
           console.error(`Error adding ${item.product_name} to cart:`, err);
-          unavailableItems.push(item.product_name);
+          // Check if product is archived
+          if (err.response?.data?.archived) {
+            unavailableItems.push(`${item.product_name} (no longer on menu)`);
+          } else {
+            unavailableItems.push(item.product_name);
+          }
         }
       }
 

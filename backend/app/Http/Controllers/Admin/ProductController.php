@@ -77,6 +77,7 @@ class ProductController extends Controller
         'unavailable_reason' => $product->unavailable_reason,
         'archived_at' => $product->archived_at,
         'created_at' => $product->created_at,
+        'has_orders' => $product->orderItems()->exists(),
         'variant_groups' => $product->variantGroups->map(function ($group) {
           return [
             'id' => $group->id,
