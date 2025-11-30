@@ -3,7 +3,7 @@ export default function UserDetailsModal({ user, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
-      <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-lg lg:max-w-xl max-h-[90vh] overflow-y-auto">
         <div className="p-4 sm:p-5 lg:p-6">
           {/* Header */}
           <div className="flex justify-between items-start mb-4 sm:mb-5 lg:mb-6">
@@ -69,7 +69,7 @@ export default function UserDetailsModal({ user, onClose }) {
               <div>
                 <p className="text-xs sm:text-sm text-gray-500">Total Spent</p>
                 <p className="font-medium text-sm sm:text-base text-gray-900">
-                  ${Number(user.total_spent || 0).toFixed(2)}
+                  ₱{Number(user.total_spent || 0).toFixed(2)}
                 </p>
               </div>
               <div>
@@ -78,21 +78,6 @@ export default function UserDetailsModal({ user, onClose }) {
                   {new Date(user.created_at).toLocaleDateString('en-CA')}
                 </p>
               </div>
-            </div>
-            <div className="flex justify-end mt-3 sm:mt-4">
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
             </div>
           </div>
 
