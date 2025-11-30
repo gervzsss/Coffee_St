@@ -1,21 +1,13 @@
 import api from './apiClient';
 
 export const login = async (email, password) => {
-  try {
-    const response = await api.post('/login', { email, password });
-    const { user, token } = response.data;
+  const response = await api.post('/login', { email, password });
+  const { user, token } = response.data;
 
-    localStorage.setItem('token', token);
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  localStorage.setItem('token', token);
+  api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    return { success: true, data: { user, token } };
-  } catch (error) {
-    console.error('Login failed:', error);
-    return {
-      success: false,
-      error: error.response?.data?.message || 'Login failed',
-    };
-  }
+  return { user, token };
 };
 
 export const signup = async (userData) => {

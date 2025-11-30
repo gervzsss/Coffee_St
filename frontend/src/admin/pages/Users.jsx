@@ -257,7 +257,7 @@ export default function Users() {
                                   onClick={() =>
                                     handleStatusChange(user, 'block')
                                   }
-                                  className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                   title="Block User"
                                 >
                                   <svg
@@ -270,7 +270,7 @@ export default function Users() {
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                       strokeWidth="2"
-                                      d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                                     />
                                   </svg>
                                 </button>
@@ -279,7 +279,7 @@ export default function Users() {
                                   onClick={() =>
                                     handleStatusChange(user, 'unblock')
                                   }
-                                  className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                  className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                                   title="Unblock User"
                                 >
                                   <svg
@@ -292,7 +292,7 @@ export default function Users() {
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                       strokeWidth="2"
-                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                      d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
                                     />
                                   </svg>
                                 </button>

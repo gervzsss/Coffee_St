@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './index.css';
@@ -33,9 +33,25 @@ import Inquiries from './admin/pages/Inquiries.jsx';
 
 import { AdminAuthProvider } from './admin/context/AdminAuthContext.jsx';
 import { AdminProtectedRoute } from './admin/components/layout';
+import { useToast } from './user/hooks/useToast';
 
 function UserAppContent() {
-  const { isAuthModalOpen, closeAuthModal, authModalMode } = useAuth();
+  const {
+    isAuthModalOpen,
+    closeAuthModal,
+    authModalMode,
+    blockedMessage,
+    clearBlockedMessage,
+  } = useAuth();
+  const { showToast } = useToast();
+
+  // Show toast when user account is blocked
+  useEffect(() => {
+    if (blockedMessage) {
+      showToast(blockedMessage, { type: 'error', duration: 5000 });
+      clearBlockedMessage();
+    }
+  }, [blockedMessage, showToast, clearBlockedMessage]);
 
   return (
     <>

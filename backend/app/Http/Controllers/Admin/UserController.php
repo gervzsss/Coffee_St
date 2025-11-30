@@ -121,6 +121,11 @@ class UserController extends Controller
             'status_changed_at' => now(),
         ]);
 
+        // Revoke all tokens when user is blocked to force logout
+        if ($validated['status'] === 'restricted') {
+            $user->tokens()->delete();
+        }
+
         return response()->json([
             'message' => 'User status updated successfully',
             'user' => [

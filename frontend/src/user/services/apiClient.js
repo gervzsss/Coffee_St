@@ -38,6 +38,19 @@ api.interceptors.response.use(
       }
     }
 
+    // Handle blocked/restricted user account
+    if (error.response?.status === 403) {
+      const message = error.response?.data?.message || '';
+      if (message.includes('blocked') || message.includes('restricted')) {
+        localStorage.removeItem('token');
+        delete api.defaults.headers.common['Authorization'];
+
+        window.dispatchEvent(new CustomEvent('auth:blocked', { 
+          detail: { message } 
+        }));
+      }
+    }
+
     if (error.response?.status === 404) {
       console.error('Resource not found:', error.config.url);
     }

@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login');
+  const [blockedMessage, setBlockedMessage] = useState(null);
 
   useEffect(() => {
     if (token) {
@@ -17,6 +18,22 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   }, [token]);
+
+  // Listen for blocked user events
+  useEffect(() => {
+    const handleBlocked = (event) => {
+      setToken(null);
+      setUser(null);
+      setBlockedMessage(event.detail?.message || 'Your account has been blocked. Please contact support for assistance.');
+    };
+
+    window.addEventListener('auth:blocked', handleBlocked);
+    return () => window.removeEventListener('auth:blocked', handleBlocked);
+  }, []);
+
+  const clearBlockedMessage = () => {
+    setBlockedMessage(null);
+  };
 
   const fetchUser = async () => {
     const result = await authService.fetchUser();
@@ -31,12 +48,9 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const result = await authService.login(email, password);
-    if (result.success) {
-      setToken(result.data.token);
-      setUser(result.data.user);
-      return result.data;
-    }
-    throw new Error(result.error);
+    setToken(result.token);
+    setUser(result.user);
+    return result;
   };
 
   const signup = async (
@@ -88,6 +102,8 @@ export const AuthProvider = ({ children }) => {
     authModalMode,
     openAuthModal,
     closeAuthModal,
+    blockedMessage,
+    clearBlockedMessage,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -66,6 +66,16 @@ export const useLoginForm = (onClose, resetFormCallback) => {
       const errorData = err.response?.data;
       if (errorData?.errors) {
         setErrors(errorData.errors);
+        // Show toast with the first error message from backend
+        const firstErrorKey = Object.keys(errorData.errors)[0];
+        const firstErrorMessage = errorData.errors[firstErrorKey]?.[0];
+        if (firstErrorMessage) {
+          showToast(firstErrorMessage, {
+            type: 'error',
+            dismissible: true,
+            duration: 4000,
+          });
+        }
       } else {
         const errorMessage =
           errorData?.message || 'Login failed. Please check your credentials.';

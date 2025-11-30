@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -60,6 +61,13 @@ class AuthController extends Controller
         if (!$user || !Hash::check($validated['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        // Check if user account is blocked/restricted
+        if ($user->status === 'restricted') {
+            throw ValidationException::withMessages([
+                'email' => ['Your account has been blocked. Please contact support for assistance.'],
             ]);
         }
 

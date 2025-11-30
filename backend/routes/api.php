@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\ContactController;
+use App\Http\Controllers\User\OrderController;
+use App\Http\Controllers\User\UserProfileController;
+use App\Http\Controllers\User\InquiryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,7 +33,7 @@ Route::get('/products/{id}/variant-groups', [ProductController::class, 'variantG
 Route::post('/contact', [ContactController::class, 'store']);
 
 // Protected Routes (Require Authentication)
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'check.status'])->group(function () {
   // Auth Routes
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::get('/user', [AuthController::class, 'user']);
@@ -59,9 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/user/soft-delete', [UserProfileController::class, 'softDelete']);
 
   // Inquiry Routes
-  Route::get('/inquiries', [\App\Http\Controllers\InquiryController::class, 'index']);
-  Route::get('/inquiries/{id}', [\App\Http\Controllers\InquiryController::class, 'show']);
-  Route::post('/inquiries/{id}/messages', [\App\Http\Controllers\InquiryController::class, 'sendMessage']);
+  Route::get('/inquiries', [InquiryController::class, 'index']);
+  Route::get('/inquiries/{id}', [InquiryController::class, 'show']);
+  Route::post('/inquiries/{id}/messages', [InquiryController::class, 'sendMessage']);
 });
 
 // Admin Routes
