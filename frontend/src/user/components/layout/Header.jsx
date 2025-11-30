@@ -225,88 +225,161 @@ export default function Header() {
             </button>
           </div>
         </div>
+      </nav>
 
-        {/* Mobile Menu */}
+      {/* Mobile Menu - Full Screen Overlay */}
+      <div
+        className={`lg:hidden fixed inset-0 z-40 transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen ? 'visible' : 'invisible'
+        }`}
+      >
+        {/* Menu Panel - Full Width */}
         <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+          className={`absolute inset-0 bg-white transform transition-all duration-300 ease-in-out ${
+            isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div className="px-4 sm:px-6 pb-6 sm:pb-8 bg-white border-t border-gray-100">
-            {/* Mobile Navigation Links */}
-            <div className="flex flex-col space-y-3 sm:space-y-4 pt-4 sm:pt-6">
+          {/* Menu Header */}
+          <div className="flex items-center justify-between h-16 sm:h-20 px-4 sm:px-6 border-b border-gray-100">
+            <Link
+              to="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center gap-2 sm:gap-3"
+            >
+              <img
+                src={logo}
+                alt="Coffee St. Logo"
+                className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
+              />
+              <span className="font-outfit text-xl sm:text-2xl font-bold text-[#30442B]">
+                Coffee St.
+              </span>
+            </Link>
+            <div className="flex items-center gap-2">
+              {/* Cart in mobile menu header */}
+              <Link
+                to="/cart"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="relative p-2 text-gray-700 hover:text-[#30442B] transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+                {cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 bg-[#30442B] text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+              {/* Close button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 text-gray-700 hover:text-[#30442B] hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Close menu"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Menu Content */}
+          <div className="px-4 sm:px-6 py-6 overflow-y-auto h-[calc(100%-4rem)] sm:h-[calc(100%-5rem)] flex flex-col items-center">
+            {/* Navigation Links */}
+            <div className="flex flex-col space-y-2 items-center w-full max-w-sm">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`relative text-lg sm:text-xl md:text-2xl font-outfit transition-all duration-300 ease-in-out py-2 sm:py-3 px-3 sm:px-4 rounded-lg group ${
+                  className={`relative text-lg sm:text-xl font-outfit transition-all duration-300 ease-in-out py-3 px-4 rounded-lg text-center w-full ${
                     isActive(link.path)
                       ? 'text-[#30442B] font-semibold bg-[#30442B]/5'
                       : 'text-black hover:text-[#30442B] hover:bg-[#30442B]/5'
                   }`}
                 >
-                  <span className="relative z-10 transition-all duration-300">
-                    {link.label}
-                  </span>
+                  {link.label}
                 </Link>
               ))}
+            </div>
 
-              <div className="pt-4 sm:pt-6 border-t border-gray-100">
-                {isAuthenticated ? (
-                  <div className="space-y-3 sm:space-y-4">
-                    <div className="text-center font-outfit text-sm sm:text-base text-gray-700 py-2">
-                      Welcome,{' '}
-                      <strong className="text-[#30442B]">
-                        {getUserDisplayName()}
-                      </strong>
-                    </div>
-                    <Link
-                      to="/profile"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-center w-full px-5 sm:px-7 py-2.5 sm:py-3 font-outfit text-base sm:text-lg font-medium border-2 border-[#30442B] text-[#30442B] rounded-full transition-all duration-300 hover:bg-[#30442B]/5"
-                    >
-                      My Profile
-                    </Link>
-                    <Link
-                      to="/orders"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-center w-full px-5 sm:px-7 py-2.5 sm:py-3 font-outfit text-base sm:text-lg font-medium border-2 border-[#30442B] text-[#30442B] rounded-full transition-all duration-300 hover:bg-[#30442B]/5"
-                    >
-                      My Orders
-                    </Link>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="inline-flex items-center justify-center w-full px-5 sm:px-7 py-2.5 sm:py-3 cursor-pointer font-outfit text-base sm:text-lg font-medium border-2 border-red-600 text-red-600 rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group"
-                    >
-                      <span className="relative z-10 transform transition-transform duration-300 group-hover:translate-x-1">
-                        Logout
-                      </span>
-                      <div className="absolute inset-0 bg-red-600 transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
-                    </button>
+            <div className="mt-6 pt-6 border-t border-gray-100 w-full max-w-sm">
+              {isAuthenticated ? (
+                <div className="space-y-4 text-center">
+                  <div className="text-center font-outfit text-base text-gray-700 py-2">
+                    Welcome,{' '}
+                    <strong className="text-[#30442B]">
+                      {getUserDisplayName()}
+                    </strong>
                   </div>
-                ) : (
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-center w-full px-6 py-3 font-outfit text-base font-medium border-2 border-[#30442B] text-[#30442B] rounded-full transition-all duration-300 hover:bg-[#30442B]/5"
+                  >
+                    My Profile
+                  </Link>
+                  <Link
+                    to="/orders"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-center w-full px-6 py-3 font-outfit text-base font-medium border-2 border-[#30442B] text-[#30442B] rounded-full transition-all duration-300 hover:bg-[#30442B]/5"
+                  >
+                    My Orders
+                  </Link>
                   <button
                     onClick={() => {
-                      openAuthModal('login');
+                      handleLogout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="inline-flex items-center justify-center w-full px-5 sm:px-7 py-2.5 sm:py-3 cursor-pointer font-outfit text-base sm:text-lg font-medium border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group"
+                    className="inline-flex items-center justify-center w-full px-6 py-3 cursor-pointer font-outfit text-base font-medium border-2 border-red-600 text-red-600 rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group"
                   >
                     <span className="relative z-10 transform transition-transform duration-300 group-hover:translate-x-1">
-                      Login
+                      Logout
                     </span>
-                    <div className="absolute inset-0 bg-[#30442B] transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
+                    <div className="absolute inset-0 bg-red-600 transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
                   </button>
-                )}
-              </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    openAuthModal('login');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="inline-flex items-center justify-center w-full px-6 py-3 cursor-pointer font-outfit text-base font-medium border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group"
+                >
+                  <span className="relative z-10 transform transition-transform duration-300 group-hover:translate-x-1">
+                    Login
+                  </span>
+                  <div className="absolute inset-0 bg-[#30442B] transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
+                </button>
+              )}
             </div>
           </div>
         </div>
-      </nav>
+      </div>
 
       {/* Scroll Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-0.5 z-60">
