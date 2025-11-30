@@ -32,7 +32,7 @@ export default function CategorySidebar({
   );
 
   return (
-    <>
+    <div className="lg:sticky lg:top-28 lg:self-start lg:w-80 xl:w-96 2xl:w-[420px] lg:shrink-0">
       {/* Mobile Toggle Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -72,24 +72,10 @@ export default function CategorySidebar({
 
       {/* Sidebar */}
       <nav
-        className={`
-          fixed lg:sticky lg:top-28 xl:top-32
-          w-full lg:w-80 xl:w-96 2xl:w-[420px]
-          h-screen lg:h-auto
-          bg-white
-          rounded-none lg:rounded-xl xl:rounded-2xl
-          shadow-xl
-          p-4 sm:p-5 lg:p-6 xl:p-7
-          z-40 lg:z-0
-          transform lg:transform-none
-          transition-transform duration-300
-          overflow-y-auto
-          border border-gray-100
-          lg:max-h-[calc(100vh-140px)] xl:max-h-[calc(100vh-160px)]
-          lg:overflow-y-auto
+        className={`fixed lg:static left-0 lg:left-auto top-0 lg:top-auto w-full lg:w-full h-screen lg:h-auto bg-white rounded-none lg:rounded-xl xl:rounded-2xl shadow-xl p-4 sm:p-5 lg:p-6 xl:p-7 z-40 lg:z-10 transform lg:transform-none transition-transform duration-300 border border-gray-100 lg:max-h-[calc(100vh-140px)] lg:overflow-y-auto
           ${
             isMobileOpen
-              ? 'translate-x-0'
+              ? 'translate-x-0 overflow-y-auto'
               : '-translate-x-full lg:translate-x-0'
           }
         `}
@@ -165,6 +151,6 @@ export default function CategorySidebar({
           </div>
         </div>
       </nav>
-    </>
+    </div>
   );
 }
