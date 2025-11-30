@@ -3,6 +3,10 @@
 @import 'tailwindcss';
 
 @layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+
   html,
   body {
     -webkit-font-smoothing: antialiased;
