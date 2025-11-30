@@ -64,17 +64,6 @@ export default function Users() {
             </button>
           </div>
 
-          <div className="mb-6 sm:mb-8 overflow-x-auto">
-            <div className="bg-white border border-gray-200 rounded-full p-1 sm:p-1.5 inline-flex">
-              <button className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 bg-[#30442B] text-white rounded-full font-semibold text-xs sm:text-sm whitespace-nowrap">
-                CUSTOMER ACCOUNTS ({metrics.total_customers})
-              </button>
-              <button className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 text-gray-600 font-semibold text-xs sm:text-sm hover:text-gray-900 transition-colors whitespace-nowrap">
-                STAFF ACCOUNTS
-              </button>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200">
               <p className="text-xs sm:text-sm text-gray-500 mb-1 sm:mb-2">
