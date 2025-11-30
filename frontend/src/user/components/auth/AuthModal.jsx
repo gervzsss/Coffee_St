@@ -81,7 +81,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
           {/* Login Modal */}
           {mode === 'login' && (
             <motion.div
-              className="modal-panel relative w-full max-w-md overflow-hidden rounded-3xl bg-white text-neutral-900 shadow-[0_30px_80px_-35px_rgba(15,68,43,0.45)] ring-1 ring-neutral-200/70"
+              className="modal-panel relative w-[95vw] sm:w-full max-w-md sm:max-w-md lg:max-w-lg overflow-hidden rounded-2xl sm:rounded-3xl bg-white text-neutral-900 shadow-[0_30px_80px_-35px_rgba(15,68,43,0.45)] ring-1 ring-neutral-200/70"
               variants={modalVariants}
               initial="hidden"
               animate="visible"
@@ -113,7 +113,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
                 </svg>
               </button>
 
-              <div className="relative max-h-[85vh] overflow-y-auto px-6 py-10 sm:px-10">
+              <div className="relative max-h-[85vh] overflow-y-auto px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
                 <LoginForm
                   onClose={onClose}
                   onSwitchToSignup={switchToSignup}
@@ -125,7 +125,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
           {/* Signup Modal */}
           {mode === 'signup' && (
             <motion.div
-              className="modal-panel relative w-full max-w-2xl overflow-hidden rounded-3xl bg-white text-neutral-900 shadow-[0_30px_80px_-35px_rgba(15,68,43,0.45)] ring-1 ring-neutral-200/70"
+              className="modal-panel relative w-[95vw] sm:w-full max-w-2xl lg:max-w-3xl overflow-hidden rounded-2xl sm:rounded-3xl bg-white text-neutral-900 shadow-[0_30px_80px_-35px_rgba(15,68,43,0.45)] ring-1 ring-neutral-200/70"
               variants={modalVariants}
               initial="hidden"
               animate="visible"
@@ -157,7 +157,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
                 </svg>
               </button>
 
-              <div className="relative max-h-[85vh] overflow-y-auto px-6 py-10 sm:px-10">
+              <div className="relative max-h-[85vh] overflow-y-auto px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
                 <SignupForm onClose={onClose} onSwitchToLogin={switchToLogin} />
               </div>
             </motion.div>

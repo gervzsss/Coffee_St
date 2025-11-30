@@ -2,14 +2,20 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../hooks/useAdminAuth';
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ isMobileOpen = false, onMobileClose }) {
   const { admin, logout } = useAdminAuth();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleLogout = async () => {
     await logout();
     navigate('/admin/login');
+  };
+
+  const handleNavClick = () => {
+    if (onMobileClose) {
+      onMobileClose();
+    }
   };
 
   const navItems = [
@@ -91,47 +97,76 @@ export default function AdminSidebar() {
     },
   ];
 
+  // Determine sidebar width based on collapsed state (desktop only)
+  const sidebarWidth = isCollapsed ? 'lg:w-20' : 'lg:w-64';
+
   return (
     <aside
-      className={`fixed top-0 left-0 h-screen z-30 flex flex-col bg-[#30442B] text-white shadow-lg transition-all duration-300 ease-in-out ${
-        isOpen ? 'w-64' : 'w-20'
-      }`}
+      className={`
+        fixed top-0 left-0 h-screen z-50 lg:z-30 
+        flex flex-col bg-[#30442B] text-white shadow-lg 
+        transition-all duration-300 ease-in-out
+        w-72 sm:w-80 ${sidebarWidth}
+        transform ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} 
+        lg:translate-x-0
+      `}
     >
-      {/* Toggle Button */}
+      {/* Mobile Close Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="absolute -right-4 top-6 w-8 h-8 flex items-center justify-center bg-[#30442B] border-2 border-white/10 rounded-full shadow transition-all duration-300 focus:outline-none hover:bg-[#3a543a]"
+        onClick={onMobileClose}
+        className="lg:hidden absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+        aria-label="Close sidebar"
       >
         <svg
-          className="h-6 w-6"
+          className="h-5 w-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          {isOpen ? (
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+
+      {/* Desktop Toggle Button */}
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="hidden lg:flex absolute -right-4 top-6 w-8 h-8 items-center justify-center bg-[#30442B] border-2 border-white/10 rounded-full shadow transition-all duration-300 focus:outline-none hover:bg-[#3a543a]"
+      >
+        <svg
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          {isCollapsed ? (
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
+              d="M9 5l7 7-7 7"
             />
           ) : (
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
+              d="M15 19l-7-7 7-7"
             />
           )}
         </svg>
       </button>
 
       {/* Admin User Info */}
-      <div className="flex items-center gap-3 px-6 py-8 border-b border-white/10">
+      <div className="flex items-center gap-3 px-4 sm:px-6 py-6 sm:py-8 border-b border-white/10">
         <div className="shrink-0 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl font-bold">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-7 w-7 text-white"
+            className="h-6 w-6 sm:h-7 sm:w-7 text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -144,8 +179,8 @@ export default function AdminSidebar() {
             />
           </svg>
         </div>
-        {isOpen && admin && (
-          <div className="flex flex-col">
+        {(!isCollapsed || isMobileOpen) && admin && (
+          <div className="flex flex-col min-w-0">
             <span className="font-semibold text-sm tracking-wide">ADMIN</span>
             <span className="text-xs text-white/70 truncate">
               {admin.email}
@@ -155,23 +190,28 @@ export default function AdminSidebar() {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 flex flex-col gap-1 mt-6 px-2">
+      <nav className="flex-1 flex flex-col gap-1 mt-4 sm:mt-6 px-2 overflow-y-auto">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.path}>
               <NavLink
                 to={item.path}
+                onClick={handleNavClick}
                 className={({ isActive }) =>
-                  `flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group ${
+                  `flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group ${
                     isActive
                       ? 'bg-white/10 text-white font-semibold'
                       : 'text-white/80'
-                  } ${!isOpen ? 'justify-center px-0' : ''}`
+                  } ${
+                    isCollapsed && !isMobileOpen
+                      ? 'lg:justify-center lg:px-0'
+                      : ''
+                  }`
                 }
               >
                 {item.icon}
-                {isOpen && (
-                  <span className="font-medium tracking-wide">
+                {(!isCollapsed || isMobileOpen) && (
+                  <span className="font-medium tracking-wide text-sm sm:text-base">
                     {item.label}
                   </span>
                 )}
@@ -182,9 +222,12 @@ export default function AdminSidebar() {
 
         {/* Logout Button */}
         <button
-          onClick={handleLogout}
-          className={`flex items-center gap-4 px-5 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group text-white/80 mt-auto mb-4 ${
-            !isOpen ? 'justify-center px-0' : ''
+          onClick={() => {
+            handleLogout();
+            if (onMobileClose) onMobileClose();
+          }}
+          className={`flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg transition-all duration-200 hover:bg-white/10 group text-white/80 mt-auto mb-4 ${
+            isCollapsed && !isMobileOpen ? 'lg:justify-center lg:px-0' : ''
           }`}
         >
           <svg
@@ -196,7 +239,11 @@ export default function AdminSidebar() {
           >
             <path d="M17 16l4-4m0 0l-4-4m4 4H7" />
           </svg>
-          {isOpen && <span className="font-medium tracking-wide">Logout</span>}
+          {(!isCollapsed || isMobileOpen) && (
+            <span className="font-medium tracking-wide text-sm sm:text-base">
+              Logout
+            </span>
+          )}
         </button>
       </nav>
     </aside>

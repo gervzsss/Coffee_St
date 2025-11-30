@@ -40,25 +40,25 @@ export default function OurValues() {
   ];
 
   return (
-    <section className="my-8 py-16">
-      <div className="mx-auto max-w-7xl px-6 sm:px-10">
-        <div className="mb-12 text-center">
-          <h1 className="font-outfit text-2xl font-semibold text-[#30442B] sm:text-5xl lg:text-4xl">
+    <section className="my-6 sm:my-8 py-12 sm:py-16">
+      <div className="mx-auto max-w-7xl xl:max-w-[1400px] px-4 sm:px-6 lg:px-10">
+        <div className="mb-8 sm:mb-10 lg:mb-12 text-center">
+          <h1 className="font-outfit text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-semibold text-[#30442B]">
             Our Core Values
           </h1>
-          <h2 className="font-outfit mx-auto mt-4 max-w-2xl text-xl text-neutral-600 sm:text-2xl">
+          <h2 className="font-outfit mx-auto mt-3 sm:mt-4 max-w-2xl text-base sm:text-lg lg:text-xl xl:text-2xl text-neutral-600">
             Discover the principles that guide our coffee journey
           </h2>
         </div>
 
-        <div className="flex flex-col items-stretch justify-center gap-6 lg:flex-row lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 xl:gap-8">
           {values.map((value) => (
             <div
               key={value.id}
-              className="flex min-h-[500px] flex-1 flex-col rounded-2xl bg-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              className="flex min-h-[380px] sm:min-h-[420px] lg:min-h-[480px] xl:min-h-[500px] flex-col rounded-xl sm:rounded-2xl bg-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="flex flex-1 items-center justify-center p-6">
-                <div className="aspect-square overflow-hidden rounded-xl">
+              <div className="flex flex-1 items-center justify-center p-4 sm:p-5 lg:p-6">
+                <div className="aspect-square overflow-hidden rounded-lg sm:rounded-xl">
                   <img
                     src={value.image}
                     alt={value.alt}
@@ -66,11 +66,11 @@ export default function OurValues() {
                   />
                 </div>
               </div>
-              <div className="flex flex-1 flex-col justify-start rounded-b-2xl bg-[#30442B] p-6">
-                <h3 className="font-outfit mb-2 text-xl font-semibold text-white">
+              <div className="flex flex-1 flex-col justify-start rounded-b-xl sm:rounded-b-2xl bg-[#30442B] p-4 sm:p-5 lg:p-6">
+                <h3 className="font-outfit mb-1.5 sm:mb-2 text-lg sm:text-xl font-semibold text-white">
                   {value.title}
                 </h3>
-                <p className="font-small leading-relaxed text-white/90">
+                <p className="text-sm sm:text-base leading-relaxed text-white/90">
                   {value.description}
                 </p>
               </div>

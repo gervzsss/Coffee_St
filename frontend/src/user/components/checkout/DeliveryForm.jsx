@@ -9,17 +9,17 @@ export default function DeliveryForm({ formData, onChange, errors }) {
   };
 
   return (
-    <div className="rounded-3xl bg-white p-8 shadow-lg ring-1 ring-gray-900/5">
-      <h2 className="font-outfit text-xl font-semibold text-gray-900 mb-6">
+    <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 lg:p-8 shadow-lg ring-1 ring-gray-900/5">
+      <h2 className="font-outfit text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">
         Delivery Information
       </h2>
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-5 lg:space-y-6">
         {/* Delivery Address */}
         <div>
           <label
             htmlFor="delivery_address"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
           >
             Delivery Address <span className="text-red-500">*</span>
           </label>
@@ -29,7 +29,7 @@ export default function DeliveryForm({ formData, onChange, errors }) {
             rows={3}
             value={formData.delivery_address}
             onChange={handleChange}
-            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors resize-none ${
+            className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors resize-none ${
               errors.delivery_address ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="Enter your complete delivery address (House/Unit No., Street, Barangay, City)"
@@ -45,7 +45,7 @@ export default function DeliveryForm({ formData, onChange, errors }) {
         <div>
           <label
             htmlFor="delivery_contact"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
           >
             Contact Number <span className="text-red-500">*</span>
           </label>
@@ -55,7 +55,7 @@ export default function DeliveryForm({ formData, onChange, errors }) {
             name="delivery_contact"
             value={formData.delivery_contact}
             onChange={handleChange}
-            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors ${
+            className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors ${
               errors.delivery_contact ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="+63 900 000 0000"
@@ -107,12 +107,12 @@ export default function DeliveryForm({ formData, onChange, errors }) {
 
         {/* Payment Method */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3">
             Payment Method <span className="text-red-500">*</span>
           </label>
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {/* Cash on Delivery */}
-            <label className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#30442B]/30 transition-colors">
+            <label className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#30442B]/30 transition-colors">
               <input
                 type="radio"
                 name="payment_method"

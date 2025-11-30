@@ -109,30 +109,30 @@ export default function ChangePasswordForm({ onBack }) {
   };
 
   return (
-    <div className="rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 overflow-hidden">
+    <div className="rounded-2xl sm:rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 overflow-hidden">
       {/* Header */}
-      <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 border-b border-gray-100 flex items-center justify-between">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={onBack}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
             disabled={loading}
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
           </button>
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
             Change Password
           </h2>
         </div>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="p-8">
-        <p className="text-gray-600 mb-6">
+      <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-8">
+        <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-5 lg:mb-6">
           Update your password to keep your account secure
         </p>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-5 lg:space-y-6">
           {/* Current Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -267,19 +267,19 @@ export default function ChangePasswordForm({ onBack }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-8 flex gap-4">
+        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
           <button
             type="button"
             onClick={onBack}
             disabled={loading}
-            className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 border-2 border-gray-300 text-sm sm:text-base text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 py-3 bg-[#30442B] text-white rounded-lg font-medium hover:bg-[#405939] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#30442B] text-sm sm:text-base text-white rounded-lg font-medium hover:bg-[#405939] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Changing...' : 'Save Changes'}
           </button>

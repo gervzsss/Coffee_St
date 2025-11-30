@@ -206,16 +206,16 @@ export default function ProductFormModal({
   const isSubmitting = isLoading || uploadingImage;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
+      <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-lg lg:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="p-4 sm:p-5 lg:p-6">
           {/* Header */}
-          <div className="flex justify-between items-start mb-6">
+          <div className="flex justify-between items-start mb-4 sm:mb-5 lg:mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                 {isEdit ? 'Edit Product' : 'Add New Product'}
               </h2>
-              <p className="text-gray-500 mt-1">
+              <p className="text-sm sm:text-base text-gray-500 mt-1">
                 {isEdit
                   ? 'Update product information'
                   : 'Fill in the product details'}
@@ -223,10 +223,10 @@ export default function ProductFormModal({
             </div>
             <button
               onClick={onCancel}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 p-1"
             >
               <svg
-                className="w-6 h-6"
+                className="w-5 h-5 sm:w-6 sm:h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -241,17 +241,17 @@ export default function ProductFormModal({
             </button>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-4 sm:space-y-5">
             {/* Product Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Product Name *
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleChange('name', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#30442B] focus:border-[#30442B] ${
+                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg sm:rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-[#30442B] focus:border-[#30442B] ${
                   errors.name ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Enter product name"
@@ -262,16 +262,16 @@ export default function ProductFormModal({
             </div>
 
             {/* Price & Category */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Price (₱) *
                 </label>
                 <input
                   type="number"
                   value={formData.price}
                   onChange={(e) => handleChange('price', e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#30442B] focus:border-[#30442B] ${
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg sm:rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-[#30442B] focus:border-[#30442B] ${
                     errors.price ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="0.00"
@@ -283,13 +283,13 @@ export default function ProductFormModal({
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Category *
                 </label>
                 <select
                   value={formData.category}
                   onChange={(e) => handleChange('category', e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#30442B] focus:border-[#30442B] ${
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg sm:rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-[#30442B] focus:border-[#30442B] ${
                     errors.category ? 'border-red-500' : 'border-gray-300'
                   }`}
                 >
@@ -308,13 +308,13 @@ export default function ProductFormModal({
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Description *
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => handleChange('description', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#30442B] focus:border-[#30442B] ${
+                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg sm:rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-[#30442B] focus:border-[#30442B] ${
                   errors.description ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Enter product description"
@@ -329,7 +329,7 @@ export default function ProductFormModal({
 
             {/* Image Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Product Image
               </label>
               <div className="mt-2">
@@ -338,7 +338,7 @@ export default function ProductFormModal({
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="w-32 h-32 object-cover rounded-xl border border-gray-200"
+                      className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg sm:rounded-xl border border-gray-200"
                     />
                     <button
                       type="button"
@@ -363,10 +363,10 @@ export default function ProductFormModal({
                 ) : (
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-[#30442B] hover:bg-gray-50 transition-colors"
+                    className="w-full border-2 border-dashed border-gray-300 rounded-lg sm:rounded-xl p-5 sm:p-8 text-center cursor-pointer hover:border-[#30442B] hover:bg-gray-50 transition-colors"
                   >
                     <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
+                      className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-gray-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -616,18 +616,18 @@ export default function ProductFormModal({
           </div>
 
           {/* Footer */}
-          <div className="flex gap-3 justify-end mt-6 pt-4 border-t">
+          <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 justify-end mt-5 sm:mt-6 pt-4 border-t">
             <button
               onClick={onCancel}
               disabled={isSubmitting}
-              className="px-6 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="px-4 sm:px-6 py-2.5 border border-gray-300 rounded-lg font-medium text-sm sm:text-base text-gray-700 hover:bg-gray-50 disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="px-6 py-2.5 bg-[#30442B] text-white rounded-lg font-medium hover:bg-[#22301e] disabled:opacity-50 flex items-center gap-2"
+              className="px-4 sm:px-6 py-2.5 bg-[#30442B] text-white rounded-lg font-medium text-sm sm:text-base hover:bg-[#22301e] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isSubmitting && <ButtonSpinner />}
               {uploadingImage

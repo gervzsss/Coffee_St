@@ -18,15 +18,15 @@ export default function LoginForm({ onClose, onSwitchToSignup }) {
   } = useLoginForm(onClose);
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="space-y-3 text-center">
-        <span className="mx-auto inline-flex items-center rounded-full bg-[#30442B]/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-[#30442B]">
+    <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
+      <div className="space-y-2 sm:space-y-3 text-center">
+        <span className="mx-auto inline-flex items-center rounded-full bg-[#30442B]/10 px-3 py-1 sm:px-4 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.35em] text-[#30442B]">
           Welcome back
         </span>
-        <h2 className="font-outfit text-2xl font-semibold text-neutral-900 sm:text-3xl">
+        <h2 className="font-outfit text-xl sm:text-2xl lg:text-3xl font-semibold text-neutral-900">
           Log in to Coffee St.
         </h2>
-        <p className="text-sm text-neutral-500 sm:text-base">
+        <p className="text-xs sm:text-sm lg:text-base text-neutral-500">
           Access your saved drinks, track orders, and enjoy a personalized
           experience.
         </p>
@@ -151,11 +151,11 @@ export default function LoginForm({ onClose, onSwitchToSignup }) {
           )}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <button
             type="submit"
             disabled={loading}
-            className="group inline-flex w-full items-center justify-center rounded-2xl bg-[#30442B] px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30 disabled:opacity-50 disabled:cursor-default enabled:cursor-pointer"
+            className="group inline-flex w-full items-center justify-center rounded-xl sm:rounded-2xl bg-[#30442B] px-4 py-2.5 sm:px-5 sm:py-3 lg:py-3.5 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30 disabled:opacity-50 disabled:cursor-default enabled:cursor-pointer"
           >
             {loading ? (
               <svg

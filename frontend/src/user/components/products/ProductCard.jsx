@@ -28,17 +28,17 @@ export default function ProductCard({ product }) {
   return (
     <>
       <div
-        className={`group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${
+        className={`group flex h-full flex-col overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${
           isUnavailable ? 'opacity-75' : ''
         }`}
       >
         {/* Product Image with dark background */}
-        <div className="relative h-72 overflow-hidden bg-[#30442B]">
-          <div className="absolute inset-0 flex items-center justify-center p-8">
+        <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 overflow-hidden bg-[#30442B]">
+          <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <img
               src={imageUrl}
               alt={product.name}
-              className={`max-h-48 w-auto transform drop-shadow-xl transition-transform duration-500 ${
+              className={`max-h-32 sm:max-h-40 lg:max-h-48 w-auto transform drop-shadow-xl transition-transform duration-500 ${
                 isUnavailable ? 'grayscale' : 'group-hover:scale-110'
               }`}
               loading="lazy"
@@ -57,7 +57,7 @@ export default function ProductCard({ product }) {
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
               <div className="text-white text-center px-4">
                 <svg
-                  className="w-12 h-12 mx-auto mb-2 opacity-80"
+                  className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 mx-auto mb-2 opacity-80"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -69,7 +69,9 @@ export default function ProductCard({ product }) {
                     d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
                   />
                 </svg>
-                <p className="font-semibold text-sm">Currently Unavailable</p>
+                <p className="font-semibold text-xs sm:text-sm">
+                  Currently Unavailable
+                </p>
               </div>
             </div>
           )}
@@ -79,7 +81,7 @@ export default function ProductCard({ product }) {
             <div className="absolute inset-0 bg-green-500 bg-opacity-90 flex items-center justify-center">
               <div className="text-white text-center">
                 <svg
-                  className="w-16 h-16 mx-auto mb-2"
+                  className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto mb-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -91,27 +93,29 @@ export default function ProductCard({ product }) {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <p className="font-semibold">Added to Cart!</p>
+                <p className="font-semibold text-sm sm:text-base">
+                  Added to Cart!
+                </p>
               </div>
             </div>
           )}
         </div>
 
         {/* Product Details */}
-        <div className="flex flex-1 flex-col bg-white p-6">
-          <div className="mb-2">
-            <h3 className="font-playfair text-xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-[#30442B]">
+        <div className="flex flex-1 flex-col bg-white p-4 sm:p-5 lg:p-6">
+          <div className="mb-1.5 sm:mb-2">
+            <h3 className="font-playfair text-base sm:text-lg lg:text-xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-[#30442B] line-clamp-1">
               {product.name}
             </h3>
           </div>
 
-          <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-gray-600">
+          <p className="mb-3 sm:mb-4 line-clamp-2 text-xs sm:text-sm leading-relaxed text-gray-600">
             {product.description}
           </p>
 
           {/* Unavailable Reason (if applicable) */}
           {isUnavailable && product.unavailable_reason && (
-            <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+            <div className="mb-2 sm:mb-3 p-1.5 sm:p-2 bg-amber-50 border border-amber-200 rounded-lg">
               <p className="text-xs text-amber-700">
                 <span className="font-semibold">Note:</span>{' '}
                 {product.unavailable_reason}
@@ -120,14 +124,14 @@ export default function ProductCard({ product }) {
           )}
 
           {/* Price and Add to Cart */}
-          <div className="mt-auto flex items-center justify-between pt-2">
+          <div className="mt-auto flex items-center justify-between gap-2 pt-2">
             <span
-              className={`text-xl font-bold ${
+              className={`text-base sm:text-lg lg:text-xl font-bold ${
                 isUnavailable ? 'text-gray-400' : 'text-[#30442B]'
               }`}
             >
               {hasVariants ? (
-                <span className="text-base">
+                <span className="text-sm sm:text-base">
                   From ₱{parseFloat(product.price).toFixed(2)}
                 </span>
               ) : (
@@ -138,7 +142,7 @@ export default function ProductCard({ product }) {
             <button
               onClick={handleAddToCartClick}
               disabled={isAdding || addedToCart || isUnavailable}
-              className={`flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white transition-all duration-150 active:scale-95 ${
+              className={`flex cursor-pointer items-center gap-1.5 sm:gap-2 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white transition-all duration-150 active:scale-95 ${
                 isUnavailable
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : addedToCart
@@ -149,7 +153,7 @@ export default function ProductCard({ product }) {
               }`}
             >
               <svg
-                className="h-5 w-5"
+                className="h-4 w-4 sm:h-5 sm:w-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -161,13 +165,18 @@ export default function ProductCard({ product }) {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
-              {isUnavailable
-                ? 'Unavailable'
-                : addedToCart
-                ? '✓ Added'
-                : isAdding
-                ? 'Adding...'
-                : 'Add to Cart'}
+              {isUnavailable ? (
+                'Unavailable'
+              ) : addedToCart ? (
+                '✓ Added'
+              ) : isAdding ? (
+                'Adding...'
+              ) : (
+                <>
+                  <span className="hidden sm:inline">Add to Cart</span>
+                  <span className="sm:hidden">Add</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -176,15 +185,15 @@ export default function ProductCard({ product }) {
       {/* Variant Selection Modal */}
       {showVariantModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
           onClick={closeVariantModal}
         >
           <div
-            className="bg-white rounded-2xl max-w-md w-full mx-4 shadow-2xl overflow-hidden"
+            className="bg-white rounded-xl sm:rounded-2xl max-w-md w-full mx-2 sm:mx-4 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Product Image Header */}
-            <div className="relative h-48 bg-gray-100">
+            <div className="relative h-36 sm:h-48 bg-gray-100 shrink-0">
               {product.image_url ? (
                 <img
                   src={product.image_url}
@@ -229,20 +238,22 @@ export default function ProductCard({ product }) {
             </div>
 
             {/* Modal Content */}
-            <div className="p-6">
-              <div className="mb-4">
-                <h3 className="text-xl font-bold text-[#30442B]">
+            <div className="p-4 sm:p-6 overflow-y-auto">
+              <div className="mb-3 sm:mb-4">
+                <h3 className="text-lg sm:text-xl font-bold text-[#30442B]">
                   {product.name}
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">Select a variant</p>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                  Select a variant
+                </p>
               </div>
 
-              <div className="space-y-2 mb-6 max-h-48 overflow-y-auto">
+              <div className="space-y-2 mb-4 sm:mb-6 max-h-36 sm:max-h-48 overflow-y-auto">
                 {product.active_variants.map((variant) => (
                   <button
                     key={variant.id}
                     onClick={() => handleVariantSelect(variant)}
-                    className={`w-full text-left p-4 rounded-lg border-2 transition ${
+                    className={`w-full text-left p-3 sm:p-4 rounded-lg border-2 transition ${
                       selectedVariant?.id === variant.id
                         ? 'border-[#30442B] bg-[#30442B]/5'
                         : 'border-gray-200 hover:border-gray-300'
@@ -250,17 +261,17 @@ export default function ProductCard({ product }) {
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-semibold text-gray-800">
+                        <p className="font-semibold text-sm sm:text-base text-gray-800">
                           {variant.group_name}: {variant.name}
                         </p>
                         {variant.price_delta !== 0 && (
-                          <p className="text-sm text-gray-500 mt-1">
+                          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">
                             {variant.price_delta > 0 ? '+' : ''}₱
                             {variant.price_delta.toFixed(2)}
                           </p>
                         )}
                       </div>
-                      <span className="text-lg font-bold text-[#30442B]">
+                      <span className="text-base sm:text-lg font-bold text-[#30442B]">
                         ₱{calculatePrice(variant).toFixed(2)}
                       </span>
                     </div>
@@ -268,17 +279,17 @@ export default function ProductCard({ product }) {
                 ))}
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-2 sm:gap-3">
                 <button
                   onClick={closeVariantModal}
-                  className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition"
+                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 border-gray-200 text-gray-700 text-sm sm:text-base font-medium hover:bg-gray-50 transition"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirmVariant}
                   disabled={!selectedVariant || isAdding}
-                  className={`flex-1 px-4 py-3 rounded-lg font-medium text-white transition ${
+                  className={`flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-medium text-white transition ${
                     !selectedVariant || isAdding
                       ? 'bg-gray-300 cursor-not-allowed'
                       : 'bg-[#30442B] hover:bg-[#405939] cursor-pointer'

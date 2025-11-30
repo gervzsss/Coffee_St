@@ -73,19 +73,19 @@ export default function CategorySidebar({
       {/* Sidebar */}
       <nav
         className={`
-          fixed lg:sticky lg:top-28
-          w-full lg:w-80 xl:w-96
+          fixed lg:sticky lg:top-28 xl:top-32
+          w-full lg:w-80 xl:w-96 2xl:w-[420px]
           h-screen lg:h-auto
           bg-white
-          rounded-none lg:rounded-xl
+          rounded-none lg:rounded-xl xl:rounded-2xl
           shadow-xl
-          p-6
+          p-4 sm:p-5 lg:p-6 xl:p-7
           z-40 lg:z-0
           transform lg:transform-none
           transition-transform duration-300
           overflow-y-auto
           border border-gray-100
-          lg:max-h-[calc(100vh-140px)]
+          lg:max-h-[calc(100vh-140px)] xl:max-h-[calc(100vh-160px)]
           lg:overflow-y-auto
           ${
             isMobileOpen
@@ -129,7 +129,7 @@ export default function CategorySidebar({
             </div>
 
             {/* Drinks Header */}
-            <h3 className="text-[#30442B] font-bold text-3xl px-2 mb-4">
+            <h3 className="text-[#30442B] font-bold text-2xl sm:text-3xl lg:text-3xl xl:text-4xl px-2 mb-3 sm:mb-4">
               Drinks
             </h3>
 
@@ -149,8 +149,8 @@ export default function CategorySidebar({
           <div className="h-px bg-gray-200 mb-6"></div>
 
           {/* Pastries Section */}
-          <div className="space-y-4">
-            <h3 className="text-[#30442B] font-bold text-2xl px-2 mb-4">
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-[#30442B] font-bold text-xl sm:text-2xl lg:text-2xl xl:text-3xl px-2 mb-3 sm:mb-4">
               Pastries & Desserts
             </h3>
             <div className="space-y-3">

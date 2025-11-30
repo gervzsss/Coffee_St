@@ -11,28 +11,28 @@ export default function ContactHero() {
         />
       </div>
       <div className="absolute inset-0 bg-[#1a2319]/80 mix-blend-multiply"></div>
-      <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-10 px-6 py-24 text-white sm:px-10 lg:flex-row lg:items-end">
+      <div className="relative z-10 mx-auto flex max-w-5xl xl:max-w-6xl flex-col gap-8 sm:gap-10 px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24 text-white lg:flex-row lg:items-end">
         <div className="lg:flex-1">
-          <span className="inline-flex items-center rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-amber-200">
+          <span className="inline-flex items-center rounded-full bg-white/10 px-3 sm:px-4 py-1 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.35em] text-amber-200">
             Drop us a line
           </span>
-          <h1 className="mt-6 font-outfit text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 sm:mt-6 font-outfit text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-semibold leading-tight">
             Let's Brew a Conversation
           </h1>
-          <p className="mt-6 max-w-xl text-white/80 text-base sm:text-lg">
+          <p className="mt-4 sm:mt-6 max-w-xl text-white/80 text-sm sm:text-base lg:text-lg">
             Have a question, a custom order, or just want to say hello? We're
             always here to chat over a warm cup of coffee.
           </p>
         </div>
-        <div className="lg:w-[280px]">
-          <div className="rounded-3xl bg-white/10 p-6 shadow-lg shadow-black/25 ring-1 ring-white/20 backdrop-blur">
-            <p className="text-sm uppercase tracking-[0.3em] text-amber-200">
+        <div className="lg:w-[260px] xl:w-[280px]">
+          <div className="rounded-2xl sm:rounded-3xl bg-white/10 p-4 sm:p-5 lg:p-6 shadow-lg shadow-black/25 ring-1 ring-white/20 backdrop-blur">
+            <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-amber-200">
               visit us
             </p>
-            <p className="mt-3 font-outfit text-lg text-white">
+            <p className="mt-2 sm:mt-3 font-outfit text-base sm:text-lg text-white">
               123 Coffee Street, Manila
             </p>
-            <div className="mt-6 space-y-4 text-sm text-white/80">
+            <div className="mt-4 sm:mt-6 space-y-3 sm:space-y-4 text-xs sm:text-sm text-white/80">
               <p className="flex items-center gap-3">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#30442B]">
                   <svg

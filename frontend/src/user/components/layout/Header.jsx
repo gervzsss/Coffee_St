@@ -15,6 +15,18 @@ export default function Header() {
   const location = useLocation();
   const { user, isAuthenticated, logout, openAuthModal } = useAuth();
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
   useEffect(() => {
     const handleScroll = () => {
       const windowHeight =
@@ -80,32 +92,35 @@ export default function Header() {
   return (
     <>
       <nav className="bg-white shadow-sm fixed w-full z-50 border-b border-gray-100">
-        <div className="flex justify-between items-center h-24 px-6">
-          <div className="absolute left-6 md:left-12 lg:left-24 xl:left-32 flex items-center gap-6">
-            {/* Brand */}
-            <Link to="/" className="flex items-center gap-6">
+        <div className="max-w-[1800px] mx-auto flex justify-between items-center h-16 sm:h-20 lg:h-24 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+          {/* Brand - Left Side */}
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6 shrink-0">
+            <Link
+              to="/"
+              className="flex items-center gap-2 sm:gap-3 lg:gap-4 xl:gap-6"
+            >
               <img
                 src={logo}
                 alt="Coffee St. Logo"
-                className="h-16 w-16 object-contain"
+                className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 xl:h-16 xl:w-16 object-contain"
               />
-              <span className="font-outfit text-[48px] font-bold text-[#30442B] tracking-tight leading-none transition-all duration-300 hover:text-[#30442B] hover:tracking-normal">
+              <span className="hidden sm:inline font-outfit text-2xl sm:text-3xl lg:text-4xl xl:text-[48px] font-bold text-[#30442B] tracking-tight leading-none transition-all duration-300 hover:tracking-normal">
                 Coffee St.
               </span>
             </Link>
           </div>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center ml-[440px]">
-            <div className="flex items-center space-x-14">
+          {/* Navigation Links - Center */}
+          <div className="hidden lg:flex items-center justify-center flex-1 px-4 xl:px-8">
+            <div className="flex items-center space-x-4 lg:space-x-8 xl:space-x-12 2xl:space-x-14">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className="group relative px-4 py-2.5"
+                  className="group relative px-2 lg:px-3 xl:px-4 py-2 lg:py-2.5"
                 >
                   <span
-                    className={`relative z-10 text-[22px] font-outfit font-semibold tracking-wide transition-all duration-300 ease-out transform group-hover:-translate-y-0.5 group-hover:tracking-wider ${
+                    className={`relative z-10 text-base lg:text-lg xl:text-xl 2xl:text-[22px] font-outfit font-semibold tracking-wide transition-all duration-300 ease-out transform group-hover:-translate-y-0.5 group-hover:tracking-wider ${
                       isActive(link.path)
                         ? 'text-[#30442B]'
                         : 'text-gray-800 group-hover:text-[#30442B]'
@@ -129,13 +144,13 @@ export default function Header() {
           </div>
 
           {/* Right Side Elements */}
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 xl:gap-8 shrink-0">
             {/* Cart */}
             <Link to="/cart" className="relative flex items-center gap-2 group">
-              <div className="relative flex items-center gap-2.5 py-2 px-4 rounded-full transition-all duration-300 ease-out bg-transparent hover:bg-[#30442B]/5">
+              <div className="relative flex items-center gap-1.5 sm:gap-2 lg:gap-2.5 py-1.5 sm:py-2 px-2 sm:px-3 lg:px-4 rounded-full transition-all duration-300 ease-out bg-transparent hover:bg-[#30442B]/5">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 transition-all duration-300 ease-out text-gray-700 group-hover:text-[#30442B] transform group-hover:scale-110 group-hover:-rotate-6"
+                  className="h-5 w-5 sm:h-6 sm:w-6 transition-all duration-300 ease-out text-gray-700 group-hover:text-[#30442B] transform group-hover:scale-110 group-hover:-rotate-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -147,11 +162,11 @@ export default function Header() {
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                <span className="hidden md:inline font-outfit text-[18px] tracking-wide text-gray-700 group-hover:text-[#30442B] transition-all duration-300 ease-out transform group-hover:translate-x-0.5">
+                <span className="hidden lg:inline font-outfit text-sm lg:text-base xl:text-lg 2xl:text-[18px] tracking-wide text-gray-700 group-hover:text-[#30442B] transition-all duration-300 ease-out transform group-hover:translate-x-0.5">
                   Cart
                 </span>
                 {cartCount > 0 && (
-                  <span className="cart-count absolute -top-2 -right-1 bg-[#30442B] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transition-all duration-300 ease-out group-hover:ring-4 group-hover:ring-[#30442B]/20 group-hover:scale-110 group-hover:-translate-y-0.5">
+                  <span className="cart-count absolute -top-1 sm:-top-2 -right-0.5 sm:-right-1 bg-[#30442B] text-white text-[10px] sm:text-xs font-bold rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center transition-all duration-300 ease-out group-hover:ring-2 sm:group-hover:ring-4 group-hover:ring-[#30442B]/20 group-hover:scale-110 group-hover:-translate-y-0.5">
                     {cartCount}
                   </span>
                 )}
@@ -160,7 +175,7 @@ export default function Header() {
 
             {/* Login / User Profile */}
             {isAuthenticated ? (
-              <div className="hidden md:flex items-center">
+              <div className="hidden lg:flex items-center">
                 <ProfileDropdown
                   userName={getFormattedUserName()}
                   onLogout={handleLogout}
@@ -169,7 +184,7 @@ export default function Header() {
             ) : (
               <button
                 onClick={() => openAuthModal('login')}
-                className="hidden md:inline-flex items-center px-8 py-2.5 cursor-pointer font-outfit text-[18px] font-medium tracking-wide border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-out hover:text-white hover:border-[#30442B]/80 hover:shadow-xl group transform hover:-translate-y-0.5"
+                className="hidden lg:inline-flex items-center px-4 lg:px-6 xl:px-8 py-2 lg:py-2.5 cursor-pointer font-outfit text-sm lg:text-base xl:text-lg 2xl:text-[18px] font-medium tracking-wide border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-out hover:text-white hover:border-[#30442B]/80 hover:shadow-xl group transform hover:-translate-y-0.5"
               >
                 <span className="relative z-10 transform transition-transform duration-300 ease-out group-hover:translate-x-1">
                   Login
@@ -181,68 +196,91 @@ export default function Header() {
             {/* Mobile Menu Button */}
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden text-black hover:text-[#30442B] transition-colors duration-200"
+              className="lg:hidden p-1.5 sm:p-2 text-black hover:text-[#30442B] hover:bg-gray-100 rounded-lg transition-colors duration-200"
               aria-label="Toggle menu"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-7 w-7"
+                className="h-6 w-6 sm:h-7 sm:w-7"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
+                {isMobileMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
               </svg>
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden pb-8 px-6 bg-white border-t border-gray-100">
+        <div
+          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            isMobileMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="px-4 sm:px-6 pb-6 sm:pb-8 bg-white border-t border-gray-100">
             {/* Mobile Navigation Links */}
-            <div className="flex flex-col space-y-6 pt-4">
+            <div className="flex flex-col space-y-3 sm:space-y-4 pt-4 sm:pt-6">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`relative text-[24px] font-outfit transition-all duration-300 ease-in-out py-2 group ${
+                  className={`relative text-lg sm:text-xl md:text-2xl font-outfit transition-all duration-300 ease-in-out py-2 sm:py-3 px-3 sm:px-4 rounded-lg group ${
                     isActive(link.path)
-                      ? 'text-[#30442B] font-semibold'
-                      : 'text-black hover:text-[#30442B]'
+                      ? 'text-[#30442B] font-semibold bg-[#30442B]/5'
+                      : 'text-black hover:text-[#30442B] hover:bg-[#30442B]/5'
                   }`}
                 >
                   <span className="relative z-10 transition-all duration-300">
                     {link.label}
                   </span>
-                  <span
-                    className={`absolute inset-0 h-full w-full bg-[#30442B]/5 rounded-lg transform scale-95 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 ${
-                      isActive(link.path) ? 'opacity-100 scale-100' : ''
-                    }`}
-                  ></span>
                 </Link>
               ))}
-              <div className="pt-4">
+
+              <div className="pt-4 sm:pt-6 border-t border-gray-100">
                 {isAuthenticated ? (
-                  <div className="space-y-4">
-                    <div className="text-center font-outfit text-[16px] text-gray-700">
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="text-center font-outfit text-sm sm:text-base text-gray-700 py-2">
                       Welcome,{' '}
                       <strong className="text-[#30442B]">
                         {getUserDisplayName()}
                       </strong>
                     </div>
+                    <Link
+                      to="/profile"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-center w-full px-5 sm:px-7 py-2.5 sm:py-3 font-outfit text-base sm:text-lg font-medium border-2 border-[#30442B] text-[#30442B] rounded-full transition-all duration-300 hover:bg-[#30442B]/5"
+                    >
+                      My Profile
+                    </Link>
+                    <Link
+                      to="/orders"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-center w-full px-5 sm:px-7 py-2.5 sm:py-3 font-outfit text-base sm:text-lg font-medium border-2 border-[#30442B] text-[#30442B] rounded-full transition-all duration-300 hover:bg-[#30442B]/5"
+                    >
+                      My Orders
+                    </Link>
                     <button
                       onClick={() => {
                         handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="inline-flex items-center justify-center w-full px-7 py-3 cursor-pointer font-outfit text-[20px] font-medium border-2 border-red-600 text-red-600 rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group"
+                      className="inline-flex items-center justify-center w-full px-5 sm:px-7 py-2.5 sm:py-3 cursor-pointer font-outfit text-base sm:text-lg font-medium border-2 border-red-600 text-red-600 rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group"
                     >
                       <span className="relative z-10 transform transition-transform duration-300 group-hover:translate-x-1">
                         Logout
@@ -256,7 +294,7 @@ export default function Header() {
                       openAuthModal('login');
                       setIsMobileMenuOpen(false);
                     }}
-                    className="inline-flex items-center justify-center w-full px-7 py-3 cursor-pointer font-outfit text-[20px] font-medium border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group"
+                    className="inline-flex items-center justify-center w-full px-5 sm:px-7 py-2.5 sm:py-3 cursor-pointer font-outfit text-base sm:text-lg font-medium border-2 border-[#30442B] text-[#30442B] rounded-full overflow-hidden relative transition-all duration-300 ease-in-out hover:text-white group"
                   >
                     <span className="relative z-10 transform transition-transform duration-300 group-hover:translate-x-1">
                       Login
@@ -267,11 +305,11 @@ export default function Header() {
               </div>
             </div>
           </div>
-        )}
+        </div>
       </nav>
 
       {/* Scroll Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-0.5 z-50">
+      <div className="fixed top-0 left-0 w-full h-0.5 z-60">
         <div
           id="scroll-progress"
           className="h-full bg-[#30442B] transition-all duration-300 rounded-full"

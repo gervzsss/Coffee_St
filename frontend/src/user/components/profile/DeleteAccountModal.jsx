@@ -70,40 +70,40 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+              className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md overflow-hidden"
             >
               {/* Header */}
-              <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                    <AlertTriangle className="w-5 h-5 text-red-600" />
+              <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-100 flex items-center justify-center">
+                    <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-900">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
                     Delete Account
                   </h2>
                 </div>
                 <button
                   onClick={handleClose}
                   disabled={loading}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <X className="w-5 h-5 text-gray-500" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
                 </button>
               </div>
 
               {/* Content */}
-              <div className="px-6 py-6 space-y-6">
+              <div className="px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
                 {/* Warning Message */}
-                <div className="space-y-3">
-                  <p className="text-gray-800 font-medium">
+                <div className="space-y-2 sm:space-y-3">
+                  <p className="text-sm sm:text-base text-gray-800 font-medium">
                     This action cannot be undone. This will permanently delete
                     your account and remove your data from our servers.
                   </p>
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <p className="text-sm text-red-800 font-medium mb-2">
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4">
+                    <p className="text-xs sm:text-sm text-red-800 font-medium mb-1.5 sm:mb-2">
                       The following data will be deleted:
                     </p>
-                    <ul className="text-sm text-red-700 space-y-1 list-disc list-inside">
+                    <ul className="text-xs sm:text-sm text-red-700 space-y-0.5 sm:space-y-1 list-disc list-inside">
                       <li>Profile information and settings</li>
                       <li>Order history and purchase records</li>
                       <li>Shopping cart and saved items</li>
@@ -114,8 +114,8 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
                 </div>
 
                 {/* Confirmation Checkbox */}
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-start gap-2 sm:gap-3">
                     <input
                       type="checkbox"
                       id="understand-deletion"
@@ -126,7 +126,7 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
                     />
                     <label
                       htmlFor="understand-deletion"
-                      className="text-sm text-gray-700 cursor-pointer select-none"
+                      className="text-xs sm:text-sm text-gray-700 cursor-pointer select-none"
                     >
                       I understand that this action is permanent and my data
                       cannot be recovered
@@ -135,7 +135,7 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
 
                   {/* Confirmation Text Input */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                       Type{' '}
                       <span className="font-bold text-red-600">DELETE</span> to
                       confirm
@@ -146,19 +146,19 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
                       onChange={(e) => setConfirmText(e.target.value)}
                       disabled={loading || !understood}
                       placeholder="DELETE"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="px-6 py-5 bg-gray-50 border-t border-gray-100 flex gap-3">
+              <div className="px-4 sm:px-6 py-4 sm:py-5 bg-gray-50 border-t border-gray-100 flex gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={handleClose}
                   disabled={loading}
-                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
@@ -166,7 +166,7 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
                   type="button"
                   onClick={handleDelete}
                   disabled={loading || !understood || confirmText !== 'DELETE'}
-                  className="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Deleting...' : 'Delete My Account'}
                 </button>

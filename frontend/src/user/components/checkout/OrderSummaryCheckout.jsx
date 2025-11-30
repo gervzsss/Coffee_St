@@ -11,12 +11,12 @@ export default function OrderSummaryCheckout({
   const total = subtotal + tax + deliveryFee;
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 sticky top-28">
-      <h2 className="font-outfit text-lg font-semibold text-gray-900 mb-4">
+    <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 shadow-lg ring-1 ring-gray-900/5 sticky top-24 sm:top-28">
+      <h2 className="font-outfit text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
         Order Summary
       </h2>
 
-      <div className="space-y-3 text-sm">
+      <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
         {/* Items Count */}
         <div className="flex justify-between text-gray-600">
           <span>Items ({items.length})</span>
@@ -30,13 +30,13 @@ export default function OrderSummaryCheckout({
         </div>
 
         {/* Tax */}
-        <div className="flex justify-between text-gray-600 pb-3 border-b border-gray-200">
+        <div className="flex justify-between text-gray-600 pb-2 sm:pb-3 border-b border-gray-200">
           <span>Tax ({(taxRate * 100).toFixed(0)}%)</span>
           <span>₱{tax.toFixed(2)}</span>
         </div>
 
         {/* Total */}
-        <div className="flex justify-between items-center text-lg font-bold text-[#30442B] pt-2">
+        <div className="flex justify-between items-center text-base sm:text-lg font-bold text-[#30442B] pt-1.5 sm:pt-2">
           <span>Total</span>
           <span>₱{total.toFixed(2)}</span>
         </div>
@@ -46,7 +46,7 @@ export default function OrderSummaryCheckout({
       <button
         onClick={onConfirmCheckout}
         disabled={disabled || loading}
-        className={`mt-6 w-full py-3.5 rounded-lg font-semibold transition-all ${
+        className={`mt-4 sm:mt-6 w-full py-2.5 sm:py-3.5 rounded-lg text-sm sm:text-base font-semibold transition-all ${
           disabled || loading
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
             : 'bg-[#30442B] text-white hover:bg-[#405939] active:scale-[0.98]'
@@ -54,7 +54,7 @@ export default function OrderSummaryCheckout({
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
-            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+            <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -78,12 +78,12 @@ export default function OrderSummaryCheckout({
       </button>
 
       {/* Estimated Delivery */}
-      <p className="text-xs text-gray-500 text-center mt-4">
+      <p className="text-xs text-gray-500 text-center mt-3 sm:mt-4">
         Estimated delivery: 25-35 minutes
       </p>
 
       {/* Security Note */}
-      <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+      <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-gray-50 rounded-lg">
         <p className="text-xs text-gray-600 text-center">
           🔒 Your information is secure and encrypted
         </p>

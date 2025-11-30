@@ -35,48 +35,52 @@ export default function Orders() {
 
   return (
     <AdminLayout>
-      <div className="p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         <div className="max-w-screen-2xl mx-auto">
           {/* Header Section */}
-          <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900">
               ORDERS & TRACKING
             </h1>
-            <p className="text-gray-600 mt-2">
+            <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
               Manage customer orders and track their progress
             </p>
           </div>
 
           {/* Order Status Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8">
             {statusCards.map((card) => (
               <div
                 key={card.key}
                 onClick={() => setFilterStatus(card.key)}
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
+                className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 cursor-pointer transition-all duration-300 ${
                   filterStatus === card.key
                     ? 'bg-[#30442B] text-white border-[#30442B]'
                     : 'bg-white text-gray-800 border-gray-200 hover:border-[#30442B]/30'
                 }`}
               >
                 <div
-                  className={`text-sm font-medium ${
-                    filterStatus === card.key ? 'text-white/80' : 'text-gray-500'
+                  className={`text-xs sm:text-sm font-medium ${
+                    filterStatus === card.key
+                      ? 'text-white/80'
+                      : 'text-gray-500'
                   }`}
                 >
                   {card.label}
                 </div>
-                <div className="text-3xl font-bold mt-1">{card.count}</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold mt-0.5 sm:mt-1">
+                  {card.count}
+                </div>
               </div>
             ))}
           </div>
 
           {/* Search Section */}
-          <div className="bg-[#30442B] rounded-2xl p-4 mb-8">
-            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          <div className="bg-[#30442B] rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-6 sm:mb-8">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
               <div className="relative flex-1 max-w-2xl">
                 <svg
-                  className="w-5 h-5 text-gray-400 absolute left-4 top-3.5"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 absolute left-3 sm:left-4 top-3 sm:top-3.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -90,15 +94,15 @@ export default function Orders() {
                 </svg>
                 <input
                   type="text"
-                  placeholder="Search by Order number or customer name........."
+                  placeholder="Search by Order number or customer name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 rounded-lg border-0 bg-white focus:ring-2 focus:ring-white/50 placeholder-gray-400 text-gray-800 text-sm"
+                  className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 rounded-lg border-0 bg-white focus:ring-2 focus:ring-white/50 placeholder-gray-400 text-gray-800 text-xs sm:text-sm"
                 />
               </div>
               <div className="relative">
                 <select
-                  className="appearance-none px-4 py-3 pr-10 bg-white/10 text-white rounded-lg border border-white/20 hover:bg-white/20 transition-colors cursor-pointer font-medium"
+                  className="appearance-none w-full md:w-auto px-3 sm:px-4 py-2.5 sm:py-3 pr-8 sm:pr-10 bg-white/10 text-white rounded-lg border border-white/20 hover:bg-white/20 transition-colors cursor-pointer text-sm font-medium"
                   defaultValue=""
                 >
                   <option value="" disabled className="text-gray-800">
@@ -115,7 +119,7 @@ export default function Orders() {
                   </option>
                 </select>
                 <svg
-                  className="w-5 h-5 text-white absolute right-3 top-3.5 pointer-events-none"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-white absolute right-2 sm:right-3 top-3 sm:top-3.5 pointer-events-none"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -132,20 +136,20 @@ export default function Orders() {
           </div>
 
           {/* Orders List Header */}
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-gray-800">
+          <div className="mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
               All Orders ({filteredOrders.length})
             </h2>
           </div>
 
           {/* Orders List */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {loading ? (
-              <LoadingSpinner className="py-12" />
+              <LoadingSpinner className="py-8 sm:py-12" />
             ) : filteredOrders.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
+              <div className="text-center py-8 sm:py-12 bg-white rounded-xl border border-gray-200">
                 <svg
-                  className="w-16 h-16 text-gray-300 mx-auto mb-4"
+                  className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -157,7 +161,9 @@ export default function Orders() {
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                   />
                 </svg>
-                <p className="text-gray-500">No orders found</p>
+                <p className="text-sm sm:text-base text-gray-500">
+                  No orders found
+                </p>
               </div>
             ) : (
               filteredOrders.map((order) => (

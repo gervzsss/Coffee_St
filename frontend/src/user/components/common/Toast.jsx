@@ -107,13 +107,13 @@ function ToastItem({ toast, onRemove }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -20, scale: 0.95 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className={`pointer-events-auto select-none rounded-2xl px-5 py-3 text-sm font-medium text-white shadow-xl ring-1 ring-white/15 ${config.classes}`}
+      className={`pointer-events-auto select-none rounded-xl sm:rounded-2xl px-3 sm:px-4 lg:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-white shadow-xl ring-1 ring-white/15 ${config.classes}`}
     >
-      <div className="flex items-center gap-3">
-        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <span className="inline-flex h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 items-center justify-center rounded-full bg-white/15 text-white">
           {config.icon}
         </span>
-        <span className="leading-tight">{toast.message}</span>
+        <span className="leading-tight flex-1">{toast.message}</span>
         {toast.dismissible && (
           <button
             type="button"
@@ -132,7 +132,7 @@ function ToastItem({ toast, onRemove }) {
 export default function Toast({ toasts, onRemove }) {
   return (
     <div
-      className="fixed top-28 right-4 z-50 flex flex-col gap-3"
+      className="fixed top-20 sm:top-24 lg:top-28 right-3 sm:right-4 left-3 sm:left-auto z-50 flex flex-col gap-2 sm:gap-3"
       role="status"
       aria-live="polite"
     >

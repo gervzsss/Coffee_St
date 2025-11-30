@@ -27,29 +27,33 @@ export default function InquiryCard({ thread, onClick }) {
   return (
     <div
       onClick={onClick}
-      className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer relative"
+      className="bg-white border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-5 lg:p-6 hover:shadow-lg transition-all duration-300 cursor-pointer relative"
     >
       {/* Reply Icon - Top Right */}
-      <div className="absolute top-6 right-6">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
         <ReplyIcon />
       </div>
 
       {/* Message Title */}
-      <h3 className="font-bold text-gray-900 text-lg mb-3 pr-8">
+      <h3 className="font-bold text-gray-900 text-base sm:text-lg mb-2 sm:mb-3 pr-8">
         {thread.subject || 'No Subject'}
       </h3>
 
       {/* User Info Row */}
-      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
         <span className="font-medium">{userName}</span>
-        <span className="text-gray-400">{userEmail}</span>
+        <span className="text-gray-400 truncate max-w-[150px] sm:max-w-none">
+          {userEmail}
+        </span>
         <span className="text-gray-400">
           {formatDateTime(thread.created_at)}
         </span>
       </div>
 
       {/* Message Content */}
-      <p className="text-sm text-gray-700 leading-relaxed">{message}</p>
+      <p className="text-xs sm:text-sm text-gray-700 leading-relaxed line-clamp-2">
+        {message}
+      </p>
     </div>
   );
 }

@@ -124,40 +124,40 @@ export default function OrderCard({
 
   return (
     <div
-      className={`rounded-3xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 hover:shadow-xl transition-shadow ${
+      className={`rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 shadow-lg ring-1 ring-gray-900/5 hover:shadow-xl transition-shadow ${
         isActive ? 'border-l-4 border-l-[#30442B]' : ''
       }`}
     >
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+      <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <Package className="w-5 h-5 text-[#30442B]" />
-            <h3 className="font-outfit text-lg font-semibold text-gray-900">
+          <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+            <Package className="w-4 h-4 sm:w-5 sm:h-5 text-[#30442B]" />
+            <h3 className="font-outfit text-base sm:text-lg font-semibold text-gray-900">
               {order.order_number}
             </h3>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Calendar className="w-4 h-4" />
+          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-600">
+            <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>{formatOrderDate(order.created_at)}</span>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-            <Clock className="w-4 h-4" />
+          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">
+            <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>{getRelativeTime(order.created_at)}</span>
           </div>
         </div>
 
         <span
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide ${config.bgColor} ${config.textColor}`}
+          className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide ${config.bgColor} ${config.textColor}`}
         >
           {getStatusIcon(order.status)}
-          {config.label}
+          <span className="hidden sm:inline">{config.label}</span>
         </span>
       </div>
 
       {/* Progress indicator for active orders */}
       {isActive && (
-        <div className="mb-4">
+        <div className="mb-3 sm:mb-4">
           <div className="flex items-center gap-1">
             {['pending', 'confirmed', 'preparing', 'out_for_delivery'].map(
               (status, index) => {
@@ -174,7 +174,7 @@ export default function OrderCard({
                 return (
                   <div key={status} className="flex-1 flex items-center">
                     <div
-                      className={`h-1.5 w-full rounded-full transition-colors ${
+                      className={`h-1 sm:h-1.5 w-full rounded-full transition-colors ${
                         isCompleted ? 'bg-[#30442B]' : 'bg-gray-200'
                       }`}
                     />
@@ -184,28 +184,38 @@ export default function OrderCard({
             )}
           </div>
           <div className="flex justify-between mt-1 text-xs text-gray-500">
-            <span>Placed</span>
-            <span>Confirmed</span>
-            <span>Preparing</span>
-            <span>Delivery</span>
+            <span className="hidden sm:inline">Placed</span>
+            <span className="sm:hidden">📝</span>
+            <span className="hidden sm:inline">Confirmed</span>
+            <span className="sm:hidden">✓</span>
+            <span className="hidden sm:inline">Preparing</span>
+            <span className="sm:hidden">🍳</span>
+            <span className="hidden sm:inline">Delivery</span>
+            <span className="sm:hidden">🚗</span>
           </div>
         </div>
       )}
 
       {/* Items Summary */}
-      <div className="mb-4 p-4 bg-gray-50 rounded-xl">
-        <p className="text-sm font-medium text-gray-700 mb-1">Order Items</p>
-        <p className="text-gray-900">{getItemsSummary()}</p>
+      <div className="mb-3 sm:mb-4 p-3 sm:p-4 bg-gray-50 rounded-lg sm:rounded-xl">
+        <p className="text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">
+          Order Items
+        </p>
+        <p className="text-sm sm:text-base text-gray-900 line-clamp-2">
+          {getItemsSummary()}
+        </p>
         <p className="text-xs text-gray-500 mt-1">
           Payment: {getPaymentMethodLabel(order.payment_method)}
         </p>
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+      <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-200">
         <div>
-          <p className="text-sm text-gray-600 mb-1">Total Amount</p>
-          <p className="text-2xl font-bold text-[#30442B]">
+          <p className="text-xs sm:text-sm text-gray-600 mb-0.5 sm:mb-1">
+            Total Amount
+          </p>
+          <p className="text-xl sm:text-2xl font-bold text-[#30442B]">
             ₱{Number(order.total || order.total_amount || 0).toFixed(2)}
           </p>
         </div>
@@ -213,9 +223,9 @@ export default function OrderCard({
         <div className="flex gap-2">
           <button
             onClick={() => onViewDetails(order)}
-            className="px-6 py-2.5 bg-[#30442B] text-white rounded-lg font-semibold hover:bg-[#405939] transition-colors active:scale-95"
+            className="px-4 sm:px-6 py-2 sm:py-2.5 bg-[#30442B] text-white rounded-lg text-sm sm:text-base font-semibold hover:bg-[#405939] transition-colors active:scale-95"
           >
-            {isActive ? 'Track Order' : 'View Details'}
+            {isActive ? 'Track' : 'Details'}
           </button>
         </div>
       </div>

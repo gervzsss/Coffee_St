@@ -15,11 +15,11 @@ export default function OrderCard({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-300">
+    <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 lg:p-6 hover:shadow-lg transition-all duration-300">
       {/* Header Row */}
-      <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
-        <div className="flex items-center gap-3 flex-wrap">
-          <h3 className="font-bold text-lg text-gray-900">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <h3 className="font-bold text-base sm:text-lg text-gray-900">
             {order.order_number}
           </h3>
           <span
@@ -29,17 +29,17 @@ export default function OrderCard({
           </span>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-gray-800">
+          <div className="text-xl sm:text-2xl font-bold text-gray-800">
             ₱{Number(order.total || 0).toFixed(2)}
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-xs sm:text-sm text-gray-500">
             {order.items_count || order.items?.length || 0} items
           </div>
         </div>
       </div>
 
       {/* Customer & Order Info */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+      <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1.5 sm:gap-y-2 text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
         <div className="flex items-center gap-1.5">
           <svg
             className="w-4 h-4 text-gray-400"
@@ -95,9 +95,9 @@ export default function OrderCard({
       </div>
 
       {/* Address */}
-      <div className="flex items-start gap-1.5 text-sm text-gray-600 mb-4">
+      <div className="flex items-start gap-1.5 text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
         <svg
-          className="w-4 h-4 text-gray-400 mt-0.5 shrink-0"
+          className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 mt-0.5 shrink-0"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -120,15 +120,15 @@ export default function OrderCard({
 
       {/* Order Items with Variants */}
       {order.items && order.items.length > 0 && (
-        <div className="border border-gray-200 rounded-lg mb-4 overflow-hidden">
-          <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
-            <span className="text-sm font-medium text-gray-700">
+        <div className="border border-gray-200 rounded-lg mb-3 sm:mb-4 overflow-hidden">
+          <div className="bg-gray-50 px-3 sm:px-4 py-1.5 sm:py-2 border-b border-gray-200">
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
               Order Items
             </span>
           </div>
           <div className="divide-y divide-gray-100">
             {order.items.map((item, index) => (
-              <div key={index} className="px-4 py-3">
+              <div key={index} className="px-3 sm:px-4 py-2 sm:py-3">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <p className="font-medium text-gray-800">
@@ -168,8 +168,8 @@ export default function OrderCard({
 
       {/* Notes */}
       {order.notes && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-4">
-          <p className="text-sm text-amber-800">
+        <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 sm:px-4 py-2 sm:py-3 mb-3 sm:mb-4">
+          <p className="text-xs sm:text-sm text-amber-800">
             <span className="font-medium">📝 Note:</span> {order.notes}
           </p>
         </div>

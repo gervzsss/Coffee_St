@@ -17,13 +17,13 @@ export default function ContactForm() {
 
   return (
     <div className="flex-1">
-      <div className="relative overflow-hidden rounded-3xl bg-white/95 p-6 shadow-2xl shadow-[#30442B]/10 ring-1 ring-[#30442B]/10 sm:p-10">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white/95 p-4 sm:p-6 lg:p-10 shadow-2xl shadow-[#30442B]/10 ring-1 ring-[#30442B]/10">
         <div className="absolute -top-20 -right-16 h-48 w-48 rounded-full bg-amber-100 opacity-60 blur-3xl"></div>
         <div className="relative">
-          <h2 className="font-outfit text-3xl font-semibold text-[#30442B]">
+          <h2 className="font-outfit text-xl sm:text-2xl lg:text-3xl font-semibold text-[#30442B]">
             Send us a message
           </h2>
-          <p className="mt-3 text-sm text-neutral-500">
+          <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-neutral-500">
             All fields are required so we can serve you better.
           </p>
 
@@ -48,11 +48,11 @@ export default function ContactForm() {
 
           <form
             id="contact-form"
-            className="mt-8 space-y-7"
+            className="mt-6 sm:mt-8 space-y-5 sm:space-y-6 lg:space-y-7"
             onSubmit={handleSubmit}
             noValidate
           >
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid gap-4 sm:gap-5 lg:gap-6 sm:grid-cols-2">
               <div>
                 <label
                   htmlFor="contact-name"
@@ -174,14 +174,14 @@ export default function ContactForm() {
                 </p>
               )}
             </div>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-neutral-500">
+            <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs sm:text-sm text-neutral-500">
                 We'll respond within 24 hours — promise.
               </p>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center rounded-full bg-[#30442B] px-8 py-3 cursor-pointer text-sm font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-[#3a533a] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center rounded-full bg-[#30442B] px-6 sm:px-8 py-2.5 sm:py-3 cursor-pointer text-xs sm:text-sm font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-[#3a533a] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Sending...' : 'Send message'}
               </button>

@@ -9,10 +9,10 @@ export default function EmptyState({
   onAction,
 }) {
   return (
-    <div className="rounded-lg border bg-white p-12 shadow-sm text-center">
+    <div className="rounded-xl sm:rounded-2xl border bg-white p-6 sm:p-8 lg:p-12 shadow-sm text-center">
       {icon || (
         <svg
-          className="w-24 h-24 mx-auto mb-4 text-gray-300"
+          className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-3 sm:mb-4 text-gray-300"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -25,12 +25,16 @@ export default function EmptyState({
           />
         </svg>
       )}
-      <h2 className="text-2xl font-bold text-gray-800 mb-2">{title}</h2>
-      <p className="text-gray-600 mb-6">{description}</p>
+      <h2 className="text-xl sm:text-2xl lg:text-2xl font-bold text-gray-800 mb-1.5 sm:mb-2">
+        {title}
+      </h2>
+      <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-5 lg:mb-6">
+        {description}
+      </p>
       {actionTo ? (
         <Link
           to={actionTo}
-          className="inline-flex items-center px-6 py-3 bg-[#30442B] text-white rounded-lg hover:bg-[#405939] transition-colors"
+          className="inline-flex items-center px-4 sm:px-5 lg:px-6 py-2.5 sm:py-3 bg-[#30442B] text-sm sm:text-base text-white rounded-lg hover:bg-[#405939] transition-colors"
         >
           {actionText}
         </Link>
@@ -38,7 +42,7 @@ export default function EmptyState({
         onAction && (
           <button
             onClick={onAction}
-            className="bg-[#30442B] text-white px-6 py-3 cursor-pointer rounded-lg hover:bg-[#405939] transition-colors"
+            className="bg-[#30442B] text-sm sm:text-base text-white px-4 sm:px-5 lg:px-6 py-2.5 sm:py-3 cursor-pointer rounded-lg hover:bg-[#405939] transition-colors"
           >
             {actionText}
           </button>

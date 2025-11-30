@@ -1,6 +1,5 @@
 import { Header, Footer } from '../components/layout';
-import { HeroSection, FeaturedProducts } from '../components/home';
-import { SplitScreen } from '../components/common';
+import { HeroSection, FeaturedProducts, SplitScreen } from '../components/home';
 import { BenefitsGrid } from '../components/about';
 
 export default function Home() {

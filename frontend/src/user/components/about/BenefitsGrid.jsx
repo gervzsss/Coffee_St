@@ -15,7 +15,7 @@ export default function BenefitsGrid() {
         'Our beans are roasted in small batches daily to ensure peak flavor and aroma.',
       icon: (
         <svg
-          className="mx-auto h-16 w-16 text-[#967259]"
+          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -42,7 +42,7 @@ export default function BenefitsGrid() {
         'Each pastry is lovingly crafted by our expert bakers using traditional recipes.',
       icon: (
         <svg
-          className="mx-auto h-16 w-16 text-[#967259]"
+          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -69,7 +69,7 @@ export default function BenefitsGrid() {
         'We partner directly with farmers to ensure fair prices and sustainable practices.',
       icon: (
         <svg
-          className="mx-auto h-16 w-16 text-[#967259]"
+          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -90,7 +90,7 @@ export default function BenefitsGrid() {
         'Fresh batches of pastries are baked throughout the day for maximum freshness.',
       icon: (
         <svg
-          className="mx-auto h-16 w-16 text-[#967259]"
+          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -111,7 +111,7 @@ export default function BenefitsGrid() {
         "We're proud to be a gathering place for our local community since 2020.",
       icon: (
         <svg
-          className="mx-auto h-16 w-16 text-[#967259]"
+          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -132,7 +132,7 @@ export default function BenefitsGrid() {
         'Our certified baristas are passionate about crafting the perfect cup for you.',
       icon: (
         <svg
-          className="mx-auto h-16 w-16 text-[#967259]"
+          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -171,17 +171,22 @@ export default function BenefitsGrid() {
   };
 
   return (
-    <section ref={ref} className="bg-[#FDFBF6] px-4 py-16 md:px-8">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-[#30442B] md:text-4xl">
+    <section
+      ref={ref}
+      className="bg-[#FDFBF6] px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16"
+    >
+      <div className="mx-auto max-w-6xl xl:max-w-7xl">
+        <div className="mb-8 sm:mb-10 lg:mb-12 text-center">
+          <h2 className="mb-3 sm:mb-4 text-2xl sm:text-3xl lg:text-4xl font-bold text-[#30442B]">
             Why Choose Our Coffee Shop?
           </h2>
           <Link
             to="/about#why-choose-us"
             className="group inline-flex items-center gap-2 text-[#30442B] transition-colors hover:text-[#967259]"
           >
-            <span className="text-lg">Learn more about us</span>
+            <span className="text-sm sm:text-base lg:text-lg">
+              Learn more about us
+            </span>
             <svg
               className="h-5 w-5 transform transition-transform group-hover:translate-x-1"
               fill="none"
@@ -202,21 +207,23 @@ export default function BenefitsGrid() {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
         >
           {benefits.map((benefit) => (
             <motion.div
               key={benefit.id}
               variants={cardVariants}
-              className="benefit-card transform rounded-xl bg-white p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              className="benefit-card transform rounded-xl sm:rounded-2xl bg-white p-4 sm:p-5 lg:p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg"
             >
-              <div className="icon-container mb-4 text-center">
+              <div className="icon-container mb-3 sm:mb-4 text-center">
                 {benefit.icon}
               </div>
-              <h3 className="mb-2 text-center text-xl font-semibold text-[#30442B]">
+              <h3 className="mb-1.5 sm:mb-2 text-center text-lg sm:text-xl font-semibold text-[#30442B]">
                 {benefit.title}
               </h3>
-              <p className="text-center text-gray-600">{benefit.description}</p>
+              <p className="text-center text-sm sm:text-base text-gray-600">
+                {benefit.description}
+              </p>
             </motion.div>
           ))}
         </motion.div>

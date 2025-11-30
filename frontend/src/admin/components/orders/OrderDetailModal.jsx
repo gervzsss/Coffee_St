@@ -114,25 +114,25 @@ export default function OrderDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
+      <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-[#30442B] text-white p-6">
+        <div className="bg-[#30442B] text-white p-4 sm:p-5 lg:p-6">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold">
                 Order #{order.order_number}
               </h2>
-              <p className="text-white/80 text-sm mt-1">
+              <p className="text-white/80 text-xs sm:text-sm mt-1">
                 Placed on {formatDateTime(order.created_at)}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-white/80 hover:text-white transition-colors p-1"
             >
               <svg
-                className="w-6 h-6"
+                className="w-5 h-5 sm:w-6 sm:h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -146,9 +146,9 @@ export default function OrderDetailModal({
               </svg>
             </button>
           </div>
-          <div className="mt-4">
+          <div className="mt-3 sm:mt-4">
             <span
-              className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusConfig.bgColor} ${statusConfig.textColor}`}
+              className={`inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${statusConfig.bgColor} ${statusConfig.textColor}`}
             >
               {statusConfig.label}
             </span>
@@ -156,16 +156,16 @@ export default function OrderDetailModal({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
             {/* Left Column - Order Details */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-5 lg:space-y-6">
               {/* Customer Info */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h3 className="font-semibold text-gray-800 mb-3">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                <h3 className="font-semibold text-sm sm:text-base text-gray-800 mb-2 sm:mb-3">
                   Customer Information
                 </h3>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <svg
                       className="w-4 h-4 text-gray-400"
@@ -230,11 +230,11 @@ export default function OrderDetailModal({
               </div>
 
               {/* Order Items */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h3 className="font-semibold text-gray-800 mb-3">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                <h3 className="font-semibold text-sm sm:text-base text-gray-800 mb-2 sm:mb-3">
                   Order Items
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {order.items?.map((item, index) => (
                     <div
                       key={index}
@@ -242,17 +242,17 @@ export default function OrderDetailModal({
                     >
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <p className="font-medium text-gray-800">
+                          <p className="font-medium text-sm sm:text-base text-gray-800">
                             {item.product_name ||
                               item.product?.name ||
                               'Unknown Product'}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-xs sm:text-sm text-gray-500">
                             Qty: {item.quantity} × ₱
                             {Number(item.unit_price || 0).toFixed(2)}
                           </p>
                         </div>
-                        <span className="font-medium text-gray-800">
+                        <span className="font-medium text-sm sm:text-base text-gray-800">
                           ₱
                           {Number(
                             item.line_total ||
@@ -305,23 +305,25 @@ export default function OrderDetailModal({
 
               {/* Notes */}
               {order.notes && (
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <h3 className="font-semibold text-gray-800 mb-2">
+                <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                  <h3 className="font-semibold text-sm sm:text-base text-gray-800 mb-1.5 sm:mb-2">
                     Order Notes
                   </h3>
-                  <p className="text-sm text-gray-600">{order.notes}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">
+                    {order.notes}
+                  </p>
                 </div>
               )}
             </div>
 
             {/* Right Column - Timeline & Actions */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-5 lg:space-y-6">
               {/* Status Timeline */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h3 className="font-semibold text-gray-800 mb-4">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                <h3 className="font-semibold text-sm sm:text-base text-gray-800 mb-3 sm:mb-4">
                   Order Timeline
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {timeline.map((item, index) => {
                     const config = STATUS_CONFIG[item.status];
                     return (
@@ -363,11 +365,11 @@ export default function OrderDetailModal({
 
               {/* Status Actions */}
               {nextStatuses.length > 0 && (
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <h3 className="font-semibold text-gray-800 mb-3">
+                <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                  <h3 className="font-semibold text-sm sm:text-base text-gray-800 mb-2 sm:mb-3">
                     Update Status
                   </h3>
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 sm:space-y-2">
                     {nextStatuses.map((status) => {
                       const config = STATUS_CONFIG[status];
                       return (
@@ -375,7 +377,7 @@ export default function OrderDetailModal({
                           key={status}
                           onClick={() => handleStatusChange(status)}
                           disabled={updating}
-                          className={`w-full py-2.5 px-4 ${config.bgColor} ${config.textColor} rounded-lg font-medium hover:opacity-80 transition-colors disabled:opacity-50`}
+                          className={`w-full py-2 sm:py-2.5 px-3 sm:px-4 text-sm sm:text-base ${config.bgColor} ${config.textColor} rounded-lg font-medium hover:opacity-80 transition-colors disabled:opacity-50`}
                         >
                           {status === 'failed'
                             ? 'Mark as Failed'
@@ -389,8 +391,8 @@ export default function OrderDetailModal({
 
               {/* Delivery Proof */}
               {order.delivery_proof_url && (
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <h3 className="font-semibold text-gray-800 mb-3">
+                <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                  <h3 className="font-semibold text-sm sm:text-base text-gray-800 mb-2 sm:mb-3">
                     Delivery Proof
                   </h3>
                   <img
@@ -405,10 +407,10 @@ export default function OrderDetailModal({
         </div>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 p-4 bg-gray-50">
+        <div className="border-t border-gray-200 p-3 sm:p-4 bg-gray-50">
           <button
             onClick={onClose}
-            className="w-full py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+            className="w-full py-2 sm:py-2.5 bg-gray-200 text-sm sm:text-base text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
           >
             Close
           </button>

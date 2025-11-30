@@ -56,15 +56,15 @@ export default function OrderHistoryCard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
       {/* Order History Card */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+        <div className="px-4 sm:px-5 lg:px-6 py-3 sm:py-4 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h3 className="font-outfit text-lg font-semibold text-gray-900">
+            <h3 className="font-outfit text-base sm:text-lg font-semibold text-gray-900">
               Order History
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-500">
               Latest system events and updates
             </p>
           </div>
@@ -78,19 +78,19 @@ export default function OrderHistoryCard() {
 
         <div className="divide-y divide-gray-100">
           {orders.length === 0 ? (
-            <div className="px-6 py-8 text-center text-gray-500">
-              <p>No orders yet</p>
+            <div className="px-4 sm:px-6 py-6 sm:py-8 text-center text-gray-500">
+              <p className="text-sm sm:text-base">No orders yet</p>
             </div>
           ) : (
             orders.map((order) => (
               <Link
                 key={order.id}
                 to="/orders"
-                className="block px-6 py-4 hover:bg-gray-50 transition-colors"
+                className="block px-4 sm:px-5 lg:px-6 py-3 sm:py-4 hover:bg-gray-50 transition-colors"
               >
-                <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start justify-between mb-1.5 sm:mb-2">
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-sm sm:text-base text-gray-900">
                       {order.status === 'placed'
                         ? 'New order placed'
                         : `Order ${order.order_number} ${
@@ -112,17 +112,20 @@ export default function OrderHistoryCard() {
       </div>
 
       {/* Clean Record Badge */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 p-6">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm overflow-hidden border border-gray-100 p-4 sm:p-5 lg:p-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
-              <CheckCircle className="w-8 h-8 text-green-600" strokeWidth={2} />
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-green-50 flex items-center justify-center">
+              <CheckCircle
+                className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-green-600"
+                strokeWidth={2}
+              />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-green-800">
+              <h3 className="text-base sm:text-lg font-semibold text-green-800">
                 Clean record
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600">
                 No scam warnings or fraudulent activity reported
               </p>
             </div>

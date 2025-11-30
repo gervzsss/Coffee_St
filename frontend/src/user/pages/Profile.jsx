@@ -65,28 +65,28 @@ export default function Profile() {
       <Header />
       <main className="pt-20 min-h-screen bg-gray-50">
         {/* Compact Profile Header */}
-        <div className="w-full bg-[#30442B] pb-8 pt-12">
-          <div className="container mx-auto px-4">
-            <h1 className="text-2xl md:text-3xl font-bold text-white">
+        <div className="w-full bg-[#30442B] pb-6 sm:pb-8 pt-8 sm:pt-10 lg:pt-12">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
               Your Profile
             </h1>
-            <p className="text-gray-200 text-sm md:text-base mt-1">
+            <p className="text-gray-200 text-xs sm:text-sm lg:text-base mt-1 sm:mt-2">
               Manage your account settings and preferences
             </p>
           </div>
         </div>
 
         {/* Profile Content - 2 Column Layout */}
-        <section className="relative pb-24">
-          <div className="mx-auto max-w-7xl px-6 sm:px-10 mt-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <section className="relative pb-16 sm:pb-20 lg:pb-24">
+          <div className="mx-auto max-w-7xl xl:max-w-[1400px] px-4 sm:px-6 lg:px-10 mt-6 sm:mt-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
               {/* Left Column - Order History (Desktop only) */}
               <div className="hidden lg:block lg:col-span-1">
                 <OrderHistoryCard />
               </div>
 
               {/* Right Column - Profile Information & Settings */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-4 sm:space-y-5 lg:space-y-6">
                 {/* Dynamic Content Area */}
                 {activeView === 'profile-info' ? (
                   <ProfileInformationForm

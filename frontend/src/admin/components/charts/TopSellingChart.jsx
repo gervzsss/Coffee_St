@@ -15,10 +15,14 @@ export default function TopSellingChart({
   const chartData = data || DEFAULT_DATA;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300">
-      <h3 className="text-xl font-semibold text-gray-800 mb-3">{title}</h3>
-      <p className="text-sm text-gray-500 mb-6">{subtitle}</p>
-      <div className="h-64 flex items-end gap-8 px-4">
+    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 hover:shadow-xl transition-shadow duration-300">
+      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">
+        {title}
+      </h3>
+      <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
+        {subtitle}
+      </p>
+      <div className="h-48 sm:h-56 lg:h-64 flex items-end gap-4 sm:gap-6 lg:gap-8 px-2 sm:px-4">
         {chartData.map((item, index) => (
           <BarItem
             key={item.name}

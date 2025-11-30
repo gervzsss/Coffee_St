@@ -237,46 +237,46 @@ export default function OrderDetailModal({
       />
 
       {/* Modal */}
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl ring-1 ring-gray-900/5 max-h-[90vh] overflow-y-auto">
+      <div className="flex min-h-full items-center justify-center p-3 sm:p-4">
+        <div className="relative w-full max-w-2xl lg:max-w-3xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl ring-1 ring-gray-900/5 max-h-[90vh] overflow-y-auto">
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 transition-colors z-10"
+            className="absolute right-3 sm:right-4 top-3 sm:top-4 p-1.5 sm:p-2 rounded-full hover:bg-gray-100 transition-colors z-10"
           >
-            <X className="w-6 h-6 text-gray-600" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
           </button>
 
           {loading ? (
-            <div className="flex justify-center items-center py-32">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#30442B]"></div>
+            <div className="flex justify-center items-center py-24 sm:py-32">
+              <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-[#30442B]"></div>
             </div>
           ) : error ? (
-            <div className="p-8">
+            <div className="p-4 sm:p-6 lg:p-8">
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                 {error}
               </div>
             </div>
           ) : order ? (
-            <div className="p-8">
+            <div className="p-4 sm:p-6 lg:p-8">
               {/* Header */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
+              <div className="mb-4 sm:mb-5 lg:mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
                   <div>
-                    <h2 className="font-outfit text-3xl font-bold text-gray-900">
+                    <h2 className="font-outfit text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
                       {order.order_number}
                     </h2>
-                    <div className="flex items-center gap-2 text-gray-600 mt-2">
-                      <Calendar className="w-4 h-4" />
-                      <span className="text-sm">
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-gray-600 mt-1.5 sm:mt-2">
+                      <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <span className="text-xs sm:text-sm">
                         {formatDate(order.created_at)}
                       </span>
                     </div>
                   </div>
                   <span
-                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide ${config.bgColor} ${config.textColor}`}
+                    className={`inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wide ${config.bgColor} ${config.textColor}`}
                   >
-                    {getStatusIcon(order.status, 'w-4 h-4')}
+                    {getStatusIcon(order.status, 'w-3.5 h-3.5 sm:w-4 sm:h-4')}
                     {config.label}
                   </span>
                 </div>
@@ -284,9 +284,9 @@ export default function OrderDetailModal({
 
               {/* Order Timeline - Show for active orders */}
               {timeline.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="font-outfit text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-[#30442B]" />
+                <div className="mb-4 sm:mb-5 lg:mb-6">
+                  <h3 className="font-outfit text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
+                    <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#30442B]" />
                     Order Tracking
                   </h3>
                   <div className="relative">
@@ -297,21 +297,24 @@ export default function OrderDetailModal({
                         const isLast = index === timeline.length - 1;
 
                         return (
-                          <div key={index} className="flex gap-4">
+                          <div key={index} className="flex gap-3 sm:gap-4">
                             {/* Timeline indicator */}
                             <div className="flex flex-col items-center">
                               <div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
                                   item.completed
                                     ? `${itemConfig.bgColor} ${itemConfig.textColor}`
                                     : 'bg-gray-100 text-gray-400'
                                 }`}
                               >
-                                {getStatusIcon(item.status, 'w-5 h-5')}
+                                {getStatusIcon(
+                                  item.status,
+                                  'w-4 h-4 sm:w-5 sm:h-5'
+                                )}
                               </div>
                               {!isLast && (
                                 <div
-                                  className={`w-0.5 h-12 ${
+                                  className={`w-0.5 h-10 sm:h-12 ${
                                     item.completed
                                       ? 'bg-[#30442B]'
                                       : 'bg-gray-200'
@@ -322,11 +325,13 @@ export default function OrderDetailModal({
 
                             {/* Content */}
                             <div
-                              className={`flex-1 pb-6 ${isLast ? 'pb-0' : ''}`}
+                              className={`flex-1 pb-4 sm:pb-6 ${
+                                isLast ? 'pb-0' : ''
+                              }`}
                             >
-                              <div className="flex items-center justify-between">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
                                 <p
-                                  className={`font-semibold ${
+                                  className={`font-semibold text-sm sm:text-base ${
                                     item.completed
                                       ? 'text-gray-900'
                                       : 'text-gray-400'
@@ -359,20 +364,20 @@ export default function OrderDetailModal({
               )}
 
               {/* Order Items */}
-              <div className="mb-6">
-                <h3 className="font-outfit text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Package className="w-5 h-5 text-[#30442B]" />
+              <div className="mb-4 sm:mb-5 lg:mb-6">
+                <h3 className="font-outfit text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
+                  <Package className="w-4 h-4 sm:w-5 sm:h-5 text-[#30442B]" />
                   Order Items
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {order.items && order.items.length > 0 ? (
                     order.items.map((item, index) => (
                       <div
                         key={index}
-                        className="flex justify-between items-center p-4 bg-gray-50 rounded-xl"
+                        className="flex justify-between items-center p-3 sm:p-4 bg-gray-50 rounded-lg sm:rounded-xl"
                       >
                         <div className="flex-1">
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-sm sm:text-base text-gray-900">
                             {item.product_name}
                           </p>
                           {item.variant_name && (
@@ -400,8 +405,8 @@ export default function OrderDetailModal({
               </div>
 
               {/* Pricing Breakdown */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-xl">
-                <div className="space-y-2 text-sm">
+              <div className="mb-4 sm:mb-5 lg:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg sm:rounded-xl">
+                <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
                     <span>₱{Number(order.subtotal || 0).toFixed(2)}</span>
@@ -429,29 +434,33 @@ export default function OrderDetailModal({
               </div>
 
               {/* Delivery Information */}
-              <div className="mb-6">
-                <h3 className="font-outfit text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-[#30442B]" />
+              <div className="mb-4 sm:mb-5 lg:mb-6">
+                <h3 className="font-outfit text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
+                  <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#30442B]" />
                   Delivery Information
                 </h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-gray-700 mb-1">
+                      <p className="text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">
                         Delivery Address
                       </p>
-                      <p className="text-gray-900">{order.delivery_address}</p>
+                      <p className="text-sm sm:text-base text-gray-900">
+                        {order.delivery_address}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
-                    <Phone className="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-gray-700 mb-1">
+                      <p className="text-xs sm:text-sm font-medium text-gray-700 mb-0.5 sm:mb-1">
                         Contact Number
                       </p>
-                      <p className="text-gray-900">{order.delivery_contact}</p>
+                      <p className="text-sm sm:text-base text-gray-900">
+                        {order.delivery_contact}
+                      </p>
                     </div>
                   </div>
 
@@ -564,10 +573,10 @@ export default function OrderDetailModal({
               )}
 
               {/* Action Buttons */}
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-end mt-4 sm:mt-5 lg:mt-6">
                 <button
                   onClick={onClose}
-                  className="px-6 py-3 bg-[#30442B] text-white rounded-lg font-semibold hover:bg-[#405939] transition-colors"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 bg-[#30442B] text-sm sm:text-base text-white rounded-lg font-semibold hover:bg-[#405939] transition-colors"
                 >
                   Close
                 </button>

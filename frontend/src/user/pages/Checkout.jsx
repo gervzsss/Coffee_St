@@ -41,27 +41,27 @@ export default function Checkout() {
   return (
     <>
       <Header />
-      <main className="pt-20 min-h-screen bg-gray-50">
+      <main className="pt-16 sm:pt-20 min-h-screen bg-gray-50">
         {/* Compact Checkout Header */}
-        <div className="w-full bg-[#30442B] pb-8 pt-12">
-          <div className="container mx-auto px-4">
-            <h1 className="text-2xl md:text-3xl font-bold text-white">
+        <div className="w-full bg-[#30442B] pb-6 sm:pb-8 pt-8 sm:pt-12">
+          <div className="container mx-auto px-4 sm:px-6">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
               Complete Your Order
             </h1>
-            <p className="text-gray-200 text-sm md:text-base mt-1">
+            <p className="text-gray-200 text-xs sm:text-sm lg:text-base mt-1">
               Review your items and provide delivery details
             </p>
           </div>
         </div>
 
         {/* Checkout Content */}
-        <section className="relative pb-24">
-          <div className="mx-auto max-w-7xl px-6 sm:px-10 mt-8">
+        <section className="relative pb-16 sm:pb-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 mt-6 sm:mt-8">
             {/* Error Message */}
             {error && (
-              <div className="mb-6 rounded-2xl bg-red-50 border border-red-200 p-4 flex items-start gap-3">
+              <div className="mb-4 sm:mb-6 rounded-xl sm:rounded-2xl bg-red-50 border border-red-200 p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
                 <svg
-                  className="w-5 h-5 text-red-600 shrink-0 mt-0.5"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 shrink-0 mt-0.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -73,24 +73,24 @@ export default function Checkout() {
                     d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <p className="text-sm text-red-800">{error}</p>
+                <p className="text-xs sm:text-sm text-red-800">{error}</p>
               </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
               {/* Left Column - Order Review */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                 {/* Order Items */}
-                <div className="rounded-3xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5">
-                  <h2 className="font-outfit text-xl font-semibold text-gray-900 mb-4">
+                <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 shadow-lg ring-1 ring-gray-900/5">
+                  <h2 className="font-outfit text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">
                     Order Review
                   </h2>
-                  <p className="text-sm text-gray-600 mb-6">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">
                     {selectedCartItems.length} item
                     {selectedCartItems.length !== 1 ? 's' : ''} in your order
                   </p>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {selectedCartItems.map((item) => (
                       <CheckoutItem key={item.id} item={item} />
                     ))}
