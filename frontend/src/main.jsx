@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './index.css';
 
-// User pages
 import Home from './user/pages/Home.jsx';
 import Products from './user/pages/Products.jsx';
 import About from './user/pages/About.jsx';
@@ -23,7 +22,6 @@ import { useAuth } from './user/hooks/useAuth.js';
 import { AuthModal } from './user/components/auth';
 import { ProtectedRoute, ScrollToTop } from './user/components/layout';
 
-// Admin pages
 import AdminLogin from './admin/pages/AdminLogin.jsx';
 import Dashboard from './admin/pages/Dashboard.jsx';
 import AdminProducts from './admin/pages/Products.jsx';
@@ -45,7 +43,6 @@ function UserAppContent() {
   } = useAuth();
   const { showToast } = useToast();
 
-  // Show toast when user account is blocked
   useEffect(() => {
     if (blockedMessage) {
       showToast(blockedMessage, { type: 'error', duration: 5000 });

@@ -3,8 +3,14 @@ import AdminSidebar from './AdminSidebar';
 
 export default function AdminLayout({ children }) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('adminSidebarCollapsed') === 'true';
+  });
 
-  // Lock body scroll when mobile sidebar is open
+  useEffect(() => {
+    localStorage.setItem('adminSidebarCollapsed', isSidebarCollapsed);
+  }, [isSidebarCollapsed]);
+
   useEffect(() => {
     if (isMobileSidebarOpen) {
       document.body.style.overflow = 'hidden';
@@ -64,9 +70,15 @@ export default function AdminLayout({ children }) {
       <AdminSidebar
         isMobileOpen={isMobileSidebarOpen}
         onMobileClose={closeMobileSidebar}
+        isCollapsed={isSidebarCollapsed}
+        toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
 
-      <main className="flex-1 ml-0 lg:ml-64 transition-all duration-300 overflow-auto pt-16 lg:pt-0">
+      <main
+        className={`flex-1 ml-0 transition-all duration-300 overflow-auto pt-16 lg:pt-0 ${
+          isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'
+        }`}
+      >
         {children}
       </main>
     </div>

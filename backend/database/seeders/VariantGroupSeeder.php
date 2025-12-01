@@ -18,7 +18,14 @@ class VariantGroupSeeder extends Seeder
         $this->command->info('Clearing existing variant groups...');
         
         // Delete variant groups for products we're about to seed
-        $productNames = ['Americano', 'Cappuccino', 'Raspeberry Tea'];
+        $productNames = [
+            'Americano', 
+            'Cappuccino', 
+            'Raspeberry Tea',
+            'Blueberry Frappe',
+            'Choco Chip',
+            'Salted Caramel'
+        ];
         $productIds = Product::whereIn('name', $productNames)->pluck('id');
         
         // Delete associated data first
@@ -46,6 +53,12 @@ class VariantGroupSeeder extends Seeder
         $raspberryTea = Product::where('name', 'Raspeberry Tea')->first();
         if ($raspberryTea) {
             $this->seedRaspberryTeaVariants($raspberryTea);
+        }
+
+        // Seed Frappes
+        $frappes = Product::whereIn('name', ['Blueberry Frappe', 'Choco Chip', 'Salted Caramel'])->get();
+        foreach ($frappes as $frappe) {
+            $this->seedFrappeVariants($frappe);
         }
         
         $this->command->info('Variant groups seeded successfully!');
@@ -338,6 +351,81 @@ class VariantGroupSeeder extends Seeder
             'group_name' => 'Ice Level',
             'name' => 'Less Ice',
             'price_delta' => 0,
+            'is_active' => true,
+            'is_default' => false,
+        ]);
+    }
+
+    private function seedFrappeVariants($product)
+    {
+        // Size Group
+        $sizeGroup = ProductVariantGroup::create([
+            'product_id' => $product->id,
+            'name' => 'Size',
+            'description' => 'Choose your size',
+            'selection_type' => 'single',
+            'is_required' => true,
+            'display_order' => 1,
+            'is_active' => true,
+        ]);
+
+        ProductVariant::create([
+            'product_id' => $product->id,
+            'variant_group_id' => $sizeGroup->id,
+            'group_name' => 'Size',
+            'name' => 'Regular',
+            'price_delta' => 0,
+            'is_active' => true,
+            'is_default' => true,
+        ]);
+
+        ProductVariant::create([
+            'product_id' => $product->id,
+            'variant_group_id' => $sizeGroup->id,
+            'group_name' => 'Size',
+            'name' => 'Large',
+            'price_delta' => 20,
+            'is_active' => true,
+            'is_default' => false,
+        ]);
+
+        // Add Ons Group
+        $addOnsGroup = ProductVariantGroup::create([
+            'product_id' => $product->id,
+            'name' => 'Add Ons',
+            'description' => 'Customize your frappe',
+            'selection_type' => 'multiple',
+            'is_required' => false,
+            'display_order' => 2,
+            'is_active' => true,
+        ]);
+
+        ProductVariant::create([
+            'product_id' => $product->id,
+            'variant_group_id' => $addOnsGroup->id,
+            'group_name' => 'Add Ons',
+            'name' => 'Extra Whipped Cream',
+            'price_delta' => 15,
+            'is_active' => true,
+            'is_default' => false,
+        ]);
+
+        ProductVariant::create([
+            'product_id' => $product->id,
+            'variant_group_id' => $addOnsGroup->id,
+            'group_name' => 'Add Ons',
+            'name' => 'Extra Syrup',
+            'price_delta' => 10,
+            'is_active' => true,
+            'is_default' => false,
+        ]);
+
+        ProductVariant::create([
+            'product_id' => $product->id,
+            'variant_group_id' => $addOnsGroup->id,
+            'group_name' => 'Add Ons',
+            'name' => 'Espresso Shot',
+            'price_delta' => 25,
             'is_active' => true,
             'is_default' => false,
         ]);

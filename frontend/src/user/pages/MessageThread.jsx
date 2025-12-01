@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Header, Footer } from '../components/layout';
@@ -15,21 +15,10 @@ export default function MessageThread() {
   const [loading, setLoading] = useState(true);
   const [replyMessage, setReplyMessage] = useState('');
   const [sending, setSending] = useState(false);
-  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     fetchThread();
   }, [id]);
-
-  useEffect(() => {
-    if (thread) {
-      scrollToBottom();
-    }
-  }, [thread]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const fetchThread = async () => {
     setLoading(true);
@@ -61,11 +50,6 @@ export default function MessageThread() {
       }));
       setReplyMessage('');
       showToast('Reply sent successfully', { type: 'success' });
-
-      // Scroll after state update
-      setTimeout(() => {
-        scrollToBottom();
-      }, 100);
     } else {
       showToast(result.error || 'Failed to send reply', { type: 'error' });
     }
@@ -217,7 +201,6 @@ export default function MessageThread() {
                     </div>
                   </div>
                 ))}
-                <div ref={messagesEndRef} />
               </div>
             </div>
 

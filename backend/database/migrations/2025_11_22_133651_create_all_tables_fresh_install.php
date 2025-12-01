@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('first_name', 120);
             $table->string('last_name', 120);
             $table->string('email', 190)->unique();
+            $table->boolean('is_admin')->default(false);
+            $table->enum('status', ['active', 'restricted'])->default('active');
+            $table->integer('failed_orders_count')->default(0);
+            $table->timestamp('status_changed_at')->nullable();
             $table->string('password');
             $table->string('address')->nullable();
             $table->string('phone', 50)->nullable();
@@ -38,6 +42,9 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_available')->default(true);
+            $table->string('unavailable_reason')->nullable();
+            $table->timestamp('archived_at')->nullable();
             $table->timestamps();
 
             $table->index('category', 'idx_products_category');
@@ -119,7 +126,7 @@ return new class extends Migration
             $table->id();
             $table->string('order_number', 20)->unique();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('status', ['pending', 'paid', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'failed', 'cancelled'])->default('pending');
             $table->decimal('subtotal', 10, 2)->default(0.00);
             $table->decimal('delivery_fee', 10, 2)->default(0.00);
             $table->decimal('tax_rate', 6, 4)->default(0.0800);
@@ -130,6 +137,17 @@ return new class extends Migration
             $table->string('delivery_contact', 20)->nullable();
             $table->text('delivery_instructions')->nullable();
             $table->enum('payment_method', ['cash', 'gcash'])->default('cash');
+            
+            // Order tracking fields
+            $table->timestamp('confirmed_at')->nullable();
+            $table->timestamp('preparing_at')->nullable();
+            $table->timestamp('out_for_delivery_at')->nullable();
+            $table->timestamp('delivered_at')->nullable();
+            $table->timestamp('failed_at')->nullable();
+            $table->string('failure_reason')->nullable();
+            $table->string('delivery_proof_url')->nullable();
+            $table->text('notes')->nullable();
+            
             $table->timestamps();
 
             $table->index(['user_id', 'status'], 'idx_orders_user_status');
@@ -211,6 +229,20 @@ return new class extends Migration
 
             $table->index('expires_at');
         });
+
+        // 14. Order Status Logs Table
+        Schema::create('order_status_logs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
+            $table->foreignId('changed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->string('from_status')->nullable();
+            $table->string('to_status');
+            $table->text('notes')->nullable();
+            $table->string('proof_url')->nullable();
+            $table->timestamps();
+
+            $table->index('order_id');
+        });
     }
 
     /**
@@ -218,6 +250,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('order_status_logs');
+        Schema::dropIfExists('personal_access_tokens');
         Schema::dropIfExists('thread_messages');
         Schema::dropIfExists('inquiry_threads');
         Schema::dropIfExists('order_item_variants');
@@ -229,7 +263,6 @@ return new class extends Migration
         Schema::dropIfExists('product_variants');
         Schema::dropIfExists('product_variant_groups');
         Schema::dropIfExists('products');
-        Schema::dropIfExists('personal_access_tokens');
         Schema::dropIfExists('users');
     }
 };

@@ -2,10 +2,14 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../hooks/useAdminAuth';
 
-export default function AdminSidebar({ isMobileOpen = false, onMobileClose }) {
+export default function AdminSidebar({
+  isMobileOpen = false,
+  onMobileClose,
+  isCollapsed = false,
+  toggleCollapse,
+}) {
   const { admin, logout } = useAdminAuth();
   const navigate = useNavigate();
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -97,7 +101,6 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }) {
     },
   ];
 
-  // Determine sidebar width based on collapsed state (desktop only)
   const sidebarWidth = isCollapsed ? 'lg:w-20' : 'lg:w-64';
 
   return (
@@ -134,7 +137,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }) {
 
       {/* Desktop Toggle Button */}
       <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={toggleCollapse}
         className="hidden lg:flex absolute -right-4 top-6 w-8 h-8 items-center justify-center bg-[#30442B] border-2 border-white/10 rounded-full shadow transition-all duration-300 focus:outline-none hover:bg-[#3a543a]"
       >
         <svg
