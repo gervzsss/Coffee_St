@@ -1,33 +1,34 @@
+import { useMemo } from 'react';
+
 const BAR_COLORS = ['#30442B', '#4b6a4f', '#7ea37b', '#a9c7a8'];
 
-const DEFAULT_DATA = [
-  { name: 'macchiato', value: 40 },
-  { name: 'latte', value: 48 },
-  { name: 'white mocha', value: 32 },
-  { name: 'americano', value: 28 },
-];
+const DEFAULT_DATA = [{ name: 'No Data', value: 0 }];
 
 export default function TopSellingChart({
-  data = null,
+  data = [],
   title = 'Top Selling',
   subtitle = 'Latest products trends this week',
 }) {
-  const chartData = data || DEFAULT_DATA;
+  const chartData = data && data.length > 0 ? data : DEFAULT_DATA;
+
+  const maxVal = useMemo(() => {
+    return Math.max(...chartData.map((d) => d.value), 1);
+  }, [chartData]);
 
   return (
-    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 hover:shadow-xl transition-shadow duration-300">
-      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">
+    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-1">
         {title}
       </h3>
-      <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
-        {subtitle}
-      </p>
-      <div className="h-48 sm:h-56 lg:h-64 flex items-end gap-4 sm:gap-6 lg:gap-8 px-2 sm:px-4">
+      <p className="text-xs sm:text-sm text-gray-500 mb-6">{subtitle}</p>
+
+      <div className="flex-1 flex items-end gap-2 sm:gap-4 min-h-[200px]">
         {chartData.map((item, index) => (
           <BarItem
-            key={item.name}
+            key={index}
             name={item.name}
-            height={item.value}
+            value={item.value}
+            maxValue={maxVal}
             color={BAR_COLORS[index % BAR_COLORS.length]}
           />
         ))}
@@ -36,26 +37,32 @@ export default function TopSellingChart({
   );
 }
 
-function BarItem({ name, height, color }) {
-  const barHeight = `h-${height}`;
-  const hoverHeight = `group-hover:h-${height + 4}`;
+function BarItem({ name, value, maxValue, color }) {
+  const heightPercentage = (value / maxValue) * 100;
 
   return (
     <div className="flex-1 h-full flex flex-col justify-end group">
+      <div className="relative w-full flex justify-center items-end flex-1">
+        <div
+          className="w-full max-w-[60px] rounded-t-lg transition-all duration-500 ease-out relative"
+          style={{
+            backgroundColor: color,
+            height: `${heightPercentage}%`,
+            minHeight: '4px',
+          }}
+        >
+          {/* Tooltip / Value Label on Hover */}
+          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+            {value} sold
+          </div>
+        </div>
+      </div>
       <div
-        className="mx-auto w-16 rounded-t-lg transition-all duration-300"
-        style={{
-          backgroundColor: color,
-          height: `${height * 4}px`,
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.height = `${height * 4 + 16}px`;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.height = `${height * 4}px`;
-        }}
-      />
-      <div className="text-center text-sm mt-3 font-medium">{name}</div>
+        className="text-center text-xs sm:text-sm mt-3 font-medium text-gray-600 truncate w-full px-1"
+        title={name}
+      >
+        {name}
+      </div>
     </div>
   );
 }
