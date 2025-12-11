@@ -1,10 +1,10 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
-import * as cartService from '../services/cartService';
-import { useAuth } from '../hooks/useAuth';
+import { createContext, useState, useEffect, useCallback } from "react";
+import * as cartService from "../services/cartService";
+import { useAuth } from "../hooks/useAuth";
 
 export const CartContext = createContext(null);
 
-const CART_COUNT_KEY = 'cart_count';
+const CART_COUNT_KEY = "cart_count";
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
     try {
       localStorage.setItem(CART_COUNT_KEY, count.toString());
     } catch (err) {
-      console.error('Failed to persist cart count:', err);
+      console.error("Failed to persist cart count:", err);
     }
   }, []);
 
@@ -43,17 +43,15 @@ export const CartProvider = ({ children }) => {
       if (result.success) {
         const items = result.data;
         setCartItems(items);
-        updateCartCount(
-          items.reduce((total, item) => total + item.quantity, 0)
-        );
+        updateCartCount(items.reduce((total, item) => total + item.quantity, 0));
       } else {
         setError(result.error);
         setCartItems([]);
         updateCartCount(0);
       }
     } catch (err) {
-      console.error('Failed to fetch cart:', err);
-      setError('Failed to load cart');
+      console.error("Failed to fetch cart:", err);
+      setError("Failed to load cart");
       setCartItems([]);
       updateCartCount(0);
     } finally {
@@ -92,11 +90,7 @@ export const CartProvider = ({ children }) => {
       const result = await cartService.updateCartItem(itemId, quantity);
 
       if (result.success) {
-        setCartItems((prev) =>
-          prev.map((item) =>
-            item.id === itemId ? { ...item, quantity } : item
-          )
-        );
+        setCartItems((prev) => prev.map((item) => (item.id === itemId ? { ...item, quantity } : item)));
 
         const oldItem = cartItems.find((item) => item.id === itemId);
         const newCount = cartCount - (oldItem?.quantity || 0) + quantity;
@@ -109,10 +103,10 @@ export const CartProvider = ({ children }) => {
         return result;
       }
     } catch (err) {
-      console.error('Failed to update quantity:', err);
-      setError('Failed to update quantity');
+      console.error("Failed to update quantity:", err);
+      setError("Failed to update quantity");
       await fetchCart();
-      return { success: false, error: 'Failed to update quantity' };
+      return { success: false, error: "Failed to update quantity" };
     }
   };
 
@@ -133,10 +127,10 @@ export const CartProvider = ({ children }) => {
         return result;
       }
     } catch (err) {
-      console.error('Failed to remove item:', err);
-      setError('Failed to remove item');
+      console.error("Failed to remove item:", err);
+      setError("Failed to remove item");
       await fetchCart();
-      return { success: false, error: 'Failed to remove item' };
+      return { success: false, error: "Failed to remove item" };
     }
   };
 
@@ -165,8 +159,8 @@ export const CartProvider = ({ children }) => {
       fetchCart();
     };
 
-    window.addEventListener('cartUpdated', handleCartUpdate);
-    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
+    window.addEventListener("cartUpdated", handleCartUpdate);
+    return () => window.removeEventListener("cartUpdated", handleCartUpdate);
   }, [fetchCart]);
 
   useEffect(() => {
@@ -179,8 +173,8 @@ export const CartProvider = ({ children }) => {
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, [cartCount]);
 
   const value = {

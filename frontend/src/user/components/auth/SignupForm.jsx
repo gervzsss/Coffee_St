@@ -1,5 +1,5 @@
-import { useSignupForm } from '../../hooks';
-import { getInputClasses } from '../../utils/formHelpers';
+import { useSignupForm } from "../../hooks";
+import { getInputClasses } from "../../utils/formHelpers";
 
 export default function SignupForm({ onClose, onSwitchToLogin }) {
   const {
@@ -36,36 +36,20 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
 
   return (
     <div className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
-      <div className="space-y-2 sm:space-y-3 text-center">
-        <span className="mx-auto inline-flex items-center rounded-full bg-[#30442B]/10 px-3 py-1 sm:px-4 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.35em] text-[#30442B]">
+      <div className="space-y-2 text-center sm:space-y-3">
+        <span className="mx-auto inline-flex items-center rounded-full bg-[#30442B]/10 px-3 py-1 text-[10px] font-semibold tracking-[0.35em] text-[#30442B] uppercase sm:px-4 sm:text-xs">
           Join the community
         </span>
-        <h2 className="font-outfit text-xl sm:text-2xl lg:text-3xl font-semibold text-neutral-900">
-          Create your Coffee St. account
-        </h2>
-        <p className="text-xs sm:text-sm lg:text-base text-neutral-500">
-          Fill out the form to save your favourites and unlock exclusive offers.
-        </p>
+        <h2 className="font-outfit text-xl font-semibold text-neutral-900 sm:text-2xl lg:text-3xl">Create your Coffee St. account</h2>
+        <p className="text-xs text-neutral-500 sm:text-sm lg:text-base">Fill out the form to save your favourites and unlock exclusive offers.</p>
       </div>
 
-      {errors.general && (
-        <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
-          {errors.general}
-        </div>
-      )}
+      {errors.general && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{errors.general}</div>}
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6"
-        autoComplete="off"
-        noValidate
-      >
+      <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off" noValidate>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
-            <label
-              htmlFor="reg-first"
-              className="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500"
-            >
+            <label htmlFor="reg-first" className="block text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase">
               First name
             </label>
             <input
@@ -77,24 +61,18 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
               onChange={handleChangeFirstName}
               onBlur={handleBlurFirstName}
               autoComplete="given-name"
-              className={getInputClasses('first_name', errors)}
+              className={getInputClasses("first_name", errors)}
               placeholder="Jane"
               disabled={loading}
             />
             {errors.first_name && errors.first_name[0] && (
-              <p
-                className="text-sm font-medium text-red-500"
-                data-error-for="reg-first"
-              >
+              <p className="text-sm font-medium text-red-500" data-error-for="reg-first">
                 {errors.first_name[0]}
               </p>
             )}
           </div>
           <div className="space-y-2">
-            <label
-              htmlFor="reg-last"
-              className="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500"
-            >
+            <label htmlFor="reg-last" className="block text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase">
               Last name
             </label>
             <input
@@ -105,15 +83,12 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
               onChange={handleChangeLastName}
               onBlur={handleBlurLastName}
               autoComplete="family-name"
-              className={getInputClasses('last_name', errors)}
+              className={getInputClasses("last_name", errors)}
               placeholder="Doe"
               disabled={loading}
             />
             {errors.last_name && errors.last_name[0] && (
-              <p
-                className="text-sm font-medium text-red-500"
-                data-error-for="reg-last"
-              >
+              <p className="text-sm font-medium text-red-500" data-error-for="reg-last">
                 {errors.last_name[0]}
               </p>
             )}
@@ -121,10 +96,7 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="reg-address"
-            className="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500"
-          >
+          <label htmlFor="reg-address" className="block text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase">
             Address
           </label>
           <input
@@ -135,15 +107,12 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
             onChange={handleChangeAddress}
             onBlur={handleBlurAddress}
             autoComplete="street-address"
-            className={getInputClasses('address', errors)}
+            className={getInputClasses("address", errors)}
             placeholder="123 Coffee Lane, City"
             disabled={loading}
           />
           {errors.address && errors.address[0] && (
-            <p
-              className="text-sm font-medium text-red-500"
-              data-error-for="reg-address"
-            >
+            <p className="text-sm font-medium text-red-500" data-error-for="reg-address">
               {errors.address[0]}
             </p>
           )}
@@ -151,10 +120,7 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
-            <label
-              htmlFor="reg-email"
-              className="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500"
-            >
+            <label htmlFor="reg-email" className="block text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase">
               Email address
             </label>
             <input
@@ -165,24 +131,18 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
               onChange={handleChangeEmail}
               onBlur={handleBlurEmail}
               autoComplete="email"
-              className={getInputClasses('email', errors)}
+              className={getInputClasses("email", errors)}
               placeholder="name@example.com"
               disabled={loading}
             />
             {errors.email && errors.email[0] && (
-              <p
-                className="text-sm font-medium text-red-500"
-                data-error-for="reg-email"
-              >
+              <p className="text-sm font-medium text-red-500" data-error-for="reg-email">
                 {errors.email[0]}
               </p>
             )}
           </div>
           <div className="space-y-2">
-            <label
-              htmlFor="reg-phone"
-              className="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500"
-            >
+            <label htmlFor="reg-phone" className="block text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase">
               Contact number
             </label>
             <input
@@ -193,15 +153,12 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
               onChange={handleChangePhone}
               onBlur={handleBlurPhone}
               autoComplete="tel"
-              className={getInputClasses('phone', errors)}
+              className={getInputClasses("phone", errors)}
               placeholder="+63 900 000 0000"
               disabled={loading}
             />
             {errors.phone && errors.phone[0] && (
-              <p
-                className="text-sm font-medium text-red-500"
-                data-error-for="reg-phone"
-              >
+              <p className="text-sm font-medium text-red-500" data-error-for="reg-phone">
                 {errors.phone[0]}
               </p>
             )}
@@ -210,40 +167,30 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
-            <label
-              htmlFor="reg-pass"
-              className="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500"
-            >
+            <label htmlFor="reg-pass" className="block text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase">
               Password
             </label>
             <div className="relative">
               <input
                 id="reg-pass"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={signupPassword}
                 onChange={handleChangePassword}
                 onBlur={handleBlurPassword}
                 autoComplete="new-password"
-                className={`${getInputClasses('password', errors)} pr-12`}
+                className={`${getInputClasses("password", errors)} pr-12`}
                 placeholder="Create a password"
                 disabled={loading}
               />
               <button
                 type="button"
                 onClick={toggleShowPassword}
-                className="cursor-pointer password-toggle absolute inset-y-0 right-3 flex items-center justify-center rounded-full p-2 text-neutral-400 transition duration-200 hover:bg-neutral-100 hover:text-[#30442B] focus:outline-none focus:ring-2 focus:ring-[#30442B]/40"
+                className="password-toggle absolute inset-y-0 right-3 flex cursor-pointer items-center justify-center rounded-full p-2 text-neutral-400 transition duration-200 hover:bg-neutral-100 hover:text-[#30442B] focus:ring-2 focus:ring-[#30442B]/40 focus:outline-none"
                 aria-label="Toggle password visibility"
                 data-target="#reg-pass"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   {showPassword ? (
                     <>
                       <path
@@ -251,76 +198,48 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
                         strokeLinejoin="round"
                         d="M3 3l18 18M10.73 6.73A9.77 9.77 0 0 1 12 6c4.477 0 8.268 2.943 9.542 7a9.77 9.77 0 0 1-1.566 2.566M17.94 17.94A9.77 9.77 0 0 1 12 19c-4.477 0-8.268-2.943-9.542-7a9.77 9.77 0 0 1 1.566-2.566"
                       />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 12a3 3 0 0 1-6 0"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 0 1-6 0" />
                     </>
                   ) : (
                     <>
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </>
                   )}
                 </svg>
               </button>
             </div>
             {errors.password && errors.password[0] && (
-              <p
-                className="text-sm font-medium text-red-500"
-                data-error-for="reg-pass"
-              >
+              <p className="text-sm font-medium text-red-500" data-error-for="reg-pass">
                 {errors.password[0]}
               </p>
             )}
           </div>
           <div className="space-y-2">
-            <label
-              htmlFor="reg-pass-confirm"
-              className="block text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500"
-            >
+            <label htmlFor="reg-pass-confirm" className="block text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase">
               Confirm password
             </label>
             <div className="relative">
               <input
                 id="reg-pass-confirm"
-                type={showConfirmPassword ? 'text' : 'password'}
+                type={showConfirmPassword ? "text" : "password"}
                 name="password_confirmation"
                 value={passwordConfirmation}
                 onChange={handleChangePasswordConfirmation}
                 onBlur={handleBlurPasswordConfirmation}
                 autoComplete="new-password"
-                className={`${getInputClasses(
-                  'password_confirmation',
-                  errors
-                )} pr-12`}
+                className={`${getInputClasses("password_confirmation", errors)} pr-12`}
                 placeholder="Repeat password"
                 disabled={loading}
               />
               <button
                 type="button"
                 onClick={toggleShowConfirmPassword}
-                className="cursor-pointer password-toggle absolute inset-y-0 right-3 flex items-center justify-center rounded-full p-2 text-neutral-400 transition duration-200 hover:bg-neutral-100 hover:text-[#30442B] focus:outline-none focus:ring-2 focus:ring-[#30442B]/40"
+                className="password-toggle absolute inset-y-0 right-3 flex cursor-pointer items-center justify-center rounded-full p-2 text-neutral-400 transition duration-200 hover:bg-neutral-100 hover:text-[#30442B] focus:ring-2 focus:ring-[#30442B]/40 focus:outline-none"
                 aria-label="Toggle password visibility"
                 data-target="#reg-pass-confirm"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   {showConfirmPassword ? (
                     <>
                       <path
@@ -328,38 +247,22 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
                         strokeLinejoin="round"
                         d="M3 3l18 18M10.73 6.73A9.77 9.77 0 0 1 12 6c4.477 0 8.268 2.943 9.542 7a9.77 9.77 0 0 1-1.566 2.566M17.94 17.94A9.77 9.77 0 0 1 12 19c-4.477 0-8.268-2.943-9.542-7a9.77 9.77 0 0 1 1.566-2.566"
                       />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 12a3 3 0 0 1-6 0"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 0 1-6 0" />
                     </>
                   ) : (
                     <>
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </>
                   )}
                 </svg>
               </button>
             </div>
-            {errors.password_confirmation &&
-              errors.password_confirmation[0] && (
-                <p
-                  className="text-sm font-medium text-red-500"
-                  data-error-for="reg-pass-confirm"
-                >
-                  {errors.password_confirmation[0]}
-                </p>
-              )}
+            {errors.password_confirmation && errors.password_confirmation[0] && (
+              <p className="text-sm font-medium text-red-500" data-error-for="reg-pass-confirm">
+                {errors.password_confirmation[0]}
+              </p>
+            )}
           </div>
         </div>
 
@@ -367,38 +270,18 @@ export default function SignupForm({ onClose, onSwitchToLogin }) {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex w-full items-center justify-center rounded-xl sm:rounded-2xl bg-[#30442B] px-4 py-2.5 sm:px-5 sm:py-3 lg:py-3.5 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-[#3d5a38] focus:outline-none focus:ring-4 focus:ring-[#30442B]/30 disabled:opacity-50 disabled:cursor-default enabled:cursor-pointer"
+            className="inline-flex w-full items-center justify-center rounded-xl bg-[#30442B] px-4 py-2.5 text-xs font-semibold tracking-[0.2em] text-white uppercase transition duration-300 hover:bg-[#3d5a38] focus:ring-4 focus:ring-[#30442B]/30 focus:outline-none enabled:cursor-pointer disabled:cursor-default disabled:opacity-50 sm:rounded-2xl sm:px-5 sm:py-3 sm:text-sm lg:py-3.5"
           >
             {loading ? (
-              <svg
-                className="animate-spin h-5 w-5 mx-auto"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
+              <svg className="mx-auto h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
             ) : (
-              'Create account'
+              "Create account"
             )}
           </button>
-          <button
-            type="button"
-            onClick={onSwitchToLogin}
-            className="cursor-pointer w-full text-sm font-semibold uppercase tracking-[0.2em] text-[#30442B] transition hover:text-[#3d5a38]"
-          >
+          <button type="button" onClick={onSwitchToLogin} className="w-full cursor-pointer text-sm font-semibold tracking-[0.2em] text-[#30442B] uppercase transition hover:text-[#3d5a38]">
             Already registered? Log in
           </button>
         </div>

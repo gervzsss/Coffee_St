@@ -1,30 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-export default function CategorySidebar({
-  categories,
-  selectedCategory,
-  onCategoryChange,
-  productCounts = {},
-}) {
+export default function CategorySidebar({ categories, selectedCategory, onCategoryChange, productCounts = {} }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   useEffect(() => {
     setIsMobileOpen(false);
   }, [selectedCategory]);
 
-  const drinkCategories = categories.filter((c) => c.section === 'drinks');
-  const pastryCategories = categories.filter((c) => c.section === 'pastries');
+  const drinkCategories = categories.filter((c) => c.section === "drinks");
+  const pastryCategories = categories.filter((c) => c.section === "pastries");
 
   const CategoryButton = ({ category, count, isAllProducts = false }) => (
     <button
       onClick={() => onCategoryChange(category.value)}
-      className={`cursor-pointer group w-full flex items-center px-6 ${
-        isAllProducts ? 'py-5' : 'py-4'
-      } rounded-xl transition-all duration-300 hover:bg-[#30442B]/5 text-gray-700 hover:text-[#30442B] ${
-        selectedCategory === category.value ? 'bg-[#30442B]/5' : ''
-      }`}
+      className={`group flex w-full cursor-pointer items-center px-6 ${
+        isAllProducts ? "py-5" : "py-4"
+      } rounded-xl text-gray-700 transition-all duration-300 hover:bg-[#30442B]/5 hover:text-[#30442B] ${selectedCategory === category.value ? "bg-[#30442B]/5" : ""}`}
     >
-      <span className="flex items-center gap-4 category-label">
+      <span className="category-label flex items-center gap-4">
         <span className="category-icon text-xl">{category.icon}</span>
         <span className="category-text font-medium">{category.label}</span>
       </span>
@@ -32,120 +25,65 @@ export default function CategorySidebar({
   );
 
   return (
-    <div className="lg:sticky lg:top-28 lg:self-start lg:w-80 xl:w-96 2xl:w-[420px] lg:shrink-0">
+    <div className="lg:sticky lg:top-28 lg:w-80 lg:shrink-0 lg:self-start xl:w-96 2xl:w-[420px]">
       {/* Mobile Toggle Button */}
-      <button
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed bottom-4 right-4 z-40 bg-[#30442B] text-white p-4 rounded-full shadow-lg hover:bg-[#405939] transition-colors"
-      >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+      <button onClick={() => setIsMobileOpen(!isMobileOpen)} className="fixed right-4 bottom-4 z-40 rounded-full bg-[#30442B] p-4 text-white shadow-lg transition-colors hover:bg-[#405939] lg:hidden">
+        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           {isMobileOpen ? (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           )}
         </svg>
       </button>
 
       {/* Overlay for mobile */}
-      {isMobileOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
-          onClick={() => setIsMobileOpen(false)}
-        />
-      )}
+      {isMobileOpen && <div className="bg-opacity-50 fixed inset-0 z-30 bg-black lg:hidden" onClick={() => setIsMobileOpen(false)} />}
 
       {/* Sidebar */}
       <nav
-        className={`fixed lg:static left-0 lg:left-auto top-0 lg:top-auto w-full lg:w-full h-screen lg:h-auto bg-white rounded-none lg:rounded-xl xl:rounded-2xl shadow-xl p-4 sm:p-5 lg:p-6 xl:p-7 z-40 lg:z-10 transform lg:transform-none transition-transform duration-300 border border-gray-100 lg:max-h-[calc(100vh-140px)] lg:overflow-y-auto
-          ${
-            isMobileOpen
-              ? 'translate-x-0 overflow-y-auto'
-              : '-translate-x-full lg:translate-x-0'
-          }
-        `}
+        className={`fixed top-0 left-0 z-40 h-screen w-full transform rounded-none border border-gray-100 bg-white p-4 shadow-xl transition-transform duration-300 sm:p-5 lg:static lg:top-auto lg:left-auto lg:z-10 lg:h-auto lg:max-h-[calc(100vh-140px)] lg:w-full lg:transform-none lg:overflow-y-auto lg:rounded-xl lg:p-6 xl:rounded-2xl xl:p-7 ${
+          isMobileOpen ? "translate-x-0 overflow-y-auto" : "-translate-x-full lg:translate-x-0"
+        } `}
       >
         <div>
           {/* Mobile Header */}
-          <div className="lg:hidden flex items-center justify-between mb-4 pb-4 border-b">
+          <div className="mb-4 flex items-center justify-between border-b pb-4 lg:hidden">
             <h2 className="text-xl font-bold text-[#30442B]">Categories</h2>
-            <button
-              onClick={() => setIsMobileOpen(false)}
-              className="text-gray-600 hover:text-gray-800"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+            <button onClick={() => setIsMobileOpen(false)} className="text-gray-600 hover:text-gray-800">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {/* Drinks Section */}
-          <div className="space-y-6 mb-8">
+          <div className="mb-8 space-y-6">
             {/* All Products - Above Drinks Header */}
             <div className="mb-4">
-              <CategoryButton
-                category={{ value: '', label: 'All Products', icon: '🌟' }}
-                isAllProducts={true}
-              />
+              <CategoryButton category={{ value: "", label: "All Products", icon: "🌟" }} isAllProducts={true} />
             </div>
 
             {/* Drinks Header */}
-            <h3 className="text-[#30442B] font-bold text-2xl sm:text-3xl lg:text-3xl xl:text-4xl px-2 mb-3 sm:mb-4">
-              Drinks
-            </h3>
+            <h3 className="mb-3 px-2 text-2xl font-bold text-[#30442B] sm:mb-4 sm:text-3xl lg:text-3xl xl:text-4xl">Drinks</h3>
 
             {/* Drinks Categories */}
             <div className="space-y-3">
               {drinkCategories.map((category) => (
-                <CategoryButton
-                  key={category.value}
-                  category={category}
-                  count={productCounts[category.value]}
-                />
+                <CategoryButton key={category.value} category={category} count={productCounts[category.value]} />
               ))}
             </div>
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-gray-200 mb-6"></div>
+          <div className="mb-6 h-px bg-gray-200"></div>
 
           {/* Pastries Section */}
           <div className="space-y-3 sm:space-y-4">
-            <h3 className="text-[#30442B] font-bold text-xl sm:text-2xl lg:text-2xl xl:text-3xl px-2 mb-3 sm:mb-4">
-              Pastries & Desserts
-            </h3>
+            <h3 className="mb-3 px-2 text-xl font-bold text-[#30442B] sm:mb-4 sm:text-2xl lg:text-2xl xl:text-3xl">Pastries & Desserts</h3>
             <div className="space-y-3">
               {pastryCategories.map((category) => (
-                <CategoryButton
-                  key={category.value}
-                  category={category}
-                  count={productCounts[category.value]}
-                />
+                <CategoryButton key={category.value} category={category} count={productCounts[category.value]} />
               ))}
             </div>
           </div>

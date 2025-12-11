@@ -1,8 +1,8 @@
 export default function PageHeader({ title, subtitle }) {
   return (
-    <div className="bg-[#30442B] text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
-      <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold">{title}</h1>
-      {subtitle && <p className="text-xs sm:text-sm text-white/80 mt-1 sm:mt-2">{subtitle}</p>}
+    <div className="mb-6 rounded-xl bg-[#30442B] p-4 text-white sm:mb-8 sm:rounded-2xl sm:p-6 lg:p-8">
+      <h1 className="text-xl font-extrabold sm:text-2xl md:text-3xl lg:text-4xl">{title}</h1>
+      {subtitle && <p className="mt-1 text-xs text-white/80 sm:mt-2 sm:text-sm">{subtitle}</p>}
     </div>
   );
 }

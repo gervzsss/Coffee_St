@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component } from "react";
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -11,21 +11,16 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    console.error("Error caught by boundary:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className="flex flex-col items-center justify-center min-h-[400px] p-8">
-            <div className="text-red-500 mb-4">
-              <svg
-                className="w-16 h-16"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+          <div className="flex min-h-[400px] flex-col items-center justify-center p-8">
+            <div className="mb-4 text-red-500">
+              <svg className="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -34,16 +29,9 @@ export default class ErrorBoundary extends Component {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Something went wrong
-            </h2>
-            <p className="text-gray-600 mb-4 text-center max-w-md">
-              An unexpected error occurred. Please try refreshing the page.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-2.5 bg-[#30442B] text-white rounded-lg font-medium hover:bg-[#22301e] transition-colors"
-            >
+            <h2 className="mb-2 text-xl font-semibold text-gray-900">Something went wrong</h2>
+            <p className="mb-4 max-w-md text-center text-gray-600">An unexpected error occurred. Please try refreshing the page.</p>
+            <button onClick={() => window.location.reload()} className="rounded-lg bg-[#30442B] px-6 py-2.5 font-medium text-white transition-colors hover:bg-[#22301e]">
               Refresh Page
             </button>
           </div>

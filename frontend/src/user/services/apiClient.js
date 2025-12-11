@@ -45,8 +45,8 @@ api.interceptors.response.use(
         localStorage.removeItem('token');
         delete api.defaults.headers.common['Authorization'];
 
-        window.dispatchEvent(new CustomEvent('auth:blocked', { 
-          detail: { message } 
+        window.dispatchEvent(new CustomEvent('auth:blocked', {
+          detail: { message }
         }));
       }
     }

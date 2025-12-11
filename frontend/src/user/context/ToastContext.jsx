@@ -1,5 +1,5 @@
-import { createContext, useState, useCallback } from 'react';
-import { Toast } from '../components/common';
+import { createContext, useState, useCallback } from "react";
+import { Toast } from "../components/common";
 
 export const ToastContext = createContext(null);
 
@@ -11,8 +11,8 @@ export function ToastProvider({ children }) {
     const toast = {
       id,
       message,
-      type: options.type || 'default',
-      duration: typeof options.duration === 'number' ? options.duration : 2800,
+      type: options.type || "default",
+      duration: typeof options.duration === "number" ? options.duration : 2800,
       dismissible: !!options.dismissible,
       onClose: options.onClose,
     };
@@ -33,7 +33,7 @@ export function ToastProvider({ children }) {
         try {
           toast.onClose();
         } catch (e) {
-          console.error('Toast onClose error:', e);
+          console.error("Toast onClose error:", e);
         }
       }
       return prev.filter((t) => t.id !== id);

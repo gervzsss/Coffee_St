@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function DeliveryForm({ formData, onChange, errors }) {
   const [showInstructions, setShowInstructions] = useState(false);
@@ -9,18 +9,13 @@ export default function DeliveryForm({ formData, onChange, errors }) {
   };
 
   return (
-    <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 lg:p-8 shadow-lg ring-1 ring-gray-900/5">
-      <h2 className="font-outfit text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">
-        Delivery Information
-      </h2>
+    <div className="rounded-2xl bg-white p-4 shadow-lg ring-1 ring-gray-900/5 sm:rounded-3xl sm:p-6 lg:p-8">
+      <h2 className="font-outfit mb-4 text-lg font-semibold text-gray-900 sm:mb-6 sm:text-xl">Delivery Information</h2>
 
       <div className="space-y-4 sm:space-y-5 lg:space-y-6">
         {/* Delivery Address */}
         <div>
-          <label
-            htmlFor="delivery_address"
-            className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
-          >
+          <label htmlFor="delivery_address" className="mb-1.5 block text-xs font-medium text-gray-700 sm:mb-2 sm:text-sm">
             Delivery Address <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -29,24 +24,17 @@ export default function DeliveryForm({ formData, onChange, errors }) {
             rows={3}
             value={formData.delivery_address}
             onChange={handleChange}
-            className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors resize-none ${
-              errors.delivery_address ? 'border-red-500' : 'border-gray-300'
+            className={`w-full resize-none rounded-lg border px-3 py-2.5 text-sm transition-colors focus:border-[#30442B] focus:ring-2 focus:ring-[#30442B]/20 focus:outline-none sm:px-4 sm:py-3 sm:text-base ${
+              errors.delivery_address ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Enter your complete delivery address (House/Unit No., Street, Barangay, City)"
           />
-          {errors.delivery_address && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.delivery_address}
-            </p>
-          )}
+          {errors.delivery_address && <p className="mt-1 text-sm text-red-500">{errors.delivery_address}</p>}
         </div>
 
         {/* Contact Number */}
         <div>
-          <label
-            htmlFor="delivery_contact"
-            className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
-          >
+          <label htmlFor="delivery_contact" className="mb-1.5 block text-xs font-medium text-gray-700 sm:mb-2 sm:text-sm">
             Contact Number <span className="text-red-500">*</span>
           </label>
           <input
@@ -55,39 +43,19 @@ export default function DeliveryForm({ formData, onChange, errors }) {
             name="delivery_contact"
             value={formData.delivery_contact}
             onChange={handleChange}
-            className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors ${
-              errors.delivery_contact ? 'border-red-500' : 'border-gray-300'
+            className={`w-full rounded-lg border px-3 py-2.5 text-sm transition-colors focus:border-[#30442B] focus:ring-2 focus:ring-[#30442B]/20 focus:outline-none sm:px-4 sm:py-3 sm:text-base ${
+              errors.delivery_contact ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="+63 900 000 0000"
           />
-          {errors.delivery_contact && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.delivery_contact}
-            </p>
-          )}
+          {errors.delivery_contact && <p className="mt-1 text-sm text-red-500">{errors.delivery_contact}</p>}
         </div>
 
         {/* Delivery Instructions (Optional - Collapsible) */}
         <div>
-          <button
-            type="button"
-            onClick={() => setShowInstructions(!showInstructions)}
-            className="flex items-center gap-2 text-sm font-medium text-[#30442B] hover:text-[#405939] transition-colors"
-          >
-            <svg
-              className={`w-4 h-4 transition-transform ${
-                showInstructions ? 'rotate-90' : ''
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
+          <button type="button" onClick={() => setShowInstructions(!showInstructions)} className="flex items-center gap-2 text-sm font-medium text-[#30442B] transition-colors hover:text-[#405939]">
+            <svg className={`h-4 w-4 transition-transform ${showInstructions ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
             Add delivery instructions (optional)
           </button>
@@ -99,7 +67,7 @@ export default function DeliveryForm({ formData, onChange, errors }) {
               rows={2}
               value={formData.delivery_instructions}
               onChange={handleChange}
-              className="mt-2 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors resize-none"
+              className="mt-2 w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#30442B] focus:ring-2 focus:ring-[#30442B]/20 focus:outline-none"
               placeholder="e.g., Please ring the doorbell, Leave at the gate, etc."
             />
           )}
@@ -107,61 +75,49 @@ export default function DeliveryForm({ formData, onChange, errors }) {
 
         {/* Payment Method */}
         <div>
-          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3">
+          <label className="mb-2 block text-xs font-medium text-gray-700 sm:mb-3 sm:text-sm">
             Payment Method <span className="text-red-500">*</span>
           </label>
           <div className="space-y-2 sm:space-y-3">
             {/* Cash on Delivery */}
-            <label className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#30442B]/30 transition-colors">
+            <label className="flex cursor-pointer items-start gap-2 rounded-lg border-2 border-gray-200 p-3 transition-colors hover:border-[#30442B]/30 sm:gap-3 sm:p-4">
               <input
                 type="radio"
                 name="payment_method"
                 value="cash"
-                checked={formData.payment_method === 'cash'}
+                checked={formData.payment_method === "cash"}
                 onChange={handleChange}
                 className="mt-0.5 h-4 w-4 text-[#30442B] focus:ring-[#30442B]"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-gray-900">
-                    Cash on Delivery
-                  </span>
-                  <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full">
-                    Recommended
-                  </span>
+                  <span className="font-medium text-gray-900">Cash on Delivery</span>
+                  <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700">Recommended</span>
                 </div>
-                <p className="text-sm text-gray-600 mt-1">
-                  Pay with cash when your order arrives
-                </p>
+                <p className="mt-1 text-sm text-gray-600">Pay with cash when your order arrives</p>
               </div>
             </label>
 
             {/* GCash (Mock) */}
-            <label className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#30442B]/30 transition-colors">
+            <label className="flex cursor-pointer items-start gap-3 rounded-lg border-2 border-gray-200 p-4 transition-colors hover:border-[#30442B]/30">
               <input
                 type="radio"
                 name="payment_method"
                 value="gcash"
-                checked={formData.payment_method === 'gcash'}
+                checked={formData.payment_method === "gcash"}
                 onChange={handleChange}
                 className="mt-0.5 h-4 w-4 text-[#30442B] focus:ring-[#30442B]"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-gray-900">GCash</span>
-                  <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
-                    Mock Payment
-                  </span>
+                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">Mock Payment</span>
                 </div>
-                <p className="text-sm text-gray-600 mt-1">
-                  Digital wallet payment (no actual charge will be made)
-                </p>
+                <p className="mt-1 text-sm text-gray-600">Digital wallet payment (no actual charge will be made)</p>
               </div>
             </label>
           </div>
-          {errors.payment_method && (
-            <p className="mt-2 text-sm text-red-500">{errors.payment_method}</p>
-          )}
+          {errors.payment_method && <p className="mt-2 text-sm text-red-500">{errors.payment_method}</p>}
         </div>
       </div>
     </div>

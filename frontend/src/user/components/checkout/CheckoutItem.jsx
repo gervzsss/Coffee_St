@@ -1,5 +1,5 @@
-import { getResponsiveImageUrl } from '../../services/cloudinaryService';
-import coffeeBeansImg from '../../../assets/coffeebeans.png';
+import { getResponsiveImageUrl } from "../../services/cloudinaryService";
+import coffeeBeansImg from "../../../assets/coffeebeans.png";
 
 export default function CheckoutItem({ item }) {
   const getVariantsDisplay = () => {
@@ -7,9 +7,7 @@ export default function CheckoutItem({ item }) {
       return null;
     }
 
-    return item.selected_variants
-      .map((variant) => `${variant.name}: ${variant.option}`)
-      .join(', ');
+    return item.selected_variants.map((variant) => `${variant.name}: ${variant.option}`).join(", ");
   };
 
   const getProductImage = (imageUrl) => {
@@ -18,13 +16,13 @@ export default function CheckoutItem({ item }) {
   };
 
   return (
-    <div className="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white ring-1 ring-gray-100">
+    <div className="flex gap-3 rounded-xl bg-white p-3 ring-1 ring-gray-100 sm:gap-4 sm:rounded-2xl sm:p-4">
       {/* Product Image */}
-      <div className="w-14 h-14 sm:w-20 sm:h-20 shrink-0 rounded-lg sm:rounded-xl overflow-hidden bg-gray-100">
+      <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100 sm:h-20 sm:w-20 sm:rounded-xl">
         <img
           src={getProductImage(item.image_url || item.product?.image_url)}
           alt={item.product_name || item.name}
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
           onError={(e) => {
             e.target.src = coffeeBeansImg;
           }}
@@ -32,33 +30,24 @@ export default function CheckoutItem({ item }) {
       </div>
 
       {/* Product Details */}
-      <div className="flex-1 min-w-0">
-        <h4 className="font-semibold text-sm sm:text-base text-gray-900 truncate">
-          {item.product_name || item.name}
-        </h4>
+      <div className="min-w-0 flex-1">
+        <h4 className="truncate text-sm font-semibold text-gray-900 sm:text-base">{item.product_name || item.name}</h4>
 
-        {getVariantsDisplay() && (
-          <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1 line-clamp-1">
-            {getVariantsDisplay()}
-          </p>
-        )}
+        {getVariantsDisplay() && <p className="mt-0.5 line-clamp-1 text-xs text-gray-600 sm:mt-1 sm:text-sm">{getVariantsDisplay()}</p>}
 
-        <div className="flex items-center justify-between mt-1.5 sm:mt-2">
-          <div className="text-xs sm:text-sm text-gray-500">
+        <div className="mt-1.5 flex items-center justify-between sm:mt-2">
+          <div className="text-xs text-gray-500 sm:text-sm">
             <span>₱{item.unit_price.toFixed(2)}</span>
             {item.price_delta !== 0 && (
-              <span className="ml-1 text-gray-400 hidden sm:inline">
-                ({item.price_delta > 0 ? '+' : ''}₱{item.price_delta.toFixed(2)}
-                )
+              <span className="ml-1 hidden text-gray-400 sm:inline">
+                ({item.price_delta > 0 ? "+" : ""}₱{item.price_delta.toFixed(2)})
               </span>
             )}
             <span className="mx-1 sm:mx-2">×</span>
             <span>{item.quantity}</span>
           </div>
 
-          <div className="font-semibold text-sm sm:text-base text-[#30442B]">
-            ₱{(item.line_total || 0).toFixed(2)}
-          </div>
+          <div className="text-sm font-semibold text-[#30442B] sm:text-base">₱{(item.line_total || 0).toFixed(2)}</div>
         </div>
       </div>
     </div>

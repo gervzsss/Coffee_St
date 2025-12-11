@@ -1,12 +1,7 @@
-import { AdminLayout } from '../components/layout';
-import { LoadingSpinner } from '../components/common';
-import {
-  OrderCard,
-  OrderDetailModal,
-  ConfirmStatusModal,
-  FailureReasonModal,
-} from '../components/orders';
-import { useOrders } from '../hooks/useOrders';
+import { AdminLayout } from "../components/layout";
+import { LoadingSpinner } from "../components/common";
+import { OrderCard, OrderDetailModal, ConfirmStatusModal, FailureReasonModal } from "../components/orders";
+import { useOrders } from "../hooks/useOrders";
 
 export default function Orders() {
   const {
@@ -36,73 +31,47 @@ export default function Orders() {
   return (
     <AdminLayout>
       <div className="p-4 sm:p-6 lg:p-8">
-        <div className="max-w-screen-2xl mx-auto">
+        <div className="mx-auto max-w-screen-2xl">
           {/* Header Section */}
           <div className="mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900">
-              ORDERS & TRACKING
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
-              Manage customer orders and track their progress
-            </p>
+            <h1 className="text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">ORDERS & TRACKING</h1>
+            <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">Manage customer orders and track their progress</p>
           </div>
 
           {/* Order Status Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8">
+          <div className="mb-6 grid grid-cols-2 gap-2 sm:mb-8 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5 lg:gap-4">
             {statusCards.map((card) => (
               <div
                 key={card.key}
                 onClick={() => setFilterStatus(card.key)}
-                className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 cursor-pointer transition-all duration-300 ${
-                  filterStatus === card.key
-                    ? 'bg-[#30442B] text-white border-[#30442B]'
-                    : 'bg-white text-gray-800 border-gray-200 hover:border-[#30442B]/30'
+                className={`cursor-pointer rounded-lg border-2 p-3 transition-all duration-300 sm:rounded-xl sm:p-4 ${
+                  filterStatus === card.key ? "border-[#30442B] bg-[#30442B] text-white" : "border-gray-200 bg-white text-gray-800 hover:border-[#30442B]/30"
                 }`}
               >
-                <div
-                  className={`text-xs sm:text-sm font-medium ${
-                    filterStatus === card.key
-                      ? 'text-white/80'
-                      : 'text-gray-500'
-                  }`}
-                >
-                  {card.label}
-                </div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold mt-0.5 sm:mt-1">
-                  {card.count}
-                </div>
+                <div className={`text-xs font-medium sm:text-sm ${filterStatus === card.key ? "text-white/80" : "text-gray-500"}`}>{card.label}</div>
+                <div className="mt-0.5 text-xl font-bold sm:mt-1 sm:text-2xl lg:text-3xl">{card.count}</div>
               </div>
             ))}
           </div>
 
           {/* Search Section */}
-          <div className="bg-[#30442B] rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-6 sm:mb-8">
-            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
-              <div className="relative flex-1 max-w-2xl">
-                <svg
-                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 absolute left-3 sm:left-4 top-3 sm:top-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
+          <div className="mb-6 rounded-xl bg-[#30442B] p-3 sm:mb-8 sm:rounded-2xl sm:p-4">
+            <div className="flex flex-col items-stretch justify-between gap-3 sm:gap-4 md:flex-row md:items-center">
+              <div className="relative max-w-2xl flex-1">
+                <svg className="absolute top-3 left-3 h-4 w-4 text-gray-400 sm:top-3.5 sm:left-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
                   type="text"
                   placeholder="Search by Order number or customer name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 rounded-lg border-0 bg-white focus:ring-2 focus:ring-white/50 placeholder-gray-400 text-gray-800 text-xs sm:text-sm"
+                  className="w-full rounded-lg border-0 bg-white py-2.5 pr-4 pl-10 text-xs text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-white/50 sm:py-3 sm:pl-12 sm:text-sm"
                 />
               </div>
               <div className="relative">
                 <select
-                  className="appearance-none w-full md:w-auto px-3 sm:px-4 py-2.5 sm:py-3 pr-8 sm:pr-10 bg-white/10 text-white rounded-lg border border-white/20 hover:bg-white/20 transition-colors cursor-pointer text-sm font-medium"
+                  className="w-full cursor-pointer appearance-none rounded-lg border border-white/20 bg-white/10 px-3 py-2.5 pr-8 text-sm font-medium text-white transition-colors hover:bg-white/20 sm:px-4 sm:py-3 sm:pr-10 md:w-auto"
                   defaultValue=""
                 >
                   <option value="" disabled className="text-gray-800">
@@ -118,18 +87,8 @@ export default function Orders() {
                     Food
                   </option>
                 </select>
-                <svg
-                  className="w-4 h-4 sm:w-5 sm:h-5 text-white absolute right-2 sm:right-3 top-3 sm:top-3.5 pointer-events-none"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  />
+                <svg className="pointer-events-none absolute top-3 right-2 h-4 w-4 text-white sm:top-3.5 sm:right-3 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
@@ -137,9 +96,7 @@ export default function Orders() {
 
           {/* Orders List Header */}
           <div className="mb-4 sm:mb-6">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-              All Orders ({filteredOrders.length})
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-800 sm:text-xl">All Orders ({filteredOrders.length})</h2>
           </div>
 
           {/* Orders List */}
@@ -147,13 +104,8 @@ export default function Orders() {
             {loading ? (
               <LoadingSpinner className="py-8 sm:py-12" />
             ) : filteredOrders.length === 0 ? (
-              <div className="text-center py-8 sm:py-12 bg-white rounded-xl border border-gray-200">
-                <svg
-                  className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+              <div className="rounded-xl border border-gray-200 bg-white py-8 text-center sm:py-12">
+                <svg className="mx-auto mb-3 h-12 w-12 text-gray-300 sm:mb-4 sm:h-16 sm:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -161,33 +113,17 @@ export default function Orders() {
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                   />
                 </svg>
-                <p className="text-sm sm:text-base text-gray-500">
-                  No orders found
-                </p>
+                <p className="text-sm text-gray-500 sm:text-base">No orders found</p>
               </div>
             ) : (
-              filteredOrders.map((order) => (
-                <OrderCard
-                  key={order.id}
-                  order={order}
-                  onViewDetails={handleViewOrder}
-                  onQuickStatusChange={handleQuickStatusChange}
-                />
-              ))
+              filteredOrders.map((order) => <OrderCard key={order.id} order={order} onViewDetails={handleViewOrder} onQuickStatusChange={handleQuickStatusChange} />)
             )}
           </div>
         </div>
       </div>
 
       {/* Order Detail Modal */}
-      {selectedOrder && (
-        <OrderDetailModal
-          order={selectedOrder}
-          onClose={closeOrderDetail}
-          onStatusUpdate={handleStatusUpdate}
-          onMarkFailed={handleMarkFailed}
-        />
-      )}
+      {selectedOrder && <OrderDetailModal order={selectedOrder} onClose={closeOrderDetail} onStatusUpdate={handleStatusUpdate} onMarkFailed={handleMarkFailed} />}
 
       {/* Quick Status Change Confirmation Modal */}
       <ConfirmStatusModal
@@ -200,19 +136,14 @@ export default function Orders() {
       />
 
       {/* Quick Failure Modal */}
-      <FailureReasonModal
-        isOpen={failModal.isOpen}
-        onClose={closeFailModal}
-        onConfirm={confirmFailure}
-        loading={updating}
-      />
+      <FailureReasonModal isOpen={failModal.isOpen} onClose={closeFailModal} onConfirm={confirmFailure} loading={updating} />
 
       {/* Loading overlay for detail */}
       {detailLoading && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="rounded-xl bg-white p-6">
             <LoadingSpinner size="sm" />
-            <p className="text-gray-600 mt-3">Loading order details...</p>
+            <p className="mt-3 text-gray-600">Loading order details...</p>
           </div>
         </div>
       )}

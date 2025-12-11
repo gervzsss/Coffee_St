@@ -1,5 +1,5 @@
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAdminAuth } from '../../hooks/useAdminAuth';
+import { Navigate, useLocation } from "react-router-dom";
+import { useAdminAuth } from "../../hooks/useAdminAuth";
 
 export default function AdminProtectedRoute({ children }) {
   const { admin, loading } = useAdminAuth();
@@ -7,8 +7,8 @@ export default function AdminProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-amber-600"></div>
       </div>
     );
   }

@@ -1,9 +1,5 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
-import {
-  adminLogin,
-  adminLogout,
-  fetchAdminUser,
-} from '../services/authService';
+import { createContext, useState, useEffect, useCallback } from "react";
+import { adminLogin, adminLogout, fetchAdminUser } from "../services/authService";
 
 export const AdminAuthContext = createContext();
 
@@ -14,13 +10,13 @@ export function AdminAuthProvider({ children }) {
 
   useEffect(() => {
     const initAuth = async () => {
-      const token = localStorage.getItem('admin_token');
+      const token = localStorage.getItem("admin_token");
       if (token) {
         const result = await fetchAdminUser();
         if (result.success) {
           setAdmin(result.data);
         } else {
-          localStorage.removeItem('admin_token');
+          localStorage.removeItem("admin_token");
         }
       }
       setLoading(false);
@@ -35,9 +31,8 @@ export function AdminAuthProvider({ children }) {
       setIsAuthModalOpen(true);
     };
 
-    window.addEventListener('admin:unauthorized', handleUnauthorized);
-    return () =>
-      window.removeEventListener('admin:unauthorized', handleUnauthorized);
+    window.addEventListener("admin:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("admin:unauthorized", handleUnauthorized);
   }, []);
 
   const login = useCallback(async (email, password) => {
@@ -73,9 +68,5 @@ export function AdminAuthProvider({ children }) {
     closeAuthModal,
   };
 
-  return (
-    <AdminAuthContext.Provider value={value}>
-      {children}
-    </AdminAuthContext.Provider>
-  );
+  return <AdminAuthContext.Provider value={value}>{children}</AdminAuthContext.Provider>;
 }

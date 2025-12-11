@@ -1,14 +1,14 @@
-import { createContext, useState, useEffect } from 'react';
-import * as authService from '../services/authService';
+import { createContext, useState, useEffect } from "react";
+import * as authService from "../services/authService";
 
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalMode, setAuthModalMode] = useState('login');
+  const [authModalMode, setAuthModalMode] = useState("login");
   const [blockedMessage, setBlockedMessage] = useState(null);
 
   useEffect(() => {
@@ -24,11 +24,11 @@ export const AuthProvider = ({ children }) => {
     const handleBlocked = (event) => {
       setToken(null);
       setUser(null);
-      setBlockedMessage(event.detail?.message || 'Your account has been blocked. Please contact support for assistance.');
+      setBlockedMessage(event.detail?.message || "Your account has been blocked. Please contact support for assistance.");
     };
 
-    window.addEventListener('auth:blocked', handleBlocked);
-    return () => window.removeEventListener('auth:blocked', handleBlocked);
+    window.addEventListener("auth:blocked", handleBlocked);
+    return () => window.removeEventListener("auth:blocked", handleBlocked);
   }, []);
 
   const clearBlockedMessage = () => {
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     if (result.success) {
       setUser(result.data);
     } else {
-      console.error('Failed to fetch user:', result.error);
+      console.error("Failed to fetch user:", result.error);
       logout();
     }
     setLoading(false);
@@ -53,14 +53,7 @@ export const AuthProvider = ({ children }) => {
     return result;
   };
 
-  const signup = async (
-    name,
-    email,
-    password,
-    password_confirmation,
-    address,
-    phone
-  ) => {
+  const signup = async (name, email, password, password_confirmation, address, phone) => {
     const result = await authService.signup({
       name,
       email,
@@ -80,7 +73,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const openAuthModal = (mode = 'login') => {
+  const openAuthModal = (mode = "login") => {
     setAuthModalMode(mode);
     setIsAuthModalOpen(true);
   };

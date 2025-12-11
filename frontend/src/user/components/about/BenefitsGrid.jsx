@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
 
 export default function BenefitsGrid() {
   const ref = useRef(null);
@@ -10,112 +10,52 @@ export default function BenefitsGrid() {
   const benefits = [
     {
       id: 1,
-      title: 'Freshly Roasted Coffee',
-      description:
-        'Our beans are roasted in small batches daily to ensure peak flavor and aroma.',
+      title: "Freshly Roasted Coffee",
+      description: "Our beans are roasted in small batches daily to ensure peak flavor and aroma.",
       icon: (
-        <svg
-          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M4 6h16M4 12h16m-7 6h7"
-          ></path>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M12 8c0 1.657-1.343 3-3 3S6 9.657 6 8s1.343-3 3-3 3 1.343 3 3z"
-          ></path>
+        <svg className="mx-auto h-12 w-12 text-[#967259] sm:h-14 sm:w-14 lg:h-16 lg:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 6h16M4 12h16m-7 6h7"></path>
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8c0 1.657-1.343 3-3 3S6 9.657 6 8s1.343-3 3-3 3 1.343 3 3z"></path>
         </svg>
       ),
     },
     {
       id: 2,
-      title: 'Handcrafted Pastries',
-      description:
-        'Each pastry is lovingly crafted by our expert bakers using traditional recipes.',
+      title: "Handcrafted Pastries",
+      description: "Each pastry is lovingly crafted by our expert bakers using traditional recipes.",
       icon: (
-        <svg
-          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          ></path>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M9 12l2 2 4-4"
-          ></path>
+        <svg className="mx-auto h-12 w-12 text-[#967259] sm:h-14 sm:w-14 lg:h-16 lg:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4"></path>
         </svg>
       ),
     },
     {
       id: 3,
-      title: 'Ethically Sourced',
-      description:
-        'We partner directly with farmers to ensure fair prices and sustainable practices.',
+      title: "Ethically Sourced",
+      description: "We partner directly with farmers to ensure fair prices and sustainable practices.",
       icon: (
-        <svg
-          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-          ></path>
+        <svg className="mx-auto h-12 w-12 text-[#967259] sm:h-14 sm:w-14 lg:h-16 lg:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
         </svg>
       ),
     },
     {
       id: 4,
-      title: 'Baked Daily',
-      description:
-        'Fresh batches of pastries are baked throughout the day for maximum freshness.',
+      title: "Baked Daily",
+      description: "Fresh batches of pastries are baked throughout the day for maximum freshness.",
       icon: (
-        <svg
-          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-          ></path>
+        <svg className="mx-auto h-12 w-12 text-[#967259] sm:h-14 sm:w-14 lg:h-16 lg:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
       ),
     },
     {
       id: 5,
-      title: 'Community Focus',
-      description:
-        "We're proud to be a gathering place for our local community since 2020.",
+      title: "Community Focus",
+      description: "We're proud to be a gathering place for our local community since 2020.",
       icon: (
-        <svg
-          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="mx-auto h-12 w-12 text-[#967259] sm:h-14 sm:w-14 lg:h-16 lg:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -127,16 +67,10 @@ export default function BenefitsGrid() {
     },
     {
       id: 6,
-      title: 'Expert Baristas',
-      description:
-        'Our certified baristas are passionate about crafting the perfect cup for you.',
+      title: "Expert Baristas",
+      description: "Our certified baristas are passionate about crafting the perfect cup for you.",
       icon: (
-        <svg
-          className="mx-auto h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-[#967259]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="mx-auto h-12 w-12 text-[#967259] sm:h-14 sm:w-14 lg:h-16 lg:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -165,65 +99,34 @@ export default function BenefitsGrid() {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: 'easeOut',
+        ease: "easeOut",
       },
     },
   };
 
   return (
-    <section
-      ref={ref}
-      className="bg-[#FDFBF6] px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16"
-    >
+    <section ref={ref} className="bg-[#FDFBF6] px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
       <div className="mx-auto max-w-6xl xl:max-w-7xl">
-        <div className="mb-8 sm:mb-10 lg:mb-12 text-center">
-          <h2 className="mb-3 sm:mb-4 text-2xl sm:text-3xl lg:text-4xl font-bold text-[#30442B]">
-            Why Choose Our Coffee Shop?
-          </h2>
-          <Link
-            to="/about#why-choose-us"
-            className="group inline-flex items-center gap-2 text-[#30442B] transition-colors hover:text-[#967259]"
-          >
-            <span className="text-sm sm:text-base lg:text-lg">
-              Learn more about us
-            </span>
-            <svg
-              className="h-5 w-5 transform transition-transform group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
+        <div className="mb-8 text-center sm:mb-10 lg:mb-12">
+          <h2 className="mb-3 text-2xl font-bold text-[#30442B] sm:mb-4 sm:text-3xl lg:text-4xl">Why Choose Our Coffee Shop?</h2>
+          <Link to="/about#why-choose-us" className="group inline-flex items-center gap-2 text-[#30442B] transition-colors hover:text-[#967259]">
+            <span className="text-sm sm:text-base lg:text-lg">Learn more about us</span>
+            <svg className="h-5 w-5 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
-        >
+        <motion.div variants={containerVariants} initial="hidden" animate={isInView ? "visible" : "hidden"} className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
           {benefits.map((benefit) => (
             <motion.div
               key={benefit.id}
               variants={cardVariants}
-              className="benefit-card transform rounded-xl sm:rounded-2xl bg-white p-4 sm:p-5 lg:p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              className="benefit-card transform rounded-xl bg-white p-4 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg sm:rounded-2xl sm:p-5 lg:p-6"
             >
-              <div className="icon-container mb-3 sm:mb-4 text-center">
-                {benefit.icon}
-              </div>
-              <h3 className="mb-1.5 sm:mb-2 text-center text-lg sm:text-xl font-semibold text-[#30442B]">
-                {benefit.title}
-              </h3>
-              <p className="text-center text-sm sm:text-base text-gray-600">
-                {benefit.description}
-              </p>
+              <div className="icon-container mb-3 text-center sm:mb-4">{benefit.icon}</div>
+              <h3 className="mb-1.5 text-center text-lg font-semibold text-[#30442B] sm:mb-2 sm:text-xl">{benefit.title}</h3>
+              <p className="text-center text-sm text-gray-600 sm:text-base">{benefit.description}</p>
             </motion.div>
           ))}
         </motion.div>

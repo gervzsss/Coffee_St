@@ -1,22 +1,17 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { useToast } from '../hooks/useToast';
-import api from '../services/apiClient';
-import { Header, Footer } from '../components/layout';
-import { OrderHistoryCard } from '../components/orders';
-import {
-  QuickSettingsPanel,
-  ProfileInformationForm,
-  ChangePasswordForm,
-  DeleteAccountModal,
-} from '../components/profile';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { useToast } from "../hooks/useToast";
+import api from "../services/apiClient";
+import { Header, Footer } from "../components/layout";
+import { OrderHistoryCard } from "../components/orders";
+import { QuickSettingsPanel, ProfileInformationForm, ChangePasswordForm, DeleteAccountModal } from "../components/profile";
 
 export default function Profile() {
   const { user, setUser, logout } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
-  const [activeView, setActiveView] = useState('profile-info');
+  const [activeView, setActiveView] = useState("profile-info");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleUserUpdate = (updatedUser) => {
@@ -24,11 +19,11 @@ export default function Profile() {
   };
 
   const handleChangePassword = () => {
-    setActiveView('change-password');
+    setActiveView("change-password");
   };
 
   const handleBackToProfile = () => {
-    setActiveView('profile-info');
+    setActiveView("profile-info");
   };
 
   const handleDeleteAccount = () => {
@@ -38,23 +33,23 @@ export default function Profile() {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
   const handleLanguageChange = async (language) => {
     try {
-      await api.put('/user/language', { language });
-      showToast('Language preference saved', {
-        type: 'success',
+      await api.put("/user/language", { language });
+      showToast("Language preference saved", {
+        type: "success",
         dismissible: true,
       });
     } catch (error) {
-      console.error('Language change error:', error);
-      showToast('Failed to save language preference', {
-        type: 'error',
+      console.error("Language change error:", error);
+      showToast("Failed to save language preference", {
+        type: "error",
         dismissible: true,
       });
     }
@@ -63,39 +58,28 @@ export default function Profile() {
   return (
     <>
       <Header />
-      <main className="pt-20 min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-gray-50 pt-20">
         {/* Compact Profile Header */}
-        <div className="w-full bg-[#30442B] pb-6 sm:pb-8 pt-8 sm:pt-10 lg:pt-12">
+        <div className="w-full bg-[#30442B] pt-8 pb-6 sm:pt-10 sm:pb-8 lg:pt-12">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
-              Your Profile
-            </h1>
-            <p className="text-gray-200 text-xs sm:text-sm lg:text-base mt-1 sm:mt-2">
-              Manage your account settings and preferences
-            </p>
+            <h1 className="text-xl font-bold text-white sm:text-2xl lg:text-3xl">Your Profile</h1>
+            <p className="mt-1 text-xs text-gray-200 sm:mt-2 sm:text-sm lg:text-base">Manage your account settings and preferences</p>
           </div>
         </div>
 
         {/* Profile Content - 2 Column Layout */}
         <section className="relative pb-16 sm:pb-20 lg:pb-24">
-          <div className="mx-auto max-w-7xl xl:max-w-[1400px] px-4 sm:px-6 lg:px-10 mt-6 sm:mt-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+          <div className="mx-auto mt-6 max-w-7xl px-4 sm:mt-8 sm:px-6 lg:px-10 xl:max-w-[1400px]">
+            <div className="grid grid-cols-1 gap-5 sm:gap-6 lg:grid-cols-3 lg:gap-8">
               {/* Left Column - Order History (Desktop only) */}
-              <div className="hidden lg:block lg:col-span-1">
+              <div className="hidden lg:col-span-1 lg:block">
                 <OrderHistoryCard />
               </div>
 
               {/* Right Column - Profile Information & Settings */}
-              <div className="lg:col-span-2 space-y-4 sm:space-y-5 lg:space-y-6">
+              <div className="space-y-4 sm:space-y-5 lg:col-span-2 lg:space-y-6">
                 {/* Dynamic Content Area */}
-                {activeView === 'profile-info' ? (
-                  <ProfileInformationForm
-                    user={user}
-                    onUserUpdate={handleUserUpdate}
-                  />
-                ) : (
-                  <ChangePasswordForm onBack={handleBackToProfile} />
-                )}
+                {activeView === "profile-info" ? <ProfileInformationForm user={user} onUserUpdate={handleUserUpdate} /> : <ChangePasswordForm onBack={handleBackToProfile} />}
 
                 {/* Quick Settings Panel */}
                 <QuickSettingsPanel
@@ -103,7 +87,7 @@ export default function Profile() {
                   onDeleteAccount={handleDeleteAccount}
                   onLogout={handleLogout}
                   onLanguageChange={handleLanguageChange}
-                  currentLanguage={user?.language_preference || 'en'}
+                  currentLanguage={user?.language_preference || "en"}
                 />
 
                 {/* Order History Card (Mobile - below settings) */}
@@ -116,10 +100,7 @@ export default function Profile() {
         </section>
 
         {/* Delete Account Modal */}
-        <DeleteAccountModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)}
-        />
+        <DeleteAccountModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} />
       </main>
       <Footer />
     </>

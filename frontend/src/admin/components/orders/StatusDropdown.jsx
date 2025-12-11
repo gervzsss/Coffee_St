@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { STATUS_CONFIG, STATUS_FLOW } from '../../constants/orderStatus';
+import { useState } from "react";
+import { STATUS_CONFIG, STATUS_FLOW } from "../../constants/orderStatus";
 
 export default function StatusDropdown({ order, onStatusChange, disabled }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,28 +21,14 @@ export default function StatusDropdown({ order, onStatusChange, disabled }) {
           }
         }}
         disabled={disabled || nextStatuses.length === 0}
-        className={`w-full flex items-center justify-between gap-2 px-4 py-3 rounded-lg ${
-          nextStatuses.length > 0
-            ? 'bg-[#30442B] text-white hover:bg-[#3d5a35]'
-            : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-        } transition-colors font-medium`}
+        className={`flex w-full items-center justify-between gap-2 rounded-lg px-4 py-3 ${
+          nextStatuses.length > 0 ? "bg-[#30442B] text-white hover:bg-[#3d5a35]" : "cursor-not-allowed bg-gray-200 text-gray-500"
+        } font-medium transition-colors`}
       >
         <span>{currentConfig.label}</span>
         {nextStatuses.length > 0 && (
-          <svg
-            className={`w-5 h-5 transition-transform ${
-              isOpen ? 'rotate-180' : ''
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 9l-7 7-7-7"
-            />
+          <svg className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
           </svg>
         )}
       </button>
@@ -56,7 +42,7 @@ export default function StatusDropdown({ order, onStatusChange, disabled }) {
               setIsOpen(false);
             }}
           />
-          <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 z-20 overflow-hidden">
+          <div className="absolute top-full right-0 left-0 z-20 mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
             {nextStatuses.map((status) => {
               const config = STATUS_CONFIG[status];
               return (
@@ -66,11 +52,9 @@ export default function StatusDropdown({ order, onStatusChange, disabled }) {
                     e.stopPropagation();
                     handleSelect(status);
                   }}
-                  className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors"
+                  className="w-full px-4 py-3 text-left transition-colors hover:bg-gray-50"
                 >
-                  <span className={`font-medium ${config.textColor}`}>
-                    {config.label}
-                  </span>
+                  <span className={`font-medium ${config.textColor}`}>{config.label}</span>
                 </button>
               );
             })}

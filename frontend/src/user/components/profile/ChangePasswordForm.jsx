@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import { useToast } from '../../hooks/useToast';
-import api from '../../services/apiClient';
+import { useState } from "react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { useToast } from "../../hooks/useToast";
+import api from "../../services/apiClient";
 
 export default function ChangePasswordForm({ onBack }) {
   const { showToast } = useToast();
@@ -13,9 +13,9 @@ export default function ChangePasswordForm({ onBack }) {
     confirm: false,
   });
   const [formData, setFormData] = useState({
-    current_password: '',
-    new_password: '',
-    new_password_confirmation: '',
+    current_password: "",
+    new_password: "",
+    new_password_confirmation: "",
   });
   const [errors, setErrors] = useState({});
 
@@ -23,7 +23,7 @@ export default function ChangePasswordForm({ onBack }) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -45,19 +45,19 @@ export default function ChangePasswordForm({ onBack }) {
     const newErrors = {};
 
     if (!formData.current_password) {
-      newErrors.current_password = 'Current password is required';
+      newErrors.current_password = "Current password is required";
     }
 
     if (!formData.new_password) {
-      newErrors.new_password = 'New password is required';
+      newErrors.new_password = "New password is required";
     } else if (formData.new_password.length < 8) {
-      newErrors.new_password = 'Password must be at least 8 characters';
+      newErrors.new_password = "Password must be at least 8 characters";
     }
 
     if (!formData.new_password_confirmation) {
-      newErrors.new_password_confirmation = 'Please confirm your new password';
+      newErrors.new_password_confirmation = "Please confirm your new password";
     } else if (formData.new_password !== formData.new_password_confirmation) {
-      newErrors.new_password_confirmation = 'Passwords do not match';
+      newErrors.new_password_confirmation = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -72,36 +72,33 @@ export default function ChangePasswordForm({ onBack }) {
     setLoading(true);
 
     try {
-      await api.put('/user/password', {
+      await api.put("/user/password", {
         current_password: formData.current_password,
         new_password: formData.new_password,
         new_password_confirmation: formData.new_password_confirmation,
       });
 
-      showToast('Password changed successfully', {
-        type: 'success',
+      showToast("Password changed successfully", {
+        type: "success",
         dismissible: true,
       });
 
       setFormData({
-        current_password: '',
-        new_password: '',
-        new_password_confirmation: '',
+        current_password: "",
+        new_password: "",
+        new_password_confirmation: "",
       });
 
       setTimeout(() => {
         onBack();
       }, 1500);
     } catch (error) {
-      console.error('Password change error:', error);
+      console.error("Password change error:", error);
 
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else {
-        showToast(
-          error.response?.data?.message || 'Failed to change password',
-          { type: 'error', dismissible: true }
-        );
+        showToast(error.response?.data?.message || "Failed to change password", { type: "error", dismissible: true });
       }
     } finally {
       setLoading(false);
@@ -109,142 +106,102 @@ export default function ChangePasswordForm({ onBack }) {
   };
 
   return (
-    <div className="rounded-2xl sm:rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 overflow-hidden">
+    <div className="overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-900/5 sm:rounded-3xl">
       {/* Header */}
-      <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 border-b border-gray-100 flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
         <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            onClick={onBack}
-            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            disabled={loading}
-          >
-            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+          <button onClick={onBack} className="rounded-lg p-1.5 transition-colors hover:bg-gray-100 sm:p-2" disabled={loading}>
+            <ArrowLeft className="h-4 w-4 text-gray-600 sm:h-5 sm:w-5" />
           </button>
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
-            Change Password
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">Change Password</h2>
         </div>
       </div>
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-8">
-        <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-5 lg:mb-6">
-          Update your password to keep your account secure
-        </p>
+        <p className="mb-4 text-sm text-gray-600 sm:mb-5 sm:text-base lg:mb-6">Update your password to keep your account secure</p>
 
         <div className="space-y-4 sm:space-y-5 lg:space-y-6">
           {/* Current Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Current Password
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700">Current Password</label>
             <div className="relative">
               <input
-                type={showIndividual.current ? 'text' : 'password'}
+                type={showIndividual.current ? "text" : "password"}
                 name="current_password"
                 value={formData.current_password}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors ${
-                  errors.current_password ? 'border-red-500' : 'border-gray-300'
+                className={`w-full rounded-lg border px-4 py-3 pr-12 transition-colors focus:border-[#30442B] focus:ring-2 focus:ring-[#30442B]/20 focus:outline-none ${
+                  errors.current_password ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter your current password"
                 disabled={loading}
               />
               <button
                 type="button"
-                onClick={() => toggleIndividualVisibility('current')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                onClick={() => toggleIndividualVisibility("current")}
+                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-lg p-2 transition-colors hover:bg-gray-100"
                 disabled={loading}
               >
-                {showIndividual.current ? (
-                  <EyeOff className="w-4 h-4 text-gray-500" />
-                ) : (
-                  <Eye className="w-4 h-4 text-gray-500" />
-                )}
+                {showIndividual.current ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
               </button>
             </div>
-            {errors.current_password && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.current_password}
-              </p>
-            )}
+            {errors.current_password && <p className="mt-1 text-sm text-red-500">{errors.current_password}</p>}
           </div>
 
           {/* New Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              New Password
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700">New Password</label>
             <div className="relative">
               <input
-                type={showIndividual.new ? 'text' : 'password'}
+                type={showIndividual.new ? "text" : "password"}
                 name="new_password"
                 value={formData.new_password}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors ${
-                  errors.new_password ? 'border-red-500' : 'border-gray-300'
+                className={`w-full rounded-lg border px-4 py-3 pr-12 transition-colors focus:border-[#30442B] focus:ring-2 focus:ring-[#30442B]/20 focus:outline-none ${
+                  errors.new_password ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter your new password"
                 disabled={loading}
               />
               <button
                 type="button"
-                onClick={() => toggleIndividualVisibility('new')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                onClick={() => toggleIndividualVisibility("new")}
+                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-lg p-2 transition-colors hover:bg-gray-100"
                 disabled={loading}
               >
-                {showIndividual.new ? (
-                  <EyeOff className="w-4 h-4 text-gray-500" />
-                ) : (
-                  <Eye className="w-4 h-4 text-gray-500" />
-                )}
+                {showIndividual.new ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
               </button>
             </div>
-            {errors.new_password && (
-              <p className="mt-1 text-sm text-red-500">{errors.new_password}</p>
-            )}
-            <p className="mt-1 text-xs text-gray-500">
-              Password must be at least 8 characters
-            </p>
+            {errors.new_password && <p className="mt-1 text-sm text-red-500">{errors.new_password}</p>}
+            <p className="mt-1 text-xs text-gray-500">Password must be at least 8 characters</p>
           </div>
 
           {/* Confirm New Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Confirm New Password
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700">Confirm New Password</label>
             <div className="relative">
               <input
-                type={showIndividual.confirm ? 'text' : 'password'}
+                type={showIndividual.confirm ? "text" : "password"}
                 name="new_password_confirmation"
                 value={formData.new_password_confirmation}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#30442B]/20 focus:border-[#30442B] transition-colors ${
-                  errors.new_password_confirmation
-                    ? 'border-red-500'
-                    : 'border-gray-300'
+                className={`w-full rounded-lg border px-4 py-3 pr-12 transition-colors focus:border-[#30442B] focus:ring-2 focus:ring-[#30442B]/20 focus:outline-none ${
+                  errors.new_password_confirmation ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Re-enter your new password"
                 disabled={loading}
               />
               <button
                 type="button"
-                onClick={() => toggleIndividualVisibility('confirm')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                onClick={() => toggleIndividualVisibility("confirm")}
+                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-lg p-2 transition-colors hover:bg-gray-100"
                 disabled={loading}
               >
-                {showIndividual.confirm ? (
-                  <EyeOff className="w-4 h-4 text-gray-500" />
-                ) : (
-                  <Eye className="w-4 h-4 text-gray-500" />
-                )}
+                {showIndividual.confirm ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
               </button>
             </div>
-            {errors.new_password_confirmation && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.new_password_confirmation}
-              </p>
-            )}
+            {errors.new_password_confirmation && <p className="mt-1 text-sm text-red-500">{errors.new_password_confirmation}</p>}
           </div>
 
           {/* Show All Passwords Toggle */}
@@ -254,34 +211,31 @@ export default function ChangePasswordForm({ onBack }) {
               id="show-all-passwords"
               checked={showAllPasswords}
               onChange={handleShowAllToggle}
-              className="w-4 h-4 text-[#30442B] border-gray-300 rounded focus:ring-[#30442B]/20"
+              className="h-4 w-4 rounded border-gray-300 text-[#30442B] focus:ring-[#30442B]/20"
               disabled={loading}
             />
-            <label
-              htmlFor="show-all-passwords"
-              className="text-sm text-gray-700 cursor-pointer select-none"
-            >
+            <label htmlFor="show-all-passwords" className="cursor-pointer text-sm text-gray-700 select-none">
               Show all passwords
             </label>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4">
           <button
             type="button"
             onClick={onBack}
             disabled={loading}
-            className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 border-2 border-gray-300 text-sm sm:text-base text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-3 sm:text-base"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#30442B] text-sm sm:text-base text-white rounded-lg font-medium hover:bg-[#405939] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 rounded-lg bg-[#30442B] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#405939] disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-3 sm:text-base"
           >
-            {loading ? 'Changing...' : 'Save Changes'}
+            {loading ? "Changing..." : "Save Changes"}
           </button>
         </div>
       </form>
