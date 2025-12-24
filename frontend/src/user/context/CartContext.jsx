@@ -57,7 +57,7 @@ export const CartProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, updateCartCount]);
 
   const fetchCartCount = useCallback(async () => {
     if (!isAuthenticated) {

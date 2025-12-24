@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import * as authService from "../services/authService";
 
 export const AuthContext = createContext(null);
@@ -11,13 +11,26 @@ export const AuthProvider = ({ children }) => {
   const [authModalMode, setAuthModalMode] = useState("login");
   const [blockedMessage, setBlockedMessage] = useState(null);
 
+  const fetchUser = useCallback(async () => {
+    const result = await authService.fetchUser();
+    if (result.success) {
+      setUser(result.data);
+    } else {
+      console.error("Failed to fetch user:", result.error);
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem("token");
+    }
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
     if (token) {
       fetchUser();
     } else {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, fetchUser]);
 
   // Listen for blocked user events
   useEffect(() => {
@@ -33,17 +46,6 @@ export const AuthProvider = ({ children }) => {
 
   const clearBlockedMessage = () => {
     setBlockedMessage(null);
-  };
-
-  const fetchUser = async () => {
-    const result = await authService.fetchUser();
-    if (result.success) {
-      setUser(result.data);
-    } else {
-      console.error("Failed to fetch user:", result.error);
-      logout();
-    }
-    setLoading(false);
   };
 
   const login = async (email, password) => {

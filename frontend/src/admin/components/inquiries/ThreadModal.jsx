@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getThread, sendMessage } from "../../services/inquiryService";
 
 export default function ThreadModal({ threadId, isOpen, onClose, onUpdate }) {
@@ -9,30 +9,30 @@ export default function ThreadModal({ threadId, isOpen, onClose, onUpdate }) {
   const [successMessage, setSuccessMessage] = useState(false);
   const messagesEndRef = useRef(null);
 
-  useEffect(() => {
-    if (isOpen && threadId) {
-      fetchThread();
-    }
-  }, [isOpen, threadId]);
-
-  useEffect(() => {
-    if (thread) {
-      scrollToBottom();
-    }
-  }, [thread]);
-
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
-  const fetchThread = async () => {
+  const fetchThread = useCallback(async () => {
     setLoading(true);
     const result = await getThread(threadId);
     if (result.success) {
       setThread(result.data);
     }
     setLoading(false);
-  };
+  }, [threadId]);
+
+  useEffect(() => {
+    if (isOpen && threadId) {
+      fetchThread();
+    }
+  }, [isOpen, threadId, fetchThread]);
+
+  useEffect(() => {
+    if (thread) {
+      scrollToBottom();
+    }
+  }, [thread, scrollToBottom]);
 
   const handleSendReply = async (e) => {
     e.preventDefault();

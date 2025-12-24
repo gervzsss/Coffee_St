@@ -4,58 +4,23 @@ import { CheckCircle, Package, MapPin, Phone, CreditCard, Clock } from "lucide-r
 import { Header, Footer } from "../components/layout";
 import aboutHeadImg from "../../assets/aboutus_head.webp";
 
-export default function OrderSuccess() {
-  const { orderNumber } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const order = location.state?.order;
-  const [showConfetti, setShowConfetti] = useState(true);
+const confettiColors = [
+  "bg-red-400",
+  "bg-yellow-400",
+  "bg-blue-400",
+  "bg-green-400",
+  "bg-pink-400",
+  "bg-purple-400",
+  "bg-orange-400",
+  "bg-cyan-400",
+  "bg-amber-400",
+  "bg-emerald-400",
+  "bg-fuchsia-400",
+  "bg-lime-400",
+];
 
-  useEffect(() => {
-    if (!order) {
-      navigate("/orders", { replace: true });
-      return;
-    }
-
-    const timer = setTimeout(() => setShowConfetti(false), 3000);
-    return () => clearTimeout(timer);
-  }, [order, navigate]);
-
-  if (!order) {
-    return null;
-  }
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const getPaymentMethodLabel = (method) => {
-    return method === "cash" ? "Cash on Delivery" : "GCash";
-  };
-
-  const confettiColors = [
-    "bg-red-400",
-    "bg-yellow-400",
-    "bg-blue-400",
-    "bg-green-400",
-    "bg-pink-400",
-    "bg-purple-400",
-    "bg-orange-400",
-    "bg-cyan-400",
-    "bg-amber-400",
-    "bg-emerald-400",
-    "bg-fuchsia-400",
-    "bg-lime-400",
-  ];
-
-  const confettiPieces = [...Array(80)].map((_, i) => {
+const generateConfettiPieces = () =>
+  [...Array(80)].map((_, i) => {
     const angle = (Math.PI * 2 * i) / 80 + (Math.random() - 0.5) * 0.5;
     const velocity = 150 + Math.random() * 200;
     const tx = Math.cos(angle) * velocity;
@@ -72,6 +37,32 @@ export default function OrderSuccess() {
       isWide: Math.random() > 0.5,
     };
   });
+
+export default function OrderSuccess() {
+  useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const order = location.state?.order;
+  const [showConfetti, setShowConfetti] = useState(true);
+  const [confettiPieces] = useState(generateConfettiPieces);
+
+  useEffect(() => {
+    if (!order) {
+      navigate("/orders", { replace: true });
+      return;
+    }
+
+    const timer = setTimeout(() => setShowConfetti(false), 3000);
+    return () => clearTimeout(timer);
+  }, [order, navigate]);
+
+  if (!order) {
+    return null;
+  }
+
+  const getPaymentMethodLabel = (method) => {
+    return method === "cash" ? "Cash on Delivery" : "GCash";
+  };
 
   return (
     <>

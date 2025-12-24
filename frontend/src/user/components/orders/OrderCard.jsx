@@ -75,7 +75,6 @@ export default function OrderCard({ order, onViewDetails, statusConfig = DEFAULT
   const getItemsSummary = () => {
     if (!order.items || order.items.length === 0) return "No items";
 
-    const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
     const firstTwo = order.items.slice(0, 2);
 
     const summary = firstTwo.map((item) => `${item.quantity}x ${item.product_name}`).join(", ");
@@ -129,7 +128,6 @@ export default function OrderCard({ order, onViewDetails, statusConfig = DEFAULT
               const statusOrder = ["pending", "confirmed", "preparing", "out_for_delivery"];
               const currentIndex = statusOrder.indexOf(order.status);
               const isCompleted = index <= currentIndex;
-              const isCurrent = status === order.status;
 
               return (
                 <div key={status} className="flex flex-1 items-center">

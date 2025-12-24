@@ -1,18 +1,21 @@
 import { useMemo } from "react";
 
 export default function SalesOverviewChart({ data = [], title = "Sales Overview", subtitle = "Daily sales for the past week" }) {
-  const chartData =
-    data && data.length > 0
-      ? data
-      : [
-          { date: "Mon", total: 0 },
-          { date: "Tue", total: 0 },
-          { date: "Wed", total: 0 },
-          { date: "Thu", total: 0 },
-          { date: "Fri", total: 0 },
-          { date: "Sat", total: 0 },
-          { date: "Sun", total: 0 },
-        ];
+  const chartData = useMemo(
+    () =>
+      data && data.length > 0
+        ? data
+        : [
+            { date: "Mon", total: 0 },
+            { date: "Tue", total: 0 },
+            { date: "Wed", total: 0 },
+            { date: "Thu", total: 0 },
+            { date: "Fri", total: 0 },
+            { date: "Sat", total: 0 },
+            { date: "Sun", total: 0 },
+          ],
+    [data],
+  );
 
   const { points, labels } = useMemo(() => {
     if (!chartData.length) return { points: "", labels: [] };

@@ -1,6 +1,6 @@
 export const PATTERNS = {
-  name: /^[A-Za-z\s.\-']+$/,
-  email: /^[A-Za-z0-9._\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/,
+  name: /^[A-Za-z\s.'-]+$/,
+  email: /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
   phone: /^\+?\d+$/,
 };
 

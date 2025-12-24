@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   getAllUsers,
   getCustomerMetrics,
@@ -25,18 +25,7 @@ export function useUsers() {
   const [confirmAction, setConfirmAction] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchTerm);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
-  useEffect(() => {
-    fetchData();
-  }, [debouncedSearch]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
 
     const metricsResult = await getCustomerMetrics();
@@ -53,7 +42,18 @@ export function useUsers() {
     }
 
     setLoading(false);
-  };
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const displayedUsers = users.filter((user) => {
     if (showBlocked) {

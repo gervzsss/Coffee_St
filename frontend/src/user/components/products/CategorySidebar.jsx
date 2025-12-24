@@ -1,28 +1,37 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-export default function CategorySidebar({ categories, selectedCategory, onCategoryChange, productCounts = {} }) {
+const CategoryButton = ({ category, isAllProducts = false, selectedCategory, onCategoryChange }) => (
+  <button
+    onClick={() => onCategoryChange(category.value)}
+    className={`group flex w-full cursor-pointer items-center px-6 ${
+      isAllProducts ? "py-5" : "py-4"
+    } rounded-xl text-gray-700 transition-all duration-300 hover:bg-[#30442B]/5 hover:text-[#30442B] ${selectedCategory === category.value ? "bg-[#30442B]/5" : ""}`}
+  >
+    <span className="category-label flex items-center gap-4">
+      <span className="category-icon text-xl">{category.icon}</span>
+      <span className="category-text font-medium">{category.label}</span>
+    </span>
+  </button>
+);
+
+export default function CategorySidebar({ categories, selectedCategory, onCategoryChange }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  const handleCategoryChange = useCallback(
+    (value) => {
+      onCategoryChange(value);
+    },
+    [onCategoryChange],
+  );
+
   useEffect(() => {
-    setIsMobileOpen(false);
+    if (selectedCategory !== undefined) {
+      setIsMobileOpen(false);
+    }
   }, [selectedCategory]);
 
   const drinkCategories = categories.filter((c) => c.section === "drinks");
   const pastryCategories = categories.filter((c) => c.section === "pastries");
-
-  const CategoryButton = ({ category, count, isAllProducts = false }) => (
-    <button
-      onClick={() => onCategoryChange(category.value)}
-      className={`group flex w-full cursor-pointer items-center px-6 ${
-        isAllProducts ? "py-5" : "py-4"
-      } rounded-xl text-gray-700 transition-all duration-300 hover:bg-[#30442B]/5 hover:text-[#30442B] ${selectedCategory === category.value ? "bg-[#30442B]/5" : ""}`}
-    >
-      <span className="category-label flex items-center gap-4">
-        <span className="category-icon text-xl">{category.icon}</span>
-        <span className="category-text font-medium">{category.label}</span>
-      </span>
-    </button>
-  );
 
   return (
     <div className="lg:sticky lg:top-28 lg:w-80 lg:shrink-0 lg:self-start xl:w-96 2xl:w-[420px]">
@@ -61,7 +70,7 @@ export default function CategorySidebar({ categories, selectedCategory, onCatego
           <div className="mb-8 space-y-6">
             {/* All Products - Above Drinks Header */}
             <div className="mb-4">
-              <CategoryButton category={{ value: "", label: "All Products", icon: "🌟" }} isAllProducts={true} />
+              <CategoryButton category={{ value: "", label: "All Products", icon: "🌟" }} isAllProducts={true} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
             </div>
 
             {/* Drinks Header */}
@@ -70,7 +79,7 @@ export default function CategorySidebar({ categories, selectedCategory, onCatego
             {/* Drinks Categories */}
             <div className="space-y-3">
               {drinkCategories.map((category) => (
-                <CategoryButton key={category.value} category={category} count={productCounts[category.value]} />
+                <CategoryButton key={category.value} category={category} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
               ))}
             </div>
           </div>
@@ -83,7 +92,7 @@ export default function CategorySidebar({ categories, selectedCategory, onCatego
             <h3 className="mb-3 px-2 text-xl font-bold text-[#30442B] sm:mb-4 sm:text-2xl lg:text-2xl xl:text-3xl">Pastries & Desserts</h3>
             <div className="space-y-3">
               {pastryCategories.map((category) => (
-                <CategoryButton key={category.value} category={category} count={productCounts[category.value]} />
+                <CategoryButton key={category.value} category={category} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
               ))}
             </div>
           </div>

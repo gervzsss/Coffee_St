@@ -20,8 +20,9 @@ export function useCartOperations(isAuthenticated) {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    const refs = debouncedUpdateRefs.current;
     return () => {
-      Object.values(debouncedUpdateRefs.current).forEach((debouncedFn) => {
+      Object.values(refs).forEach((debouncedFn) => {
         if (debouncedFn && debouncedFn.cancel) {
           debouncedFn.cancel();
         }
@@ -75,7 +76,7 @@ export function useCartOperations(isAuthenticated) {
       }, 300);
     }
     debouncedUpdateRefs.current[itemId](quantity);
-  }, []);
+  }, [showToast]);
 
   const updateQuantity = useCallback((itemId, quantity) => {
     if (quantity < 1) return;

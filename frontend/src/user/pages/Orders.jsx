@@ -53,7 +53,7 @@ const STATUS_CONFIG = {
 };
 
 export default function Orders() {
-  const { user } = useAuth();
+  useAuth();
   const { orders, loading, error } = useOrders();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedOrder, setSelectedOrder] = useState(null);

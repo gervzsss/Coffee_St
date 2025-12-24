@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
@@ -6,9 +6,15 @@ import SignupForm from "./SignupForm";
 export default function AuthModal({ isOpen, onClose, initialMode = "login" }) {
   const [mode, setMode] = useState(initialMode);
 
-  useEffect(() => {
+  // Sync mode with initialMode when modal opens
+  useLayoutEffect(() => {
     if (isOpen) {
       setMode(initialMode);
+    }
+  }, [isOpen, initialMode]);
+
+  useEffect(() => {
+    if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -17,7 +23,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }) {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen, initialMode]);
+  }, [isOpen]);
 
   useEffect(() => {
     const handleEscape = (e) => {

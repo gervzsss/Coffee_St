@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   getAllProducts,
   getProductMetrics,
@@ -35,18 +35,7 @@ export function useProducts() {
   const [isRestoring, setIsRestoring] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchTerm);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
-  useEffect(() => {
-    fetchData();
-  }, [debouncedSearch, filterCategory, showArchived]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
 
     const metricsResult = await getProductMetrics();
@@ -64,7 +53,18 @@ export function useProducts() {
     }
 
     setLoading(false);
-  };
+  }, [debouncedSearch, filterCategory, showArchived]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleViewDetails = async (productId) => {
     const result = await getProduct(productId);

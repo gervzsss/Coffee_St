@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Header, Footer } from "../components/layout";
@@ -6,16 +6,12 @@ import { EmptyState } from "../components/common";
 import { getUserThreads } from "../services/inquiryService";
 
 export default function Messages() {
-  const { user } = useAuth();
+  useAuth();
   const navigate = useNavigate();
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchThreads();
-  }, []);
-
-  const fetchThreads = async () => {
+  const fetchThreads = useCallback(async () => {
     setLoading(true);
     const result = await getUserThreads();
     if (result.success) {
@@ -25,7 +21,11 @@ export default function Messages() {
       console.error("Failed to fetch threads:", result.error);
     }
     setLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchThreads();
+  }, [fetchThreads]);
 
   const getStatusBadge = (status) => {
     const statusConfig = {

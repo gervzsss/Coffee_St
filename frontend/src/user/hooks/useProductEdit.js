@@ -39,7 +39,7 @@ export function useProductEdit(onUpdateComplete, setError) {
       if (onUpdateComplete) {
         onUpdateComplete();
       }
-    } catch (err) {
+    } catch {
       setEditingItemId(null);
     }
   };

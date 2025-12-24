@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Header, Footer } from "../components/layout";
 import { CategorySidebar, ProductsHeader, ProductsGrid } from "../components/products";
 import { useProducts } from "../hooks/useProducts";
@@ -7,13 +7,11 @@ import { CATEGORIES } from "../constants/categories";
 
 export default function Products() {
   const { products, loading, error, productCounts, refetch } = useProducts();
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  useEffect(() => {
-    const filtered = filterProducts(products, searchQuery, selectedCategory);
-    setFilteredProducts(filtered);
+  const filteredProducts = useMemo(() => {
+    return filterProducts(products, searchQuery, selectedCategory);
   }, [products, searchQuery, selectedCategory]);
 
   const handleCategoryChange = (category) => {

@@ -1,5 +1,5 @@
 import { useLoginForm } from "../../hooks";
-import { getInputClasses, preventEnterSubmit } from "../../utils/formHelpers";
+import { getInputClasses } from "../../utils/formHelpers";
 
 export default function LoginForm({ onClose, onSwitchToSignup }) {
   const { loginEmail, loginPassword, showPassword, loading, errors, firstInputRef, handleChangeEmail, handleChangePassword, handleBlurEmail, handleBlurPassword, handleSubmit, toggleShowPassword } =

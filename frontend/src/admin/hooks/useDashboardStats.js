@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { getDashboardStats } from '../services/dashboardService';
 
 export function useDashboardStats() {
@@ -20,10 +20,6 @@ export function useDashboardStats() {
 
     setLoading(false);
   }, []);
-
-  useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
 
   return { stats, loading, error, refetch: fetchStats };
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Header, Footer } from "../components/layout";
@@ -8,7 +8,7 @@ import { useToast } from "../hooks/useToast";
 export default function MessageThread() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  useAuth();
   const { showToast } = useToast();
 
   const [thread, setThread] = useState(null);
@@ -16,11 +16,7 @@ export default function MessageThread() {
   const [replyMessage, setReplyMessage] = useState("");
   const [sending, setSending] = useState(false);
 
-  useEffect(() => {
-    fetchThread();
-  }, [id]);
-
-  const fetchThread = async () => {
+  const fetchThread = useCallback(async () => {
     setLoading(true);
     const result = await getThread(id);
     if (result.success) {
@@ -30,7 +26,11 @@ export default function MessageThread() {
       navigate("/messages");
     }
     setLoading(false);
-  };
+  }, [id, navigate, showToast]);
+
+  useEffect(() => {
+    fetchThread();
+  }, [fetchThread]);
 
   const handleSendReply = async (e) => {
     e.preventDefault();

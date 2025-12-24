@@ -1,5 +1,5 @@
 import { X, Package, MapPin, Phone, CreditCard, Clock, Calendar, CheckCircle, Truck, XCircle, AlertCircle, ChefHat } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "../../services/apiClient";
 
 const DEFAULT_STATUS_CONFIG = {
@@ -52,15 +52,7 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (isOpen && initialOrder) {
-      fetchOrderDetails();
-    } else {
-      setOrder(initialOrder);
-    }
-  }, [isOpen, initialOrder?.id]);
-
-  const fetchOrderDetails = async () => {
+  const fetchOrderDetails = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -72,7 +64,15 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
     } finally {
       setLoading(false);
     }
-  };
+  }, [initialOrder]);
+
+  useEffect(() => {
+    if (isOpen && initialOrder) {
+      fetchOrderDetails();
+    } else {
+      setOrder(initialOrder);
+    }
+  }, [isOpen, initialOrder, fetchOrderDetails]);
 
   const getStatusConfig = (status) => {
     return statusConfig[status] || statusConfig.pending || DEFAULT_STATUS_CONFIG.pending;

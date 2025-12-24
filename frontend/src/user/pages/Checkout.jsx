@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useCheckout } from "../hooks/useCheckout";
@@ -10,7 +10,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const selectedCartItems = location.state?.selectedCartItems || [];
+  const selectedCartItems = useMemo(() => location.state?.selectedCartItems || [], [location.state?.selectedCartItems]);
 
   const { formData, formErrors, loading, error, updateFormData, submitOrder } = useCheckout(selectedCartItems, user);
 

@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import homePastriesImg from "../../../assets/home_pastries.png";
 

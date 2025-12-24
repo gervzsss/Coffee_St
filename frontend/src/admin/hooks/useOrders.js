@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import {
   getOrderMetrics,
   getAllOrders,
@@ -64,10 +64,6 @@ export function useOrders() {
 
     setLoading(false);
   }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   const handleViewOrder = useCallback(async (orderId) => {
     setDetailLoading(true);
