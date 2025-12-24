@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useOrders } from "../hooks/useOrders";
 import { Header, Footer } from "../components/layout";
-import { EmptyState } from "../components/common";
+import { EmptyState, AnimatedPage } from "../components/common";
 import { OrderCard, OrderDetailModal } from "../components/orders";
 
 // Status configuration matching admin
@@ -103,7 +103,7 @@ export default function Orders() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 pt-16 sm:pt-20">
+      <AnimatedPage className="min-h-screen bg-gray-50 pt-16 sm:pt-20">
         {/* Compact Orders Header */}
         <div className="w-full bg-[#30442B] pt-8 pb-6 sm:pt-12 sm:pb-8">
           <div className="container mx-auto px-4 sm:px-6">
@@ -201,7 +201,7 @@ export default function Orders() {
             )}
           </div>
         </section>
-      </main>
+      </AnimatedPage>
       <Footer />
 
       {/* Order Detail Modal */}

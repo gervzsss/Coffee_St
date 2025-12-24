@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation, Link, useNavigate } from "react-router-dom";
 import { CheckCircle, Package, MapPin, Phone, CreditCard, Clock } from "lucide-react";
 import { Header, Footer } from "../components/layout";
+import { AnimatedPage } from "../components/common";
 import aboutHeadImg from "../../assets/aboutus_head.webp";
 
 const confettiColors = [
@@ -67,7 +68,7 @@ export default function OrderSuccess() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 pt-20">
+      <AnimatedPage className="min-h-screen bg-gray-50 pt-20">
         {/* Confetti Effect */}
         {showConfetti && (
           <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center overflow-hidden" aria-hidden="true">
@@ -241,7 +242,7 @@ export default function OrderSuccess() {
             </div>
           </div>
         </section>
-      </main>
+      </AnimatedPage>
       <Footer />
     </>
   );

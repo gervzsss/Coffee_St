@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useToast } from "../hooks/useToast";
 import api from "../services/apiClient";
 import { Header, Footer } from "../components/layout";
+import { AnimatedPage } from "../components/common";
 import { OrderHistoryCard } from "../components/orders";
 import { QuickSettingsPanel, ProfileInformationForm, ChangePasswordForm, DeleteAccountModal } from "../components/profile";
 
@@ -58,7 +59,7 @@ export default function Profile() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 pt-20">
+      <AnimatedPage className="min-h-screen bg-gray-50 pt-20">
         {/* Compact Profile Header */}
         <div className="w-full bg-[#30442B] pt-8 pb-6 sm:pt-10 sm:pb-8 lg:pt-12">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -101,7 +102,7 @@ export default function Profile() {
 
         {/* Delete Account Modal */}
         <DeleteAccountModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} />
-      </main>
+      </AnimatedPage>
       <Footer />
     </>
   );

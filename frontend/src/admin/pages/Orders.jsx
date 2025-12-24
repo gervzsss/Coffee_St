@@ -1,5 +1,5 @@
 import { AdminLayout } from "../components/layout";
-import { LoadingSpinner } from "../components/common";
+import { LoadingSpinner, AdminAnimatedPage } from "../components/common";
 import { OrderCard, OrderDetailModal, ConfirmStatusModal, FailureReasonModal } from "../components/orders";
 import { useOrders } from "../hooks/useOrders";
 
@@ -30,7 +30,7 @@ export default function Orders() {
 
   return (
     <AdminLayout>
-      <div className="p-4 sm:p-6 lg:p-8">
+      <AdminAnimatedPage className="p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-screen-2xl">
           {/* Header Section */}
           <div className="mb-6 sm:mb-8">
@@ -120,7 +120,7 @@ export default function Orders() {
             )}
           </div>
         </div>
-      </div>
+      </AdminAnimatedPage>
 
       {/* Order Detail Modal */}
       {selectedOrder && <OrderDetailModal order={selectedOrder} onClose={closeOrderDetail} onStatusUpdate={handleStatusUpdate} onMarkFailed={handleMarkFailed} />}

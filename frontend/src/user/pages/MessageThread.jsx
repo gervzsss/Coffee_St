@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Header, Footer } from "../components/layout";
+import { AnimatedPage } from "../components/common";
 import { getThread, sendReply } from "../services/inquiryService";
 import { useToast } from "../hooks/useToast";
 
@@ -90,9 +91,9 @@ export default function MessageThread() {
     return (
       <>
         <Header />
-        <main className="flex min-h-screen items-center justify-center bg-gray-50 pt-20">
+        <AnimatedPage className="flex min-h-screen items-center justify-center bg-gray-50 pt-20">
           <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#30442B]"></div>
-        </main>
+        </AnimatedPage>
         <Footer />
       </>
     );
@@ -105,7 +106,7 @@ export default function MessageThread() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 pt-20">
+      <AnimatedPage className="min-h-screen bg-gray-50 pt-20">
         {/* Thread Header */}
         <div className="w-full bg-[#30442B] pt-12 pb-6">
           <div className="container mx-auto px-4">
@@ -199,7 +200,7 @@ export default function MessageThread() {
             )}
           </div>
         </section>
-      </main>
+      </AnimatedPage>
       <Footer />
     </>
   );

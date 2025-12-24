@@ -1,4 +1,5 @@
 import { AdminLayout } from "../components/layout";
+import { AdminAnimatedPage } from "../components/common";
 import { UserDetailsModal, ConfirmStatusModal } from "../components/users";
 import { useUsers } from "../hooks";
 
@@ -26,7 +27,7 @@ export default function Users() {
 
   return (
     <AdminLayout>
-      <div className="p-4 sm:p-6 lg:p-8">
+      <AdminAnimatedPage className="p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-screen-2xl">
           <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:mb-8 sm:flex-row">
             <div>
@@ -182,7 +183,7 @@ export default function Users() {
             </div>
           </div>
         </div>
-      </div>
+      </AdminAnimatedPage>
 
       {showDetailsModal && <UserDetailsModal user={selectedUser} onClose={closeDetailsModal} />}
 

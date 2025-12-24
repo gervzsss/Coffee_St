@@ -1,11 +1,12 @@
 import { Header, Footer } from "../components/layout";
+import { AnimatedPage } from "../components/common";
 import { ContactHero, ContactInfoCard, StoreHoursCard, ContactForm } from "../components/contact";
 
 export default function Contact() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 pt-20">
+      <AnimatedPage className="min-h-screen bg-gray-50 pt-20">
         <ContactHero />
 
         <section className="relative -mt-8 pb-16 sm:-mt-10 sm:pb-20 lg:-mt-12 lg:pb-24">
@@ -17,7 +18,7 @@ export default function Contact() {
             <ContactForm />
           </div>
         </section>
-      </main>
+      </AnimatedPage>
       <Footer />
     </>
   );

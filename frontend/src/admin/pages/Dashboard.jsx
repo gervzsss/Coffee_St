@@ -1,4 +1,5 @@
 import { AdminLayout } from "../components/layout";
+import { AdminAnimatedPage } from "../components/common";
 import { StatCard, DashboardHeader, RecentActivityList } from "../components/dashboard";
 import { SalesOverviewChart, TopSellingChart } from "../components/charts";
 import { useAdminAuth } from "../hooks/useAdminAuth";
@@ -11,16 +12,16 @@ export default function Dashboard() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex h-screen items-center justify-center">
+        <AdminAnimatedPage className="flex h-screen items-center justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-[#30442B] sm:h-12 sm:w-12"></div>
-        </div>
+        </AdminAnimatedPage>
       </AdminLayout>
     );
   }
 
   return (
     <AdminLayout>
-      <div className="p-4 sm:p-6 lg:p-8">
+      <AdminAnimatedPage className="p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <DashboardHeader adminName={admin?.first_name || "Admin"} />
 
@@ -52,7 +53,7 @@ export default function Dashboard() {
         <div className="mx-auto max-w-screen-2xl">
           <RecentActivityList orders={stats?.recentOrders || []} />
         </div>
-      </div>
+      </AdminAnimatedPage>
     </AdminLayout>
   );
 }

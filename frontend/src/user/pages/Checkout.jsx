@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useCheckout } from "../hooks/useCheckout";
 import { Header, Footer } from "../components/layout";
+import { AnimatedPage } from "../components/common";
 import { CheckoutItem, DeliveryForm, OrderSummaryCheckout } from "../components/checkout";
 
 export default function Checkout() {
@@ -36,7 +37,7 @@ export default function Checkout() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 pt-16 sm:pt-20">
+      <AnimatedPage className="min-h-screen bg-gray-50 pt-16 sm:pt-20">
         {/* Compact Checkout Header */}
         <div className="w-full bg-[#30442B] pt-8 pb-6 sm:pt-12 sm:pb-8">
           <div className="container mx-auto px-4 sm:px-6">
@@ -87,7 +88,7 @@ export default function Checkout() {
             </div>
           </div>
         </section>
-      </main>
+      </AnimatedPage>
       <Footer />
     </>
   );

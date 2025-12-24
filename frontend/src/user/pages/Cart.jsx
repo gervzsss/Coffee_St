@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Header, Footer } from "../components/layout";
-import { EmptyState } from "../components/common";
+import { EmptyState, AnimatedPage } from "../components/common";
 import { CartItem, CartSummary } from "../components/cart";
 import { ProductCustomizationModal } from "../components/products";
 import { useAuth } from "../hooks/useAuth";
@@ -60,14 +60,14 @@ export default function Cart() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gray-50 px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12 lg:pt-32">
+        <AnimatedPage className="min-h-screen bg-gray-50 px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12 lg:pt-32">
           <div className="mx-auto max-w-7xl">
             <h1 className="mb-6 text-2xl font-bold text-[#30442B] sm:mb-8 sm:text-3xl lg:text-4xl">Your Cart</h1>
             <div className="flex items-center justify-center py-20 sm:py-32">
               <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#30442B] sm:h-16 sm:w-16"></div>
             </div>
           </div>
-        </main>
+        </AnimatedPage>
         <Footer />
       </>
     );
@@ -77,7 +77,7 @@ export default function Cart() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gray-50 px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12 lg:pt-32">
+        <AnimatedPage className="min-h-screen bg-gray-50 px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12 lg:pt-32">
           <div className="mx-auto max-w-7xl">
             <h1 className="text-2xl font-bold text-[#30442B] sm:text-3xl lg:text-4xl">Your Cart</h1>
             <div className="mt-6 sm:mt-8">
@@ -89,7 +89,7 @@ export default function Cart() {
               />
             </div>
           </div>
-        </main>
+        </AnimatedPage>
         <Footer />
       </>
     );
@@ -99,14 +99,14 @@ export default function Cart() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gray-50 px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12 lg:pt-32">
+        <AnimatedPage className="min-h-screen bg-gray-50 px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12 lg:pt-32">
           <div className="mx-auto max-w-7xl">
             <h1 className="text-2xl font-bold text-[#30442B] sm:text-3xl lg:text-4xl">Your Cart</h1>
             <div className="mt-6 sm:mt-8">
               <EmptyState title="Your cart is empty" description="Start shopping to add items to your cart!" actionText="Browse Products" actionTo="/products" />
             </div>
           </div>
-        </main>
+        </AnimatedPage>
         <Footer />
       </>
     );
@@ -115,7 +115,7 @@ export default function Cart() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12 lg:pt-32">
+      <AnimatedPage className="min-h-screen bg-gray-50 px-4 pt-24 pb-8 sm:px-6 sm:pt-28 sm:pb-12 lg:pt-32">
         <div className="mx-auto max-w-7xl">
           <h1 className="mb-6 text-2xl font-bold text-[#30442B] sm:mb-8 sm:text-3xl lg:text-4xl">Your Cart</h1>
 
@@ -202,7 +202,7 @@ export default function Cart() {
             </aside>
           </div>
         </div>
-      </main>
+      </AnimatedPage>
       <Footer />
 
       {/* Edit Modal */}

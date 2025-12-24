@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AdminLayout } from "../components/layout";
 import { ThreadModal, InquiryCard } from "../components/inquiries";
-import { PageHeader, MetricCard, LoadingSpinner } from "../components/common";
+import { PageHeader, MetricCard, LoadingSpinner, AdminAnimatedPage } from "../components/common";
 import { useInquiries } from "../hooks/useInquiries";
 
 export default function Inquiries() {
@@ -26,7 +26,7 @@ export default function Inquiries() {
 
   return (
     <AdminLayout>
-      <div className="p-4 sm:p-6 lg:p-8">
+      <AdminAnimatedPage className="p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-screen-2xl">
           {/* Header */}
           <PageHeader title="Customer Inquiries" subtitle="Manage and respond to customer messages" />
@@ -78,7 +78,7 @@ export default function Inquiries() {
             </div>
           </div>
         </div>
-      </div>
+      </AdminAnimatedPage>
 
       {/* Thread Modal */}
       <ThreadModal threadId={selectedThreadId} isOpen={isModalOpen} onClose={handleCloseModal} onUpdate={handleThreadUpdate} />

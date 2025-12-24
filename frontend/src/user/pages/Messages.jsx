@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Header, Footer } from "../components/layout";
-import { EmptyState } from "../components/common";
+import { EmptyState, AnimatedPage } from "../components/common";
 import { getUserThreads } from "../services/inquiryService";
 
 export default function Messages() {
@@ -69,7 +69,7 @@ export default function Messages() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 pt-20">
+      <AnimatedPage className="min-h-screen bg-gray-50 pt-20">
         {/* Compact Messages Header */}
         <div className="w-full bg-[#30442B] pt-12 pb-8">
           <div className="container mx-auto px-4">
@@ -141,7 +141,7 @@ export default function Messages() {
             )}
           </div>
         </section>
-      </main>
+      </AnimatedPage>
       <Footer />
     </>
   );

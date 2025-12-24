@@ -1,5 +1,5 @@
 import { AdminLayout } from "../components/layout";
-import { LoadingSpinner } from "../components/common";
+import { LoadingSpinner, AdminAnimatedPage } from "../components/common";
 import { ProductDetailsModal, ProductFormModal, AvailabilityModal, ArchiveModal, DeleteConfirmModal } from "../components/products";
 import { useProducts } from "../hooks/useProducts";
 import { CATEGORIES } from "../constants/categories";
@@ -42,7 +42,7 @@ export default function Products() {
 
   return (
     <AdminLayout>
-      <div className="p-4 sm:p-6 lg:p-8">
+      <AdminAnimatedPage className="p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-screen-2xl">
           {/* Header */}
           <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-start sm:justify-between">
@@ -272,7 +272,7 @@ export default function Products() {
             )}
           </div>
         </div>
-      </div>
+      </AdminAnimatedPage>
 
       {/* Modals */}
       {showDetailsModal && <ProductDetailsModal product={selectedProduct} onClose={closeDetailsModal} />}

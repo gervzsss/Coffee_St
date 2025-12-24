@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Header, Footer } from "../components/layout";
+import { AnimatedPage } from "../components/common";
 import { CategorySidebar, ProductsHeader, ProductsGrid } from "../components/products";
 import { useProducts } from "../hooks/useProducts";
 import { filterProducts } from "../utils/filterProducts";
@@ -25,7 +26,7 @@ export default function Products() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50 pt-20">
+      <AnimatedPage className="min-h-screen bg-gray-50 pt-20">
         {/* Header Section with Search */}
         <ProductsHeader searchQuery={searchQuery} onSearchChange={handleSearchChange} />
 
@@ -35,12 +36,12 @@ export default function Products() {
             <CategorySidebar categories={CATEGORIES} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} productCounts={productCounts} />
 
             {/* Products Grid */}
-            <main className="flex-1">
+            <div className="flex-1">
               <ProductsGrid products={filteredProducts} loading={loading} error={error} onRetry={refetch} />
-            </main>
+            </div>
           </div>
         </div>
-      </div>
+      </AnimatedPage>
       <Footer />
     </>
   );
