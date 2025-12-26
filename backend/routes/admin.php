@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\Admin\StockController;
+use App\Http\Controllers\Admin\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +47,15 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/products/{id}/stock', [StockController::class, 'updateStock']);
     Route::get('/products/{id}/stock-history', [StockController::class, 'getStockHistory']);
     Route::get('/stock/attention', [StockController::class, 'getProductsNeedingAttention']);
+
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/unread', [NotificationController::class, 'unread']);
+    Route::get('/notifications/count', [NotificationController::class, 'count']);
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+    Route::delete('/notifications/cleanup', [NotificationController::class, 'cleanup']);
 
     // Orders
     Route::get('/orders/metrics', [OrderController::class, 'metrics']);

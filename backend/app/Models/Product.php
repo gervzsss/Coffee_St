@@ -93,6 +93,14 @@ class Product extends Model
     }
 
     /**
+     * Get the notifications for the product.
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    /**
      * Check if product has sufficient stock.
      */
     public function hasStock(int $quantity): bool

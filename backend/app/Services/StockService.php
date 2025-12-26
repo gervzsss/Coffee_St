@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\DB;
 
 class StockService
 {
+  protected NotificationService $notificationService;
+
+  public function __construct(NotificationService $notificationService)
+  {
+    $this->notificationService = $notificationService;
+  }
   /**
    * Check if product has sufficient stock.
    */
@@ -33,6 +39,7 @@ class StockService
     $product->stock_quantity = $quantityAfter;
     $product->stock_updated_at = now();
     $product->save();
+    $product->refresh(); // Refresh to get updated values
 
     $this->logStockChange(
       product: $product,
@@ -62,6 +69,7 @@ class StockService
     $product->stock_quantity = $quantityAfter;
     $product->stock_updated_at = now();
     $product->save();
+    $product->refresh(); // Refresh to get updated values
 
     $this->logStockChange(
       product: $product,
@@ -71,6 +79,11 @@ class StockService
       reason: $reason,
       order: $order
     );
+
+    // Create stock restored notification if applicable
+    if ($quantityBefore <= $product->low_stock_threshold && $quantityAfter > $product->low_stock_threshold) {
+      $this->notificationService->createStockRestoredNotification($product, $quantityBefore);
+    }
   }
 
   /**
@@ -101,6 +114,7 @@ class StockService
     $product->stock_quantity = $quantityAfter;
     $product->stock_updated_at = now();
     $product->save();
+    $product->refresh(); // Refresh to get updated values
 
     $stockLog = $this->logStockChange(
       product: $product,
@@ -114,6 +128,11 @@ class StockService
 
     // Check if stock alerts are needed
     $this->checkStockAlerts($product);
+
+    // Create stock restored notification if stock was increased from low/sold out
+    if ($quantityBefore <= $product->low_stock_threshold && $quantityAfter > $product->low_stock_threshold) {
+      $this->notificationService->createStockRestoredNotification($product, $quantityBefore);
+    }
 
     return $stockLog;
   }
@@ -146,18 +165,13 @@ class StockService
 
   /**
    * Check stock levels and create notifications if needed.
-   * This will be expanded in Phase 2 to create actual notifications.
    */
   protected function checkStockAlerts(Product $product): void
   {
-    // Phase 2: Create stock notifications
-    // For now, we just check the conditions
     if ($product->isSoldOut()) {
-      // TODO: Create sold_out notification
-      \Log::info("Product {$product->id} is sold out");
+      $this->notificationService->createSoldOutNotification($product);
     } elseif ($product->isLowStock()) {
-      // TODO: Create low_stock notification
-      \Log::info("Product {$product->id} has low stock: {$product->stock_quantity}");
+      $this->notificationService->createLowStockNotification($product);
     }
   }
 

@@ -2,8 +2,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
 import logo from "../../../assets/stcoffeelogo.png";
 import { useState, useRef, useEffect } from "react";
+import { Bell } from "lucide-react";
 
-export default function AdminSidebar({ isMobileOpen = false, onMobileClose }) {
+export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unreadCount = 0, onNotificationClick }) {
   const { admin, logout } = useAdminAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -127,10 +128,23 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose }) {
         <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-lg ring-2 ring-white/10">
           <img src={logo} alt="Coffee St. Logo" className="h-full w-full object-cover" />
         </div>
-        <div className="flex min-w-0 flex-col">
+        <div className="flex min-w-0 flex-1 flex-col">
           <span className="text-base font-bold tracking-tight">Coffee St.</span>
           <span className="text-xs font-medium text-white/60">Admin Portal</span>
         </div>
+        {/* Notification Icon */}
+        <button
+          onClick={onNotificationClick}
+          className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/20 active:scale-95"
+          aria-label="Notifications"
+        >
+          <Bell className="h-5 w-5 text-white" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white ring-2 ring-[#30442B]">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+        </button>
       </div>
 
       {/* Navigation Links */}

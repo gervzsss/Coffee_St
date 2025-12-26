@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import AdminSidebar from "./AdminSidebar";
+import NotificationModal from "../common/NotificationModal";
+import adminApi from "../../services/apiClient";
 
 export default function AdminLayout({ children }) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (isMobileSidebarOpen) {
@@ -15,12 +19,42 @@ export default function AdminLayout({ children }) {
     };
   }, [isMobileSidebarOpen]);
 
+  // Fetch unread notification count
+  useEffect(() => {
+    fetchUnreadCount();
+
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(fetchUnreadCount, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await adminApi.get("/notifications/count");
+      if (response.data.success) {
+        setUnreadCount(response.data.data.count);
+      }
+    } catch (error) {
+      console.error("Error fetching notification count:", error);
+    }
+  };
+
   const toggleMobileSidebar = () => {
     setIsMobileSidebarOpen(!isMobileSidebarOpen);
   };
 
   const closeMobileSidebar = () => {
     setIsMobileSidebarOpen(false);
+  };
+
+  const openNotificationModal = () => {
+    setIsNotificationModalOpen(true);
+  };
+
+  const closeNotificationModal = () => {
+    setIsNotificationModalOpen(false);
+    fetchUnreadCount(); // Refresh count after closing modal
   };
 
   return (
@@ -52,9 +86,12 @@ export default function AdminLayout({ children }) {
         </div>
       </div>
 
-      <AdminSidebar isMobileOpen={isMobileSidebarOpen} onMobileClose={closeMobileSidebar} />
+      <AdminSidebar isMobileOpen={isMobileSidebarOpen} onMobileClose={closeMobileSidebar} unreadCount={unreadCount} onNotificationClick={openNotificationModal} />
 
       <main className="ml-0 flex-1 pt-16 transition-all duration-300 lg:ml-72 lg:pt-0">{children}</main>
+
+      {/* Notification Modal */}
+      <NotificationModal isOpen={isNotificationModalOpen} onClose={closeNotificationModal} />
     </div>
   );
 }
