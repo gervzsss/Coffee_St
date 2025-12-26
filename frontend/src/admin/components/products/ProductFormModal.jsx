@@ -3,6 +3,7 @@ import { CATEGORIES } from "../../constants/categories";
 import { extractPublicId } from "../../utils/cloudinary";
 import { uploadImage, deleteImage } from "../../services/productService";
 import { ButtonSpinner } from "../common";
+import StockHistoryModal from "./StockHistoryModal";
 
 export default function ProductFormModal({ product, onSave, onCancel, isLoading }) {
   const isEdit = !!product;
@@ -10,6 +11,7 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(product?.image_url || null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [showStockHistory, setShowStockHistory] = useState(false);
   const [formData, setFormData] = useState({
     name: product?.name || "",
     description: product?.description || "",
@@ -338,17 +340,27 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
             <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-gray-900">Stock Management</h3>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="track_stock"
-                    checked={formData.track_stock}
-                    onChange={(e) => handleChange("track_stock", e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-[#30442B] focus:ring-[#30442B]"
-                  />
-                  <label htmlFor="track_stock" className="text-sm font-medium text-gray-700">
-                    Track inventory
-                  </label>
+                <div className="flex items-center gap-3">
+                  {isEdit && product?.track_stock && (
+                    <button type="button" onClick={() => setShowStockHistory(true)} className="flex items-center gap-1 text-sm font-medium text-[#30442B] hover:text-[#22301e]">
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      View History
+                    </button>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="track_stock"
+                      checked={formData.track_stock}
+                      onChange={(e) => handleChange("track_stock", e.target.checked)}
+                      className="h-4 w-4 rounded border-gray-300 text-[#30442B] focus:ring-[#30442B]"
+                    />
+                    <label htmlFor="track_stock" className="text-sm font-medium text-gray-700">
+                      Track inventory
+                    </label>
+                  </div>
                 </div>
               </div>
 
@@ -506,6 +518,9 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
           </div>
         </div>
       </div>
+
+      {/* Stock History Modal */}
+      {showStockHistory && isEdit && product && <StockHistoryModal isOpen={showStockHistory} onClose={() => setShowStockHistory(false)} product={product} />}
     </div>
   );
 }

@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/products/{id}/stock', [StockController::class, 'updateStock']);
     Route::get('/products/{id}/stock-history', [StockController::class, 'getStockHistory']);
     Route::get('/stock/attention', [StockController::class, 'getProductsNeedingAttention']);
+    Route::get('/stock/history', [StockController::class, 'getGlobalStockHistory']);
 
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index']);

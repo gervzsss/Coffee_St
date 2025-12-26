@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ButtonSpinner } from "../common";
+import StockHistoryModal from "./StockHistoryModal";
 
 const ADJUSTMENT_TYPES = [
   { value: "add", label: "Add Stock (Restock)" },
@@ -16,6 +17,7 @@ const REASONS = [
 ];
 
 export default function StockUpdateModal({ product, onSave, onCancel, isLoading }) {
+  const [showStockHistory, setShowStockHistory] = useState(false);
   const [formData, setFormData] = useState({
     adjustment_type: "add",
     quantity: "",
@@ -100,11 +102,18 @@ export default function StockUpdateModal({ product, onSave, onCancel, isLoading 
               <h2 className="text-2xl font-bold text-gray-900">Update Stock</h2>
               <p className="mt-1 text-sm text-gray-600">{product.name}</p>
             </div>
-            <button onClick={onCancel} disabled={isLoading} className="p-1 text-gray-400 hover:text-gray-600">
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-2">
+              <button type="button" onClick={() => setShowStockHistory(true)} className="rounded-lg p-2 text-[#30442B] hover:bg-gray-100" title="View Stock History">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+              <button onClick={onCancel} disabled={isLoading} className="p-1 text-gray-400 hover:text-gray-600">
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div className="space-y-5">
@@ -219,6 +228,9 @@ export default function StockUpdateModal({ product, onSave, onCancel, isLoading 
           </div>
         </div>
       </div>
+
+      {/* Stock History Modal */}
+      {showStockHistory && <StockHistoryModal isOpen={showStockHistory} onClose={() => setShowStockHistory(false)} product={product} />}
     </div>
   );
 }

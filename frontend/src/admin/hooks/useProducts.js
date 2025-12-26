@@ -196,6 +196,7 @@ export function useProducts() {
     products,
     loading,
     metrics,
+    fetchData,
 
     searchTerm,
     setSearchTerm,
