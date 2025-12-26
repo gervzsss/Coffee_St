@@ -1,6 +1,6 @@
 import { AdminLayout } from "../components/layout";
-import { LoadingSpinner, AdminAnimatedPage } from "../components/common";
-import { ProductDetailsModal, ProductFormModal, AvailabilityModal, ArchiveModal, DeleteConfirmModal } from "../components/products";
+import { AdminAnimatedPage } from "../components/common";
+import { ProductDetailsModal, ProductFormModal, AvailabilityModal, ArchiveModal, DeleteConfirmModal, ProductMetricSkeleton, ProductTableSkeleton } from "../components/products";
 import { useProducts } from "../hooks/useProducts";
 import { CATEGORIES } from "../constants/categories";
 
@@ -64,22 +64,33 @@ export default function Products() {
 
           {/* Metrics Cards */}
           <div className="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-4 lg:grid-cols-4 lg:gap-6">
-            <div className="rounded-xl border border-gray-200 bg-white p-4 sm:rounded-2xl sm:p-5 lg:p-6">
-              <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Active Products</p>
-              <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.total_products}</p>
-            </div>
-            <div className="rounded-xl border border-gray-200 bg-white p-4 sm:rounded-2xl sm:p-5 lg:p-6">
-              <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Archived Products</p>
-              <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.archived_products}</p>
-            </div>
-            <div className="rounded-xl border border-gray-200 bg-white p-4 sm:rounded-2xl sm:p-5 lg:p-6">
-              <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Available</p>
-              <p className="text-2xl font-bold text-green-600 sm:text-3xl lg:text-4xl">{metrics.available_products}</p>
-            </div>
-            <div className="rounded-xl border border-gray-200 bg-white p-4 sm:rounded-2xl sm:p-5 lg:p-6">
-              <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Not Available</p>
-              <p className="text-2xl font-bold text-red-600 sm:text-3xl lg:text-4xl">{metrics.not_available_products}</p>
-            </div>
+            {loading ? (
+              <>
+                <ProductMetricSkeleton />
+                <ProductMetricSkeleton />
+                <ProductMetricSkeleton />
+                <ProductMetricSkeleton />
+              </>
+            ) : (
+              <>
+                <div className="rounded-xl border border-gray-200 bg-white p-4 sm:rounded-2xl sm:p-5 lg:p-6">
+                  <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Active Products</p>
+                  <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.total_products}</p>
+                </div>
+                <div className="rounded-xl border border-gray-200 bg-white p-4 sm:rounded-2xl sm:p-5 lg:p-6">
+                  <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Archived Products</p>
+                  <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.archived_products}</p>
+                </div>
+                <div className="rounded-xl border border-gray-200 bg-white p-4 sm:rounded-2xl sm:p-5 lg:p-6">
+                  <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Available</p>
+                  <p className="text-2xl font-bold text-green-600 sm:text-3xl lg:text-4xl">{metrics.available_products}</p>
+                </div>
+                <div className="rounded-xl border border-gray-200 bg-white p-4 sm:rounded-2xl sm:p-5 lg:p-6">
+                  <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Not Available</p>
+                  <p className="text-2xl font-bold text-red-600 sm:text-3xl lg:text-4xl">{metrics.not_available_products}</p>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Search & Filter */}
@@ -138,7 +149,7 @@ export default function Products() {
             </div>
 
             {loading ? (
-              <LoadingSpinner className="py-12 sm:py-16" />
+              <ProductTableSkeleton />
             ) : products.length === 0 ? (
               <div className="py-12 text-center sm:py-16">
                 <svg className="mx-auto mb-4 h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
