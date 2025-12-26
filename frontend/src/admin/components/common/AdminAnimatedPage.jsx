@@ -10,7 +10,7 @@ export default function AdminAnimatedPage({ children, className = "" }) {
   const shouldReduceMotion = useReducedMotion();
 
   const variants = {
-    initial: { opacity: 0, y: 8 },
+    initial: { opacity: 1, y: 8 },
     animate: { opacity: 1, y: 0 },
   };
 
