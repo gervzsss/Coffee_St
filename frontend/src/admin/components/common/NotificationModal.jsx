@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Package, AlertTriangle, CheckCircle, Trash2 } from "lucide-react";
+import { X, Package, AlertTriangle, CheckCircle, Trash2, Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import adminApi from "../../services/apiClient";
 import { format } from "date-fns";
 
 const NotificationModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all"); // all, unread, read
@@ -64,6 +66,8 @@ const NotificationModal = ({ isOpen, onClose }) => {
         return <Package className="h-5 w-5 text-yellow-500" />;
       case "stock_restored":
         return <CheckCircle className="h-5 w-5 text-green-500" />;
+      case "new_inquiry":
+        return <Mail className="h-5 w-5 text-blue-500" />;
       default:
         return <Package className="h-5 w-5 text-gray-500" />;
     }
@@ -77,9 +81,28 @@ const NotificationModal = ({ isOpen, onClose }) => {
         return "bg-yellow-50 border-yellow-200";
       case "stock_restored":
         return "bg-green-50 border-green-200";
+      case "new_inquiry":
+        return "bg-blue-50 border-blue-200";
       default:
         return "bg-gray-50 border-gray-200";
     }
+  };
+
+  const handleNotificationClick = async (notification) => {
+    // Mark as read if not already
+    if (!notification.is_read) {
+      await markAsRead(notification.id);
+    }
+
+    // Navigate based on notification type
+    if (notification.type === "new_inquiry") {
+      navigate("/admin/inquiries");
+    } else if (["low_stock", "sold_out", "stock_restored"].includes(notification.type)) {
+      navigate("/admin/products");
+    }
+
+    // Close the modal
+    onClose();
   };
 
   const filteredNotifications = notifications.filter((notif) => {
@@ -166,7 +189,8 @@ const NotificationModal = ({ isOpen, onClose }) => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className={`rounded-lg border p-4 ${getNotificationBgColor(notification.type)} ${notification.is_read ? "opacity-60" : ""} transition-opacity`}
+                    onClick={() => handleNotificationClick(notification)}
+                    className={`cursor-pointer rounded-lg border p-4 ${getNotificationBgColor(notification.type)} ${notification.is_read ? "opacity-60" : ""} transition-all hover:shadow-md`}
                   >
                     <div className="flex items-start gap-3">
                       <div className="mt-1 shrink-0">{getNotificationIcon(notification.type)}</div>
@@ -180,11 +204,23 @@ const NotificationModal = ({ isOpen, onClose }) => {
                           </div>
                           <div className="flex items-center gap-2">
                             {!notification.is_read && (
-                              <button onClick={() => markAsRead(notification.id)} className="text-xs font-medium text-[#30442B] hover:text-[#5d7f52]">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  markAsRead(notification.id);
+                                }}
+                                className="text-xs font-medium text-[#30442B] hover:text-[#5d7f52]"
+                              >
                                 Mark read
                               </button>
                             )}
-                            <button onClick={() => deleteNotification(notification.id)} className="text-gray-400 transition-colors hover:text-red-500">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteNotification(notification.id);
+                              }}
+                              className="text-gray-400 transition-colors hover:text-red-500"
+                            >
                               <Trash2 className="h-4 w-4" />
                             </button>
                           </div>

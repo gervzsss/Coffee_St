@@ -12,6 +12,7 @@ class Notification extends Model
 
   protected $fillable = [
     'product_id',
+    'inquiry_thread_id',
     'type',
     'title',
     'message',
@@ -34,6 +35,14 @@ class Notification extends Model
   public function product(): BelongsTo
   {
     return $this->belongsTo(Product::class);
+  }
+
+  /**
+   * Get the inquiry thread associated with the notification.
+   */
+  public function inquiryThread(): BelongsTo
+  {
+    return $this->belongsTo(InquiryThread::class);
   }
 
   /**

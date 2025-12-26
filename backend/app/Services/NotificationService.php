@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Notification;
 use App\Models\Product;
+use App\Models\InquiryThread;
 use Illuminate\Support\Collection;
 
 class NotificationService
@@ -110,11 +111,48 @@ class NotificationService
   }
 
   /**
+   * Create a new inquiry notification.
+   */
+  public function createNewInquiryNotification(InquiryThread $thread): Notification
+  {
+    // Check if a notification for this thread already exists and is unread
+    $existingNotification = Notification::where('inquiry_thread_id', $thread->id)
+      ->where('type', 'new_inquiry')
+      ->where('is_read', false)
+      ->first();
+
+    if ($existingNotification) {
+      return $existingNotification;
+    }
+
+    // Determine the sender name
+    $senderName = $thread->user
+      ? ($thread->user->first_name . ' ' . $thread->user->last_name)
+      : ($thread->guest_name ?? 'Guest');
+
+    return Notification::create([
+      'inquiry_thread_id' => $thread->id,
+      'type' => 'new_inquiry',
+      'title' => 'New Inquiry',
+      'message' => sprintf(
+        'New inquiry received from %s: "%s"',
+        $senderName,
+        $thread->subject
+      ),
+      'data' => [
+        'thread_id' => $thread->id,
+        'subject' => $thread->subject,
+        'user_name' => $senderName,
+      ],
+    ]);
+  }
+
+  /**
    * Get all unread notifications.
    */
   public function getUnreadNotifications(): Collection
   {
-    return Notification::with('product')
+    return Notification::with(['product', 'inquiryThread'])
       ->unread()
       ->orderBy('created_at', 'desc')
       ->get();
@@ -125,7 +163,7 @@ class NotificationService
    */
   public function getAllNotifications(int $limit = 50): Collection
   {
-    return Notification::with('product')
+    return Notification::with(['product', 'inquiryThread'])
       ->orderBy('created_at', 'desc')
       ->limit($limit)
       ->get();

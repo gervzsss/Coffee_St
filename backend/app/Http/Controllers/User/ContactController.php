@@ -6,12 +6,20 @@ use App\Http\Controllers\Controller;
 
 use App\Models\InquiryThread;
 use App\Models\ThreadMessage;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
     /**
      * Handle contact form submission
      */
@@ -47,6 +55,19 @@ class ContactController extends Controller
             'message' => $validated['message'],
             'created_at' => now(),
         ]);
+
+        // Create admin notification for new inquiry
+        try {
+            // Reload thread with user relationship for notification
+            $thread->load('user');
+            $this->notificationService->createNewInquiryNotification($thread);
+        } catch (\Exception $e) {
+            // Log error but don't block the inquiry submission
+            Log::error('Failed to create inquiry notification', [
+                'thread_id' => $thread->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         // Log the contact form submission
         Log::info('Contact form submission', [
