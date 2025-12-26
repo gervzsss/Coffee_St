@@ -40,28 +40,18 @@ export default function Orders() {
 
           {/* Order Status Cards */}
           <div className="mb-6 grid grid-cols-2 gap-2 sm:mb-8 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5 lg:gap-4">
-            {loading ? (
-              <>
-                <OrderStatusCardSkeleton />
-                <OrderStatusCardSkeleton />
-                <OrderStatusCardSkeleton />
-                <OrderStatusCardSkeleton />
-                <OrderStatusCardSkeleton />
-              </>
-            ) : (
-              statusCards.map((card) => (
-                <div
-                  key={card.key}
-                  onClick={() => setFilterStatus(card.key)}
-                  className={`cursor-pointer rounded-lg border-2 p-3 transition-all duration-300 sm:rounded-xl sm:p-4 ${
-                    filterStatus === card.key ? "border-[#30442B] bg-[#30442B] text-white" : "border-gray-200 bg-white text-gray-800 hover:border-[#30442B]/30"
-                  }`}
-                >
-                  <div className={`text-xs font-medium sm:text-sm ${filterStatus === card.key ? "text-white/80" : "text-gray-500"}`}>{card.label}</div>
-                  <div className="mt-0.5 text-xl font-bold sm:mt-1 sm:text-2xl lg:text-3xl">{card.count}</div>
-                </div>
-              ))
-            )}
+            {statusCards.map((card) => (
+              <div
+                key={card.key}
+                onClick={() => setFilterStatus(card.key)}
+                className={`cursor-pointer rounded-lg border-2 p-3 transition-all duration-300 sm:rounded-xl sm:p-4 ${
+                  filterStatus === card.key ? "border-[#30442B] bg-[#30442B] text-white" : "border-gray-200 bg-white text-gray-800 hover:border-[#30442B]/30"
+                }`}
+              >
+                <div className={`text-xs font-medium sm:text-sm ${filterStatus === card.key ? "text-white/80" : "text-gray-500"}`}>{card.label}</div>
+                <div className="mt-0.5 text-xl font-bold sm:mt-1 sm:text-2xl lg:text-3xl">{card.count}</div>
+              </div>
+            ))}
           </div>
 
           {/* Search Section */}

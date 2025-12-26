@@ -52,28 +52,18 @@ export default function Users() {
           </div>
 
           <div className="mb-6 grid grid-cols-1 gap-4 sm:mb-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-            {loading ? (
-              <>
-                <UserMetricSkeleton />
-                <UserMetricSkeleton />
-                <UserMetricSkeleton />
-              </>
-            ) : (
-              <>
-                <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
-                  <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Total Customers</p>
-                  <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.total_customers}</p>
-                </div>
-                <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
-                  <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Active</p>
-                  <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.active_users}</p>
-                </div>
-                <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
-                  <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Banned</p>
-                  <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.banned_users}</p>
-                </div>
-              </>
-            )}
+            <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
+              <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Total Customers</p>
+              <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.total_customers}</p>
+            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
+              <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Active</p>
+              <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.active_users}</p>
+            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
+              <p className="mb-1 text-xs text-gray-500 sm:mb-2 sm:text-sm">Banned</p>
+              <p className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">{metrics.banned_users}</p>
+            </div>
           </div>
 
           <div className="mb-6 rounded-xl bg-[#30442B] p-3 sm:mb-8 sm:rounded-2xl sm:p-4 lg:p-5">
