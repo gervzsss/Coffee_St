@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { getAllThreads, updateThreadStatus } from '../services/inquiryService';
 
 export function useInquiries() {
@@ -21,6 +21,10 @@ export function useInquiries() {
 
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchThreads();
+  }, [fetchThreads]);
 
   const handleStatusChange = useCallback(async (threadId, newStatus) => {
     const result = await updateThreadStatus(threadId, newStatus);
