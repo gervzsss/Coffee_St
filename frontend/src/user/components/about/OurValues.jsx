@@ -1,9 +1,14 @@
+import { useRef } from "react";
+import { motion, useInView } from "motion/react";
+import { staggerContainer, staggerItem } from "../../../components/motion/variants";
 import sustainabilityImg from "../../../assets/sustainability.png";
 import bakedDailyImg from "../../../assets/bakeddaily.png";
 import farmerCoffeeBeanImg from "../../../assets/farmercoffeebean.png";
 import coffeeBeansImg from "../../../assets/coffeebeans.png";
 
 export default function OurValues() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
   const values = [
     {
       id: 1,
@@ -36,16 +41,17 @@ export default function OurValues() {
   ];
 
   return (
-    <section className="my-6 py-12 sm:my-8 sm:py-16">
+    <section ref={ref} className="my-6 py-12 sm:my-8 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 xl:max-w-[1400px]">
-        <div className="mb-8 text-center sm:mb-10 lg:mb-12">
+        <motion.div className="mb-8 text-center sm:mb-10 lg:mb-12" initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }} transition={{ duration: 0.6 }}>
           <h1 className="font-outfit text-xl font-semibold text-[#30442B] sm:text-2xl lg:text-3xl xl:text-4xl">Our Core Values</h1>
           <h2 className="font-outfit mx-auto mt-3 max-w-2xl text-base text-neutral-600 sm:mt-4 sm:text-lg lg:text-xl xl:text-2xl">Discover the principles that guide our coffee journey</h2>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6 xl:grid-cols-4 xl:gap-8">
+        <motion.div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6 xl:grid-cols-4 xl:gap-8" variants={staggerContainer} initial="hidden" animate={isInView ? "visible" : "hidden"}>
           {values.map((value) => (
-            <div
+            <motion.div
+              variants={staggerItem}
               key={value.id}
               className="flex min-h-[380px] flex-col rounded-xl bg-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:min-h-[420px] sm:rounded-2xl lg:min-h-[480px] xl:min-h-[500px]"
             >
@@ -58,9 +64,9 @@ export default function OurValues() {
                 <h3 className="font-outfit mb-1.5 text-lg font-semibold text-white sm:mb-2 sm:text-xl">{value.title}</h3>
                 <p className="text-sm leading-relaxed text-white/90 sm:text-base">{value.description}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

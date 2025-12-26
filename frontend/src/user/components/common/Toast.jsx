@@ -1,4 +1,5 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
+import { toast as toastVariant } from "../../../components/motion/variants";
 
 const TYPE_CONFIGS = {
   default: {
@@ -48,10 +49,10 @@ function ToastItem({ toast, onRemove }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.95 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      variants={toastVariant}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       className={`pointer-events-auto max-w-[90vw] min-w-[280px] rounded-xl px-4 py-3 text-sm font-medium text-white shadow-xl ring-1 ring-white/15 select-none sm:max-w-md sm:min-w-[320px] sm:rounded-2xl sm:px-6 sm:py-4 sm:text-base lg:px-8 ${config.classes}`}
     >
       <div className="flex items-center gap-3 sm:gap-4">

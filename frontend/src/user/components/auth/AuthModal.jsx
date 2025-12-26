@@ -1,5 +1,6 @@
 import { useState, useEffect, useLayoutEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
+import { modalOverlay, modalContent } from "../../../components/motion/variants";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 
@@ -44,51 +45,22 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }) {
     setMode("login");
   };
 
-  const overlayVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-    exit: { opacity: 0 },
-  };
-
-  const modalVariants = {
-    hidden: { opacity: 0, scale: 0.95, y: 20 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: {
-        type: "tween",
-        duration: 0.3,
-        ease: "easeInOut",
-      },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      y: 20,
-      transition: {
-        duration: 0.2,
-      },
-    },
-  };
-
   return (
     <AnimatePresence mode="wait">
       {isOpen && (
         <motion.div
           id="modal-overlay"
           className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/70 px-4 py-10 backdrop-blur-sm sm:py-16"
-          variants={overlayVariants}
+          variants={modalOverlay}
           initial="hidden"
           animate="visible"
           exit="exit"
-          transition={{ duration: 0.3 }}
         >
           {/* Login Modal */}
           {mode === "login" && (
             <motion.div
               className="modal-panel relative w-[95vw] max-w-md overflow-hidden rounded-2xl bg-white text-neutral-900 shadow-[0_30px_80px_-35px_rgba(15,68,43,0.45)] ring-1 ring-neutral-200/70 sm:w-full sm:max-w-md sm:rounded-3xl lg:max-w-lg"
-              variants={modalVariants}
+              variants={modalContent}
               initial="hidden"
               animate="visible"
               exit="exit"
@@ -118,7 +90,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }) {
           {mode === "signup" && (
             <motion.div
               className="modal-panel relative w-[95vw] max-w-2xl overflow-hidden rounded-2xl bg-white text-neutral-900 shadow-[0_30px_80px_-35px_rgba(15,68,43,0.45)] ring-1 ring-neutral-200/70 sm:w-full sm:rounded-3xl lg:max-w-3xl"
-              variants={modalVariants}
+              variants={modalContent}
               initial="hidden"
               animate="visible"
               exit="exit"

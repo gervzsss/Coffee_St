@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
+import { accordion } from "../../../components/motion/variants";
 
 export default function QuickSettingsPanel({ onChangePassword, onDeleteAccount, onLogout, onLanguageChange, currentLanguage = "en" }) {
   const [expandedSection, setExpandedSection] = useState(null);
@@ -25,13 +26,7 @@ export default function QuickSettingsPanel({ onChangePassword, onDeleteAccount, 
 
           <AnimatePresence>
             {expandedSection === "security" && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden bg-gray-50"
-              >
+              <motion.div variants={accordion} initial="collapsed" animate="expanded" exit="collapsed" className="overflow-hidden bg-gray-50">
                 <button
                   onClick={onChangePassword}
                   className="w-full px-4 py-2.5 text-left text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-[#30442B] sm:px-5 sm:py-3 sm:text-base lg:px-6"
@@ -58,13 +53,7 @@ export default function QuickSettingsPanel({ onChangePassword, onDeleteAccount, 
 
           <AnimatePresence>
             {expandedSection === "language" && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden bg-gray-50"
-              >
+              <motion.div variants={accordion} initial="collapsed" animate="expanded" exit="collapsed" className="overflow-hidden bg-gray-50">
                 <div className="px-6 py-3">
                   <label className="mb-2 block text-xs font-medium text-gray-500">CHANGE LANGUAGE</label>
                   <select

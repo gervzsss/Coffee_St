@@ -1,3 +1,5 @@
+import { motion } from "motion/react";
+import { staggerContainer, staggerItem } from "../../../components/motion/variants";
 import contactHeaderImg from "../../../assets/contact_header.webp";
 
 export default function ContactHero() {
@@ -7,15 +9,27 @@ export default function ContactHero() {
         <img src={contactHeaderImg} alt="Barista pouring coffee" className="h-full w-full object-cover" />
       </div>
       <div className="absolute inset-0 bg-[#1a2319]/80 mix-blend-multiply"></div>
-      <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-8 px-4 py-16 text-white sm:gap-10 sm:px-6 sm:py-20 lg:flex-row lg:items-end lg:px-10 lg:py-24 xl:max-w-6xl">
+      <motion.div
+        className="relative z-10 mx-auto flex max-w-5xl flex-col gap-8 px-4 py-16 text-white sm:gap-10 sm:px-6 sm:py-20 lg:flex-row lg:items-end lg:px-10 lg:py-24 xl:max-w-6xl"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="lg:flex-1">
-          <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[10px] font-semibold tracking-[0.35em] text-amber-200 uppercase sm:px-4 sm:text-xs">Drop us a line</span>
-          <h1 className="font-outfit mt-4 text-3xl leading-tight font-semibold sm:mt-6 sm:text-4xl lg:text-5xl xl:text-6xl">Let's Brew a Conversation</h1>
-          <p className="mt-4 max-w-xl text-sm text-white/80 sm:mt-6 sm:text-base lg:text-lg">
+          <motion.span
+            className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[10px] font-semibold tracking-[0.35em] text-amber-200 uppercase sm:px-4 sm:text-xs"
+            variants={staggerItem}
+          >
+            Drop us a line
+          </motion.span>
+          <motion.h1 className="font-outfit mt-4 text-3xl leading-tight font-semibold sm:mt-6 sm:text-4xl lg:text-5xl xl:text-6xl" variants={staggerItem}>
+            Let's Brew a Conversation
+          </motion.h1>
+          <motion.p className="mt-4 max-w-xl text-sm text-white/80 sm:mt-6 sm:text-base lg:text-lg" variants={staggerItem}>
             Have a question, a custom order, or just want to say hello? We're always here to chat over a warm cup of coffee.
-          </p>
+          </motion.p>
         </div>
-        <div className="lg:w-[260px] xl:w-[280px]">
+        <motion.div className="lg:w-[260px] xl:w-[280px]" variants={staggerItem}>
           <div className="rounded-2xl bg-white/10 p-4 shadow-lg ring-1 shadow-black/25 ring-white/20 backdrop-blur sm:rounded-3xl sm:p-5 lg:p-6">
             <p className="text-xs tracking-[0.3em] text-amber-200 uppercase sm:text-sm">visit us</p>
             <p className="font-outfit mt-2 text-base text-white sm:mt-3 sm:text-lg">123 Coffee Street, Manila</p>
@@ -58,8 +72,8 @@ export default function ContactHero() {
               </p>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

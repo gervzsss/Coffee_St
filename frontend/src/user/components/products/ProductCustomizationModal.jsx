@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
+import { modalOverlay, modalContent } from "../../../components/motion/variants";
 import { X, Plus, Minus, ShoppingCart } from "lucide-react";
 import { useToast } from "../../hooks/useToast";
 
@@ -163,49 +164,20 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
     }
   };
 
-  const overlayVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  };
-
-  const modalVariants = {
-    hidden: {
-      opacity: 0,
-      scale: 0.9,
-      y: 20,
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: {
-        type: "tween",
-        duration: 0.3,
-        ease: "easeInOut",
-      },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.9,
-      y: 20,
-      transition: { duration: 0.2 },
-    },
-  };
-
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          variants={overlayVariants}
+          variants={modalOverlay}
           initial="hidden"
           animate="visible"
-          exit="hidden"
+          exit="exit"
           className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/70 px-4 py-10 backdrop-blur-sm sm:py-16"
           onClick={onClose}
         >
           {/* Modal */}
           <motion.div
-            variants={modalVariants}
+            variants={modalContent}
             initial="hidden"
             animate="visible"
             exit="exit"

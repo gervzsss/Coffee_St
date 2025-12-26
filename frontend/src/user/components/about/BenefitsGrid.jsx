@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
+import { staggerContainer, staggerItem } from "../../../components/motion/variants";
 import { useRef } from "react";
 
 export default function BenefitsGrid() {
@@ -81,32 +82,10 @@ export default function BenefitsGrid() {
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-      },
-    },
-  };
-
   return (
     <section ref={ref} className="bg-[#FDFBF6] px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
       <div className="mx-auto max-w-6xl xl:max-w-7xl">
-        <div className="mb-8 text-center sm:mb-10 lg:mb-12">
+        <motion.div className="mb-8 text-center sm:mb-10 lg:mb-12" initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }} transition={{ duration: 0.6 }}>
           <h2 className="mb-3 text-2xl font-bold text-[#30442B] sm:mb-4 sm:text-3xl lg:text-4xl">Why Choose Our Coffee Shop?</h2>
           <Link to="/about#why-choose-us" className="group inline-flex items-center gap-2 text-[#30442B] transition-colors hover:text-[#967259]">
             <span className="text-sm sm:text-base lg:text-lg">Learn more about us</span>
@@ -114,13 +93,13 @@ export default function BenefitsGrid() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
-        </div>
+        </motion.div>
 
-        <motion.div variants={containerVariants} initial="hidden" animate={isInView ? "visible" : "hidden"} className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
+        <motion.div variants={staggerContainer} initial="hidden" animate={isInView ? "visible" : "hidden"} className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
           {benefits.map((benefit) => (
             <motion.div
               key={benefit.id}
-              variants={cardVariants}
+              variants={staggerItem}
               className="benefit-card transform rounded-xl bg-white p-4 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg sm:rounded-2xl sm:p-5 lg:p-6"
             >
               <div className="icon-container mb-3 text-center sm:mb-4">{benefit.icon}</div>

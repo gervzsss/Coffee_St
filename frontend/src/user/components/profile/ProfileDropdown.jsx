@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
+import { dropdown } from "../../../components/motion/variants";
 import { User, Package, Mail, LogOut } from "lucide-react";
 
 export default function ProfileDropdown({ userName, onLogout }) {
@@ -40,31 +41,6 @@ export default function ProfileDropdown({ userName, onLogout }) {
   const handleMenuItemClick = (path) => {
     setIsOpen(false);
     navigate(path);
-  };
-
-  const dropdownVariants = {
-    hidden: {
-      opacity: 0,
-      y: -10,
-      scale: 0.95,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.2,
-        ease: "easeOut",
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: -10,
-      scale: 0.95,
-      transition: {
-        duration: 0.15,
-      },
-    },
   };
 
   const menuItems = [
@@ -120,7 +96,7 @@ export default function ProfileDropdown({ userName, onLogout }) {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            variants={dropdownVariants}
+            variants={dropdown}
             initial="hidden"
             animate="visible"
             exit="exit"

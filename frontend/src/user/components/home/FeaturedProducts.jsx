@@ -1,3 +1,5 @@
+import { useRef } from "react";
+import { motion, useInView } from "motion/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -35,14 +37,17 @@ export default function FeaturedProducts() {
     },
   ];
 
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
+
   return (
-    <section className="bg-white pt-20 pb-16">
+    <section ref={ref} className="bg-white pt-20 pb-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mb-16 text-center">
+        <motion.div className="mb-16 text-center" initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }} transition={{ duration: 0.6 }}>
           <h2 className="font-playfair mb-4 text-4xl font-bold text-[#30442B]">Featured Delights</h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-600">Discover our handcrafted signature drinks and delectable treats</p>
-        </div>
+        </motion.div>
 
         {/* Products Carousel */}
         <div className="featured-products-carousel relative">

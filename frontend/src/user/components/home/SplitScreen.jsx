@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
+import { slideFromLeft, slideFromRight } from "../../../components/motion/variants";
 import { useRef } from "react";
 import homePastriesImg from "../../../assets/home_pastries.png";
 
@@ -13,9 +14,9 @@ export default function SplitScreen() {
         <div className="flex flex-col items-center md:flex-row">
           {/* Left Side - Image */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            variants={slideFromLeft}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
             className="relative h-[350px] w-full overflow-hidden rounded-2xl sm:h-[450px] md:w-1/2 md:rounded-none lg:h-[550px] xl:h-[600px]"
           >
             <div className="absolute inset-0 bg-[#30442B]/10"></div>
@@ -23,12 +24,7 @@ export default function SplitScreen() {
           </motion.div>
 
           {/* Right Side - Content */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="w-full px-4 py-8 sm:px-6 sm:py-10 md:w-1/2 md:py-0 lg:px-12 xl:px-16"
-          >
+          <motion.div variants={slideFromRight} initial="hidden" animate={isInView ? "visible" : "hidden"} className="w-full px-4 py-8 sm:px-6 sm:py-10 md:w-1/2 md:py-0 lg:px-12 xl:px-16">
             <div className="max-w-lg xl:max-w-xl">
               <h2 className="font-playfair mb-4 text-2xl leading-tight font-bold text-[#30442B] sm:mb-5 sm:text-3xl lg:mb-6 lg:text-4xl xl:text-5xl">Crafting Moments of Pure Coffee Delight</h2>
               <p className="mb-5 text-base leading-relaxed text-gray-600 sm:mb-6 sm:text-lg lg:mb-8">

@@ -1,6 +1,18 @@
+import { useRef } from "react";
+import { motion, useInView } from "motion/react";
+
 export default function ContactInfoCard() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
+
   return (
-    <div className="space-y-4 text-xs text-neutral-600 sm:space-y-6 sm:text-sm">
+    <motion.div
+      ref={ref}
+      className="space-y-4 text-xs text-neutral-600 sm:space-y-6 sm:text-sm"
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.6 }}
+    >
       <div className="rounded-2xl bg-white p-4 shadow-xl ring-1 shadow-[#30442B]/10 ring-[#30442B]/10 sm:rounded-3xl sm:p-5 lg:p-6">
         <h2 className="font-outfit text-xl font-semibold text-[#30442B] sm:text-2xl">We'd love to hear from you</h2>
         <p className="mt-3 leading-relaxed sm:mt-4">
@@ -11,6 +23,6 @@ export default function ContactInfoCard() {
           Looking for career opportunities? Email <span className="font-medium text-[#30442B]">careers@coffeest.com</span> with your résumé.
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
