@@ -64,6 +64,8 @@ class DashboardController extends Controller
                 ];
             });
 
+        $pendingInquiriesCount = InquiryThread::whereIn('status', ['pending', 'open'])->count();
+
         $pendingInquiries = InquiryThread::with('user')
             ->whereIn('status', ['pending', 'open'])
             ->latest()
@@ -85,6 +87,7 @@ class DashboardController extends Controller
             'totalUsers' => $totalUsers,
             'recentOrders' => $recentOrders,
             'pendingInquiries' => $pendingInquiries,
+            'pendingInquiriesCount' => $pendingInquiriesCount,
             'salesOverview' => $salesOverview,
             'topSelling' => $topSelling,
         ]);
