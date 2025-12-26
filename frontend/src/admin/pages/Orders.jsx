@@ -1,6 +1,6 @@
 import { AdminLayout } from "../components/layout";
-import { LoadingSpinner, AdminAnimatedPage } from "../components/common";
-import { OrderCard, OrderDetailModal, ConfirmStatusModal, FailureReasonModal } from "../components/orders";
+import { AdminAnimatedPage } from "../components/common";
+import { OrderCard, OrderDetailModal, ConfirmStatusModal, FailureReasonModal, OrderStatusCardSkeleton, OrderCardSkeleton } from "../components/orders";
 import { useOrders } from "../hooks/useOrders";
 
 export default function Orders() {
@@ -40,18 +40,28 @@ export default function Orders() {
 
           {/* Order Status Cards */}
           <div className="mb-6 grid grid-cols-2 gap-2 sm:mb-8 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5 lg:gap-4">
-            {statusCards.map((card) => (
-              <div
-                key={card.key}
-                onClick={() => setFilterStatus(card.key)}
-                className={`cursor-pointer rounded-lg border-2 p-3 transition-all duration-300 sm:rounded-xl sm:p-4 ${
-                  filterStatus === card.key ? "border-[#30442B] bg-[#30442B] text-white" : "border-gray-200 bg-white text-gray-800 hover:border-[#30442B]/30"
-                }`}
-              >
-                <div className={`text-xs font-medium sm:text-sm ${filterStatus === card.key ? "text-white/80" : "text-gray-500"}`}>{card.label}</div>
-                <div className="mt-0.5 text-xl font-bold sm:mt-1 sm:text-2xl lg:text-3xl">{card.count}</div>
-              </div>
-            ))}
+            {loading ? (
+              <>
+                <OrderStatusCardSkeleton />
+                <OrderStatusCardSkeleton />
+                <OrderStatusCardSkeleton />
+                <OrderStatusCardSkeleton />
+                <OrderStatusCardSkeleton />
+              </>
+            ) : (
+              statusCards.map((card) => (
+                <div
+                  key={card.key}
+                  onClick={() => setFilterStatus(card.key)}
+                  className={`cursor-pointer rounded-lg border-2 p-3 transition-all duration-300 sm:rounded-xl sm:p-4 ${
+                    filterStatus === card.key ? "border-[#30442B] bg-[#30442B] text-white" : "border-gray-200 bg-white text-gray-800 hover:border-[#30442B]/30"
+                  }`}
+                >
+                  <div className={`text-xs font-medium sm:text-sm ${filterStatus === card.key ? "text-white/80" : "text-gray-500"}`}>{card.label}</div>
+                  <div className="mt-0.5 text-xl font-bold sm:mt-1 sm:text-2xl lg:text-3xl">{card.count}</div>
+                </div>
+              ))
+            )}
           </div>
 
           {/* Search Section */}
@@ -102,7 +112,11 @@ export default function Orders() {
           {/* Orders List */}
           <div className="space-y-3 sm:space-y-4">
             {loading ? (
-              <LoadingSpinner className="py-8 sm:py-12" />
+              <>
+                <OrderCardSkeleton />
+                <OrderCardSkeleton />
+                <OrderCardSkeleton />
+              </>
             ) : filteredOrders.length === 0 ? (
               <div className="rounded-xl border border-gray-200 bg-white py-8 text-center sm:py-12">
                 <svg className="mx-auto mb-3 h-12 w-12 text-gray-300 sm:mb-4 sm:h-16 sm:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
