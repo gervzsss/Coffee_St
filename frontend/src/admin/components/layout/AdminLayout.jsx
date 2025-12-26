@@ -54,7 +54,7 @@ export default function AdminLayout({ children }) {
 
       <AdminSidebar isMobileOpen={isMobileSidebarOpen} onMobileClose={closeMobileSidebar} />
 
-      <main className="ml-0 flex-1 overflow-auto pt-16 transition-all duration-300 lg:ml-72 lg:pt-0">{children}</main>
+      <main className="ml-0 flex-1 pt-16 transition-all duration-300 lg:ml-72 lg:pt-0">{children}</main>
     </div>
   );
 }
