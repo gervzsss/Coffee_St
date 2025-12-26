@@ -132,10 +132,10 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unre
           <span className="text-base font-bold tracking-tight">Coffee St.</span>
           <span className="text-xs font-medium text-white/60">Admin Portal</span>
         </div>
-        {/* Notification Icon */}
+        {/* Notification Icon - Hidden on mobile to avoid overlap with close button */}
         <button
           onClick={onNotificationClick}
-          className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/20 active:scale-95"
+          className="relative hidden h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/20 active:scale-95 lg:flex"
           aria-label="Notifications"
         >
           <Bell className="h-5 w-5 text-white" />

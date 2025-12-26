@@ -1,5 +1,5 @@
 import { AdminLayout } from "../components/layout";
-import { AdminAnimatedPage } from "../components/common";
+import { AdminAnimatedPage, LoadingSpinner } from "../components/common";
 import { OrderCard, OrderDetailModal, ConfirmStatusModal, FailureReasonModal, OrderStatusCardSkeleton, OrderCardSkeleton } from "../components/orders";
 import { useOrders } from "../hooks/useOrders";
 
