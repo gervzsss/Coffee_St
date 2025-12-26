@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
+import { fadeIn } from "../../../components/motion/variants";
 
 const CategoryButton = ({ category, isAllProducts = false, selectedCategory, onCategoryChange }) => (
   <button
@@ -34,7 +36,7 @@ export default function CategorySidebar({ categories, selectedCategory, onCatego
   const pastryCategories = categories.filter((c) => c.section === "pastries");
 
   return (
-    <div className="lg:sticky lg:top-28 lg:w-80 lg:shrink-0 lg:self-start xl:w-96 2xl:w-[420px]">
+    <motion.div className="lg:sticky lg:top-28 lg:w-80 lg:shrink-0 lg:self-start xl:w-96 2xl:w-[420px]" variants={fadeIn} initial="hidden" animate="visible">
       {/* Mobile Toggle Button */}
       <button onClick={() => setIsMobileOpen(!isMobileOpen)} className="fixed right-4 bottom-4 z-40 rounded-full bg-[#30442B] p-4 text-white shadow-lg transition-colors hover:bg-[#405939] lg:hidden">
         <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,6 +100,6 @@ export default function CategorySidebar({ categories, selectedCategory, onCatego
           </div>
         </div>
       </nav>
-    </div>
+    </motion.div>
   );
 }
