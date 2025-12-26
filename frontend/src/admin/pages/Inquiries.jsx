@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AdminLayout } from "../components/layout";
-import { ThreadModal, InquiryCard } from "../components/inquiries";
-import { PageHeader, MetricCard, LoadingSpinner, AdminAnimatedPage } from "../components/common";
+import { ThreadModal, InquiryCard, InquiryCardSkeleton } from "../components/inquiries";
+import { PageHeader, MetricCard, AdminAnimatedPage } from "../components/common";
 import { useInquiries } from "../hooks/useInquiries";
 
 export default function Inquiries() {
@@ -63,7 +63,11 @@ export default function Inquiries() {
               </div>
 
               {loading ? (
-                <LoadingSpinner className="py-8 sm:py-12" />
+                <div className="space-y-3 sm:space-y-4">
+                  <InquiryCardSkeleton />
+                  <InquiryCardSkeleton />
+                  <InquiryCardSkeleton />
+                </div>
               ) : filteredThreads.length === 0 ? (
                 <div className="py-8 text-center sm:py-12">
                   <p className="text-sm text-gray-500 sm:text-base">No inquiries found</p>
