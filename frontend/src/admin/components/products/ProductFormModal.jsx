@@ -17,6 +17,9 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
     category: product?.category || "",
     image_url: product?.image_url || "",
     is_available: product?.is_available ?? true,
+    track_stock: product?.track_stock ?? false,
+    stock_quantity: product?.stock_quantity ?? "",
+    low_stock_threshold: product?.low_stock_threshold ?? 5,
     variant_groups: product?.variant_groups || [],
   });
 
@@ -138,6 +141,9 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
     if (!formData.description.trim()) newErrors.description = "Description is required";
     if (!formData.price || formData.price <= 0) newErrors.price = "Valid price is required";
     if (!formData.category) newErrors.category = "Category is required";
+    if (formData.track_stock && (!formData.stock_quantity || formData.stock_quantity < 0)) {
+      newErrors.stock_quantity = "Stock quantity is required when tracking inventory";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -181,6 +187,9 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
       ...formData,
       image_url: imageUrl,
       price: parseFloat(formData.price),
+      track_stock: formData.track_stock,
+      stock_quantity: formData.track_stock && formData.stock_quantity ? parseInt(formData.stock_quantity) : null,
+      low_stock_threshold: formData.track_stock && formData.low_stock_threshold ? parseInt(formData.low_stock_threshold) : 5,
     });
   };
 
@@ -323,6 +332,60 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
               <label htmlFor="is_available" className="text-sm font-medium text-gray-700">
                 Available for purchase
               </label>
+            </div>
+
+            {/* Stock Management Section */}
+            <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-gray-900">Stock Management</h3>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="track_stock"
+                    checked={formData.track_stock}
+                    onChange={(e) => handleChange("track_stock", e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-[#30442B] focus:ring-[#30442B]"
+                  />
+                  <label htmlFor="track_stock" className="text-sm font-medium text-gray-700">
+                    Track inventory
+                  </label>
+                </div>
+              </div>
+
+              {formData.track_stock && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                      Stock Quantity <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.stock_quantity}
+                      onChange={(e) => handleChange("stock_quantity", e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-[#30442B] focus:ring-[#30442B]"
+                      placeholder="Enter quantity"
+                    />
+                    {errors.stock_quantity && <p className="mt-1 text-sm text-red-500">{errors.stock_quantity}</p>}
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Low Stock Alert</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.low_stock_threshold}
+                      onChange={(e) => handleChange("low_stock_threshold", e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-[#30442B] focus:ring-[#30442B]"
+                      placeholder="Alert threshold"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <p className="text-xs text-gray-500">
+                {formData.track_stock ? "Stock will automatically decrease when orders are placed." : "Product will be treated as always available (unlimited stock)."}
+              </p>
             </div>
 
             {/* Variants Section */}

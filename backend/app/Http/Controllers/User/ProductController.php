@@ -32,7 +32,7 @@ class ProductController extends Controller
 
         // Add is_available and unavailable_reason to response
         $products = $products->map(function ($product) {
-            return [
+            $data = [
                 'id' => $product->id,
                 'name' => $product->name,
                 'description' => $product->description,
@@ -43,7 +43,21 @@ class ProductController extends Controller
                 'unavailable_reason' => $product->unavailable_reason,
                 'active_variants' => $product->activeVariants,
                 'active_variant_groups' => $product->activeVariantGroups,
+                'is_available_for_purchase' => $product->isAvailableForPurchase(),
             ];
+
+            // Include stock information only when low or sold out
+            if ($product->track_stock) {
+                $data['is_sold_out'] = $product->isSoldOut();
+                $data['is_low_stock'] = $product->isLowStock();
+
+                // Show quantity only when low stock
+                if ($product->isLowStock()) {
+                    $data['stock_quantity'] = $product->stock_quantity;
+                }
+            }
+
+            return $data;
         });
 
         return response()->json($products);

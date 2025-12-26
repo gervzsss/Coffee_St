@@ -8,12 +8,21 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderItemVariant;
+use App\Models\Product;
+use App\Services\StockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    protected $stockService;
+
+    public function __construct(StockService $stockService)
+    {
+        $this->stockService = $stockService;
+    }
+
     /**
      * Get all orders for the authenticated user
      */
@@ -229,6 +238,26 @@ class OrderController extends Controller
 
         DB::beginTransaction();
         try {
+            // Validate stock availability for all selected items
+            foreach ($selectedCartItems as $cartItem) {
+                $product = Product::lockForUpdate()->find($cartItem->product_id);
+
+                if (!$product) {
+                    throw new \Exception("Product not found: {$cartItem->product_id}");
+                }
+
+                // Check if product is available for purchase
+                if (!$product->isAvailableForPurchase()) {
+                    throw new \Exception("Product '{$product->name}' is not available for purchase");
+                }
+
+                // Check stock if tracking is enabled
+                if ($product->track_stock && !$product->hasStock($cartItem->quantity)) {
+                    $available = $product->stock_quantity ?? 0;
+                    throw new \Exception("Insufficient stock for '{$product->name}'. Available: {$available}, Requested: {$cartItem->quantity}");
+                }
+            }
+
             // Generate unique order number
             $orderNumber = Order::generateOrderNumber();
 
@@ -292,6 +321,14 @@ class OrderController extends Controller
             $order->load('items');
             $order->calculateTotals();
             $order->save();
+
+            // Deduct stock for all order items
+            foreach ($selectedCartItems as $cartItem) {
+                $product = Product::find($cartItem->product_id);
+                if ($product && $product->track_stock) {
+                    $this->stockService->decreaseStock($product, $cartItem->quantity, $order);
+                }
+            }
 
             // Remove selected items from cart
             foreach ($selectedCartItems as $cartItem) {

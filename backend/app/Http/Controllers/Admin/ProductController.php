@@ -59,6 +59,17 @@ class ProductController extends Controller
       }
     }
 
+    // Filter by stock status
+    if ($request->has('stock_filter')) {
+      if ($request->stock_filter === 'sold_out') {
+        $query->where('track_stock', true)->where('stock_quantity', 0);
+      } elseif ($request->stock_filter === 'low_stock') {
+        $query->where('track_stock', true)
+          ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
+          ->where('stock_quantity', '>', 0);
+      }
+    }
+
     // Search by name
     if ($request->has('search') && !empty($request->search)) {
       $query->where('name', 'like', '%' . $request->search . '%');
@@ -78,6 +89,12 @@ class ProductController extends Controller
         'archived_at' => $product->archived_at,
         'created_at' => $product->created_at,
         'has_orders' => $product->orderItems()->exists(),
+        'stock_quantity' => $product->stock_quantity,
+        'track_stock' => $product->track_stock,
+        'low_stock_threshold' => $product->low_stock_threshold,
+        'stock_updated_at' => $product->stock_updated_at,
+        'is_sold_out' => $product->isSoldOut(),
+        'is_low_stock' => $product->isLowStock(),
         'variant_groups' => $product->variantGroups->map(function ($group) {
           return [
             'id' => $group->id,
@@ -138,6 +155,12 @@ class ProductController extends Controller
       'archived_at' => $product->archived_at,
       'created_at' => $product->created_at,
       'updated_at' => $product->updated_at,
+      'stock_quantity' => $product->stock_quantity,
+      'track_stock' => $product->track_stock,
+      'low_stock_threshold' => $product->low_stock_threshold,
+      'stock_updated_at' => $product->stock_updated_at,
+      'is_sold_out' => $product->isSoldOut(),
+      'is_low_stock' => $product->isLowStock(),
       'variant_groups' => $product->variantGroups->map(function ($group) {
         return [
           'id' => $group->id,
@@ -178,6 +201,9 @@ class ProductController extends Controller
       'category' => 'required|string|max:50',
       'image_url' => 'nullable|string',
       'is_available' => 'boolean',
+      'track_stock' => 'boolean',
+      'stock_quantity' => 'nullable|integer|min:0',
+      'low_stock_threshold' => 'nullable|integer|min:0',
       'variant_groups' => 'nullable|array',
       'variant_groups.*.name' => 'required_with:variant_groups|string|max:120',
       'variant_groups.*.selection_type' => 'required_with:variant_groups|in:single,multiple',
@@ -197,6 +223,10 @@ class ProductController extends Controller
         'image_url' => $validated['image_url'] ?? null,
         'is_active' => true,
         'is_available' => $validated['is_available'] ?? true,
+        'track_stock' => $validated['track_stock'] ?? false,
+        'stock_quantity' => $validated['stock_quantity'] ?? null,
+        'low_stock_threshold' => $validated['low_stock_threshold'] ?? 5,
+        'stock_updated_at' => isset($validated['stock_quantity']) ? now() : null,
       ]);
 
       // Create variant groups and variants
@@ -249,6 +279,9 @@ class ProductController extends Controller
       'category' => 'sometimes|string|max:50',
       'image_url' => 'nullable|string',
       'is_available' => 'boolean',
+      'track_stock' => 'boolean',
+      'stock_quantity' => 'nullable|integer|min:0',
+      'low_stock_threshold' => 'nullable|integer|min:0',
       'variant_groups' => 'nullable|array',
     ]);
 
@@ -270,6 +303,16 @@ class ProductController extends Controller
         if ($validated['is_available']) {
           $updateData['unavailable_reason'] = null;
         }
+      }
+      if (isset($validated['track_stock'])) {
+        $updateData['track_stock'] = $validated['track_stock'];
+      }
+      if (array_key_exists('stock_quantity', $validated)) {
+        $updateData['stock_quantity'] = $validated['stock_quantity'];
+        $updateData['stock_updated_at'] = now();
+      }
+      if (isset($validated['low_stock_threshold'])) {
+        $updateData['low_stock_threshold'] = $validated['low_stock_threshold'];
       }
 
       $product->update($updateData);

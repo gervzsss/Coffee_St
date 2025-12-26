@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\ImageUploadController;
+use App\Http\Controllers\Admin\StockController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,6 +41,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/products/{id}/archive', [ProductController::class, 'archive']);
     Route::post('/products/{id}/restore', [ProductController::class, 'restore']);
     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+    // Stock Management
+    Route::post('/products/{id}/stock', [StockController::class, 'updateStock']);
+    Route::get('/products/{id}/stock-history', [StockController::class, 'getStockHistory']);
+    Route::get('/stock/attention', [StockController::class, 'getProductsNeedingAttention']);
 
     // Orders
     Route::get('/orders/metrics', [OrderController::class, 'metrics']);

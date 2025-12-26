@@ -22,34 +22,53 @@ export default function ProductCard({ product }) {
   const imageUrl = product.image_url ? getResponsiveImageUrl(product.image_url, 800) : "/assets/americano.png"; // Fallback image
 
   const isUnavailable = product.is_available === false;
+  const isSoldOut = product.is_sold_out === true;
+  const isLowStock = product.is_low_stock === true;
 
   return (
     <>
-      <div className={`group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg sm:rounded-2xl ${isUnavailable ? "opacity-75" : ""}`}>
+      <div
+        className={`group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg sm:rounded-2xl ${isUnavailable || isSoldOut ? "opacity-75" : ""}`}
+      >
         {/* Product Image with dark background */}
         <div className="relative h-48 overflow-hidden bg-[#30442B] sm:h-56 md:h-64 lg:h-72">
           <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <img
               src={imageUrl}
               alt={product.name}
-              className={`max-h-32 w-auto transform drop-shadow-xl transition-transform duration-500 sm:max-h-40 lg:max-h-48 ${isUnavailable ? "grayscale" : "group-hover:scale-110"}`}
+              className={`max-h-32 w-auto transform drop-shadow-xl transition-transform duration-500 sm:max-h-40 lg:max-h-48 ${isUnavailable || isSoldOut ? "grayscale" : "group-hover:scale-110"}`}
               loading="lazy"
               onError={(e) => {
                 e.target.src = "/assets/americano.png";
               }}
             />
           </div>
-          {/* Gradient overlay on hover */}
-          {!isUnavailable && <div className="absolute inset-0 bg-linear-to-r from-[#30442B]/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>}
 
-          {/* Unavailable overlay */}
-          {isUnavailable && (
+          {/* Stock Badge - Top Right */}
+          {isSoldOut && (
+            <div className="absolute top-3 right-3 rounded-full bg-red-500 px-3 py-1.5 shadow-lg">
+              <span className="text-xs font-bold text-white sm:text-sm">SOLD OUT</span>
+            </div>
+          )}
+          {!isSoldOut && isLowStock && product.stock_quantity && (
+            <div className="absolute top-3 right-3 rounded-full bg-orange-500 px-3 py-1.5 shadow-lg">
+              <span className="text-xs font-bold text-white sm:text-sm">Only {product.stock_quantity} left!</span>
+            </div>
+          )}
+
+          {/* Gradient overlay on hover */}
+          {!isUnavailable && !isSoldOut && (
+            <div className="absolute inset-0 bg-linear-to-r from-[#30442B]/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          )}
+
+          {/* Sold Out or Unavailable overlay */}
+          {(isUnavailable || isSoldOut) && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
               <div className="px-4 text-center text-white">
                 <svg className="mx-auto mb-2 h-8 w-8 opacity-80 sm:h-10 sm:w-10 lg:h-12 lg:w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                 </svg>
-                <p className="text-xs font-semibold sm:text-sm">Currently Unavailable</p>
+                <p className="text-xs font-semibold sm:text-sm">{isSoldOut ? "Sold Out" : "Currently Unavailable"}</p>
               </div>
             </div>
           )}
@@ -92,9 +111,9 @@ export default function ProductCard({ product }) {
 
             <button
               onClick={handleAddToCartClick}
-              disabled={isAdding || addedToCart || isUnavailable}
+              disabled={isAdding || addedToCart || isUnavailable || isSoldOut}
               className={`flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-white transition-all duration-150 active:scale-95 sm:gap-2 sm:px-4 sm:py-2 sm:text-sm ${
-                isUnavailable
+                isUnavailable || isSoldOut
                   ? "cursor-not-allowed bg-gray-300 text-gray-500"
                   : addedToCart
                     ? "cursor-default bg-green-500"
