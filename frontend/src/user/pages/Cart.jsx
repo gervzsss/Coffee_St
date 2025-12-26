@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header, Footer } from "../components/layout";
 import { EmptyState, AnimatedPage } from "../components/common";
 import { CartItem, CartSummary } from "../components/cart";
@@ -15,13 +15,53 @@ export default function Cart() {
   const { isAuthenticated, openAuthModal } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
-  const { cartItems, loading, error, loadingItems, setError, updateQuantity, removeItem, removeItems, updateCartItem } = useCartOperations(isAuthenticated);
+  const { cartItems, loading, error, loadingItems, setError, updateQuantity, removeItem, removeItems, updateCartItem, validateCart } = useCartOperations(isAuthenticated);
 
   const { selectedItems, toggleSelectAll, toggleSelectItem, clearSelection, removeFromSelection } = useCartSelection(cartItems);
 
   const { editingItem, editingProduct, editingItemId, openEditModal, closeEditModal, handleSave } = useProductEdit(null, setError);
 
   const [removingSelected, setRemovingSelected] = useState(false);
+  const [stockValidation, setStockValidation] = useState(null);
+  const [validating, setValidating] = useState(false);
+
+  // Validate cart stock on load and when items change
+  useEffect(() => {
+    if (isAuthenticated && cartItems.length > 0) {
+      performStockValidation();
+    }
+  }, [isAuthenticated, cartItems.length]);
+
+  const performStockValidation = async () => {
+    setValidating(true);
+    const validation = await validateCart();
+    setStockValidation(validation);
+    setValidating(false);
+
+    if (validation.has_errors) {
+      // Handle stock issues
+      for (const issue of validation.items) {
+        if (issue.action === "remove") {
+          showToast(`${issue.product_name || "Item"}: ${issue.message}`, {
+            type: "warning",
+            duration: 5000,
+            dismissible: true,
+          });
+          // Auto-remove unavailable items
+          await removeItem(issue.cart_item_id);
+          removeFromSelection(issue.cart_item_id);
+        } else if (issue.action === "adjust") {
+          showToast(`${issue.product_name}: Quantity adjusted to ${issue.available_quantity}`, {
+            type: "warning",
+            duration: 5000,
+            dismissible: true,
+          });
+          // Auto-adjust quantity
+          await updateQuantity(issue.cart_item_id, issue.available_quantity);
+        }
+      }
+    }
+  };
 
   const handleRemoveItem = async (itemId) => {
     await removeItem(itemId);
@@ -40,12 +80,28 @@ export default function Cart() {
     await handleSave(cartData, updateCartItem, removeFromSelection);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (selectedItems.size === 0) {
       showToast("Please select at least one item to checkout", {
         type: "error",
         dismissible: true,
       });
+      return;
+    }
+
+    // Final validation before checkout
+    setValidating(true);
+    const validation = await validateCart();
+    setValidating(false);
+
+    if (validation.has_errors) {
+      showToast("Some items in your cart are no longer available. Please review your cart.", {
+        type: "error",
+        duration: 5000,
+        dismissible: true,
+      });
+      // Refresh the page to show updated cart
+      await performStockValidation();
       return;
     }
 

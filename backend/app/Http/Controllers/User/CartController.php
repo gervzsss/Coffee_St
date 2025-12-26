@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\CartItemVariant;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,13 +23,13 @@ class CartController extends Controller
         $cart = Cart::where('user_id', $user->id)
             ->where('status', 'active')
             ->first();
-        
+
         if (!$cart) {
             return response()->json(['count' => 0]);
         }
-        
+
         $count = CartItem::where('cart_id', $cart->id)->sum('quantity');
-        
+
         return response()->json(['count' => $count]);
     }
 
@@ -41,11 +42,11 @@ class CartController extends Controller
         $cart = Cart::where('user_id', $user->id)
             ->where('status', 'active')
             ->first();
-        
+
         if (!$cart) {
             return response()->json(['items' => []]);
         }
-        
+
         $items = CartItem::where('cart_id', $cart->id)
             ->with(['product', 'variant', 'selectedVariants.variant'])
             ->get()
@@ -76,7 +77,7 @@ class CartController extends Controller
                     'customization_summary' => $item->customization_summary,
                 ];
             });
-        
+
         return response()->json(['items' => $items]);
     }
 
@@ -97,10 +98,36 @@ class CartController extends Controller
         ]);
 
         $user = Auth::user();
-        
+
         // Get product to ensure it exists and get its price
-        $product = \App\Models\Product::findOrFail($request->product_id);
-        
+        $product = Product::findOrFail($request->product_id);
+
+        // Validate stock availability
+        if ($product->track_stock) {
+            if ($product->stock_quantity === null || $product->stock_quantity <= 0) {
+                return response()->json([
+                    'message' => 'This product is currently sold out',
+                    'error' => 'out_of_stock',
+                ], 400);
+            }
+
+            if ($request->quantity > $product->stock_quantity) {
+                return response()->json([
+                    'message' => "Only {$product->stock_quantity} items available",
+                    'error' => 'insufficient_stock',
+                    'available_quantity' => $product->stock_quantity,
+                ], 400);
+            }
+        }
+
+        // Check product availability
+        if (!$product->is_available) {
+            return response()->json([
+                'message' => 'This product is currently unavailable',
+                'error' => 'unavailable',
+            ], 400);
+        }
+
         // Get or create active cart
         $cart = Cart::firstOrCreate(
             [
@@ -119,13 +146,13 @@ class CartController extends Controller
             $variant = null;
             $priceDelta = 0;
             $variantName = null;
-            
+
             if ($request->variant_id) {
                 $variant = \App\Models\ProductVariant::findOrFail($request->variant_id);
                 $priceDelta = $variant->price_delta;
                 $variantName = $variant->group_name . ': ' . $variant->name;
             }
-            
+
             // Create customization summary
             $customizationSummary = null;
             if ($request->has('variants') && count($request->variants) > 0) {
@@ -137,9 +164,9 @@ class CartController extends Controller
             } elseif ($variantName) {
                 $customizationSummary = $variantName;
             }
-            
+
             $cartItem = null;
-            
+
             // For multi-variant system, always create new items (don't merge)
             // This allows same product with different variant combinations
             if (!$request->has('variants') || count($request->variants) === 0) {
@@ -149,7 +176,7 @@ class CartController extends Controller
                     ->where('variant_id', $request->variant_id)
                     ->first();
             }
-            
+
             if ($cartItem) {
                 // Update quantity for legacy system
                 $cartItem->quantity += $request->quantity;
@@ -166,7 +193,7 @@ class CartController extends Controller
                     'price_delta' => $priceDelta,
                     'customization_summary' => $customizationSummary,
                 ]);
-                
+
                 // Save selected variants in the new system
                 if ($request->has('variants') && count($request->variants) > 0) {
                     foreach ($request->variants as $variantData) {
@@ -180,9 +207,9 @@ class CartController extends Controller
                     }
                 }
             }
-            
+
             DB::commit();
-            
+
             return response()->json([
                 'message' => 'Item added to cart',
                 'item' => $cartItem->load('selectedVariants'),
@@ -209,25 +236,25 @@ class CartController extends Controller
         $cart = Cart::where('user_id', $user->id)
             ->where('status', 'active')
             ->first();
-        
+
         if (!$cart) {
             return response()->json(['message' => 'Cart not found'], 404);
         }
-        
+
         $cartItem = CartItem::where('id', $id)
             ->where('cart_id', $cart->id)
             ->first();
-        
+
         if (!$cartItem) {
             return response()->json(['message' => 'Cart item not found'], 404);
         }
-        
+
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
-        
+
         // Return updated item with recalculated line_total
         $cartItem->load('selectedVariants');
-        
+
         return response()->json([
             'message' => 'Cart item updated',
             'item' => [
@@ -249,21 +276,21 @@ class CartController extends Controller
         $cart = Cart::where('user_id', $user->id)
             ->where('status', 'active')
             ->first();
-        
+
         if (!$cart) {
             return response()->json(['message' => 'Cart not found'], 404);
         }
-        
+
         $cartItem = CartItem::where('id', $id)
             ->where('cart_id', $cart->id)
             ->first();
-        
+
         if (!$cartItem) {
             return response()->json(['message' => 'Cart item not found'], 404);
         }
-        
+
         $cartItem->delete();
-        
+
         return response()->json(['message' => 'Item removed from cart']);
     }
 
@@ -276,11 +303,97 @@ class CartController extends Controller
         $cart = Cart::where('user_id', $user->id)
             ->where('status', 'active')
             ->first();
-        
+
         if ($cart) {
             CartItem::where('cart_id', $cart->id)->delete();
         }
-        
+
         return response()->json(['message' => 'Cart cleared']);
+    }
+
+    /**
+     * Validate cart stock
+     */
+    public function validateStock()
+    {
+        $user = Auth::user();
+        $cart = Cart::where('user_id', $user->id)
+            ->where('status', 'active')
+            ->first();
+
+        if (!$cart) {
+            return response()->json([
+                'valid' => true,
+                'items' => [],
+            ]);
+        }
+
+        $cartItems = CartItem::where('cart_id', $cart->id)
+            ->with('product')
+            ->get();
+
+        $hasErrors = false;
+        $itemsWithIssues = [];
+
+        foreach ($cartItems as $item) {
+            $product = $item->product;
+            $issue = null;
+
+            if (!$product) {
+                $issue = [
+                    'cart_item_id' => $item->id,
+                    'error' => 'product_deleted',
+                    'message' => 'This product is no longer available',
+                    'action' => 'remove',
+                ];
+                $hasErrors = true;
+            } elseif (!$product->is_available) {
+                $issue = [
+                    'cart_item_id' => $item->id,
+                    'product_id' => $product->id,
+                    'product_name' => $product->name,
+                    'error' => 'unavailable',
+                    'message' => 'This product is currently unavailable',
+                    'action' => 'remove',
+                ];
+                $hasErrors = true;
+            } elseif ($product->track_stock) {
+                if ($product->stock_quantity === null || $product->stock_quantity <= 0) {
+                    $issue = [
+                        'cart_item_id' => $item->id,
+                        'product_id' => $product->id,
+                        'product_name' => $product->name,
+                        'requested_quantity' => $item->quantity,
+                        'available_quantity' => 0,
+                        'error' => 'out_of_stock',
+                        'message' => 'This product is sold out',
+                        'action' => 'remove',
+                    ];
+                    $hasErrors = true;
+                } elseif ($item->quantity > $product->stock_quantity) {
+                    $issue = [
+                        'cart_item_id' => $item->id,
+                        'product_id' => $product->id,
+                        'product_name' => $product->name,
+                        'requested_quantity' => $item->quantity,
+                        'available_quantity' => $product->stock_quantity,
+                        'error' => 'insufficient_stock',
+                        'message' => "Only {$product->stock_quantity} items available",
+                        'action' => 'adjust',
+                    ];
+                    $hasErrors = true;
+                }
+            }
+
+            if ($issue) {
+                $itemsWithIssues[] = $issue;
+            }
+        }
+
+        return response()->json([
+            'valid' => !$hasErrors,
+            'has_errors' => $hasErrors,
+            'items' => $itemsWithIssues,
+        ]);
     }
 }

@@ -144,6 +144,20 @@ export function useCartOperations(isAuthenticated) {
     }
   };
 
+  const validateCart = async () => {
+    try {
+      const response = await api.get('/cart/validate');
+      return response.data;
+    } catch (err) {
+      console.error('Failed to validate cart:', err);
+      showToast('Failed to validate cart', {
+        type: 'error',
+        dismissible: true,
+      });
+      return { valid: false, has_errors: true, items: [] };
+    }
+  };
+
   return {
     cartItems,
     loading,
@@ -155,5 +169,6 @@ export function useCartOperations(isAuthenticated) {
     removeItem,
     removeItems,
     updateCartItem,
+    validateCart,
   };
 }

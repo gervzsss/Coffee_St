@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderStatusLog;
+use App\Models\Product;
+use App\Services\StockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +15,12 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+    protected $stockService;
+
+    public function __construct(StockService $stockService)
+    {
+        $this->stockService = $stockService;
+    }
     /**
      * Get order metrics/stats
      */
@@ -252,6 +260,21 @@ class OrderController extends Controller
             }
 
             $order->update($updateData);
+
+            // Return stock if order is being cancelled or failed (before delivery)
+            if (
+                ($newStatus === 'cancelled' || $newStatus === 'failed') &&
+                !in_array($oldStatus, ['delivered', 'cancelled', 'failed'])
+            ) {
+                $order->load('items.product');
+                foreach ($order->items as $orderItem) {
+                    $product = $orderItem->product;
+                    if ($product && $product->track_stock) {
+                        $reason = $newStatus === 'cancelled' ? 'order_cancelled' : 'order_failed';
+                        $this->stockService->increaseStock($product, $orderItem->quantity, $order, $reason);
+                    }
+                }
+            }
 
             // Create status log
             OrderStatusLog::create([
