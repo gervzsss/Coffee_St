@@ -2,21 +2,27 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { dropdown } from "../../../components/motion/variants";
-import { User, Package, Mail, LogOut } from "lucide-react";
+import { User, Package, Mail, LogOut, Loader2 } from "lucide-react";
 
-export default function ProfileDropdown({ userName, onLogout }) {
+export default function ProfileDropdown({ userName, onLogout, isLoggingOut = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Don't close dropdown if logout is in progress
+      if (isLoggingOut) return;
+
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
 
     const handleEscape = (event) => {
+      // Don't close dropdown if logout is in progress
+      if (isLoggingOut) return;
+
       if (event.key === "Escape") {
         setIsOpen(false);
       }
@@ -31,10 +37,10 @@ export default function ProfileDropdown({ userName, onLogout }) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [isOpen]);
+  }, [isOpen, isLoggingOut]);
 
   const handleLogoutClick = async () => {
-    setIsOpen(false);
+    // Don't close dropdown - keep it open to show spinner
     await onLogout();
   };
 
@@ -119,8 +125,12 @@ export default function ProfileDropdown({ userName, onLogout }) {
               <div className="my-2 border-t border-gray-100"></div>
 
               {/* Logout */}
-              <button onClick={handleLogoutClick} className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors duration-200 hover:bg-red-50">
-                <LogOut className="h-5 w-5 text-red-600" strokeWidth={2} />
+              <button
+                onClick={handleLogoutClick}
+                disabled={isLoggingOut}
+                className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoggingOut ? <Loader2 className="h-5 w-5 animate-spin text-red-600" strokeWidth={2} /> : <LogOut className="h-5 w-5 text-red-600" strokeWidth={2} />}
                 <span className="font-medium text-red-600">Logout</span>
               </button>
             </div>

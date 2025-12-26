@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { accordion } from "../../../components/motion/variants";
 
-export default function QuickSettingsPanel({ onChangePassword, onDeleteAccount, onLogout, onLanguageChange, currentLanguage = "en" }) {
+export default function QuickSettingsPanel({ onChangePassword, onDeleteAccount, onLogout, onLanguageChange, currentLanguage = "en", isLoggingOut = false }) {
   const [expandedSection, setExpandedSection] = useState(null);
 
   const toggleSection = (section) => {
@@ -70,9 +70,13 @@ export default function QuickSettingsPanel({ onChangePassword, onDeleteAccount, 
         </div>
 
         {/* LOG OUT */}
-        <button onClick={onLogout} className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-gray-50 sm:px-5 sm:py-4 lg:px-6">
+        <button
+          onClick={onLogout}
+          disabled={isLoggingOut}
+          className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:px-5 sm:py-4 lg:px-6"
+        >
           <span className="text-sm font-medium text-gray-700 sm:text-base">LOG OUT</span>
-          <ChevronRight className="h-5 w-5 text-gray-400" />
+          {isLoggingOut ? <Loader2 className="h-5 w-5 animate-spin text-gray-400" /> : <ChevronRight className="h-5 w-5 text-gray-400" />}
         </button>
       </div>
     </div>

@@ -14,6 +14,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState("profile-info");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleUserUpdate = (updatedUser) => {
     setUser(updatedUser);
@@ -32,11 +33,13 @@ export default function Profile() {
   };
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
       await logout();
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
+      setIsLoggingOut(false);
     }
   };
 
@@ -89,6 +92,7 @@ export default function Profile() {
                   onLogout={handleLogout}
                   onLanguageChange={handleLanguageChange}
                   currentLanguage={user?.language_preference || "en"}
+                  isLoggingOut={isLoggingOut}
                 />
 
                 {/* Order History Card (Mobile - below settings) */}
