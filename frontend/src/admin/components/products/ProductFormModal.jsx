@@ -12,6 +12,8 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
   const [imagePreview, setImagePreview] = useState(product?.image_url || null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [showStockHistory, setShowStockHistory] = useState(false);
+  const [showInitialStockPrompt, setShowInitialStockPrompt] = useState(false);
+  const [pendingTrackStock, setPendingTrackStock] = useState(false);
   const [formData, setFormData] = useState({
     name: product?.name || "",
     description: product?.description || "",
@@ -28,6 +30,17 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
   const [errors, setErrors] = useState({});
 
   const handleChange = (field, value) => {
+    // Special handling for track_stock toggle
+    if (field === "track_stock" && value === true && !formData.track_stock) {
+      // Enabling stock tracking for the first time or when it was disabled
+      if (!formData.stock_quantity || formData.stock_quantity === "") {
+        // Show initial stock prompt
+        setPendingTrackStock(true);
+        setShowInitialStockPrompt(true);
+        return;
+      }
+    }
+
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: null }));
@@ -64,6 +77,21 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const handleInitialStockConfirm = (initialStock) => {
+    setFormData((prev) => ({
+      ...prev,
+      track_stock: true,
+      stock_quantity: initialStock,
+    }));
+    setShowInitialStockPrompt(false);
+    setPendingTrackStock(false);
+  };
+
+  const handleInitialStockCancel = () => {
+    setShowInitialStockPrompt(false);
+    setPendingTrackStock(false);
   };
 
   const addVariantGroup = () => {
@@ -521,6 +549,78 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
 
       {/* Stock History Modal */}
       {showStockHistory && isEdit && product && <StockHistoryModal isOpen={showStockHistory} onClose={() => setShowStockHistory(false)} product={product} />}
+
+      {/* Initial Stock Prompt Modal */}
+      {showInitialStockPrompt && <InitialStockPrompt onConfirm={handleInitialStockConfirm} onCancel={handleInitialStockCancel} />}
+    </div>
+  );
+}
+
+// Initial Stock Prompt Modal Component
+function InitialStockPrompt({ onConfirm, onCancel }) {
+  const [stockQuantity, setStockQuantity] = useState("");
+  const [error, setError] = useState("");
+
+  const handleConfirm = () => {
+    const quantity = parseInt(stockQuantity);
+
+    if (!stockQuantity || stockQuantity === "") {
+      setError("Please enter a starting stock quantity");
+      return;
+    }
+
+    if (isNaN(quantity) || quantity < 0) {
+      setError("Please enter a valid quantity (0 or greater)");
+      return;
+    }
+
+    onConfirm(quantity);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleConfirm();
+    }
+  };
+
+  return (
+    <div className="bg-opacity-50 fixed inset-0 z-60 flex items-center justify-center bg-black p-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Set Initial Stock Quantity</h3>
+          <p className="mt-2 text-sm text-gray-600">You're enabling inventory tracking. Please enter the current stock quantity for this product.</p>
+        </div>
+
+        <div className="mb-4">
+          <label className="mb-2 block text-sm font-medium text-gray-700">
+            Starting Stock Quantity <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            min="0"
+            value={stockQuantity}
+            onChange={(e) => {
+              setStockQuantity(e.target.value);
+              setError("");
+            }}
+            onKeyPress={handleKeyPress}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-[#30442B] focus:ring-[#30442B]"
+            placeholder="Enter current stock (e.g., 50)"
+            autoFocus
+          />
+          {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+          <p className="mt-1 text-xs text-gray-500">Enter the number of items currently in stock. You can adjust this later.</p>
+        </div>
+
+        <div className="flex gap-3">
+          <button onClick={onCancel} className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Cancel
+          </button>
+          <button onClick={handleConfirm} className="flex-1 rounded-lg bg-[#30442B] px-4 py-2 text-sm font-medium text-white hover:bg-[#22301e]">
+            Enable Tracking
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
