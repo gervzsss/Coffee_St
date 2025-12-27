@@ -10,7 +10,7 @@ export default function RecentActivityList({ orders = [], maxItems = 4 }) {
       <ul className="space-y-6">
         {hasOrders ? (
           displayedOrders.map((order, index) => (
-            <ActivityItem key={order.id} title={index === 0 ? "New order placed" : "Order completed"} description={`Order #${order.order_number} — $${order.total_amount} — ${order.status}`} />
+            <ActivityItem key={order.id} title={index === 0 ? "New order placed" : "Order completed"} description={`Order #${order.order_number} — ₱${order.total} — ${order.status}`} />
           ))
         ) : (
           <ActivityItem title="No recent activity" description="System is ready for new orders" />
