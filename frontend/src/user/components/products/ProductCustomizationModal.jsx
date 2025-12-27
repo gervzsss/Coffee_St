@@ -221,6 +221,30 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
                 <div className="min-w-0 flex-1 pr-8">
                   <h2 className="text-2xl font-bold text-neutral-900">{product.name}</h2>
                   {product.description && <p className="mt-1 line-clamp-2 text-sm text-neutral-600">{product.description}</p>}
+
+                  {/* Stock Status Display */}
+                  {product.is_sold_out && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-sm font-medium text-red-700">
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span>Sold Out</span>
+                    </div>
+                  )}
+                  {!product.is_sold_out && product.is_low_stock && product.stock_quantity != null && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-orange-50 px-3 py-1 text-sm font-medium text-orange-700">
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
+                      </svg>
+                      <span>Only {product.stock_quantity} left in stock!</span>
+                    </div>
+                  )}
+
                   <p className="mt-2 text-xl font-semibold text-[#30442B]">₱{product.price.toFixed(2)}</p>
                 </div>
               </div>
@@ -299,6 +323,18 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
 
             {/* Footer */}
             <div className="border-t border-neutral-200 bg-neutral-50 px-6 py-6 sm:px-10">
+              {/* Available Stock Display */}
+              {product.track_stock && (
+                <div className="mb-3 rounded-lg border border-neutral-200 bg-white px-4 py-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-neutral-600">Available Stock</span>
+                    <span className="text-sm font-semibold text-[#30442B]">
+                      {product.stock_quantity} {product.stock_quantity === 1 ? "item" : "items"}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {/* Quantity Selector */}
               <div className="mb-4 flex items-center justify-between">
                 <span className="text-sm font-medium text-neutral-700">Quantity</span>
@@ -311,7 +347,11 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
                     <Minus className="h-4 w-4" />
                   </button>
                   <span className="w-12 text-center text-lg font-semibold">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-300 transition-colors hover:bg-neutral-100">
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    disabled={product.track_stock && quantity >= product.stock_quantity}
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-300 transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
                     <Plus className="h-4 w-4" />
                   </button>
                 </div>
@@ -325,7 +365,7 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
                 </div>
                 <button
                   onClick={handleAddToCart}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || (product.track_stock && quantity > product.stock_quantity)}
                   className="flex cursor-pointer items-center space-x-2 rounded-lg bg-[#30442B] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#405939] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <ShoppingCart className="h-5 w-5" />

@@ -46,15 +46,14 @@ class ProductController extends Controller
                 'is_available_for_purchase' => $product->isAvailableForPurchase(),
             ];
 
-            // Include stock information only when low or sold out
+            // Include stock information for tracked products
             if ($product->track_stock) {
                 $data['is_sold_out'] = $product->isSoldOut();
                 $data['is_low_stock'] = $product->isLowStock();
-
-                // Show quantity only when low stock
-                if ($product->isLowStock()) {
-                    $data['stock_quantity'] = $product->stock_quantity;
-                }
+                $data['stock_quantity'] = $product->stock_quantity;
+                $data['track_stock'] = true;
+            } else {
+                $data['track_stock'] = false;
             }
 
             return $data;

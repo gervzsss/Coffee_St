@@ -179,6 +179,29 @@ export default function ProductCard({ product }) {
               <div className="mb-3 sm:mb-4">
                 <h3 className="text-lg font-bold text-[#30442B] sm:text-xl">{product.name}</h3>
                 <p className="mt-1 text-xs text-gray-600 sm:text-sm">Select a variant</p>
+
+                {/* Stock Status Display */}
+                {product.is_sold_out && (
+                  <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700 sm:text-sm">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span>Sold Out</span>
+                  </div>
+                )}
+                {!product.is_sold_out && product.is_low_stock && product.stock_quantity != null && (
+                  <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700 sm:text-sm">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                    <span>Only {product.stock_quantity} left in stock!</span>
+                  </div>
+                )}
               </div>
 
               <div className="mb-4 max-h-36 space-y-2 overflow-y-auto sm:mb-6 sm:max-h-48">
@@ -207,6 +230,18 @@ export default function ProductCard({ product }) {
                 ))}
               </div>
 
+              {/* Available Stock Display */}
+              {product.track_stock && (
+                <div className="mb-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 sm:mb-4 sm:px-4 sm:py-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-600 sm:text-sm">Available Stock</span>
+                    <span className="text-xs font-semibold text-[#30442B] sm:text-sm">
+                      {product.stock_quantity} {product.stock_quantity === 1 ? "item" : "items"}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               <div className="flex gap-2 sm:gap-3">
                 <button
                   onClick={closeVariantModal}
@@ -216,9 +251,9 @@ export default function ProductCard({ product }) {
                 </button>
                 <button
                   onClick={handleConfirmVariant}
-                  disabled={!selectedVariant || isAdding}
+                  disabled={!selectedVariant || isAdding || product.is_sold_out}
                   className={`flex-1 rounded-lg px-3 py-2.5 text-sm font-medium text-white transition sm:px-4 sm:py-3 sm:text-base ${
-                    !selectedVariant || isAdding ? "cursor-not-allowed bg-gray-300" : "cursor-pointer bg-[#30442B] hover:bg-[#405939]"
+                    !selectedVariant || isAdding || product.is_sold_out ? "cursor-not-allowed bg-gray-300" : "cursor-pointer bg-[#30442B] hover:bg-[#405939]"
                   }`}
                 >
                   {isAdding ? "Adding..." : "Add to Cart"}
