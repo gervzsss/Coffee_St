@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useAdminToast } from './useAdminToast';
 import {
   getAllProducts,
   getProductMetrics,
@@ -12,6 +13,7 @@ import {
 } from '../services/productService';
 
 export function useProducts() {
+  const { showToast } = useAdminToast();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
@@ -97,13 +99,24 @@ export function useProducts() {
     let result;
     if (selectedProduct) {
       result = await updateProduct(selectedProduct.id, productData);
+      if (result.success) {
+        showToast('Product updated successfully', { type: 'success', dismissible: true });
+        await fetchData();
+        setShowFormModal(false);
+        setSelectedProduct(null);
+      } else {
+        showToast(result.error || 'Failed to update product', { type: 'error', dismissible: true, duration: 4000 });
+      }
     } else {
       result = await createProduct(productData);
-    }
-    if (result.success) {
-      await fetchData();
-      setShowFormModal(false);
-      setSelectedProduct(null);
+      if (result.success) {
+        showToast('Product created successfully', { type: 'success', dismissible: true });
+        await fetchData();
+        setShowFormModal(false);
+        setSelectedProduct(null);
+      } else {
+        showToast(result.error || 'Failed to create product', { type: 'error', dismissible: true, duration: 4000 });
+      }
     }
     setActionLoading(false);
   };
@@ -127,7 +140,11 @@ export function useProducts() {
       reason
     );
     if (result.success) {
+      const status = isAvailable ? 'enabled' : 'disabled';
+      showToast(`Product ${status} successfully`, { type: 'success', dismissible: true });
       await fetchData();
+    } else {
+      showToast(result.error || 'Failed to update availability', { type: 'error', dismissible: true, duration: 4000 });
     }
     setActionLoading(false);
     setShowAvailabilityModal(false);
@@ -152,7 +169,12 @@ export function useProducts() {
       ? await restoreProduct(selectedProduct.id)
       : await archiveProduct(selectedProduct.id);
     if (result.success) {
+      const action = isRestoring ? 'restored' : 'archived';
+      showToast(`Product ${action} successfully`, { type: 'success', dismissible: true });
       await fetchData();
+    } else {
+      const action = isRestoring ? 'restore' : 'archive';
+      showToast(result.error || `Failed to ${action} product`, { type: 'error', dismissible: true, duration: 4000 });
     }
     setActionLoading(false);
     setShowArchiveModal(false);
@@ -174,11 +196,12 @@ export function useProducts() {
     setActionLoading(true);
     const result = await deleteProduct(selectedProduct.id);
     if (result.success) {
+      showToast('Product deleted permanently', { type: 'success', dismissible: true });
       await fetchData();
       setShowDeleteModal(false);
       setSelectedProduct(null);
     } else {
-      alert(result.error || 'Failed to delete product');
+      showToast(result.error || 'Failed to delete product', { type: 'error', dismissible: true, duration: 4000 });
     }
     setActionLoading(false);
   };

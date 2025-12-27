@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useAdminToast } from './useAdminToast';
 import {
   getAllUsers,
   getCustomerMetrics,
@@ -7,6 +8,7 @@ import {
 } from '../services/userService';
 
 export function useUsers() {
+  const { showToast } = useAdminToast();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
@@ -89,7 +91,11 @@ export function useUsers() {
     const result = await updateUserStatus(selectedUser.id, newStatus);
 
     if (result.success) {
+      const action = confirmAction === 'block' ? 'blocked' : 'unblocked';
+      showToast(`User ${action} successfully`, { type: 'success', dismissible: true });
       await fetchData();
+    } else {
+      showToast(result.error || 'Failed to update user status', { type: 'error', dismissible: true, duration: 4000 });
     }
 
     setActionLoading(false);

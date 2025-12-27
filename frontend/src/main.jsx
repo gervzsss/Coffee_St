@@ -30,6 +30,7 @@ import AdminUsers from "./admin/pages/Users.jsx";
 import Inquiries from "./admin/pages/Inquiries.jsx";
 
 import { AdminAuthProvider } from "./admin/context/AdminAuthContext.jsx";
+import { AdminToastProvider } from "./admin/context/ToastContext.jsx";
 import { AdminProtectedRoute } from "./admin/components/layout";
 import { useToast } from "./user/hooks/useToast";
 
@@ -160,16 +161,18 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AdminAuthProvider>
-        <AuthProvider>
-          <CartProvider>
-            <ToastProvider>
-              <Routes>
-                <Route path="/admin/*" element={<AdminAppContent />} />
-                <Route path="/*" element={<UserAppContent />} />
-              </Routes>
-            </ToastProvider>
-          </CartProvider>
-        </AuthProvider>
+        <AdminToastProvider>
+          <AuthProvider>
+            <CartProvider>
+              <ToastProvider>
+                <Routes>
+                  <Route path="/admin/*" element={<AdminAppContent />} />
+                  <Route path="/*" element={<UserAppContent />} />
+                </Routes>
+              </ToastProvider>
+            </CartProvider>
+          </AuthProvider>
+        </AdminToastProvider>
       </AdminAuthProvider>
     </BrowserRouter>
   </StrictMode>,

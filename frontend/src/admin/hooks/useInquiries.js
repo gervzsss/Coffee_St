@@ -1,7 +1,9 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useAdminToast } from './useAdminToast';
 import { getAllThreads, updateThreadStatus } from '../services/inquiryService';
 
 export function useInquiries() {
+  const { showToast } = useAdminToast();
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,16 +32,24 @@ export function useInquiries() {
     const result = await updateThreadStatus(threadId, newStatus);
 
     if (result.success) {
+      const statusLabels = {
+        open: 'reopened',
+        closed: 'closed',
+        archived: 'archived'
+      };
+      showToast(`Inquiry ${statusLabels[newStatus] || 'updated'}`, { type: 'success', dismissible: true });
       setThreads((prevThreads) =>
         prevThreads.map((thread) =>
           thread.id === threadId ? { ...thread, status: newStatus } : thread
         )
       );
       return true;
+    } else {
+      showToast(result.error || 'Failed to update inquiry status', { type: 'error', dismissible: true, duration: 4000 });
     }
 
     return false;
-  }, []);
+  }, [showToast]);
 
   const filteredThreads = useMemo(() => {
     if (filterStatus === 'all') return threads;

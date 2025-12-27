@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useAdminToast } from './useAdminToast';
 import {
   getOrderMetrics,
   getAllOrders,
@@ -8,6 +9,7 @@ import {
 } from '../services/orderService';
 
 export function useOrders() {
+  const { showToast } = useAdminToast();
   const [orders, setOrders] = useState([]);
   const [metrics, setMetrics] = useState({
     all: 0,
@@ -96,6 +98,14 @@ export function useOrders() {
 
     const result = await updateOrderStatus(orderId, { status: toStatus });
     if (result.success) {
+      const statusLabels = {
+        confirmed: 'confirmed',
+        preparing: 'set to preparing',
+        out_for_delivery: 'out for delivery',
+        delivered: 'marked as delivered',
+        cancelled: 'cancelled'
+      };
+      showToast(`Order ${statusLabels[toStatus] || 'updated'}`, { type: 'success', dismissible: true });
       await fetchData();
       if (selectedOrder?.id === orderId) {
         const orderResult = await getOrder(orderId);
@@ -103,11 +113,13 @@ export function useOrders() {
           setSelectedOrder(orderResult.data);
         }
       }
+    } else {
+      showToast(result.error || 'Failed to update order status', { type: 'error', dismissible: true, duration: 4000 });
     }
 
     setUpdating(false);
     setConfirmModal({ isOpen: false, orderId: null, fromStatus: null, toStatus: null });
-  }, [confirmModal, fetchData, selectedOrder?.id]);
+  }, [confirmModal, fetchData, selectedOrder?.id, showToast]);
 
   const handleStatusUpdate = useCallback(async (orderId, newStatus) => {
     const result = await updateOrderStatus(orderId, { status: newStatus });
@@ -127,6 +139,7 @@ export function useOrders() {
     setUpdating(true);
     const result = await markOrderFailed(orderId, reason);
     if (result.success) {
+      showToast('Order marked as failed', { type: 'success', dismissible: true });
       await fetchData();
       if (selectedOrder?.id === orderId) {
         const orderResult = await getOrder(orderId);
@@ -134,11 +147,13 @@ export function useOrders() {
           setSelectedOrder(orderResult.data);
         }
       }
+    } else {
+      showToast(result.error || 'Failed to mark order as failed', { type: 'error', dismissible: true, duration: 4000 });
     }
     setUpdating(false);
     setFailModal({ isOpen: false, orderId: null });
     return result;
-  }, [fetchData, selectedOrder?.id]);
+  }, [fetchData, selectedOrder?.id, showToast]);
 
   const confirmFailure = useCallback(async (reason) => {
     await handleMarkFailed(failModal.orderId, reason);

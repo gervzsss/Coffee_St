@@ -2,11 +2,13 @@ import { AdminLayout } from "../components/layout";
 import { AdminAnimatedPage } from "../components/common";
 import { ProductDetailsModal, ProductFormModal, AvailabilityModal, ArchiveModal, DeleteConfirmModal, ProductMetricSkeleton, ProductTableSkeleton, StockUpdateModal } from "../components/products";
 import { useProducts } from "../hooks/useProducts";
+import { useAdminToast } from "../hooks/useAdminToast";
 import { CATEGORIES } from "../constants/categories";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 export default function Products() {
+  const { showToast } = useAdminToast();
   const location = useLocation();
   const [stockFilter, setStockFilter] = useState("all"); // all, sold_out, low_stock, in_stock
   const [showStockUpdateModal, setShowStockUpdateModal] = useState(false);
@@ -73,12 +75,13 @@ export default function Products() {
       const adminApi = (await import("../services/apiClient")).default;
       await adminApi.post(`/products/${selectedProductForStock.id}/stock`, stockData);
 
+      showToast("Stock updated successfully", { type: "success", dismissible: true });
       handleStockUpdateClose();
       // Refresh products list with skeleton loader
       await fetchData();
     } catch (error) {
       console.error("Failed to update stock:", error);
-      alert("Failed to update stock: " + (error.response?.data?.message || error.message));
+      showToast(error.response?.data?.message || error.message || "Failed to update stock", { type: "error", dismissible: true, duration: 4000 });
     }
   };
 
