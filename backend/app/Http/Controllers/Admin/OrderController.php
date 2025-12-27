@@ -274,6 +274,17 @@ class OrderController extends Controller
                         $this->stockService->increaseStock($product, $orderItem->quantity, $order, $reason);
                     }
                 }
+
+                // Increment user's failed orders count
+                $order->user->increment('failed_orders_count');
+            }
+
+            // Decrement failed orders count if transitioning FROM cancelled/failed to another status
+            if (
+                in_array($oldStatus, ['cancelled', 'failed']) &&
+                !in_array($newStatus, ['cancelled', 'failed'])
+            ) {
+                $order->user->decrement('failed_orders_count');
             }
 
             // Create status log

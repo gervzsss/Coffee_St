@@ -38,9 +38,9 @@ class UserController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', '%' . $search . '%')
-                  ->orWhere('last_name', 'like', '%' . $search . '%')
-                  ->orWhere('email', 'like', '%' . $search . '%')
-                  ->orWhere('phone', 'like', '%' . $search . '%');
+                    ->orWhere('last_name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%');
             });
         }
 
@@ -73,13 +73,15 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::with(['orders' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }])->withCount('orders')->withSum('orders', 'total')->findOrFail($id);
+        $user = User::with([
+            'orders' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }
+        ])->withCount('orders')->withSum('orders', 'total')->findOrFail($id);
 
-        // Calculate warnings based on failed/cancelled orders
-        $failedOrders = $user->orders->where('status', 'cancelled')->count();
-        $warningText = $failedOrders > 0 ? "{$failedOrders} Failed Orders" : 'None';
+        // Use the maintained failed_orders_count column
+        $failedOrdersCount = $user->failed_orders_count ?? 0;
+        $warningText = $failedOrdersCount > 0 ? "{$failedOrdersCount} Failed Orders" : 'None';
 
         return response()->json([
             'id' => $user->id,
@@ -91,9 +93,9 @@ class UserController extends Controller
             'status' => $user->status ?? 'active',
             'orders_count' => $user->orders_count,
             'total_spent' => $user->orders_sum_total ?? 0,
-            'failed_orders_count' => $user->failed_orders_count ?? 0,
+            'failed_orders_count' => $failedOrdersCount,
             'warnings' => $warningText,
-            'has_warnings' => $failedOrders > 0,
+            'has_warnings' => $failedOrdersCount > 0,
             'created_at' => $user->created_at,
             'status_changed_at' => $user->status_changed_at,
         ]);

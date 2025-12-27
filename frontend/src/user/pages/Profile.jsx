@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useToast } from "../hooks/useToast";
@@ -9,12 +9,19 @@ import { OrderHistoryCard } from "../components/orders";
 import { QuickSettingsPanel, ProfileInformationForm, ChangePasswordForm, DeleteAccountModal } from "../components/profile";
 
 export default function Profile() {
-  const { user, setUser, logout } = useAuth();
+  const { user, setUser, logout, refreshUser } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState("profile-info");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Refresh user data when profile page loads to ensure status is up-to-date
+  useEffect(() => {
+    if (refreshUser) {
+      refreshUser();
+    }
+  }, [refreshUser]);
 
   const handleUserUpdate = (updatedUser) => {
     setUser(updatedUser);
@@ -77,7 +84,7 @@ export default function Profile() {
             <div className="grid grid-cols-1 gap-5 sm:gap-6 lg:grid-cols-3 lg:gap-8">
               {/* Left Column - Order History (Desktop only) */}
               <div className="hidden lg:col-span-1 lg:block">
-                <OrderHistoryCard />
+                <OrderHistoryCard user={user} />
               </div>
 
               {/* Right Column - Profile Information & Settings */}
@@ -97,7 +104,7 @@ export default function Profile() {
 
                 {/* Order History Card (Mobile - below settings) */}
                 <div className="lg:hidden">
-                  <OrderHistoryCard />
+                  <OrderHistoryCard user={user} />
                 </div>
               </div>
             </div>

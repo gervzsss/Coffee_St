@@ -92,6 +92,7 @@ export const AuthProvider = ({ children }) => {
     login,
     signup,
     logout,
+    refreshUser: fetchUser, // Expose fetchUser to allow manual refresh
     isAuthenticated: !!token,
     isAuthModalOpen,
     authModalMode,

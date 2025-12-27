@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronRight, CheckCircle } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import api from "../../services/apiClient";
+import { AccountStatusCard } from "../profile";
 
-export default function OrderHistoryCard() {
+export default function OrderHistoryCard({ user }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -85,21 +86,8 @@ export default function OrderHistoryCard() {
         </div>
       </div>
 
-      {/* Clean Record Badge */}
-      <div className="overflow-hidden rounded-xl border border-gray-100 bg-white p-4 shadow-sm sm:rounded-2xl sm:p-5 lg:p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-50 sm:h-14 sm:w-14 lg:h-16 lg:w-16">
-              <CheckCircle className="h-6 w-6 text-green-600 sm:h-7 sm:w-7 lg:h-8 lg:w-8" strokeWidth={2} />
-            </div>
-            <div>
-              <h3 className="text-base font-semibold text-green-800 sm:text-lg">Clean record</h3>
-              <p className="text-xs text-gray-600 sm:text-sm">No scam warnings or fraudulent activity reported</p>
-            </div>
-          </div>
-          <ChevronRight className="h-5 w-5 text-gray-400" />
-        </div>
-      </div>
+      {/* Account Status Card */}
+      {user && <AccountStatusCard user={user} />}
     </div>
   );
 }

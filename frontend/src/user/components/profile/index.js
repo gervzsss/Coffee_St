@@ -1,3 +1,4 @@
+export { AccountStatusCard } from './AccountStatusCard';
 export { default as ChangePasswordForm } from './ChangePasswordForm';
 export { default as DeleteAccountModal } from './DeleteAccountModal';
 export { default as ProfileDropdown } from './ProfileDropdown';
