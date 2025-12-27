@@ -21,6 +21,9 @@ class ProductSeeder extends Seeder
                 'price' => 95.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761317233/products/americano-68fb916de1765.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 2,
@@ -30,6 +33,9 @@ class ProductSeeder extends Seeder
                 'price' => 80.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761317649/products/cinammon-68fb930c670dc.png',
                 'is_active' => 1,
+                'stock_quantity' => 50,
+                'track_stock' => true,
+                'low_stock_threshold' => 10,
             ],
             [
                 'id' => 3,
@@ -39,6 +45,9 @@ class ProductSeeder extends Seeder
                 'price' => 110.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761326259/products/CAPUCCINO-68fbb4b1e30b3.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 4,
@@ -48,6 +57,9 @@ class ProductSeeder extends Seeder
                 'price' => 65.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761371183/products/Raspberry_tea-68fc6410c28b7.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 5,
@@ -57,6 +69,9 @@ class ProductSeeder extends Seeder
                 'price' => 120.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761371469/products/blueberry_frappe-5.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 6,
@@ -66,6 +81,9 @@ class ProductSeeder extends Seeder
                 'price' => 135.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761371319/products/CHOCOCHIP-6.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 7,
@@ -75,6 +93,9 @@ class ProductSeeder extends Seeder
                 'price' => 135.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761372526/products/Salted_caramel-68fc696c94b25.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 8,
@@ -84,6 +105,9 @@ class ProductSeeder extends Seeder
                 'price' => 60.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761372699/products/cookies-68fc6a19aea84.png',
                 'is_active' => 1,
+                'stock_quantity' => 50,
+                'track_stock' => true,
+                'low_stock_threshold' => 10,
             ],
             [
                 'id' => 9,
@@ -93,6 +117,9 @@ class ProductSeeder extends Seeder
                 'price' => 75.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761373153/products/RED_VELVE_COOKIES-68fc6bdec141c.png',
                 'is_active' => 1,
+                'stock_quantity' => 50,
+                'track_stock' => true,
+                'low_stock_threshold' => 10,
             ],
             [
                 'id' => 10,
@@ -102,6 +129,9 @@ class ProductSeeder extends Seeder
                 'price' => 75.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761373257/products/white_chocolate-68fc6c47bbb70.png',
                 'is_active' => 1,
+                'stock_quantity' => 50,
+                'track_stock' => true,
+                'low_stock_threshold' => 10,
             ],
             [
                 'id' => 11,
@@ -111,6 +141,9 @@ class ProductSeeder extends Seeder
                 'price' => 125.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761373632/products/UBE%20FRAPPE-68fc6dbe9ab9a.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 12,
@@ -120,6 +153,9 @@ class ProductSeeder extends Seeder
                 'price' => 120.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761373963/products/STRAWBEERY_FRAPPE-68fc6f0a39048.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 13,
@@ -129,6 +165,9 @@ class ProductSeeder extends Seeder
                 'price' => 115.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761374132/products/VANILLA%20LATTE-68fc6f836ce0a.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 14,
@@ -138,6 +177,9 @@ class ProductSeeder extends Seeder
                 'price' => 125.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761390498/products/white_mocha-68fcaf9fbd61c.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 15,
@@ -147,6 +189,9 @@ class ProductSeeder extends Seeder
                 'price' => 70.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761390642/products/lemon_tea-15.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 16,
@@ -156,6 +201,9 @@ class ProductSeeder extends Seeder
                 'price' => 115.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761391021/products/Matcha-68fcb1aa6c31c.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 17,
@@ -165,6 +213,9 @@ class ProductSeeder extends Seeder
                 'price' => 125.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761391081/products/Noir_Mocha-68fcb1e57225f.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 18,
@@ -174,6 +225,9 @@ class ProductSeeder extends Seeder
                 'price' => 120.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761391130/products/spanish_latte-68fcb216757c3.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 19,
@@ -183,6 +237,9 @@ class ProductSeeder extends Seeder
                 'price' => 135.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761391166/products/starwberry_matcha-68fcb23c1d113.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 20,
@@ -192,6 +249,9 @@ class ProductSeeder extends Seeder
                 'price' => 110.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761391229/products/macchiato-68fcb274842b9.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
             [
                 'id' => 21,
@@ -201,6 +261,9 @@ class ProductSeeder extends Seeder
                 'price' => 125.00,
                 'image_url' => 'https://res.cloudinary.com/dsfcry9re/image/upload/v1761391266/products/cheesecake-68fcb2939bc35.png',
                 'is_active' => 1,
+                'stock_quantity' => 100,
+                'track_stock' => true,
+                'low_stock_threshold' => 20,
             ],
         ];
 
