@@ -19,7 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173', 'http://localhost:4173'],
+    'allowed_origins' => [
+        'http://localhost:5173',
+        'http://localhost:4173',
+        env('FRONTEND_URL'), // This will pull from your Railway environment variables
+    ],
 
     'allowed_origins_patterns' => [],
 
@@ -29,6 +33,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true, // Set to true if you use Sanctum or cookies for auth
 
 ];

@@ -1,44 +1,39 @@
 #!/bin/sh
 set -e
 
-# Wait for database to be ready
+# 1. INJECT THE RAILWAY PORT (The Fix for 502)
+# This replaces the string ${PORT} in your nginx config with the actual number provided by Railway
+if [ -z "$PORT" ]; then
+  export PORT=80
+fi
+sed -i "s/\${PORT}/$PORT/g" /etc/nginx/http.d/default.conf
+
+echo "Configuring Nginx to listen on port $PORT"
+
+# 2. WAIT FOR DATABASE
 echo "Waiting for database connection..."
 max_attempts=30
 attempt=0
-
 while [ $attempt -lt $max_attempts ]; do
     if php artisan db:show 2>/dev/null; then
         echo "Database is up!"
         break
     fi
     attempt=$((attempt + 1))
-    echo "Database is unavailable - sleeping (attempt $attempt/$max_attempts)"
+    echo "Database unavailable - attempt $attempt/$max_attempts"
     sleep 2
 done
 
-if [ $attempt -eq $max_attempts ]; then
-    echo "Failed to connect to database after $max_attempts attempts"
-    exit 1
-fi
-
-# Cache configuration for production performance
-echo "Caching configuration..."
+# 3. PRODUCTION OPTIMIZATIONS
+echo "Optimizing Laravel..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
-
-# Run migrations
-echo "Running migrations..."
 php artisan migrate --force
-
-# Seed database if needed (only on first run)
-echo "Checking if seeding is needed..."
-php artisan db:seed --force 2>/dev/null || true
-
-# Create storage link
 php artisan storage:link 2>/dev/null || true
 
 echo "Laravel application ready!"
 
-# Execute the main command (supervisord)
+# 4. START SUPERVISOR
+# This ensures we pass the command from the Dockerfile (supervisord) correctly
 exec "$@"
