@@ -28,8 +28,22 @@ done
 echo "Optimizing Laravel..."
 php artisan config:cache
 php artisan route:cache
-php artisan view:cache
+
+echo "Running migrations..."
 php artisan migrate --force
+
+# Check for essential data (Products or Admin)
+echo "Checking for Admin User..."
+# Check if the products table is empty
+ADMIN_EXISTS=$(php artisan tinker --execute="echo \App\Models\User::where('is_admin', true)->count();")
+
+if [ "$ADMIN_EXISTS" = "0" ]; then
+    echo "No Admin found. Seeding essential data (Admin, Products, Variants)..."
+    php artisan db:seed --force
+else
+    echo "Admin user exists. Skipping essential seed."
+fi
+
 php artisan storage:link 2>/dev/null || true
 
 echo "Laravel application ready!"
