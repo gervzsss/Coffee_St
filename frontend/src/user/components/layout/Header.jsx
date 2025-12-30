@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useCart } from "../../hooks/useCart";
 import { useToast } from "../../hooks/useToast";
 import { ProfileDropdown } from "../profile";
-import logo from "../../../assets/stcoffeelogo.png";
+import logo from "/favicon-padded.png";
 
 export default function Header() {
   const { showToast } = useToast();

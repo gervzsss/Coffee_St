@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
-import logo from "../../../assets/stcoffeelogo.png";
+import logo from "/favicon-padded.png";
 import { useState, useRef, useEffect } from "react";
 import { Bell } from "lucide-react";
 
