@@ -1,7 +1,0 @@
-.github
-.vscode
-.env
-node_modules
-vendor
-docker-compose.override.yml
-DOCKER.md

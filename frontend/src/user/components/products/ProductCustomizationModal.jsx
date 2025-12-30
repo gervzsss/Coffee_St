@@ -84,11 +84,30 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
     return total.toFixed(2);
   };
 
-  const handleSingleSelect = (groupId, variant) => {
-    setSelectedVariants((prev) => ({
-      ...prev,
-      [groupId]: [variant],
-    }));
+  const handleSingleSelect = (groupId, variant, isRequired) => {
+    setSelectedVariants((prev) => {
+      const currentSelections = prev[groupId] || [];
+      const isSelected = currentSelections.some((v) => v.id === variant.id);
+
+      // If the variant is already selected
+      if (isSelected) {
+        // For required groups, keep the selection (user must have a choice)
+        if (isRequired) {
+          return prev;
+        }
+        // For optional groups, allow unselection
+        return {
+          ...prev,
+          [groupId]: [],
+        };
+      }
+
+      // Select the new variant
+      return {
+        ...prev,
+        [groupId]: [variant],
+      };
+    });
   };
 
   const handleMultiSelect = (groupId, variant) => {
@@ -124,6 +143,36 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
     return true;
   };
 
+  const handleQuantityChange = (e) => {
+    const value = e.target.value;
+
+    // Allow empty string for user to clear and type new value
+    if (value === "") {
+      setQuantity("");
+      return;
+    }
+
+    // Only allow positive integers
+    const numValue = parseInt(value, 10);
+    if (isNaN(numValue) || numValue < 1) {
+      return;
+    }
+
+    // Apply stock limit if tracking stock
+    if (product.track_stock && numValue > product.stock_quantity) {
+      setQuantity(product.stock_quantity);
+    } else {
+      setQuantity(numValue);
+    }
+  };
+
+  const handleQuantityBlur = () => {
+    // If empty or invalid, reset to 1
+    if (quantity === "" || quantity < 1) {
+      setQuantity(1);
+    }
+  };
+
   const handleAddToCart = async () => {
     if (!validateSelections()) {
       showToast("Please select all required options", {
@@ -150,7 +199,7 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
 
       await onAddToCart({
         product_id: product.id,
-        quantity,
+        quantity: quantity || 1,
         variants: variantsArray,
       });
 
@@ -279,12 +328,16 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
                               key={variant.id}
                               onClick={() =>
                                 isSingleSelect
-                                  ? handleSingleSelect(group.id, {
-                                      id: variant.id,
-                                      name: variant.name,
-                                      group_name: group.name,
-                                      price_delta: variant.price_delta,
-                                    })
+                                  ? handleSingleSelect(
+                                      group.id,
+                                      {
+                                        id: variant.id,
+                                        name: variant.name,
+                                        group_name: group.name,
+                                        price_delta: variant.price_delta,
+                                      },
+                                      group.is_required,
+                                    )
                                   : handleMultiSelect(group.id, {
                                       id: variant.id,
                                       name: variant.name,
@@ -346,7 +399,14 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
                   >
                     <Minus className="h-4 w-4" />
                   </button>
-                  <span className="w-12 text-center text-lg font-semibold">{quantity}</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                    onBlur={handleQuantityBlur}
+                    className="w-12 rounded-lg border border-neutral-300 bg-white px-2 py-1 text-center text-lg font-semibold text-neutral-900 focus:border-[#30442B] focus:ring-1 focus:ring-[#30442B] focus:outline-none"
+                  />
                   <button
                     onClick={() => setQuantity(quantity + 1)}
                     disabled={product.track_stock && quantity >= product.stock_quantity}
