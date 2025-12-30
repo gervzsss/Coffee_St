@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { fadeIn } from "../../../components/motion/variants";
+import { fadeIn } from "../../../shared/components/motion/variants";
 
 const CategoryButton = ({ category, isAllProducts = false, selectedCategory, onCategoryChange }) => (
   <button

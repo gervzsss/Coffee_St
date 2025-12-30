@@ -35,7 +35,7 @@ import { AdminProtectedRoute } from "./admin/components/layout";
 import { useToast } from "./user/hooks/useToast";
 
 function UserAppContent() {
-  const { isAuthModalOpen, closeAuthModal, authModalMode, blockedMessage, clearBlockedMessage } = useAuth();
+  const { isAuthModalOpen, closeAuthModal, authModalMode, blockedMessage, clearBlockedMessage, sessionMessage, clearSessionMessage } = useAuth();
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -44,6 +44,13 @@ function UserAppContent() {
       clearBlockedMessage();
     }
   }, [blockedMessage, showToast, clearBlockedMessage]);
+
+  useEffect(() => {
+    if (sessionMessage) {
+      showToast(sessionMessage, { type: "warning", duration: 5000 });
+      clearSessionMessage();
+    }
+  }, [sessionMessage, showToast, clearSessionMessage]);
 
   return (
     <>

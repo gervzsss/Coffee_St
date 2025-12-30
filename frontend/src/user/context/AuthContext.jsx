@@ -1,5 +1,7 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import * as authService from "../services/authService";
+import { useIdleLogout } from "../../shared/hooks/useIdleLogout";
+import api from "../services/apiClient";
 
 export const AuthContext = createContext(null);
 
@@ -10,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState("login");
   const [blockedMessage, setBlockedMessage] = useState(null);
+  const [sessionMessage, setSessionMessage] = useState(null);
 
   const fetchUser = useCallback(async () => {
     const result = await authService.fetchUser();
@@ -40,13 +43,53 @@ export const AuthProvider = ({ children }) => {
       setBlockedMessage(event.detail?.message || "Your account has been blocked. Please contact support for assistance.");
     };
 
+    const handleUnauthorized = () => {
+      setToken(null);
+      setUser(null);
+      setSessionMessage("You've been logged out due to inactivity or session expiration. Please log in again.");
+      setIsAuthModalOpen(true);
+      setAuthModalMode("login");
+    };
+
     window.addEventListener("auth:blocked", handleBlocked);
-    return () => window.removeEventListener("auth:blocked", handleBlocked);
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+
+    return () => {
+      window.removeEventListener("auth:blocked", handleBlocked);
+      window.removeEventListener("auth:unauthorized", handleUnauthorized);
+    };
   }, []);
 
   const clearBlockedMessage = () => {
     setBlockedMessage(null);
   };
+
+  const clearSessionMessage = () => {
+    setSessionMessage(null);
+  };
+
+  const handleIdleLogout = useCallback(async () => {
+    await authService.logout();
+    setToken(null);
+    setUser(null);
+    setSessionMessage("You've been logged out due to inactivity. Please log in again.");
+    setIsAuthModalOpen(true);
+    setAuthModalMode("login");
+  }, []);
+
+  const handleSessionPing = useCallback(async () => {
+    if (token) {
+      await api.get("/session/ping");
+    }
+  }, [token]);
+
+  // Set up idle logout timer
+  useIdleLogout({
+    timeoutMinutes: parseInt(import.meta.env.VITE_IDLE_TIMEOUT_MINUTES_USER || "30", 10),
+    onLogout: handleIdleLogout,
+    enabled: !!token,
+    onPing: handleSessionPing,
+  });
 
   const login = async (email, password) => {
     const result = await authService.login(email, password);
@@ -100,6 +143,8 @@ export const AuthProvider = ({ children }) => {
     closeAuthModal,
     blockedMessage,
     clearBlockedMessage,
+    sessionMessage,
+    clearSessionMessage,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

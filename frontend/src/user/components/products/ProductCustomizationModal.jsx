@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { modalOverlay, modalContent } from "../../../components/motion/variants";
+import { modalOverlay, modalContent } from "../../../shared/components/motion/variants";
 import { X, Plus, Minus, ShoppingCart } from "lucide-react";
 import { useToast } from "../../hooks/useToast";
 

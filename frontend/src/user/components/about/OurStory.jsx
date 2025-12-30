@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
-import { staggerContainer, staggerItem } from "../../../components/motion/variants";
+import { staggerContainer, staggerItem } from "../../../shared/components/motion/variants";
 import journeyImg from "../../../assets/journeyimage.png";
 
 export default function OurStory() {

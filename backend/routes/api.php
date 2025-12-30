@@ -33,10 +33,15 @@ Route::get('/products/{id}/variant-groups', [ProductController::class, 'variantG
 Route::post('/contact', [ContactController::class, 'store']);
 
 // Protected Routes (Require Authentication)
-Route::middleware(['auth:sanctum', 'check.status'])->group(function () {
+Route::middleware(['auth:sanctum', 'token.timeout', 'check.status'])->group(function () {
   // Auth Routes
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::get('/user', [AuthController::class, 'user']);
+
+  // Session heartbeat
+  Route::get('/session/ping', function () {
+    return response()->json(['ok' => true]);
+  });
 
   // Cart Routes
   Route::get('/cart/count', [CartController::class, 'count']);

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { staggerContainer, staggerItem } from "../../../components/motion/variants";
+import { staggerContainer, staggerItem } from "../../../shared/components/motion/variants";
 
 export default function ProductsHeader({ searchQuery, onSearchChange }) {
   return (

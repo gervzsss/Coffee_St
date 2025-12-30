@@ -24,10 +24,15 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 
 // Protected Admin Routes (Require Admin Authentication)
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'token.timeout', 'admin'])->group(function () {
     // Auth Routes
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+
+    // Session heartbeat
+    Route::get('/session/ping', function () {
+        return response()->json(['ok' => true]);
+    });
 
     // Dashboard
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);

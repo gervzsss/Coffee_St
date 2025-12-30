@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
-import { staggerContainer, staggerItem } from "../../../components/motion/variants";
+import { staggerContainer, staggerItem } from "../../../shared/components/motion/variants";
 import homeHeadImg from "../../../assets/home_head.webp";
 
 export default function HeroSection() {

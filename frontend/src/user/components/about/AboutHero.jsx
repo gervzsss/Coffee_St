@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { staggerContainer, staggerItem } from "../../../components/motion/variants";
+import { staggerContainer, staggerItem } from "../../../shared/components/motion/variants";
 import aboutHeadImg from "../../../assets/aboutus_head.webp";
 
 export default function AboutHero() {

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
-import { toast as toastVariant } from "../../../components/motion/variants";
+import { toast as toastVariant } from "../../../shared/components/motion/variants";
 
 const TYPE_CONFIGS = {
   default: {

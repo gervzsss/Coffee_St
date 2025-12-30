@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
-import { staggerContainer, staggerItem } from "../../../components/motion/variants";
+import { staggerContainer, staggerItem } from "../../../shared/components/motion/variants";
 import { useRef } from "react";
 
 export default function BenefitsGrid() {

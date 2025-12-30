@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { accordion } from "../../../components/motion/variants";
+import { accordion } from "../../../shared/components/motion/variants";
 
 export default function QuickSettingsPanel({ onChangePassword, onDeleteAccount, onLogout, onLanguageChange, currentLanguage = "en", isLoggingOut = false }) {
   const [expandedSection, setExpandedSection] = useState(null);

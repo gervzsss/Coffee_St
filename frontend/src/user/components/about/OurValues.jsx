@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
-import { staggerContainer, staggerItem } from "../../../components/motion/variants";
+import { staggerContainer, staggerItem } from "../../../shared/components/motion/variants";
 import sustainabilityImg from "../../../assets/sustainability.png";
 import bakedDailyImg from "../../../assets/bakeddaily.png";
 import farmerCoffeeBeanImg from "../../../assets/farmercoffeebean.png";

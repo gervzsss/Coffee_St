@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import ProductCard from "./ProductCard";
 import ProductCardSkeleton from "./ProductCardSkeleton";
-import { staggerContainer, staggerItem } from "../../../components/motion/variants";
+import { staggerContainer, staggerItem } from "../../../shared/components/motion/variants";
 
 export default function ProductsGrid({ products, loading, error, onRetry }) {
   if (loading) {

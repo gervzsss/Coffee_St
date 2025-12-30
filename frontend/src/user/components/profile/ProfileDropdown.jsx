@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { dropdown } from "../../../components/motion/variants";
+import { dropdown } from "../../../shared/components/motion/variants";
 import { User, Package, Mail, LogOut, Loader2 } from "lucide-react";
 
 export default function ProfileDropdown({ userName, onLogout, isLoggingOut = false }) {

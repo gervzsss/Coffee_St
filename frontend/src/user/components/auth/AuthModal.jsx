@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { modalOverlay, modalContent } from "../../../components/motion/variants";
+import { modalOverlay, modalContent } from "../../../shared/components/motion/variants";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 

@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { staggerContainer, staggerItem } from "../../../components/motion/variants";
+import { staggerContainer, staggerItem } from "../../../shared/components/motion/variants";
 import contactHeaderImg from "../../../assets/contact_header.webp";
 
 export default function ContactHero() {

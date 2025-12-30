@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
-import { slideFromLeft, slideFromRight } from "../../../components/motion/variants";
+import { slideFromLeft, slideFromRight } from "../../../shared/components/motion/variants";
 import { useRef } from "react";
 import homePastriesImg from "../../../assets/home_pastries.png";
 

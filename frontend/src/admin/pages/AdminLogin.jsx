@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../hooks/useAdminAuth";
 import adminLoginBg from "../../assets/AdminLogin.webp";
@@ -8,11 +8,18 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAdminAuth();
+  const { login, sessionMessage, clearSessionMessage } = useAdminAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/admin/dashboard";
+
+  useEffect(() => {
+    if (sessionMessage) {
+      setError(sessionMessage);
+      clearSessionMessage();
+    }
+  }, [sessionMessage, clearSessionMessage]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
