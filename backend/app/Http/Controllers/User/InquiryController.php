@@ -18,11 +18,6 @@ class InquiryController extends Controller
   {
     $user = Auth::user();
 
-    \Log::info('Fetching threads for user', [
-      'user_id' => $user->id,
-      'email' => $user->email
-    ]);
-
     // Get threads where user is authenticated OR threads created as guest with user's email
     $threads = InquiryThread::where(function ($query) use ($user) {
       $query->where('user_id', $user->id)
@@ -31,8 +26,6 @@ class InquiryController extends Controller
       ->withCount('messages')
       ->latest('last_message_at')
       ->get();
-
-    \Log::info('Found threads', ['count' => $threads->count()]);
 
     $threads = $threads->map(function ($thread) {
       $latestMessage = $thread->messages()->latest('created_at')->first();
