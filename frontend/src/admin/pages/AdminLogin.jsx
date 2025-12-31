@@ -104,13 +104,6 @@ export default function AdminLogin() {
               >
                 {loading ? "Logging In..." : "Log In"}
               </button>
-
-              {/* Forgot Password Link */}
-              <div className="mt-8 text-center">
-                <a href="#" className="text-sm tracking-wider text-white/70 transition-colors duration-300 hover:text-white">
-                  Forgot your password?
-                </a>
-              </div>
             </form>
           </div>
         </div>

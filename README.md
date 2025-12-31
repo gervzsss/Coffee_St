@@ -52,12 +52,10 @@ A modern, full-stack e-commerce web application for a coffee shop. Built with La
 
 ## Quick Start
 
-### Production Mode
-
-Run the application with optimized, production-ready containers:
+Run the application using Docker:
 
 ```bash
-docker compose up --build
+docker compose up --build -d
 ```
 
 This starts:
@@ -66,6 +64,20 @@ This starts:
 - Laravel backend on port 8000
 - React frontend on port 5173
 
+The application automatically runs database migrations and seeders on first startup.
+
+**Verify the containers are running:**
+
+```bash
+docker compose ps
+```
+
+All services should show "running" status. To view logs:
+
+```bash
+docker compose logs -f
+```
+
 **Access the application:**
 
 | Page             | URL                           |
@@ -73,46 +85,10 @@ This starts:
 | Customer Website | `http://localhost:5173`       |
 | Admin Dashboard  | `http://localhost:5173/admin` |
 
-Press `Ctrl + C` in the terminal to stop viewing logs. The containers will continue running in the background.
-
-### Development Mode
-
-Run the application with hot-reloading and debugging enabled:
-
-```bash
-docker compose -f docker-compose.dev.yml up --build
-```
-
-This starts:
-
-- MySQL database on port 4306
-- Laravel backend with debug mode on port 8000
-- Nginx server on port 80
-- React frontend with Vite HMR on port 5173
-
-Development mode mounts your local source files, so changes are reflected immediately without rebuilding containers.
-
-## Docker Compose Files
-
-| File                     | Purpose                                                                |
-| ------------------------ | ---------------------------------------------------------------------- |
-| `docker-compose.yml`     | Production deployment with optimized builds and minimal logging        |
-| `docker-compose.dev.yml` | Development environment with hot-reload, debug mode, and volume mounts |
-
-Both configurations automatically run database migrations and seeders on first startup.
-
 ## Stopping the Application
-
-Production:
 
 ```bash
 docker compose down
-```
-
-Development:
-
-```bash
-docker compose -f docker-compose.dev.yml down
 ```
 
 To remove volumes (database data):
@@ -132,7 +108,8 @@ Coffee_St/
 │   │   │   │   ├── Admin/   # Admin endpoints
 │   │   │   │   └── User/    # Customer endpoints
 │   │   │   └── Middleware/
-│   │   └── Models/
+│   │   ├── Models/
+│   │   └── Services/
 │   ├── database/
 │   │   ├── migrations/
 │   │   └── seeders/
@@ -144,14 +121,13 @@ Coffee_St/
 │       │   ├── hooks/
 │       │   ├── pages/
 │       │   └── services/
+│       ├── shared/          # Shared components
 │       └── user/            # Customer portal
 │           ├── components/
 │           ├── hooks/
 │           ├── pages/
 │           └── services/
-├── nginx/                   # Nginx configuration
-├── docker-compose.yml       # Production config
-└── docker-compose.dev.yml   # Development config
+└── docker-compose.yml       # Docker configuration
 ```
 
 ## Default Admin Account
@@ -160,4 +136,4 @@ After the application starts, use these credentials to access the admin dashboar
 
 - URL: `http://localhost:5173/admin`
 - Email: `admin@coffeest.com`
-- Password: `password`
+- Password: `admin`

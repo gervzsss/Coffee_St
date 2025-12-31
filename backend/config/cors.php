@@ -22,7 +22,7 @@ return [
     'allowed_origins' => [
         'http://localhost:5173',
         'http://localhost:4173',
-        env('FRONTEND_URL'), // This will pull from your Railway environment variables
+        env('FRONTEND_URL'),
     ],
 
     'allowed_origins_patterns' => [],
