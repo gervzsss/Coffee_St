@@ -212,7 +212,7 @@ export default function Orders() {
                     <p className="text-sm text-gray-600 sm:text-base">No orders found with the selected filter.</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
+                  <div className="space-y-3 sm:space-y-4">
                     {filteredOrders.map((order) => (
                       <OrderCard key={order.id} order={order} onViewDetails={handleViewDetails} statusConfig={STATUS_CONFIG} />
                     ))}

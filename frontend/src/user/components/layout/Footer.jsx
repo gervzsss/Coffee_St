@@ -45,7 +45,7 @@ export default function Footer() {
             <h4 className="mb-3 text-sm font-bold sm:mb-4 sm:text-base">Contact Us</h4>
             <ul className="space-y-1.5 text-sm text-gray-300 sm:space-y-2 sm:text-base">
               <li>123 Coffee Street</li>
-              <li>City, State 12345</li>
+              <li>San Pedro City, Laguna 4023</li>
               <li>Phone: (123) 456-7890</li>
               <li>Email: info@coffeest.com</li>
             </ul>

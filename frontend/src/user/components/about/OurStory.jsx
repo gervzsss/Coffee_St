@@ -34,8 +34,8 @@ export default function OurStory() {
               </motion.h2>
               <motion.div variants={staggerItem} className="mt-6 space-y-4 text-neutral-600 sm:mt-8 sm:space-y-6">
                 <p className="w-full text-sm leading-relaxed hyphens-auto backdrop-blur-sm sm:text-base sm:leading-loose lg:text-lg">
-                  Coffee St. began with a simple mission: to serve exceptional coffee in a welcoming environment. What started as a small coffee cart in Manila has grown into a beloved destination for
-                  coffee enthusiasts and casual drinkers alike.
+                  Coffee St. began with a simple mission: to serve exceptional coffee in a welcoming environment. What started as a small coffee cart in San Pedro Laguna has grown into a beloved
+                  destination for coffee enthusiasts and casual drinkers alike.
                 </p>
                 <p className="w-full text-sm leading-relaxed hyphens-auto backdrop-blur-sm sm:text-base sm:leading-loose lg:text-lg">
                   Our dedication to quality extends beyond the cup. We work directly with farmers, ensuring fair practices and sustainable relationships that benefit everyone in the coffee supply

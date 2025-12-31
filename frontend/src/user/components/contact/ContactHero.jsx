@@ -32,7 +32,7 @@ export default function ContactHero() {
         <motion.div className="lg:w-[260px] xl:w-[280px]" variants={staggerItem}>
           <div className="rounded-2xl bg-white/10 p-4 shadow-lg ring-1 shadow-black/25 ring-white/20 backdrop-blur sm:rounded-3xl sm:p-5 lg:p-6">
             <p className="text-xs tracking-[0.3em] text-amber-200 uppercase sm:text-sm">visit us</p>
-            <p className="font-outfit mt-2 text-base text-white sm:mt-3 sm:text-lg">123 Coffee Street, Manila</p>
+            <p className="font-outfit mt-2 text-base text-white sm:mt-3 sm:text-lg">123 Coffee Street, Laguna</p>
             <div className="mt-4 space-y-3 text-xs text-white/80 sm:mt-6 sm:space-y-4 sm:text-sm">
               <p className="flex items-center gap-3">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#30442B]">
