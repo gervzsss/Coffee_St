@@ -123,30 +123,32 @@ export default function Orders() {
             </div>
           </div>
 
-          {/* Orders List */}
-          <div className="space-y-3 sm:space-y-4">
-            {loading ? (
-              <>
-                <OrderCardSkeleton />
-                <OrderCardSkeleton />
-                <OrderCardSkeleton />
-              </>
-            ) : filteredOrders.length === 0 ? (
-              <div className="rounded-xl border border-gray-200 bg-white py-8 text-center sm:py-12">
-                <svg className="mx-auto mb-3 h-12 w-12 text-gray-300 sm:mb-4 sm:h-16 sm:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-                <p className="text-sm text-gray-500 sm:text-base">No orders found</p>
-              </div>
-            ) : (
-              filteredOrders.map((order) => <OrderCard key={order.id} order={order} onViewDetails={handleViewOrder} onQuickStatusChange={handleQuickStatusChange} />)
-            )}
-          </div>
+          {/* Orders Grid */}
+          {loading ? (
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2 xl:grid-cols-3">
+              <OrderCardSkeleton />
+              <OrderCardSkeleton />
+              <OrderCardSkeleton />
+            </div>
+          ) : filteredOrders.length === 0 ? (
+            <div className="rounded-xl border border-gray-200 bg-white py-8 text-center sm:py-12">
+              <svg className="mx-auto mb-3 h-12 w-12 text-gray-300 sm:mb-4 sm:h-16 sm:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+              <p className="text-sm text-gray-500 sm:text-base">No orders found</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2 xl:grid-cols-3">
+              {filteredOrders.map((order) => (
+                <OrderCard key={order.id} order={order} onViewDetails={handleViewOrder} onQuickStatusChange={handleQuickStatusChange} />
+              ))}
+            </div>
+          )}
         </div>
       </AdminAnimatedPage>
 

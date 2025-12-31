@@ -584,7 +584,7 @@ function InitialStockPrompt({ onConfirm, onCancel }) {
   };
 
   return (
-    <div className="bg-opacity-50 fixed inset-0 z-60 flex items-center justify-center bg-black p-4">
+    <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-gray-900">Set Initial Stock Quantity</h3>
