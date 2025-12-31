@@ -261,10 +261,11 @@ class OrderController extends Controller
 
             $order->update($updateData);
 
-            // Return stock if order is being cancelled or failed (before delivery)
+            // Return stock only if order hasn't reached out_for_delivery yet
+            // (stock is considered lost once out for delivery)
             if (
                 ($newStatus === 'cancelled' || $newStatus === 'failed') &&
-                !in_array($oldStatus, ['delivered', 'cancelled', 'failed'])
+                !in_array($oldStatus, ['out_for_delivery', 'delivered', 'cancelled', 'failed'])
             ) {
                 $order->load('items.product');
                 foreach ($order->items as $orderItem) {
@@ -274,17 +275,26 @@ class OrderController extends Controller
                         $this->stockService->increaseStock($product, $orderItem->quantity, $order, $reason);
                     }
                 }
+            }
 
-                // Increment user's failed orders count
+            // Increment warnings (failed_orders_count) ONLY for failed deliveries
+            // i.e., when transitioning from out_for_delivery to failed
+            if ($oldStatus === 'out_for_delivery' && $newStatus === 'failed') {
                 $order->user->increment('failed_orders_count');
             }
 
-            // Decrement failed orders count if transitioning FROM cancelled/failed to another status
-            if (
-                in_array($oldStatus, ['cancelled', 'failed']) &&
-                !in_array($newStatus, ['cancelled', 'failed'])
-            ) {
-                $order->user->decrement('failed_orders_count');
+            // Decrement failed orders count if transitioning FROM failed to another status
+            // (only if it was a delivery failure)
+            if ($oldStatus === 'failed' && $newStatus !== 'failed') {
+                // Check if this was previously a delivery failure by looking at status logs
+                $wasDeliveryFailure = OrderStatusLog::where('order_id', $order->id)
+                    ->where('from_status', 'out_for_delivery')
+                    ->where('to_status', 'failed')
+                    ->exists();
+
+                if ($wasDeliveryFailure && $order->user->failed_orders_count > 0) {
+                    $order->user->decrement('failed_orders_count');
+                }
             }
 
             // Create status log

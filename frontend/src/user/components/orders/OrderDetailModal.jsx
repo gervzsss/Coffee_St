@@ -1,6 +1,8 @@
-import { X, Package, MapPin, Phone, CreditCard, Clock, Calendar, CheckCircle, Truck, XCircle, AlertCircle, ChefHat } from "lucide-react";
+import { X, Package, MapPin, Phone, CreditCard, Clock, Calendar, CheckCircle, Truck, XCircle, AlertCircle, ChefHat, MessageCircle } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../services/apiClient";
+import { cancelOrder } from "../../services/orderService";
 
 const DEFAULT_STATUS_CONFIG = {
   pending: {
@@ -51,6 +53,9 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
   const [order, setOrder] = useState(initialOrder);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const navigate = useNavigate();
 
   const fetchOrderDetails = useCallback(async () => {
     try {
@@ -65,6 +70,31 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
       setLoading(false);
     }
   }, [initialOrder]);
+
+  const handleCancelOrder = async () => {
+    setCancelLoading(true);
+    setError(null);
+    try {
+      const result = await cancelOrder(order.id);
+      if (result.success) {
+        setOrder(result.data);
+        setShowCancelConfirm(false);
+        // Refresh to show updated status
+        await fetchOrderDetails();
+      } else {
+        setError(result.error || "Failed to cancel order");
+      }
+    } catch (err) {
+      setError("An error occurred while cancelling the order");
+    } finally {
+      setCancelLoading(false);
+    }
+  };
+
+  const handleGoToContact = () => {
+    onClose();
+    navigate("/contact");
+  };
 
   useEffect(() => {
     if (isOpen && initialOrder) {
@@ -419,6 +449,78 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
                       {order.status === "preparing" && "Your order is being prepared with care."}
                       {order.status === "out_for_delivery" && "Your order is on its way! Get ready!"}
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Cancel Order Section - Show for pending/confirmed */}
+              {(order.status === "pending" || order.status === "confirmed") && !showCancelConfirm && (
+                <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-amber-900">Need to cancel?</p>
+                    <p className="mb-3 text-sm text-amber-700">You can still cancel this order since it hasn't started preparation yet.</p>
+                    <button
+                      onClick={() => setShowCancelConfirm(true)}
+                      className="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition-colors hover:bg-red-50"
+                    >
+                      <XCircle className="h-4 w-4" />
+                      Cancel Order
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Cancel Confirmation Dialog */}
+              {showCancelConfirm && (
+                <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
+                  <div className="flex items-start gap-3">
+                    <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+                    <div className="flex-1">
+                      <p className="font-semibold text-red-900">Confirm Cancellation</p>
+                      <p className="mb-4 text-sm text-red-700">Are you sure you want to cancel this order? This action cannot be undone.</p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleCancelOrder}
+                          disabled={cancelLoading}
+                          className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {cancelLoading ? (
+                            <>
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                              Cancelling...
+                            </>
+                          ) : (
+                            "Yes, Cancel Order"
+                          )}
+                        </button>
+                        <button
+                          onClick={() => setShowCancelConfirm(false)}
+                          disabled={cancelLoading}
+                          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          Keep Order
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Contact Store Section - Show for preparing and beyond */}
+              {["preparing", "out_for_delivery"].includes(order.status) && (
+                <div className="mb-6 flex items-start gap-3 rounded-xl border border-orange-200 bg-orange-50 p-4">
+                  <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-orange-600" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-orange-900">Can't cancel this order?</p>
+                    <p className="mb-3 text-sm text-orange-700">This order is already being prepared or is out for delivery. Please contact the store directly to request cancellation.</p>
+                    <button
+                      onClick={handleGoToContact}
+                      className="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-700"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      Go to Contact
+                    </button>
                   </div>
                 </div>
               )}

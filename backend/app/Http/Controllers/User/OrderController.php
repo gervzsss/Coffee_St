@@ -8,11 +8,13 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderItemVariant;
+use App\Models\OrderStatusLog;
 use App\Models\Product;
 use App\Services\StockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -358,14 +360,11 @@ class OrderController extends Controller
     }
 
     /**
-     * Update order status (for admin or payment processing)
+     * Cancel an order (user-initiated)
+     * Users can only cancel orders in pending or confirmed status
      */
-    public function updateStatus(Request $request, $id)
+    public function cancel($id)
     {
-        $request->validate([
-            'status' => 'required|in:pending,paid,cancelled',
-        ]);
-
         $user = Auth::user();
 
         $order = Order::where('id', $id)
@@ -376,12 +375,63 @@ class OrderController extends Controller
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        $order->status = $request->status;
-        $order->save();
+        // Check if order is already cancelled
+        if ($order->status === 'cancelled') {
+            return response()->json([
+                'message' => 'Order is already cancelled',
+                'order' => $this->formatOrderResponse($order, true),
+            ]);
+        }
 
-        return response()->json([
-            'message' => 'Order status updated',
-            'order' => $order,
-        ]);
+        // Validate eligibility: can only cancel pending or confirmed orders
+        if (!in_array($order->status, ['pending', 'confirmed'])) {
+            return response()->json([
+                'message' => 'This order can no longer be cancelled. Please contact the store for assistance.',
+                'error' => 'CANNOT_CANCEL',
+                'current_status' => $order->status,
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $oldStatus = $order->status;
+
+            // Update order status to cancelled
+            $order->update([
+                'status' => 'cancelled',
+            ]);
+
+            // Return stock (since order is cancelled before out_for_delivery)
+            $order->load('items.product');
+            foreach ($order->items as $orderItem) {
+                $product = $orderItem->product;
+                if ($product && $product->track_stock) {
+                    $this->stockService->increaseStock($product, $orderItem->quantity, $order, 'order_cancelled');
+                }
+            }
+
+            // Create status log
+            OrderStatusLog::create([
+                'order_id' => $order->id,
+                'changed_by' => $user->id,
+                'from_status' => $oldStatus,
+                'to_status' => 'cancelled',
+                'notes' => 'Cancelled by user',
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Order cancelled successfully',
+                'order' => $this->formatOrderResponse($order->fresh(), true),
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to cancel order: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Failed to cancel order',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

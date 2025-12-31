@@ -56,6 +56,20 @@ export const updateOrderStatus = async (orderId, status) => {
   }
 };
 
+export const cancelOrder = async (orderId) => {
+  try {
+    const response = await api.post(`/orders/${orderId}/cancel`);
+    return { success: true, data: response.data.order };
+  } catch (error) {
+    console.error('Failed to cancel order:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to cancel order',
+      errorCode: error.response?.data?.error,
+    };
+  }
+};
+
 export const calculateOrderTotals = (cartItems = [], deliveryFee = 0, taxRate = 0.12) => {
   const subtotal = cartItems.reduce((total, item) => total + (item.line_total || 0), 0);
   const tax = subtotal * taxRate;
@@ -75,5 +89,6 @@ export default {
   getOrder,
   createOrder,
   updateOrderStatus,
+  cancelOrder,
   calculateOrderTotals,
 };

@@ -56,7 +56,7 @@ Route::middleware(['auth:sanctum', 'token.timeout', 'check.status'])->group(func
   Route::get('/orders', [OrderController::class, 'index']);
   Route::get('/orders/{id}', [OrderController::class, 'show']);
   Route::post('/orders', [OrderController::class, 'store']);
-  Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+  Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
 
   // User Profile Routes
   Route::get('/user/recent-orders', [UserProfileController::class, 'recentOrders']);
