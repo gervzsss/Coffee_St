@@ -9,7 +9,6 @@ use App\Models\ThreadMessage;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
@@ -62,20 +61,7 @@ class ContactController extends Controller
             $thread->load('user');
             $this->notificationService->createNewInquiryNotification($thread);
         } catch (\Exception $e) {
-            // Log error but don't block the inquiry submission
-            Log::error('Failed to create inquiry notification', [
-                'thread_id' => $thread->id,
-                'error' => $e->getMessage(),
-            ]);
         }
-
-        // Log the contact form submission
-        Log::info('Contact form submission', [
-            'thread_id' => $thread->id,
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'subject' => $validated['subject'],
-        ]);
 
         return response()->json([
             'message' => 'Thank you for contacting us! We will get back to you within 24 hours.',
