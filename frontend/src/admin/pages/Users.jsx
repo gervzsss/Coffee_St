@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { RefreshCw } from "lucide-react";
 import { AdminLayout } from "../components/layout";
 import { AdminAnimatedPage } from "../components/common";
 import { UserDetailsModal, ConfirmStatusModal, UserMetricSkeleton, UserTableSkeleton } from "../components/users";
@@ -23,7 +25,16 @@ export default function Users() {
     confirmStatusChange,
     closeConfirmModal,
     getWarningText,
+    refetch,
   } = useUsers();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   return (
     <AdminLayout>
@@ -82,9 +93,20 @@ export default function Users() {
           </div>
 
           <div>
-            <h2 className="mb-3 text-lg font-semibold text-gray-900 sm:mb-4 sm:text-xl">
-              {showBlocked ? "Blocked" : "Active"} Accounts ({displayedUsers.length})
-            </h2>
+            <div className="mb-3 flex items-center justify-between sm:mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
+                {showBlocked ? "Blocked" : "Active"} Accounts ({displayedUsers.length})
+              </h2>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing || loading}
+                aria-label="Refresh users"
+                className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2.5"
+              >
+                <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 ${refreshing ? "animate-spin" : ""}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
+            </div>
 
             <div className="overflow-hidden rounded-xl border border-gray-200 bg-white sm:rounded-2xl">
               {loading ? (

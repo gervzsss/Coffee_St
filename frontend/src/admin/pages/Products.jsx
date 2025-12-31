@@ -6,6 +6,7 @@ import { useAdminToast } from "../hooks/useAdminToast";
 import { CATEGORIES } from "../constants/categories";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { RefreshCw } from "lucide-react";
 
 export default function Products() {
   const { showToast } = useAdminToast();
@@ -13,6 +14,13 @@ export default function Products() {
   const [stockFilter, setStockFilter] = useState("all"); // all, sold_out, low_stock, in_stock
   const [showStockUpdateModal, setShowStockUpdateModal] = useState(false);
   const [selectedProductForStock, setSelectedProductForStock] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  };
 
   // Check if coming from dashboard with a filter
   useEffect(() => {
@@ -206,18 +214,29 @@ export default function Products() {
               <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
                 {showArchived ? "Archived" : "Active"} Products ({products.length})
               </h2>
-              {!showArchived && (
+              <div className="flex items-center gap-2 sm:gap-3">
                 <button
-                  onClick={handleAddProduct}
-                  className="flex items-center justify-center gap-2 rounded-lg bg-[#30442B] px-4 py-2 text-sm text-white transition-colors hover:bg-[#22301e] sm:px-6 sm:py-2.5"
+                  onClick={handleRefresh}
+                  disabled={refreshing || loading}
+                  aria-label="Refresh products"
+                  className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2.5"
                 >
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  <span className="hidden sm:inline">Add Product</span>
-                  <span className="sm:hidden">Add</span>
+                  <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 ${refreshing ? "animate-spin" : ""}`} />
+                  <span className="hidden sm:inline">Refresh</span>
                 </button>
-              )}
+                {!showArchived && (
+                  <button
+                    onClick={handleAddProduct}
+                    className="flex items-center justify-center gap-2 rounded-lg bg-[#30442B] px-4 py-2 text-sm text-white transition-colors hover:bg-[#22301e] sm:px-6 sm:py-2.5"
+                  >
+                    <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    <span className="hidden sm:inline">Add Product</span>
+                    <span className="sm:hidden">Add</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {loading ? (

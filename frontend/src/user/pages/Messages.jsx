@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { RefreshCw } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { Header, Footer } from "../components/layout";
 import { EmptyState, AnimatedPage } from "../components/common";
@@ -10,12 +11,18 @@ export default function Messages() {
   const navigate = useNavigate();
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchThreads();
+    setRefreshing(false);
+  };
 
   const fetchThreads = useCallback(async () => {
     setLoading(true);
     const result = await getUserThreads();
     if (result.success) {
-      console.log("Threads fetched:", result.data);
       setThreads(result.data);
     } else {
       console.error("Failed to fetch threads:", result.error);
@@ -73,8 +80,21 @@ export default function Messages() {
         {/* Compact Messages Header */}
         <div className="w-full bg-[#30442B] pt-12 pb-8">
           <div className="container mx-auto px-4">
-            <h1 className="text-2xl font-bold text-white md:text-3xl">Messages</h1>
-            <p className="mt-1 text-sm text-gray-200 md:text-base">View and manage your conversations with our team</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-white md:text-3xl">Messages</h1>
+                <p className="mt-1 text-sm text-gray-200 md:text-base">View and manage your conversations with our team</p>
+              </div>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing || loading}
+                aria-label="Refresh messages"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white transition-all hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2.5"
+              >
+                <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 ${refreshing ? "animate-spin" : ""}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
+            </div>
           </div>
         </div>
 

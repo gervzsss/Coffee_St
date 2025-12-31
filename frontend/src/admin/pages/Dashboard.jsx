@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { RefreshCw } from "lucide-react";
 import { AdminLayout } from "../components/layout";
 import { AdminAnimatedPage } from "../components/common";
 import { StatCard, StatCardSkeleton, DashboardHeader, RecentActivityList, RecentActivitySkeleton } from "../components/dashboard";
@@ -7,7 +9,14 @@ import { useDashboardStats } from "../hooks/useDashboardStats";
 
 export default function Dashboard() {
   const { admin } = useAdminAuth();
-  const { stats, loading } = useDashboardStats();
+  const { stats, loading, refetch } = useDashboardStats();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   return (
     <AdminLayout>
@@ -17,8 +26,21 @@ export default function Dashboard() {
 
         {/* Title */}
         <div className="mx-auto mb-4 max-w-screen-2xl sm:mb-6">
-          <h2 className="text-xl font-bold text-[#30442B] sm:text-2xl">DASHBOARD</h2>
-          <p className="text-xs text-gray-600 sm:text-sm">Overview of system activity and quick insights</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-[#30442B] sm:text-2xl">DASHBOARD</h2>
+              <p className="text-xs text-gray-600 sm:text-sm">Overview of system activity and quick insights</p>
+            </div>
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing || loading}
+              aria-label="Refresh dashboard"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2.5"
+            >
+              <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 ${refreshing ? "animate-spin" : ""}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+          </div>
         </div>
 
         {/* Stat Cards */}

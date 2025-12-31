@@ -145,5 +145,6 @@ export function useUsers() {
     closeConfirmModal,
 
     getWarningText,
+    refetch: fetchData,
   };
 }

@@ -252,5 +252,6 @@ export function useProducts() {
     handleDeleteClick,
     handleDeleteConfirm,
     closeDeleteModal,
+    refetch: fetchData,
   };
 }
