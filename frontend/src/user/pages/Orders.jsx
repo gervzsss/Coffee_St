@@ -79,6 +79,10 @@ export default function Orders() {
     setSelectedOrder(null);
   };
 
+  const handleOrderUpdated = async () => {
+    await refetchOrders();
+  };
+
   const handleFilterChange = (status) => {
     if (status === "all") {
       searchParams.delete("status");
@@ -226,7 +230,7 @@ export default function Orders() {
       <Footer />
 
       {/* Order Detail Modal */}
-      <OrderDetailModal isOpen={isDetailModalOpen} onClose={handleCloseDetailModal} order={selectedOrder} statusConfig={STATUS_CONFIG} />
+      <OrderDetailModal isOpen={isDetailModalOpen} onClose={handleCloseDetailModal} order={selectedOrder} statusConfig={STATUS_CONFIG} onOrderUpdated={handleOrderUpdated} />
     </>
   );
 }

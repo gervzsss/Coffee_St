@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/apiClient";
 import { cancelOrder } from "../../services/orderService";
+import { useToast } from "../../hooks/useToast";
 
 const DEFAULT_STATUS_CONFIG = {
   pending: {
@@ -49,13 +50,14 @@ const DEFAULT_STATUS_CONFIG = {
   },
 };
 
-export default function OrderDetailModal({ isOpen, onClose, order: initialOrder, statusConfig = DEFAULT_STATUS_CONFIG }) {
+export default function OrderDetailModal({ isOpen, onClose, order: initialOrder, statusConfig = DEFAULT_STATUS_CONFIG, onOrderUpdated }) {
   const [order, setOrder] = useState(initialOrder);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const fetchOrderDetails = useCallback(async () => {
     try {
@@ -77,15 +79,27 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
     try {
       const result = await cancelOrder(order.id);
       if (result.success) {
+        showToast("Order cancelled successfully", { type: "success" });
         setOrder(result.data);
         setShowCancelConfirm(false);
-        // Refresh to show updated status
-        await fetchOrderDetails();
+        
+        // Close modal after a brief delay
+        setTimeout(() => {
+          onClose();
+          // Trigger parent refresh if callback provided
+          if (onOrderUpdated) {
+            onOrderUpdated();
+          }
+        }, 1000);
       } else {
-        setError(result.error || "Failed to cancel order");
+        const errorMessage = result.error || "Failed to cancel order";
+        setError(errorMessage);
+        showToast(errorMessage, { type: "error" });
       }
     } catch (err) {
-      setError("An error occurred while cancelling the order");
+      const errorMessage = "An error occurred while cancelling the order";
+      setError(errorMessage);
+      showToast(errorMessage, { type: "error" });
     } finally {
       setCancelLoading(false);
     }
