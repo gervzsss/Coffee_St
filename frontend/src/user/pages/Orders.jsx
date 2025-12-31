@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { RefreshCw } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useOrders } from "../hooks/useOrders";
 import { Header, Footer } from "../components/layout";
@@ -54,10 +55,17 @@ const STATUS_CONFIG = {
 
 export default function Orders() {
   useAuth();
-  const { orders, loading, error } = useOrders();
+  const { orders, loading, error, refetchOrders } = useOrders();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetchOrders();
+    setRefreshing(false);
+  };
 
   const statusFilter = searchParams.get("status") || "all";
 
@@ -107,8 +115,21 @@ export default function Orders() {
         {/* Compact Orders Header */}
         <div className="w-full bg-[#30442B] pt-8 pb-6 sm:pt-12 sm:pb-8">
           <div className="container mx-auto px-4 sm:px-6">
-            <h1 className="text-xl font-bold text-white sm:text-2xl lg:text-3xl">My Orders</h1>
-            <p className="mt-1 text-xs text-gray-200 sm:text-sm lg:text-base">Track your order history and current deliveries</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-xl font-bold text-white sm:text-2xl lg:text-3xl">My Orders</h1>
+                <p className="mt-1 text-xs text-gray-200 sm:text-sm lg:text-base">Track your order history and current deliveries</p>
+              </div>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing || loading}
+                aria-label="Refresh orders"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white transition-all hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2.5"
+              >
+                <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 ${refreshing ? "animate-spin" : ""}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
+            </div>
           </div>
         </div>
 

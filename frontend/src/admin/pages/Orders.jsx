@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { RefreshCw } from "lucide-react";
 import { AdminLayout } from "../components/layout";
 import { AdminAnimatedPage, LoadingSpinner } from "../components/common";
 import { OrderCard, OrderDetailModal, ConfirmStatusModal, FailureReasonModal, OrderStatusCardSkeleton, OrderCardSkeleton } from "../components/orders";
@@ -26,7 +28,16 @@ export default function Orders() {
     confirmFailure,
     closeConfirmModal,
     closeFailModal,
+    refetch,
   } = useOrders();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   return (
     <AdminLayout>
@@ -34,8 +45,21 @@ export default function Orders() {
         <div className="mx-auto max-w-screen-2xl">
           {/* Header Section */}
           <div className="mb-6 sm:mb-8">
-            <h1 className="text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">ORDERS & TRACKING</h1>
-            <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">Manage customer orders and track their progress</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">ORDERS & TRACKING</h1>
+                <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">Manage customer orders and track their progress</p>
+              </div>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing || loading}
+                aria-label="Refresh orders"
+                className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2.5"
+              >
+                <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 ${refreshing ? "animate-spin" : ""}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
+            </div>
           </div>
 
           {/* Order Status Cards */}

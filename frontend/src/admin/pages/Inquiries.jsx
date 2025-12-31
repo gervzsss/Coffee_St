@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { RefreshCw } from "lucide-react";
 import { AdminLayout } from "../components/layout";
 import { ThreadModal, InquiryCard, InquiryCardSkeleton } from "../components/inquiries";
 import { PageHeader, MetricCard, AdminAnimatedPage } from "../components/common";
@@ -9,6 +10,13 @@ export default function Inquiries() {
 
   const [selectedThreadId, setSelectedThreadId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   const handleOpenThread = (threadId) => {
     setSelectedThreadId(threadId);
@@ -29,7 +37,23 @@ export default function Inquiries() {
       <AdminAnimatedPage className="p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-screen-2xl">
           {/* Header */}
-          <PageHeader title="Customer Inquiries" subtitle="Manage and respond to customer messages" />
+          <div className="mb-6 sm:mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">Customer Inquiries</h1>
+                <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">Manage and respond to customer messages</p>
+              </div>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing || loading}
+                aria-label="Refresh inquiries"
+                className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2.5"
+              >
+                <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 ${refreshing ? "animate-spin" : ""}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
+            </div>
+          </div>
 
           {/* Statistics Cards */}
           <div className="mb-6 grid grid-cols-1 gap-4 sm:mb-8 sm:grid-cols-3 sm:gap-5 lg:gap-6">
