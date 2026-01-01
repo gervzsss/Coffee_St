@@ -82,7 +82,7 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
         showToast("Order cancelled successfully", { type: "success" });
         setOrder(result.data);
         setShowCancelConfirm(false);
-        
+
         // Close modal after a brief delay
         setTimeout(() => {
           onClose();
@@ -96,7 +96,7 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
         setError(errorMessage);
         showToast(errorMessage, { type: "error" });
       }
-    } catch (err) {
+    } catch {
       const errorMessage = "An error occurred while cancelling the order";
       setError(errorMessage);
       showToast(errorMessage, { type: "error" });

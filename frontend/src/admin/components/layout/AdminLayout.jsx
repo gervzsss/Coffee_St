@@ -20,16 +20,6 @@ export default function AdminLayout({ children }) {
     };
   }, [isMobileSidebarOpen]);
 
-  // Fetch unread notification count
-  useEffect(() => {
-    fetchUnreadCount();
-
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchUnreadCount, 30000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const fetchUnreadCount = async () => {
     try {
       const response = await adminApi.get("/notifications/count");
@@ -40,6 +30,16 @@ export default function AdminLayout({ children }) {
       console.error("Error fetching notification count:", error);
     }
   };
+
+  // Fetch unread notification count
+  useEffect(() => {
+    fetchUnreadCount();
+
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(fetchUnreadCount, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const toggleMobileSidebar = () => {
     setIsMobileSidebarOpen(!isMobileSidebarOpen);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
@@ -19,7 +19,7 @@ export default function Messages() {
     setRefreshing(false);
   };
 
-  const fetchThreads = useCallback(async () => {
+  const fetchThreads = async () => {
     setLoading(true);
     const result = await getUserThreads();
     if (result.success) {
@@ -28,11 +28,11 @@ export default function Messages() {
       console.error("Failed to fetch threads:", result.error);
     }
     setLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
     fetchThreads();
-  }, [fetchThreads]);
+  }, []);
 
   const getStatusBadge = (status) => {
     const statusConfig = {

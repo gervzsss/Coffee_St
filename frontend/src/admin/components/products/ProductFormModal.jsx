@@ -13,7 +13,6 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
   const [uploadingImage, setUploadingImage] = useState(false);
   const [showStockHistory, setShowStockHistory] = useState(false);
   const [showInitialStockPrompt, setShowInitialStockPrompt] = useState(false);
-  const [pendingTrackStock, setPendingTrackStock] = useState(false);
   const [formData, setFormData] = useState({
     name: product?.name || "",
     description: product?.description || "",
@@ -35,7 +34,6 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
       // Enabling stock tracking for the first time or when it was disabled
       if (!formData.stock_quantity || formData.stock_quantity === "") {
         // Show initial stock prompt
-        setPendingTrackStock(true);
         setShowInitialStockPrompt(true);
         return;
       }
@@ -86,12 +84,10 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
       stock_quantity: initialStock,
     }));
     setShowInitialStockPrompt(false);
-    setPendingTrackStock(false);
   };
 
   const handleInitialStockCancel = () => {
     setShowInitialStockPrompt(false);
-    setPendingTrackStock(false);
   };
 
   const addVariantGroup = () => {

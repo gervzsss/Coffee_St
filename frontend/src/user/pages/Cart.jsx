@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Header, Footer } from "../components/layout";
 import { EmptyState, AnimatedPage } from "../components/common";
 import { CartItem, CartSummary } from "../components/cart";
@@ -22,21 +22,9 @@ export default function Cart() {
   const { editingItem, editingProduct, editingItemId, openEditModal, closeEditModal, handleSave } = useProductEdit(null, setError);
 
   const [removingSelected, setRemovingSelected] = useState(false);
-  const [stockValidation, setStockValidation] = useState(null);
-  const [validating, setValidating] = useState(false);
 
-  // Validate cart stock on load and when items change
-  useEffect(() => {
-    if (isAuthenticated && cartItems.length > 0) {
-      performStockValidation();
-    }
-  }, [isAuthenticated, cartItems.length]);
-
-  const performStockValidation = async () => {
-    setValidating(true);
+  const performStockValidation = useCallback(async () => {
     const validation = await validateCart();
-    setStockValidation(validation);
-    setValidating(false);
 
     if (validation.has_errors) {
       // Handle stock issues
@@ -61,7 +49,14 @@ export default function Cart() {
         }
       }
     }
-  };
+  }, [validateCart, showToast, removeItem, removeFromSelection, updateQuantity]);
+
+  // Validate cart stock on load and when items change
+  useEffect(() => {
+    if (isAuthenticated && cartItems.length > 0) {
+      performStockValidation();
+    }
+  }, [isAuthenticated, cartItems.length, performStockValidation]);
 
   const handleRemoveItem = async (itemId) => {
     await removeItem(itemId);
@@ -90,9 +85,7 @@ export default function Cart() {
     }
 
     // Final validation before checkout
-    setValidating(true);
     const validation = await validateCart();
-    setValidating(false);
 
     if (validation.has_errors) {
       showToast("Some items in your cart are no longer available. Please review your cart.", {

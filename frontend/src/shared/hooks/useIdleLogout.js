@@ -22,12 +22,6 @@ function throttle(func, limit) {
 /**
  * Hook to automatically log out users after a period of inactivity
  * Supports multi-tab coordination via BroadcastChannel or localStorage
- * 
- * @param {Object} options
- * @param {number} options.timeoutMinutes - Number of minutes of inactivity before logout
- * @param {Function} options.onLogout - Callback function to execute when timeout occurs
- * @param {boolean} options.enabled - Whether the idle timer is active
- * @param {Function} options.onPing - Optional callback to ping the server while active
  */
 export function useIdleLogout({ timeoutMinutes, onLogout, enabled = true, onPing = null }) {
   const lastActivityRef = useRef(Date.now());
@@ -67,34 +61,6 @@ export function useIdleLogout({ timeoutMinutes, onLogout, enabled = true, onPing
 
   const throttledUpdateActivity = useRef(throttle(updateActivity, ACTIVITY_THROTTLE)).current;
 
-  const checkIdleTimeout = useCallback(() => {
-    if (!enabled) return;
-
-    const now = Date.now();
-    const timeoutMs = timeoutMinutes * 60 * 1000;
-
-    // Check localStorage for activity from other tabs
-    try {
-      const storedActivity = localStorage.getItem(ACTIVITY_STORAGE_KEY);
-      if (storedActivity) {
-        const storedTime = parseInt(storedActivity, 10);
-        if (storedTime > lastActivityRef.current) {
-          lastActivityRef.current = storedTime;
-        }
-      }
-    } catch (e) {
-      console.warn('Failed to read activity from localStorage:', e);
-    }
-
-    const idleTime = now - lastActivityRef.current;
-
-    if (idleTime >= timeoutMs) {
-      console.log('Idle timeout reached, logging out...');
-      cleanup();
-      onLogout();
-    }
-  }, [enabled, timeoutMinutes, onLogout]);
-
   const cleanup = useCallback(() => {
     // Remove event listeners
     const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart', 'click'];
@@ -126,6 +92,34 @@ export function useIdleLogout({ timeoutMinutes, onLogout, enabled = true, onPing
       console.warn('Failed to clean up activity storage:', e);
     }
   }, [throttledUpdateActivity]);
+
+  const checkIdleTimeout = useCallback(() => {
+    if (!enabled) return;
+
+    const now = Date.now();
+    const timeoutMs = timeoutMinutes * 60 * 1000;
+
+    // Check localStorage for activity from other tabs
+    try {
+      const storedActivity = localStorage.getItem(ACTIVITY_STORAGE_KEY);
+      if (storedActivity) {
+        const storedTime = parseInt(storedActivity, 10);
+        if (storedTime > lastActivityRef.current) {
+          lastActivityRef.current = storedTime;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to read activity from localStorage:', e);
+    }
+
+    const idleTime = now - lastActivityRef.current;
+
+    if (idleTime >= timeoutMs) {
+      console.log('Idle timeout reached, logging out...');
+      cleanup();
+      onLogout();
+    }
+  }, [enabled, timeoutMinutes, onLogout, cleanup]);
 
   useEffect(() => {
     if (!enabled) {

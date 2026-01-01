@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Download, Calendar, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
@@ -20,13 +20,7 @@ const StockHistoryModal = ({ isOpen, onClose, product }) => {
     total: 0,
   });
 
-  useEffect(() => {
-    if (isOpen && product) {
-      fetchStockHistory();
-    }
-  }, [isOpen, product, filters, pagination.current_page]);
-
-  const fetchStockHistory = async () => {
+  const fetchStockHistory = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -48,7 +42,13 @@ const StockHistoryModal = ({ isOpen, onClose, product }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [product?.id, pagination.current_page, pagination.per_page, filters]);
+
+  useEffect(() => {
+    if (isOpen && product) {
+      fetchStockHistory();
+    }
+  }, [isOpen, product, fetchStockHistory]);
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
