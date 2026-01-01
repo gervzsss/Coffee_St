@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -25,7 +24,7 @@ class ProductController extends Controller
 
         // Search by name if provided
         if ($request->has('search') && $request->search !== '') {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         $products = $query->get();
@@ -69,7 +68,7 @@ class ProductController extends Controller
     {
         $product = Product::with(['activeVariants', 'activeVariantGroups.activeVariants'])->find($id);
 
-        if (!$product) {
+        if (! $product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
 
@@ -77,7 +76,7 @@ class ProductController extends Controller
         if ($product->archived_at !== null) {
             return response()->json([
                 'message' => 'Product is no longer available',
-                'archived' => true
+                'archived' => true,
             ], 404);
         }
 
@@ -92,10 +91,10 @@ class ProductController extends Controller
         $product = Product::with([
             'activeVariantGroups.activeVariants' => function ($query) {
                 $query->orderBy('name');
-            }
+            },
         ])->find($id);
 
-        if (!$product) {
+        if (! $product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
 

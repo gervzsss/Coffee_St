@@ -55,8 +55,9 @@ class InquiryThread extends Model
     public function getCreatorNameAttribute(): string
     {
         if ($this->user) {
-            return $this->user->first_name . ' ' . $this->user->last_name;
+            return $this->user->first_name.' '.$this->user->last_name;
         }
+
         return $this->guest_name ?? 'Guest';
     }
 

@@ -30,6 +30,6 @@ class AdminUserSeeder extends Seeder
         $this->command->info('Admin user created successfully!');
         $this->command->info('Email: admin@coffeest.com');
         $this->command->info('Password: admin');
-        $this->command->info('Personal Access Token: ' . $token);
+        $this->command->info('Personal Access Token: '.$token);
     }
 }

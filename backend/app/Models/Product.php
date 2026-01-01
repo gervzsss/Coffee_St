@@ -105,7 +105,7 @@ class Product extends Model
      */
     public function hasStock(int $quantity): bool
     {
-        if (!$this->track_stock) {
+        if (! $this->track_stock) {
             return true;
         }
 
@@ -125,7 +125,7 @@ class Product extends Model
      */
     public function isLowStock(): bool
     {
-        if (!$this->track_stock || $this->stock_quantity === null) {
+        if (! $this->track_stock || $this->stock_quantity === null) {
             return false;
         }
 
@@ -138,7 +138,7 @@ class Product extends Model
     public function isAvailableForPurchase(): bool
     {
         // If not tracking stock, rely on is_available toggle
-        if (!$this->track_stock) {
+        if (! $this->track_stock) {
             return $this->is_available;
         }
 

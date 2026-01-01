@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\CartItemVariant;
@@ -24,7 +23,7 @@ class CartController extends Controller
             ->where('status', 'active')
             ->first();
 
-        if (!$cart) {
+        if (! $cart) {
             return response()->json(['count' => 0]);
         }
 
@@ -43,7 +42,7 @@ class CartController extends Controller
             ->where('status', 'active')
             ->first();
 
-        if (!$cart) {
+        if (! $cart) {
             return response()->json(['items' => []]);
         }
 
@@ -121,7 +120,7 @@ class CartController extends Controller
         }
 
         // Check product availability
-        if (!$product->is_available) {
+        if (! $product->is_available) {
             return response()->json([
                 'message' => 'This product is currently unavailable',
                 'error' => 'unavailable',
@@ -150,7 +149,7 @@ class CartController extends Controller
             if ($request->variant_id) {
                 $variant = \App\Models\ProductVariant::findOrFail($request->variant_id);
                 $priceDelta = $variant->price_delta;
-                $variantName = $variant->group_name . ': ' . $variant->name;
+                $variantName = $variant->group_name.': '.$variant->name;
             }
 
             // Create customization summary
@@ -158,7 +157,7 @@ class CartController extends Controller
             if ($request->has('variants') && count($request->variants) > 0) {
                 $summaryParts = [];
                 foreach ($request->variants as $v) {
-                    $summaryParts[] = $v['group_name'] . ': ' . $v['name'];
+                    $summaryParts[] = $v['group_name'].': '.$v['name'];
                 }
                 $customizationSummary = implode(' | ', $summaryParts);
             } elseif ($variantName) {
@@ -169,7 +168,7 @@ class CartController extends Controller
 
             // For multi-variant system, always create new items (don't merge)
             // This allows same product with different variant combinations
-            if (!$request->has('variants') || count($request->variants) === 0) {
+            if (! $request->has('variants') || count($request->variants) === 0) {
                 // Only check for existing items in legacy single-variant system
                 $cartItem = CartItem::where('cart_id', $cart->id)
                     ->where('product_id', $request->product_id)
@@ -216,6 +215,7 @@ class CartController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'message' => 'Failed to add item to cart',
                 'error' => $e->getMessage(),
@@ -237,7 +237,7 @@ class CartController extends Controller
             ->where('status', 'active')
             ->first();
 
-        if (!$cart) {
+        if (! $cart) {
             return response()->json(['message' => 'Cart not found'], 404);
         }
 
@@ -245,7 +245,7 @@ class CartController extends Controller
             ->where('cart_id', $cart->id)
             ->first();
 
-        if (!$cartItem) {
+        if (! $cartItem) {
             return response()->json(['message' => 'Cart item not found'], 404);
         }
 
@@ -277,7 +277,7 @@ class CartController extends Controller
             ->where('status', 'active')
             ->first();
 
-        if (!$cart) {
+        if (! $cart) {
             return response()->json(['message' => 'Cart not found'], 404);
         }
 
@@ -285,7 +285,7 @@ class CartController extends Controller
             ->where('cart_id', $cart->id)
             ->first();
 
-        if (!$cartItem) {
+        if (! $cartItem) {
             return response()->json(['message' => 'Cart item not found'], 404);
         }
 
@@ -321,7 +321,7 @@ class CartController extends Controller
             ->where('status', 'active')
             ->first();
 
-        if (!$cart) {
+        if (! $cart) {
             return response()->json([
                 'valid' => true,
                 'items' => [],
@@ -339,7 +339,7 @@ class CartController extends Controller
             $product = $item->product;
             $issue = null;
 
-            if (!$product) {
+            if (! $product) {
                 $issue = [
                     'cart_item_id' => $item->id,
                     'error' => 'product_deleted',
@@ -347,7 +347,7 @@ class CartController extends Controller
                     'action' => 'remove',
                 ];
                 $hasErrors = true;
-            } elseif (!$product->is_available) {
+            } elseif (! $product->is_available) {
                 $issue = [
                     'cart_item_id' => $item->id,
                     'product_id' => $product->id,
@@ -391,7 +391,7 @@ class CartController extends Controller
         }
 
         return response()->json([
-            'valid' => !$hasErrors,
+            'valid' => ! $hasErrors,
             'has_errors' => $hasErrors,
             'items' => $itemsWithIssues,
         ]);

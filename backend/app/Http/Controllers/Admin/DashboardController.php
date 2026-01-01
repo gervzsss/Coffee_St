@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\InquiryThread;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\InquiryThread;
-use App\Models\OrderItem;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -31,7 +31,7 @@ class DashboardController extends Controller
             $salesOverview->push([
                 'date' => Carbon::parse($date)->format('D'), // Mon, Tue, etc.
                 'full_date' => $date,
-                'total' => (float) $sales
+                'total' => (float) $sales,
             ]);
         }
 
@@ -46,7 +46,7 @@ class DashboardController extends Controller
             ->map(function ($item) {
                 return [
                     'name' => $item->product_name,
-                    'value' => (int) $item->total_quantity
+                    'value' => (int) $item->total_quantity,
                 ];
             });
 
@@ -58,7 +58,7 @@ class DashboardController extends Controller
                 return [
                     'id' => $order->id,
                     'order_number' => $order->order_number,
-                    'customer_name' => $order->user ? ($order->user->first_name . ' ' . $order->user->last_name) : 'Unknown',
+                    'customer_name' => $order->user ? ($order->user->first_name.' '.$order->user->last_name) : 'Unknown',
                     'total' => $order->total,
                     'status' => $order->status,
                 ];
@@ -75,7 +75,7 @@ class DashboardController extends Controller
                 return [
                     'id' => $inquiry->id,
                     'subject' => $inquiry->subject,
-                    'user_name' => $inquiry->user ? ($inquiry->user->first_name . ' ' . $inquiry->user->last_name) : 'Unknown',
+                    'user_name' => $inquiry->user ? ($inquiry->user->first_name.' '.$inquiry->user->last_name) : 'Unknown',
                     'status' => $inquiry->status,
                 ];
             });

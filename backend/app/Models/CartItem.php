@@ -64,10 +64,10 @@ class CartItem extends Model
     {
         // Calculate base price with old variant system price_delta
         $basePrice = $this->unit_price + $this->price_delta;
-        
+
         // Add price deltas from new variant system
         $variantsDelta = $this->selectedVariants()->sum('price_delta');
-        
+
         return ($basePrice + $variantsDelta) * $this->quantity;
     }
 }

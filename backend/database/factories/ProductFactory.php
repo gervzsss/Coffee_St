@@ -17,7 +17,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         $categories = ['hot-coffee', 'iced-coffee', 'frappe', 'pastries', 'non-coffee'];
-        
+
         return [
             'category' => fake()->randomElement($categories),
             'name' => fake()->words(3, true),

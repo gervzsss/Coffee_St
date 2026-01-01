@@ -34,25 +34,25 @@ class UserController extends Controller
             ->withSum('orders', 'total');
 
         // Search by name, email, or phone
-        if ($request->has('search') && !empty($request->search)) {
+        if ($request->has('search') && ! empty($request->search)) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('first_name', 'like', '%' . $search . '%')
-                    ->orWhere('last_name', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', '%' . $search . '%')
-                    ->orWhere('phone', 'like', '%' . $search . '%');
+                $q->where('first_name', 'like', '%'.$search.'%')
+                    ->orWhere('last_name', 'like', '%'.$search.'%')
+                    ->orWhere('email', 'like', '%'.$search.'%')
+                    ->orWhere('phone', 'like', '%'.$search.'%');
             });
         }
 
         // Filter by status
-        if ($request->has('status') && !empty($request->status) && $request->status !== 'all') {
+        if ($request->has('status') && ! empty($request->status) && $request->status !== 'all') {
             $query->where('status', $request->status);
         }
 
         $users = $query->orderBy('created_at', 'desc')->get()->map(function ($user) {
             return [
                 'id' => $user->id,
-                'name' => trim($user->first_name . ' ' . $user->last_name) ?: 'N/A',
+                'name' => trim($user->first_name.' '.$user->last_name) ?: 'N/A',
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
                 'email' => $user->email,
@@ -76,7 +76,7 @@ class UserController extends Controller
         $user = User::with([
             'orders' => function ($query) {
                 $query->orderBy('created_at', 'desc');
-            }
+            },
         ])->withCount('orders')->withSum('orders', 'total')->findOrFail($id);
 
         // Use the maintained failed_orders_count column
@@ -85,7 +85,7 @@ class UserController extends Controller
 
         return response()->json([
             'id' => $user->id,
-            'name' => trim($user->first_name . ' ' . $user->last_name) ?: 'N/A',
+            'name' => trim($user->first_name.' '.$user->last_name) ?: 'N/A',
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'email' => $user->email,
@@ -110,7 +110,7 @@ class UserController extends Controller
 
         if ($user->is_admin) {
             return response()->json([
-                'message' => 'Cannot change status of admin users'
+                'message' => 'Cannot change status of admin users',
             ], 403);
         }
 
@@ -133,7 +133,7 @@ class UserController extends Controller
             'user' => [
                 'id' => $user->id,
                 'status' => $user->status,
-            ]
+            ],
         ]);
     }
 
@@ -144,7 +144,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'first_name' => 'sometimes|string|max:120',
             'last_name' => 'sometimes|string|max:120',
-            'email' => 'sometimes|email|unique:users,email,' . $id,
+            'email' => 'sometimes|email|unique:users,email,'.$id,
         ]);
 
         $user->update($validated);
@@ -158,14 +158,14 @@ class UserController extends Controller
 
         if ($user->is_admin) {
             return response()->json([
-                'message' => 'Cannot delete admin users'
+                'message' => 'Cannot delete admin users',
             ], 403);
         }
 
         $user->delete();
 
         return response()->json([
-            'message' => 'User deleted successfully'
+            'message' => 'User deleted successfully',
         ]);
     }
 }

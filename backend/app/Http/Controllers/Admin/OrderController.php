@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderStatusLog;
-use App\Models\Product;
 use App\Services\StockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +20,7 @@ class OrderController extends Controller
     {
         $this->stockService = $stockService;
     }
+
     /**
      * Get order metrics/stats
      */
@@ -68,14 +68,14 @@ class OrderController extends Controller
         }
 
         // Search by order number or customer name
-        if ($request->has('search') && !empty($request->search)) {
+        if ($request->has('search') && ! empty($request->search)) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('order_number', 'like', '%' . $search . '%')
+                $q->where('order_number', 'like', '%'.$search.'%')
                     ->orWhereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('first_name', 'like', '%' . $search . '%')
-                            ->orWhere('last_name', 'like', '%' . $search . '%')
-                            ->orWhere('email', 'like', '%' . $search . '%');
+                        $userQuery->where('first_name', 'like', '%'.$search.'%')
+                            ->orWhere('last_name', 'like', '%'.$search.'%')
+                            ->orWhere('email', 'like', '%'.$search.'%');
                     });
             });
         }
@@ -92,7 +92,7 @@ class OrderController extends Controller
                 'status_label' => $order->status_label,
                 'customer' => [
                     'id' => $order->user->id,
-                    'name' => $order->user->first_name . ' ' . $order->user->last_name,
+                    'name' => $order->user->first_name.' '.$order->user->last_name,
                     'email' => $order->user->email,
                     'phone' => $order->user->phone,
                 ],
@@ -140,7 +140,7 @@ class OrderController extends Controller
             'user',
             'items.product',
             'items.selectedVariants',
-            'statusLogs.changedByUser'
+            'statusLogs.changedByUser',
         ])->findOrFail($id);
 
         return response()->json([
@@ -150,7 +150,7 @@ class OrderController extends Controller
             'status_label' => $order->status_label,
             'customer' => [
                 'id' => $order->user->id,
-                'name' => $order->user->first_name . ' ' . $order->user->last_name,
+                'name' => $order->user->first_name.' '.$order->user->last_name,
                 'email' => $order->user->email,
                 'phone' => $order->user->phone,
                 'address' => $order->user->address,
@@ -196,7 +196,7 @@ class OrderController extends Controller
                     'from_status' => $log->from_status,
                     'to_status' => $log->to_status,
                     'notes' => $log->notes,
-                    'changed_by' => $log->changedByUser ? $log->changedByUser->first_name . ' ' . $log->changedByUser->last_name : 'System',
+                    'changed_by' => $log->changedByUser ? $log->changedByUser->first_name.' '.$log->changedByUser->last_name : 'System',
                     'created_at' => $log->created_at,
                 ];
             }),
@@ -222,7 +222,7 @@ class OrderController extends Controller
         $oldStatus = $order->status;
 
         // Validate the status transition
-        if (!$order->canTransitionTo($newStatus)) {
+        if (! $order->canTransitionTo($newStatus)) {
             return response()->json([
                 'message' => "Cannot transition from '{$oldStatus}' to '{$newStatus}'",
                 'valid_transitions' => Order::getValidTransitions($oldStatus),
@@ -265,7 +265,7 @@ class OrderController extends Controller
             // (stock is considered lost once out for delivery)
             if (
                 ($newStatus === 'cancelled' || $newStatus === 'failed') &&
-                !in_array($oldStatus, ['out_for_delivery', 'delivered', 'cancelled', 'failed'])
+                ! in_array($oldStatus, ['out_for_delivery', 'delivered', 'cancelled', 'failed'])
             ) {
                 $order->load('items.product');
                 foreach ($order->items as $orderItem) {
@@ -320,7 +320,8 @@ class OrderController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update order status: ' . $e->getMessage());
+            Log::error('Failed to update order status: '.$e->getMessage());
+
             return response()->json(['message' => 'Failed to update order status'], 500);
         }
     }
@@ -341,14 +342,14 @@ class OrderController extends Controller
             $apiKey = config('cloudinary.api_key');
             $apiSecret = config('cloudinary.api_secret');
 
-            if (!$cloudName || !$apiKey || !$apiSecret) {
+            if (! $cloudName || ! $apiKey || ! $apiSecret) {
                 return response()->json(['message' => 'Cloudinary configuration missing'], 500);
             }
 
             $timestamp = time();
             $folder = 'coffee_st/delivery_proofs';
 
-            $stringToSign = "folder={$folder}&timestamp={$timestamp}" . $apiSecret;
+            $stringToSign = "folder={$folder}&timestamp={$timestamp}".$apiSecret;
             $signature = sha1($stringToSign);
 
             $response = Http::withoutVerifying()
@@ -362,6 +363,7 @@ class OrderController extends Controller
 
             if ($response->successful()) {
                 $data = $response->json();
+
                 return response()->json([
                     'url' => $data['secure_url'],
                     'public_id' => $data['public_id'],
@@ -370,7 +372,8 @@ class OrderController extends Controller
 
             return response()->json(['message' => 'Failed to upload image'], 500);
         } catch (\Exception $e) {
-            Log::error('Failed to upload delivery proof: ' . $e->getMessage());
+            Log::error('Failed to upload delivery proof: '.$e->getMessage());
+
             return response()->json(['message' => 'Failed to upload image'], 500);
         }
     }

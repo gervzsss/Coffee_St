@@ -19,9 +19,9 @@ class CheckUserStatus
         if (auth()->check() && auth()->user()->status === 'restricted') {
             // Revoke the current token
             $request->user()->currentAccessToken()->delete();
-            
+
             return response()->json([
-                'message' => 'Your account has been blocked. Please contact support for assistance.'
+                'message' => 'Your account has been blocked. Please contact support for assistance.',
             ], 403);
         }
 

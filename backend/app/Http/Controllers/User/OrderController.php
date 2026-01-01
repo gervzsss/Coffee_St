@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -55,7 +54,7 @@ class OrderController extends Controller
             ->with(['items.product', 'items.selectedVariants.variant', 'user', 'statusLogs.changedBy'])
             ->first();
 
-        if (!$order) {
+        if (! $order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
@@ -129,7 +128,7 @@ class OrderController extends Controller
                 'time' => $order->confirmed_at,
                 'completed' => true,
             ];
-        } elseif (!in_array($order->status, ['pending', 'cancelled', 'failed'])) {
+        } elseif (! in_array($order->status, ['pending', 'cancelled', 'failed'])) {
             $timeline[] = [
                 'status' => 'confirmed',
                 'label' => 'Order Confirmed',
@@ -148,7 +147,7 @@ class OrderController extends Controller
                 'time' => $order->preparing_at,
                 'completed' => true,
             ];
-        } elseif (!in_array($order->status, ['pending', 'confirmed', 'cancelled', 'failed'])) {
+        } elseif (! in_array($order->status, ['pending', 'confirmed', 'cancelled', 'failed'])) {
             $timeline[] = [
                 'status' => 'preparing',
                 'label' => 'Preparing Order',
@@ -167,7 +166,7 @@ class OrderController extends Controller
                 'time' => $order->out_for_delivery_at,
                 'completed' => true,
             ];
-        } elseif (!in_array($order->status, ['pending', 'confirmed', 'preparing', 'cancelled', 'failed'])) {
+        } elseif (! in_array($order->status, ['pending', 'confirmed', 'preparing', 'cancelled', 'failed'])) {
             $timeline[] = [
                 'status' => 'out_for_delivery',
                 'label' => 'Out for Delivery',
@@ -226,7 +225,7 @@ class OrderController extends Controller
             ->with(['items.product', 'items.variant', 'items.selectedVariants'])
             ->first();
 
-        if (!$cart || $cart->items->isEmpty()) {
+        if (! $cart || $cart->items->isEmpty()) {
             return response()->json(['message' => 'Cart is empty'], 400);
         }
 
@@ -244,17 +243,17 @@ class OrderController extends Controller
             foreach ($selectedCartItems as $cartItem) {
                 $product = Product::lockForUpdate()->find($cartItem->product_id);
 
-                if (!$product) {
+                if (! $product) {
                     throw new \Exception("Product not found: {$cartItem->product_id}");
                 }
 
                 // Check if product is available for purchase
-                if (!$product->isAvailableForPurchase()) {
+                if (! $product->isAvailableForPurchase()) {
                     throw new \Exception("Product '{$product->name}' is not available for purchase");
                 }
 
                 // Check stock if tracking is enabled
-                if ($product->track_stock && !$product->hasStock($cartItem->quantity)) {
+                if ($product->track_stock && ! $product->hasStock($cartItem->quantity)) {
                     $available = $product->stock_quantity ?? 0;
                     throw new \Exception("Insufficient stock for '{$product->name}'. Available: {$available}, Requested: {$cartItem->quantity}");
                 }
@@ -352,6 +351,7 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'message' => 'Failed to create order',
                 'error' => $e->getMessage(),
@@ -371,7 +371,7 @@ class OrderController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$order) {
+        if (! $order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
@@ -384,7 +384,7 @@ class OrderController extends Controller
         }
 
         // Validate eligibility: can only cancel pending or confirmed orders
-        if (!in_array($order->status, ['pending', 'confirmed'])) {
+        if (! in_array($order->status, ['pending', 'confirmed'])) {
             return response()->json([
                 'message' => 'This order can no longer be cancelled. Please contact the store for assistance.',
                 'error' => 'CANNOT_CANCEL',
@@ -427,7 +427,8 @@ class OrderController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to cancel order: ' . $e->getMessage());
+            Log::error('Failed to cancel order: '.$e->getMessage());
+
             return response()->json([
                 'message' => 'Failed to cancel order',
                 'error' => $e->getMessage(),

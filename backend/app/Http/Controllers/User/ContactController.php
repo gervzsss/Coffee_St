@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\InquiryThread;
 use App\Models\ThreadMessage;
 use App\Services\NotificationService;

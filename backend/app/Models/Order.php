@@ -50,11 +50,17 @@ class Order extends Model
 
     // Order status constants
     const STATUS_PENDING = 'pending';
+
     const STATUS_CONFIRMED = 'confirmed';
+
     const STATUS_PREPARING = 'preparing';
+
     const STATUS_OUT_FOR_DELIVERY = 'out_for_delivery';
+
     const STATUS_DELIVERED = 'delivered';
+
     const STATUS_FAILED = 'failed';
+
     const STATUS_CANCELLED = 'cancelled';
 
     // Valid status transitions
@@ -144,7 +150,7 @@ class Order extends Model
         }
 
         // Format with leading zeros (5 digits)
-        return $prefix . str_pad($newSequence, 5, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($newSequence, 5, '0', STR_PAD_LEFT);
     }
 
     /**

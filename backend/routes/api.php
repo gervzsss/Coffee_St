@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\CartController;
-use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\ContactController;
-use App\Http\Controllers\User\OrderController;
-use App\Http\Controllers\User\UserProfileController;
 use App\Http\Controllers\User\InquiryController;
+use App\Http\Controllers\User\OrderController;
+use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,41 +34,41 @@ Route::post('/contact', [ContactController::class, 'store']);
 
 // Protected Routes (Require Authentication)
 Route::middleware(['auth:sanctum', 'token.timeout', 'check.status'])->group(function () {
-  // Auth Routes
-  Route::post('/logout', [AuthController::class, 'logout']);
-  Route::get('/user', [AuthController::class, 'user']);
+    // Auth Routes
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'user']);
 
-  // Session heartbeat
-  Route::get('/session/ping', function () {
-    return response()->json(['ok' => true]);
-  });
+    // Session heartbeat
+    Route::get('/session/ping', function () {
+        return response()->json(['ok' => true]);
+    });
 
-  // Cart Routes
-  Route::get('/cart/count', [CartController::class, 'count']);
-  Route::get('/cart', [CartController::class, 'index']);
-  Route::get('/cart/validate', [CartController::class, 'validateStock']);
-  Route::post('/cart', [CartController::class, 'store']);
-  Route::put('/cart/{id}', [CartController::class, 'update']);
-  Route::delete('/cart/{id}', [CartController::class, 'destroy']);
-  Route::delete('/cart', [CartController::class, 'clear']);
+    // Cart Routes
+    Route::get('/cart/count', [CartController::class, 'count']);
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::get('/cart/validate', [CartController::class, 'validateStock']);
+    Route::post('/cart', [CartController::class, 'store']);
+    Route::put('/cart/{id}', [CartController::class, 'update']);
+    Route::delete('/cart/{id}', [CartController::class, 'destroy']);
+    Route::delete('/cart', [CartController::class, 'clear']);
 
-  // Order Routes
-  Route::get('/orders', [OrderController::class, 'index']);
-  Route::get('/orders/{id}', [OrderController::class, 'show']);
-  Route::post('/orders', [OrderController::class, 'store']);
-  Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
+    // Order Routes
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
 
-  // User Profile Routes
-  Route::get('/user/recent-orders', [UserProfileController::class, 'recentOrders']);
-  Route::put('/user/profile', [UserProfileController::class, 'updateProfile']);
-  Route::put('/user/password', [UserProfileController::class, 'updatePassword']);
-  Route::put('/user/language', [UserProfileController::class, 'updateLanguage']);
-  Route::post('/user/soft-delete', [UserProfileController::class, 'softDelete']);
+    // User Profile Routes
+    Route::get('/user/recent-orders', [UserProfileController::class, 'recentOrders']);
+    Route::put('/user/profile', [UserProfileController::class, 'updateProfile']);
+    Route::put('/user/password', [UserProfileController::class, 'updatePassword']);
+    Route::put('/user/language', [UserProfileController::class, 'updateLanguage']);
+    Route::post('/user/soft-delete', [UserProfileController::class, 'softDelete']);
 
-  // Inquiry Routes
-  Route::get('/inquiries', [InquiryController::class, 'index']);
-  Route::get('/inquiries/{id}', [InquiryController::class, 'show']);
-  Route::post('/inquiries/{id}/messages', [InquiryController::class, 'sendMessage']);
+    // Inquiry Routes
+    Route::get('/inquiries', [InquiryController::class, 'index']);
+    Route::get('/inquiries/{id}', [InquiryController::class, 'show']);
+    Route::post('/inquiries/{id}/messages', [InquiryController::class, 'sendMessage']);
 });
 
 // Admin Routes
