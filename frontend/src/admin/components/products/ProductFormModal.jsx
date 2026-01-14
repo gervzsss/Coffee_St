@@ -223,10 +223,10 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white sm:rounded-2xl lg:max-w-2xl">
-        <div className="p-4 sm:p-5 lg:p-6">
-          {/* Header */}
-          <div className="mb-4 flex items-start justify-between sm:mb-5 lg:mb-6">
+      <div className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-xl bg-white sm:rounded-2xl lg:max-w-2xl">
+        {/* Sticky Header */}
+        <div className="shrink-0 border-b border-gray-200 p-4 sm:p-5 lg:p-6">
+          <div className="flex items-start justify-between">
             <div>
               <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">{isEdit ? "Edit Product" : "Add New Product"}</h2>
               <p className="mt-1 text-sm text-gray-500 sm:text-base">{isEdit ? "Update product information" : "Fill in the product details"}</p>
@@ -237,7 +237,10 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
               </svg>
             </button>
           </div>
+        </div>
 
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6">
           <div className="space-y-4 sm:space-y-5">
             {/* Product Name */}
             <div>
@@ -521,9 +524,11 @@ export default function ProductFormModal({ product, onSave, onCancel, isLoading 
               )}
             </div>
           </div>
+        </div>
 
-          {/* Footer */}
-          <div className="mt-5 flex flex-col-reverse justify-end gap-2 border-t pt-4 sm:mt-6 sm:flex-row sm:gap-3">
+        {/* Sticky Footer */}
+        <div className="shrink-0 border-t border-gray-200 bg-white p-4 sm:p-5 lg:p-6">
+          <div className="flex flex-col-reverse justify-end gap-2 sm:flex-row sm:gap-3">
             <button
               onClick={onCancel}
               disabled={isSubmitting}
