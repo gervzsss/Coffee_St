@@ -5,7 +5,7 @@ import { useCart } from './useCart';
 import { TOAST_DURATION } from '../constants/toastConfig';
 import api from '../services/apiClient';
 
-export function useCheckout(selectedCartItems = [], user = null) {
+export function useCheckout(selectedCartItems = [], user = null, isBuyNow = false) {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { fetchCartCount } = useCart();
@@ -79,23 +79,52 @@ export function useCheckout(selectedCartItems = [], user = null) {
     setError(null);
 
     try {
-      const selectedItemIds = selectedCartItems.map(item => item.id);
       const totals = calculateTotals();
+      let response;
 
-      const response = await api.post('/orders', {
-        selected_items: selectedItemIds,
-        delivery_address: formData.delivery_address,
-        delivery_contact: formData.delivery_contact,
-        delivery_instructions: formData.delivery_instructions || null,
-        payment_method: formData.payment_method,
-        delivery_fee: totals.deliveryFee,
-        tax_rate: totals.taxRate,
-      });
+      if (isBuyNow) {
+        // Buy Now flow - create order directly from product
+        const item = selectedCartItems[0];
+
+        // Transform selected_variants back to the format expected by the API
+        const variants = (item.selected_variants || []).map(v => ({
+          id: v.variant_id || v.id,
+          group_name: v.name || v.group_name,
+          name: v.option || v.variant_name,
+          price_delta: v.price_delta || 0,
+        }));
+
+        response = await api.post('/orders/buy-now', {
+          product_id: item.product_id,
+          quantity: item.quantity,
+          variants: variants,
+          delivery_address: formData.delivery_address,
+          delivery_contact: formData.delivery_contact,
+          delivery_instructions: formData.delivery_instructions || null,
+          payment_method: formData.payment_method,
+          delivery_fee: totals.deliveryFee,
+          tax_rate: totals.taxRate,
+        });
+      } else {
+        // Regular cart checkout flow
+        const selectedItemIds = selectedCartItems.map(item => item.id);
+
+        response = await api.post('/orders', {
+          selected_items: selectedItemIds,
+          delivery_address: formData.delivery_address,
+          delivery_contact: formData.delivery_contact,
+          delivery_instructions: formData.delivery_instructions || null,
+          payment_method: formData.payment_method,
+          delivery_fee: totals.deliveryFee,
+          tax_rate: totals.taxRate,
+        });
+
+        // Only update cart count for regular checkout
+        await fetchCartCount();
+        window.dispatchEvent(new Event('cartUpdated'));
+      }
 
       const order = response.data.order;
-
-      await fetchCartCount();
-      window.dispatchEvent(new Event('cartUpdated'));
 
       showToast('Order placed successfully!', {
         type: 'success',

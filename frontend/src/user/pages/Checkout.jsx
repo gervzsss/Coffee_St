@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useCheckout } from "../hooks/useCheckout";
 import { Header, Footer } from "../components/layout";
@@ -12,8 +13,9 @@ export default function Checkout() {
   const location = useLocation();
 
   const selectedCartItems = useMemo(() => location.state?.selectedCartItems || [], [location.state?.selectedCartItems]);
+  const isBuyNow = useMemo(() => location.state?.isBuyNow || false, [location.state?.isBuyNow]);
 
-  const { formData, formErrors, loading, error, updateFormData, submitOrder } = useCheckout(selectedCartItems, user);
+  const { formData, formErrors, loading, error, updateFormData, submitOrder } = useCheckout(selectedCartItems, user, isBuyNow);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -41,6 +43,13 @@ export default function Checkout() {
         {/* Compact Checkout Header */}
         <div className="w-full bg-[#30442B] pt-8 pb-6 sm:pt-12 sm:pb-8">
           <div className="container mx-auto px-4 sm:px-6">
+            <button
+              onClick={() => navigate(isBuyNow ? "/products" : "/cart")}
+              className="mb-3 flex items-center gap-1.5 text-sm text-gray-300 transition-colors hover:text-white sm:mb-4 sm:gap-2 sm:text-base"
+            >
+              <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span>Back to {isBuyNow ? "Menu" : "Cart"}</span>
+            </button>
             <h1 className="text-xl font-bold text-white sm:text-2xl lg:text-3xl">Complete Your Order</h1>
             <p className="mt-1 text-xs text-gray-200 sm:text-sm lg:text-base">Review your items and provide delivery details</p>
           </div>

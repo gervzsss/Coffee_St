@@ -435,4 +435,125 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Create an order directly from product (Buy Now)
+     */
+    public function buyNow(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|integer|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+            'variants' => 'nullable|array',
+            'variants.*.id' => 'required|integer',
+            'variants.*.group_name' => 'required|string',
+            'variants.*.name' => 'required|string',
+            'variants.*.price_delta' => 'required|numeric',
+            'delivery_address' => 'required|string|max:1000',
+            'delivery_contact' => 'required|string|max:20',
+            'delivery_instructions' => 'nullable|string|max:500',
+            'payment_method' => 'required|in:cash,gcash',
+            'delivery_fee' => 'nullable|numeric|min:0',
+            'tax_rate' => 'nullable|numeric|min:0|max:1',
+        ]);
+
+        $user = Auth::user();
+
+        DB::beginTransaction();
+        try {
+            // Get product and validate
+            $product = Product::lockForUpdate()->find($request->product_id);
+
+            if (! $product) {
+                throw new \Exception('Product not found');
+            }
+
+            // Check if product is available for purchase
+            if (! $product->isAvailableForPurchase()) {
+                throw new \Exception("Product '{$product->name}' is not available for purchase");
+            }
+
+            // Check stock if tracking is enabled
+            if ($product->track_stock && ! $product->hasStock($request->quantity)) {
+                $available = $product->stock_quantity ?? 0;
+                throw new \Exception("Insufficient stock for '{$product->name}'. Available: {$available}, Requested: {$request->quantity}");
+            }
+
+            // Calculate price delta from variants
+            $variants = $request->variants ?? [];
+            $totalPriceDelta = collect($variants)->sum('price_delta');
+
+            // Calculate line total
+            $lineTotal = ($product->price + $totalPriceDelta) * $request->quantity;
+
+            // Generate unique order number
+            $orderNumber = Order::generateOrderNumber();
+
+            // Create order
+            $order = Order::create([
+                'user_id' => $user->id,
+                'order_number' => $orderNumber,
+                'status' => 'pending',
+                'subtotal' => 0,
+                'delivery_fee' => $request->delivery_fee ?? 50.00,
+                'tax_rate' => $request->tax_rate ?? 0.1200,
+                'tax_amount' => 0,
+                'tax' => 0,
+                'total' => 0,
+                'delivery_address' => $request->delivery_address,
+                'delivery_contact' => $request->delivery_contact,
+                'delivery_instructions' => $request->delivery_instructions,
+                'payment_method' => $request->payment_method,
+            ]);
+
+            // Create order item
+            $orderItem = OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $product->id,
+                'variant_id' => null,
+                'variant_name' => null,
+                'price_delta' => $totalPriceDelta,
+                'product_name' => $product->name,
+                'unit_price' => $product->price,
+                'quantity' => $request->quantity,
+                'line_total' => $lineTotal,
+            ]);
+
+            // Create order item variants
+            foreach ($variants as $variant) {
+                OrderItemVariant::create([
+                    'order_item_id' => $orderItem->id,
+                    'variant_id' => $variant['id'],
+                    'variant_group_name' => $variant['group_name'],
+                    'variant_name' => $variant['name'],
+                    'price_delta' => $variant['price_delta'],
+                ]);
+            }
+
+            // Calculate totals
+            $order->load('items');
+            $order->calculateTotals();
+            $order->save();
+
+            // Deduct stock
+            if ($product->track_stock) {
+                $this->stockService->decreaseStock($product, $request->quantity, $order);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Order created successfully',
+                'order' => $order->load('items.product'),
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Failed to create order',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

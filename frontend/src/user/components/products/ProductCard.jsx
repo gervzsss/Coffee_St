@@ -9,7 +9,6 @@ export default function ProductCard({ product }) {
     selectedVariant,
     showVariantModal,
     showCustomizationModal,
-    hasVariants,
     calculatePrice,
     handleAddToCartClick,
     handleVariantSelect,
@@ -105,9 +104,7 @@ export default function ProductCard({ product }) {
 
           {/* Price and Add to Cart */}
           <div className="mt-auto flex items-center justify-between gap-2 pt-2">
-            <span className={`text-base font-bold sm:text-lg lg:text-xl ${isUnavailable ? "text-gray-400" : "text-[#30442B]"}`}>
-              {hasVariants ? <span className="text-sm sm:text-base">From ₱{parseFloat(product.price).toFixed(2)}</span> : `₱${parseFloat(product.price).toFixed(2)}`}
-            </span>
+            <span className={`text-base font-bold sm:text-lg lg:text-xl ${isUnavailable ? "text-gray-400" : "text-[#30442B]"}`}>₱{parseFloat(product.price).toFixed(2)}</span>
 
             <button
               onClick={handleAddToCartClick}

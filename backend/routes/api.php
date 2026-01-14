@@ -56,6 +56,7 @@ Route::middleware(['auth:sanctum', 'token.timeout', 'check.status'])->group(func
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::post('/orders', [OrderController::class, 'store']);
+    Route::post('/orders/buy-now', [OrderController::class, 'buyNow']);
     Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
 
     // User Profile Routes

@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { modalOverlay, modalContent } from "../../../shared/components/motion/variants";
-import { X, Plus, Minus, ShoppingCart } from "lucide-react";
+import { X, Plus, Minus, ShoppingCart, Zap } from "lucide-react";
 import { useToast } from "../../hooks/useToast";
+import { useAuth } from "../../hooks/useAuth";
 
 const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, initialQuantity = 1, initialVariants = [] }) => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
+  const { isAuthenticated, openAuthModal } = useAuth();
   const [quantity, setQuantity] = useState(initialQuantity);
   const [selectedVariants, setSelectedVariants] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -213,6 +218,79 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
     }
   };
 
+  const handleBuyNow = () => {
+    if (!isAuthenticated) {
+      openAuthModal("login");
+      return;
+    }
+
+    if (!validateSelections()) {
+      showToast("Please select all required options", {
+        type: "error",
+        dismissible: true,
+      });
+      return;
+    }
+
+    setIsBuyingNow(true);
+
+    try {
+      // Build variants array
+      const variantsArray = [];
+      Object.values(selectedVariants).forEach((variantArray) => {
+        variantArray.forEach((variant) => {
+          variantsArray.push({
+            id: variant.id,
+            group_name: variant.group_name,
+            name: variant.name,
+            price_delta: variant.price_delta,
+          });
+        });
+      });
+
+      // Calculate price delta from variants
+      const priceDelta = variantsArray.reduce((sum, v) => sum + (v.price_delta || 0), 0);
+      const unitPrice = product.price + priceDelta;
+      const lineTotal = unitPrice * (quantity || 1);
+
+      // Create a cart-item-like structure for checkout
+      const buyNowItem = {
+        id: `buy-now-${Date.now()}`,
+        product_id: product.id,
+        product_name: product.name,
+        image_url: product.image_url,
+        quantity: quantity || 1,
+        unit_price: unitPrice,
+        price_delta: priceDelta,
+        line_total: lineTotal,
+        selected_variants: variantsArray.map((v) => ({
+          id: v.id,
+          name: v.group_name,
+          option: v.name,
+          price_delta: v.price_delta,
+        })),
+        is_buy_now: true,
+      };
+
+      onClose();
+      setQuantity(1);
+      setSelectedVariants({});
+
+      // Navigate to checkout with the buy now item
+      navigate("/checkout", {
+        state: { selectedCartItems: [buyNowItem], isBuyNow: true },
+      });
+    } catch (error) {
+      console.error("Failed to process buy now:", error);
+      showToast("Failed to process. Please try again.", {
+        type: "error",
+        dismissible: true,
+      });
+    } finally {
+      setIsBuyingNow(false);
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -376,18 +454,6 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
 
             {/* Footer */}
             <div className="border-t border-neutral-200 bg-neutral-50 px-6 py-6 sm:px-10">
-              {/* Available Stock Display */}
-              {product.track_stock && (
-                <div className="mb-3 rounded-lg border border-neutral-200 bg-white px-4 py-2.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-neutral-600">Available Stock</span>
-                    <span className="text-sm font-semibold text-[#30442B]">
-                      {product.stock_quantity} {product.stock_quantity === 1 ? "item" : "items"}
-                    </span>
-                  </div>
-                </div>
-              )}
-
               {/* Quantity Selector */}
               <div className="mb-4 flex items-center justify-between">
                 <span className="text-sm font-medium text-neutral-700">Quantity</span>
@@ -417,20 +483,30 @@ const ProductCustomizationModal = ({ isOpen, onClose, product, onAddToCart, init
                 </div>
               </div>
 
-              {/* Total Price and Add Button */}
-              <div className="flex items-center justify-between">
+              {/* Total Price and Action Buttons */}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm text-neutral-600">Total Price</p>
                   <p className="text-2xl font-bold text-[#30442B]">₱{calculateTotalPrice()}</p>
                 </div>
-                <button
-                  onClick={handleAddToCart}
-                  disabled={isSubmitting || (product.track_stock && quantity > product.stock_quantity)}
-                  className="flex cursor-pointer items-center space-x-2 rounded-lg bg-[#30442B] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#405939] disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  <span>{isSubmitting ? "Adding..." : "Add to Cart"}</span>
-                </button>
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={isSubmitting || isBuyingNow || (product.track_stock && quantity > product.stock_quantity)}
+                    className="flex cursor-pointer items-center justify-center space-x-2 rounded-lg border-2 border-[#30442B] bg-white px-5 py-2.5 font-semibold text-[#30442B] transition-colors hover:bg-[#30442B]/5 disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-3"
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                    <span>{isSubmitting ? "Adding..." : "Add to Cart"}</span>
+                  </button>
+                  <button
+                    onClick={handleBuyNow}
+                    disabled={isSubmitting || isBuyingNow || (product.track_stock && quantity > product.stock_quantity)}
+                    className="flex cursor-pointer items-center justify-center space-x-2 rounded-lg bg-[#30442B] px-5 py-2.5 font-semibold text-white transition-colors hover:bg-[#405939] disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-3"
+                  >
+                    <Zap className="h-5 w-5" />
+                    <span>{isBuyingNow ? "Processing..." : "Buy Now"}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>
