@@ -165,6 +165,8 @@ return new class extends Migration
             $table->string('failure_reason')->nullable();
             $table->string('delivery_proof_url')->nullable();
             $table->text('notes')->nullable();
+            $table->timestamp('archived_at')->nullable();
+            $table->foreignId('archived_by')->nullable()->constrained('users')->nullOnDelete();
 
             $table->timestamps();
 
