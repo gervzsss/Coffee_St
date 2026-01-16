@@ -1,3 +1,4 @@
+export { default as ArchiveConfirmModal } from './ArchiveConfirmModal';
 export { default as ConfirmStatusModal } from './ConfirmStatusModal';
 export { default as FailureReasonModal } from './FailureReasonModal';
 export { default as OrderDetailModal } from './OrderDetailModal';

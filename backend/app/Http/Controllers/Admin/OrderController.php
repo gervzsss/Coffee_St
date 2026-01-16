@@ -24,21 +24,24 @@ class OrderController extends Controller
     /**
      * Get order metrics/stats
      */
-    public function metrics()
+    public function metrics(Request $request)
     {
+        // Base query excludes archived orders for operational metrics
+        $activeQuery = Order::notArchived();
+
         $stats = [
-            'all' => Order::count(),
-            'pending' => Order::where('status', 'pending')->count(),
-            'confirmed' => Order::where('status', 'confirmed')->count(),
-            'preparing' => Order::where('status', 'preparing')->count(),
-            'out_for_delivery' => Order::where('status', 'out_for_delivery')->count(),
-            'delivered' => Order::where('status', 'delivered')->count(),
-            'failed' => Order::where('status', 'failed')->count(),
-            'cancelled' => Order::where('status', 'cancelled')->count(),
+            'pending' => (clone $activeQuery)->where('status', 'pending')->count(),
+            'confirmed' => (clone $activeQuery)->where('status', 'confirmed')->count(),
+            'preparing' => (clone $activeQuery)->where('status', 'preparing')->count(),
+            'out_for_delivery' => (clone $activeQuery)->where('status', 'out_for_delivery')->count(),
+            'delivered' => (clone $activeQuery)->where('status', 'delivered')->count(),
+            'failed' => (clone $activeQuery)->where('status', 'failed')->count(),
+            'cancelled' => (clone $activeQuery)->where('status', 'cancelled')->count(),
+            'archived' => Order::archived()->count(),
         ];
 
         // Combined counts for the UI tabs
-        $stats['processing'] = $stats['confirmed'] + $stats['preparing'];
+        $stats['processing'] = $stats['pending'] + $stats['confirmed'] + $stats['preparing'];
         $stats['completed'] = $stats['delivered'];
 
         return response()->json($stats);
@@ -50,6 +53,17 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $query = Order::with(['user', 'items.selectedVariants']);
+
+        // Handle archived filter (default: exclude archived)
+        $archived = $request->get('archived', 'none');
+        if ($archived === 'only') {
+            $query->archived();
+        } elseif ($archived === 'with') {
+            // Include both archived and non-archived
+        } else {
+            // Default: exclude archived
+            $query->notArchived();
+        }
 
         // Filter by status
         if ($request->has('status') && $request->status !== 'all') {
@@ -125,6 +139,8 @@ class OrderController extends Controller
                 'is_urgent' => $isUrgent,
                 'created_at' => $order->created_at,
                 'time_ago' => $order->created_at->diffForHumans(),
+                'archived_at' => $order->archived_at,
+                'can_archive' => $order->canBeArchived(),
             ];
         });
 
@@ -190,6 +206,8 @@ class OrderController extends Controller
             'failed_at' => $order->failed_at,
             'created_at' => $order->created_at,
             'updated_at' => $order->updated_at,
+            'archived_at' => $order->archived_at,
+            'can_archive' => $order->canBeArchived(),
             'status_logs' => $order->statusLogs->map(function ($log) {
                 return [
                     'id' => $log->id,
@@ -381,8 +399,71 @@ class OrderController extends Controller
     /**
      * Get order statistics (legacy endpoint)
      */
-    public function stats()
+    public function stats(Request $request)
     {
-        return $this->metrics();
+        return $this->metrics($request);
+    }
+
+    /**
+     * Archive an order
+     */
+    public function archive($id)
+    {
+        $order = Order::findOrFail($id);
+
+        if ($order->isArchived()) {
+            return response()->json([
+                'message' => 'Order is already archived',
+            ], 409);
+        }
+
+        if (! $order->canBeArchived()) {
+            return response()->json([
+                'message' => 'Only delivered, failed, or cancelled orders can be archived',
+                'current_status' => $order->status,
+            ], 422);
+        }
+
+        $order->update([
+            'archived_at' => now(),
+            'archived_by' => Auth::id(),
+        ]);
+
+        return response()->json([
+            'message' => 'Order archived successfully',
+            'order' => [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'archived_at' => $order->archived_at,
+            ],
+        ]);
+    }
+
+    /**
+     * Unarchive (restore) an order
+     */
+    public function unarchive($id)
+    {
+        $order = Order::findOrFail($id);
+
+        if (! $order->isArchived()) {
+            return response()->json([
+                'message' => 'Order is not archived',
+            ], 409);
+        }
+
+        $order->update([
+            'archived_at' => null,
+            // Keep archived_by for audit trail (who last archived it)
+        ]);
+
+        return response()->json([
+            'message' => 'Order restored successfully',
+            'order' => [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'status' => $order->status,
+            ],
+        ]);
     }
 }

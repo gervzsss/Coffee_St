@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Archive, RotateCcw } from "lucide-react";
 import { STATUS_CONFIG, STATUS_FLOW } from "../../constants/orderStatus";
 import ConfirmStatusModal from "./ConfirmStatusModal";
 import FailureReasonModal from "./FailureReasonModal";
@@ -71,7 +72,7 @@ function buildTimeline(order) {
   return timeline;
 }
 
-export default function OrderDetailModal({ order, onClose, onStatusUpdate, onMarkFailed }) {
+export default function OrderDetailModal({ order, onClose, onStatusUpdate, onMarkFailed, onArchive }) {
   const [updating, setUpdating] = useState(false);
   const [showFailModal, setShowFailModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -118,14 +119,41 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate, onMar
               <h2 className="text-lg font-bold sm:text-xl lg:text-2xl">Order #{order.order_number}</h2>
               <p className="mt-1 text-xs text-white/80 sm:text-sm">Placed on {formatDateTime(order.created_at)}</p>
             </div>
-            <button onClick={onClose} className="p-1 text-white/80 transition-colors hover:text-white">
-              <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Archive/Restore button in header */}
+              {onArchive &&
+                (order.archived_at ? (
+                  <button
+                    onClick={() => onArchive(order.id, order.order_number, "unarchive")}
+                    className="flex items-center gap-1.5 rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Restore
+                  </button>
+                ) : order.can_archive ? (
+                  <button
+                    onClick={() => onArchive(order.id, order.order_number, "archive")}
+                    className="flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-amber-700"
+                  >
+                    <Archive className="h-3.5 w-3.5" />
+                    Archive
+                  </button>
+                ) : null)}
+              <button onClick={onClose} className="p-1 text-white/80 transition-colors hover:text-white">
+                <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className="mt-3 sm:mt-4">
+          <div className="mt-3 flex flex-wrap items-center gap-2 sm:mt-4">
             <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium sm:px-3 sm:text-sm ${statusConfig.bgColor} ${statusConfig.textColor}`}>{statusConfig.label}</span>
+            {order.archived_at && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800 sm:px-3 sm:text-sm">
+                <Archive className="h-3 w-3" />
+                Archived
+              </span>
+            )}
           </div>
         </div>
 
@@ -159,14 +187,24 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate, onMar
                   </div>
                   <div className="flex items-start gap-2 sm:gap-3">
                     <svg className="mt-0.5 h-4 w-4 shrink-0 text-gray-400 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                      />
                     </svg>
                     <span className="text-gray-700">{order.delivery_contact || "No contact provided"}</span>
                   </div>
                   {order.delivery_instructions && (
                     <div className="flex items-start gap-2 sm:gap-3">
                       <svg className="mt-0.5 h-4 w-4 shrink-0 text-gray-400 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
                       </svg>
                       <div>
                         <p className="text-xs font-medium text-gray-500 sm:text-sm">Delivery Instructions:</p>

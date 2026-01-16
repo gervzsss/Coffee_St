@@ -68,6 +68,8 @@ Route::middleware(['auth:sanctum', 'token.timeout', 'admin'])->group(function ()
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+    Route::post('/orders/{id}/archive', [OrderController::class, 'archive']);
+    Route::post('/orders/{id}/unarchive', [OrderController::class, 'unarchive']);
     Route::post('/orders/upload-proof', [OrderController::class, 'uploadProof']);
 
     // Users

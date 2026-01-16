@@ -1,22 +1,26 @@
 import { useState } from "react";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Archive, RotateCcw } from "lucide-react";
 import { AdminLayout } from "../components/layout";
 import { AdminAnimatedPage, LoadingSpinner } from "../components/common";
-import { OrderCard, OrderDetailModal, ConfirmStatusModal, FailureReasonModal, OrderStatusCardSkeleton, OrderCardSkeleton } from "../components/orders";
+import { OrderCard, OrderDetailModal, ConfirmStatusModal, FailureReasonModal, ArchiveConfirmModal, OrderStatusCardSkeleton, OrderCardSkeleton } from "../components/orders";
 import { useOrders } from "../hooks/useOrders";
 
 export default function Orders() {
   const {
     filteredOrders,
+    metrics,
     loading,
+    viewMode,
     filterStatus,
     searchTerm,
     selectedOrder,
     detailLoading,
     confirmModal,
     failModal,
+    archiveModal,
     updating,
     statusCards,
+    setViewMode,
     setFilterStatus,
     setSearchTerm,
     handleViewOrder,
@@ -28,6 +32,9 @@ export default function Orders() {
     confirmFailure,
     closeConfirmModal,
     closeFailModal,
+    openArchiveModal,
+    closeArchiveModal,
+    confirmArchive,
     refetch,
   } = useOrders();
 
@@ -45,27 +52,51 @@ export default function Orders() {
         <div className="mx-auto max-w-screen-2xl">
           {/* Header Section */}
           <div className="mb-6 sm:mb-8">
-            <div>
-              <h1 className="text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">ORDERS & TRACKING</h1>
-              <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">Manage customer orders and track their progress</p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">ORDERS & TRACKING</h1>
+                <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">Manage customer orders and track their progress</p>
+              </div>
+              {/* View Mode Toggle */}
+              <div className="flex rounded-lg border border-gray-200 bg-white p-1">
+                <button
+                  onClick={() => setViewMode("active")}
+                  className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                    viewMode === "active" ? "bg-[#30442B] text-white" : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  Active Orders
+                </button>
+                <button
+                  onClick={() => setViewMode("archived")}
+                  className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                    viewMode === "archived" ? "bg-[#30442B] text-white" : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  <Archive className="h-4 w-4" />
+                  Archived ({metrics.archived})
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Order Status Cards */}
-          <div className="mb-6 grid grid-cols-2 gap-2 sm:mb-8 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5 lg:gap-4">
-            {statusCards.map((card) => (
-              <div
-                key={card.key}
-                onClick={() => setFilterStatus(card.key)}
-                className={`cursor-pointer rounded-lg border-2 p-3 transition-all duration-300 sm:rounded-xl sm:p-4 ${
-                  filterStatus === card.key ? "border-[#30442B] bg-[#30442B] text-white" : "border-gray-200 bg-white text-gray-800 hover:border-[#30442B]/30"
-                }`}
-              >
-                <div className={`text-xs font-medium sm:text-sm ${filterStatus === card.key ? "text-white/80" : "text-gray-500"}`}>{card.label}</div>
-                <div className="mt-0.5 text-xl font-bold sm:mt-1 sm:text-2xl lg:text-3xl">{card.count}</div>
-              </div>
-            ))}
-          </div>
+          {/* Order Status Cards - Only show in active view */}
+          {viewMode === "active" && (
+            <div className="mb-6 grid grid-cols-2 gap-2 sm:mb-8 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4 lg:gap-4">
+              {statusCards.map((card) => (
+                <div
+                  key={card.key}
+                  onClick={() => setFilterStatus(card.key)}
+                  className={`cursor-pointer rounded-lg border-2 p-3 transition-all duration-300 sm:rounded-xl sm:p-4 ${
+                    filterStatus === card.key ? "border-[#30442B] bg-[#30442B] text-white" : "border-gray-200 bg-white text-gray-800 hover:border-[#30442B]/30"
+                  }`}
+                >
+                  <div className={`text-xs font-medium sm:text-sm ${filterStatus === card.key ? "text-white/80" : "text-gray-500"}`}>{card.label}</div>
+                  <div className="mt-0.5 text-xl font-bold sm:mt-1 sm:text-2xl lg:text-3xl">{card.count}</div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Search Section */}
           <div className="mb-6 rounded-xl bg-[#30442B] p-3 sm:mb-8 sm:rounded-2xl sm:p-4">
@@ -110,7 +141,9 @@ export default function Orders() {
           {/* Orders List Header */}
           <div className="mb-4 sm:mb-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-800 sm:text-xl">All Orders ({filteredOrders.length})</h2>
+              <h2 className="text-lg font-semibold text-gray-800 sm:text-xl">
+                {viewMode === "archived" ? "Archived Orders" : "Active Orders"} ({filteredOrders.length})
+              </h2>
               <button
                 onClick={handleRefresh}
                 disabled={refreshing || loading}
@@ -140,12 +173,32 @@ export default function Orders() {
                   d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                 />
               </svg>
-              <p className="text-sm text-gray-500 sm:text-base">No orders found</p>
+              <p className="text-sm text-gray-500 sm:text-base">{viewMode === "archived" ? "No archived orders" : "No orders found"}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2 xl:grid-cols-3">
               {filteredOrders.map((order) => (
-                <OrderCard key={order.id} order={order} onViewDetails={handleViewOrder} onQuickStatusChange={handleQuickStatusChange} />
+                <div key={order.id} className="relative">
+                  <OrderCard order={order} onViewDetails={handleViewOrder} onQuickStatusChange={handleQuickStatusChange} />
+                  {/* Archive/Restore button overlay */}
+                  {viewMode === "archived" ? (
+                    <button
+                      onClick={() => openArchiveModal(order.id, order.order_number, "unarchive")}
+                      className="absolute top-3 right-3 flex items-center gap-1.5 rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-green-700"
+                    >
+                      <RotateCcw className="h-3.5 w-3.5" />
+                      Restore
+                    </button>
+                  ) : order.can_archive ? (
+                    <button
+                      onClick={() => openArchiveModal(order.id, order.order_number, "archive")}
+                      className="absolute top-3 right-3 flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-amber-700"
+                    >
+                      <Archive className="h-3.5 w-3.5" />
+                      Archive
+                    </button>
+                  ) : null}
+                </div>
               ))}
             </div>
           )}
@@ -153,7 +206,7 @@ export default function Orders() {
       </AdminAnimatedPage>
 
       {/* Order Detail Modal */}
-      {selectedOrder && <OrderDetailModal order={selectedOrder} onClose={closeOrderDetail} onStatusUpdate={handleStatusUpdate} onMarkFailed={handleMarkFailed} />}
+      {selectedOrder && <OrderDetailModal order={selectedOrder} onClose={closeOrderDetail} onStatusUpdate={handleStatusUpdate} onMarkFailed={handleMarkFailed} onArchive={openArchiveModal} />}
 
       {/* Quick Status Change Confirmation Modal */}
       <ConfirmStatusModal
@@ -167,6 +220,9 @@ export default function Orders() {
 
       {/* Quick Failure Modal */}
       <FailureReasonModal isOpen={failModal.isOpen} onClose={closeFailModal} onConfirm={confirmFailure} loading={updating} />
+
+      {/* Archive Confirmation Modal */}
+      <ArchiveConfirmModal isOpen={archiveModal.isOpen} onClose={closeArchiveModal} onConfirm={confirmArchive} orderNumber={archiveModal.orderNumber} action={archiveModal.action} loading={updating} />
 
       {/* Loading overlay for detail */}
       {detailLoading && (

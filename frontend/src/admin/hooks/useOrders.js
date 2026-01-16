@@ -3,24 +3,28 @@ import { useAdminToast } from './useAdminToast';
 import {
   getOrderMetrics,
   getAllOrders,
+  getArchivedOrders,
   getOrder,
   updateOrderStatus,
   markOrderFailed,
+  archiveOrder,
+  unarchiveOrder,
 } from '../services/orderService';
 
 export function useOrders() {
   const { showToast } = useAdminToast();
   const [orders, setOrders] = useState([]);
   const [metrics, setMetrics] = useState({
-    all: 0,
     processing: 0,
     out_for_delivery: 0,
     completed: 0,
     failed: 0,
+    archived: 0,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [viewMode, setViewMode] = useState('active'); // 'active' or 'archived'
+  const [filterStatus, setFilterStatus] = useState('processing'); // Default to processing
   const [searchTerm, setSearchTerm] = useState('');
 
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -36,14 +40,25 @@ export function useOrders() {
     isOpen: false,
     orderId: null,
   });
+  const [archiveModal, setArchiveModal] = useState({
+    isOpen: false,
+    orderId: null,
+    orderNumber: null,
+    action: null, // 'archive' or 'unarchive'
+  });
   const [updating, setUpdating] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
 
+    // Fetch orders based on view mode
+    const ordersPromise = viewMode === 'archived'
+      ? getArchivedOrders()
+      : getAllOrders();
+
     const [ordersResult, metricsResult] = await Promise.all([
-      getAllOrders(),
+      ordersPromise,
       getOrderMetrics(),
     ]);
 
@@ -56,16 +71,16 @@ export function useOrders() {
     if (metricsResult.success) {
       const data = metricsResult.data;
       setMetrics({
-        all: data.all || 0,
-        processing: (data.pending || 0) + (data.confirmed || 0) + (data.preparing || 0),
+        processing: data.processing || 0,
         out_for_delivery: data.out_for_delivery || 0,
-        completed: data.delivered || 0,
+        completed: data.completed || 0,
         failed: (data.failed || 0) + (data.cancelled || 0),
+        archived: data.archived || 0,
       });
     }
 
     setLoading(false);
-  }, []);
+  }, [viewMode]);
 
   useEffect(() => {
     fetchData();
@@ -173,6 +188,11 @@ export function useOrders() {
         order.order_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.customer?.name?.toLowerCase().includes(searchTerm.toLowerCase());
 
+      // In archived view, show all archived orders (no status filtering)
+      if (viewMode === 'archived') {
+        return matchesSearch;
+      }
+
       let matchesStatus = true;
       if (filterStatus === 'processing') {
         matchesStatus = ['pending', 'confirmed', 'preparing'].includes(order.status);
@@ -186,15 +206,60 @@ export function useOrders() {
 
       return matchesSearch && matchesStatus;
     });
-  }, [orders, searchTerm, filterStatus]);
+  }, [orders, searchTerm, filterStatus, viewMode]);
 
   const statusCards = useMemo(() => [
-    { key: 'all', label: 'All Orders', count: metrics.all },
-    { key: 'processing', label: 'Processing Orders', count: metrics.processing },
+    { key: 'processing', label: 'Processing', count: metrics.processing },
     { key: 'out_for_delivery', label: 'Out for Delivery', count: metrics.out_for_delivery },
-    { key: 'completed', label: 'Completed Orders', count: metrics.completed },
-    { key: 'failed', label: 'Failed Orders', count: metrics.failed },
+    { key: 'completed', label: 'Completed', count: metrics.completed },
+    { key: 'failed', label: 'Failed', count: metrics.failed },
   ], [metrics]);
+
+  // Archive handlers
+  const openArchiveModal = useCallback((orderId, orderNumber, action) => {
+    setArchiveModal({ isOpen: true, orderId, orderNumber, action });
+  }, []);
+
+  const closeArchiveModal = useCallback(() => {
+    setArchiveModal({ isOpen: false, orderId: null, orderNumber: null, action: null });
+  }, []);
+
+  const confirmArchive = useCallback(async () => {
+    const { orderId, action } = archiveModal;
+    setUpdating(true);
+
+    const result = action === 'archive'
+      ? await archiveOrder(orderId)
+      : await unarchiveOrder(orderId);
+
+    if (result.success) {
+      showToast(
+        action === 'archive' ? 'Order archived successfully' : 'Order restored successfully',
+        { type: 'success', dismissible: true }
+      );
+      await fetchData();
+      // Close detail modal if we archived/unarchived the currently viewed order
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder(null);
+      }
+    } else {
+      showToast(result.error || `Failed to ${action} order`, { type: 'error', dismissible: true, duration: 4000 });
+    }
+
+    setUpdating(false);
+    closeArchiveModal();
+  }, [archiveModal, fetchData, selectedOrder?.id, showToast, closeArchiveModal]);
+
+  // Handle view mode change
+  const handleViewModeChange = useCallback((mode) => {
+    setViewMode(mode);
+    // Reset filter status when switching to archived view
+    if (mode === 'archived') {
+      setFilterStatus('all');
+    } else {
+      setFilterStatus('processing');
+    }
+  }, []);
 
   return {
     orders,
@@ -202,15 +267,18 @@ export function useOrders() {
     metrics,
     loading,
     error,
+    viewMode,
     filterStatus,
     searchTerm,
     selectedOrder,
     detailLoading,
     confirmModal,
     failModal,
+    archiveModal,
     updating,
     statusCards,
 
+    setViewMode: handleViewModeChange,
     setFilterStatus,
     setSearchTerm,
     handleViewOrder,
@@ -222,6 +290,9 @@ export function useOrders() {
     confirmFailure,
     closeConfirmModal,
     closeFailModal,
+    openArchiveModal,
+    closeArchiveModal,
+    confirmArchive,
     refetch: fetchData,
   };
 }

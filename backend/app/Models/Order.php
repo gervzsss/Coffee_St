@@ -31,6 +31,8 @@ class Order extends Model
         'failure_reason',
         'delivery_proof_url',
         'notes',
+        'archived_at',
+        'archived_by',
     ];
 
     protected $casts = [
@@ -46,6 +48,7 @@ class Order extends Model
         'out_for_delivery_at' => 'datetime',
         'delivered_at' => 'datetime',
         'failed_at' => 'datetime',
+        'archived_at' => 'datetime',
     ];
 
     // Order status constants
@@ -62,6 +65,13 @@ class Order extends Model
     const STATUS_FAILED = 'failed';
 
     const STATUS_CANCELLED = 'cancelled';
+
+    // Statuses eligible for archiving (terminal statuses)
+    const ARCHIVABLE_STATUSES = [
+        self::STATUS_DELIVERED,
+        self::STATUS_FAILED,
+        self::STATUS_CANCELLED,
+    ];
 
     // Valid status transitions
     public static function getValidTransitions($currentStatus)
@@ -169,5 +179,45 @@ class Order extends Model
         ];
 
         return $labels[$this->status] ?? ucfirst($this->status);
+    }
+
+    /**
+     * Scope to get only non-archived orders
+     */
+    public function scopeNotArchived($query)
+    {
+        return $query->whereNull('archived_at');
+    }
+
+    /**
+     * Scope to get only archived orders
+     */
+    public function scopeArchived($query)
+    {
+        return $query->whereNotNull('archived_at');
+    }
+
+    /**
+     * Check if order can be archived
+     */
+    public function canBeArchived(): bool
+    {
+        return in_array($this->status, self::ARCHIVABLE_STATUSES) && is_null($this->archived_at);
+    }
+
+    /**
+     * Check if order is archived
+     */
+    public function isArchived(): bool
+    {
+        return ! is_null($this->archived_at);
+    }
+
+    /**
+     * Get the user who archived this order
+     */
+    public function archivedBy()
+    {
+        return $this->belongsTo(User::class, 'archived_by');
     }
 }

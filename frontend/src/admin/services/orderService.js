@@ -26,6 +26,21 @@ export const getAllOrders = async (filters = {}) => {
   }
 };
 
+export const getArchivedOrders = async (filters = {}) => {
+  try {
+    const response = await adminApi.get('/orders', {
+      params: { ...filters, archived: 'only' }
+    });
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Failed to fetch archived orders:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to fetch archived orders',
+    };
+  }
+};
+
 export const getOrder = async (id) => {
   try {
     const response = await adminApi.get(`/orders/${id}`);
@@ -88,11 +103,40 @@ export const uploadDeliveryProof = async (file) => {
   }
 };
 
+export const archiveOrder = async (id) => {
+  try {
+    const response = await adminApi.post(`/orders/${id}/archive`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Failed to archive order:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to archive order',
+    };
+  }
+};
+
+export const unarchiveOrder = async (id) => {
+  try {
+    const response = await adminApi.post(`/orders/${id}/unarchive`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Failed to restore order:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to restore order',
+    };
+  }
+};
+
 export default {
   getOrderMetrics,
   getAllOrders,
+  getArchivedOrders,
   getOrder,
   updateOrderStatus,
   markOrderFailed,
   uploadDeliveryProof,
+  archiveOrder,
+  unarchiveOrder,
 };
