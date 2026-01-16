@@ -1,7 +1,8 @@
+import { Archive, RotateCcw, Eye } from "lucide-react";
 import { STATUS_CONFIG } from "../../constants/orderStatus";
 import StatusDropdown from "./StatusDropdown";
 
-export default function OrderCard({ order, onViewDetails, onQuickStatusChange }) {
+export default function OrderCard({ order, onViewDetails, onQuickStatusChange, onArchive, viewMode }) {
   const statusConfig = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
 
   const getEstimatedPrepTime = () => {
@@ -104,10 +105,34 @@ export default function OrderCard({ order, onViewDetails, onQuickStatusChange })
       {/* Status Dropdown */}
       <StatusDropdown order={order} onStatusChange={onQuickStatusChange} />
 
-      {/* View Details Button */}
-      <button onClick={() => onViewDetails(order.id)} className="mt-3 w-full text-center text-sm font-medium text-[#30442B] hover:underline">
-        View Full Details →
-      </button>
+      {/* Action Buttons */}
+      <div className="mt-3 flex gap-2">
+        <button
+          onClick={() => onViewDetails(order.id)}
+          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#30442B] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#3d5637]"
+        >
+          <Eye className="h-4 w-4" />
+          <span>View Details</span>
+        </button>
+        {onArchive &&
+          (viewMode === "archived" ? (
+            <button
+              onClick={() => onArchive(order.id, order.order_number, "unarchive")}
+              className="flex items-center gap-1.5 rounded-lg bg-green-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-700"
+            >
+              <RotateCcw className="h-4 w-4" />
+              <span className="hidden sm:inline">Restore</span>
+            </button>
+          ) : order.can_archive ? (
+            <button
+              onClick={() => onArchive(order.id, order.order_number, "archive")}
+              className="flex items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-amber-700"
+            >
+              <Archive className="h-4 w-4" />
+              <span className="hidden sm:inline">Archive</span>
+            </button>
+          ) : null)}
+      </div>
     </div>
   );
 }

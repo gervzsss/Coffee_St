@@ -178,27 +178,7 @@ export default function Orders() {
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2 xl:grid-cols-3">
               {filteredOrders.map((order) => (
-                <div key={order.id} className="relative">
-                  <OrderCard order={order} onViewDetails={handleViewOrder} onQuickStatusChange={handleQuickStatusChange} />
-                  {/* Archive/Restore button overlay */}
-                  {viewMode === "archived" ? (
-                    <button
-                      onClick={() => openArchiveModal(order.id, order.order_number, "unarchive")}
-                      className="absolute top-3 right-3 flex items-center gap-1.5 rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-green-700"
-                    >
-                      <RotateCcw className="h-3.5 w-3.5" />
-                      Restore
-                    </button>
-                  ) : order.can_archive ? (
-                    <button
-                      onClick={() => openArchiveModal(order.id, order.order_number, "archive")}
-                      className="absolute top-3 right-3 flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-amber-700"
-                    >
-                      <Archive className="h-3.5 w-3.5" />
-                      Archive
-                    </button>
-                  ) : null}
-                </div>
+                <OrderCard key={order.id} order={order} onViewDetails={handleViewOrder} onQuickStatusChange={handleQuickStatusChange} onArchive={openArchiveModal} viewMode={viewMode} />
               ))}
             </div>
           )}
