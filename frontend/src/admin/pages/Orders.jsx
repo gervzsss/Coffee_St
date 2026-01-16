@@ -58,22 +58,21 @@ export default function Orders() {
                 <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">Manage customer orders and track their progress</p>
               </div>
               {/* View Mode Toggle */}
-              <div className="flex rounded-lg border border-gray-200 bg-white p-1">
+              <div className="flex rounded-full bg-gray-100 p-1">
                 <button
                   onClick={() => setViewMode("active")}
-                  className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                    viewMode === "active" ? "bg-[#30442B] text-white" : "text-gray-600 hover:bg-gray-100"
+                  className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all sm:px-5 sm:py-2.5 ${
+                    viewMode === "active" ? "bg-[#30442B] text-white shadow-sm" : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
                   Active Orders
                 </button>
                 <button
                   onClick={() => setViewMode("archived")}
-                  className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                    viewMode === "archived" ? "bg-[#30442B] text-white" : "text-gray-600 hover:bg-gray-100"
+                  className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all sm:px-5 sm:py-2.5 ${
+                    viewMode === "archived" ? "bg-[#30442B] text-white shadow-sm" : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
-                  <Archive className="h-4 w-4" />
                   Archived ({metrics.archived})
                 </button>
               </div>

@@ -103,16 +103,25 @@ export default function Products() {
               <h1 className="mb-1 text-2xl font-bold text-gray-900 sm:mb-2 sm:text-3xl lg:text-4xl">Catalog Management</h1>
               <p className="text-sm text-gray-600 sm:text-base">Manage your products and categories</p>
             </div>
-            <button
-              onClick={toggleArchivedView}
-              className="flex items-center justify-center gap-2 rounded-full bg-[#30442B] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#22301e] sm:px-5 sm:py-2.5"
-            >
-              <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-              </svg>
-              <span className="hidden sm:inline">{showArchived ? "Active Products" : "Archived Products"}</span>
-              <span className="sm:hidden">{showArchived ? "Active" : "Archived"}</span>
-            </button>
+            {/* View Mode Toggle */}
+            <div className="flex rounded-full bg-gray-100 p-1">
+              <button
+                onClick={() => !showArchived || toggleArchivedView()}
+                className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all sm:px-5 sm:py-2.5 ${
+                  !showArchived ? "bg-[#30442B] text-white shadow-sm" : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Active
+              </button>
+              <button
+                onClick={() => showArchived || toggleArchivedView()}
+                className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all sm:px-5 sm:py-2.5 ${
+                  showArchived ? "bg-[#30442B] text-white shadow-sm" : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Archived
+              </button>
+            </div>
           </div>
 
           {/* Metrics Cards */}
