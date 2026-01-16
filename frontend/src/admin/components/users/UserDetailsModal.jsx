@@ -1,6 +1,8 @@
 export default function UserDetailsModal({ user, onClose }) {
   if (!user) return null;
 
+  const isDeleted = !!user.deleted_at;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
       <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white sm:rounded-2xl lg:max-w-xl">
@@ -8,7 +10,10 @@ export default function UserDetailsModal({ user, onClose }) {
           {/* Header */}
           <div className="mb-4 flex items-start justify-between sm:mb-5 lg:mb-6">
             <div>
-              <h2 className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">User Details – {user.name}</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold text-gray-900 sm:text-xl lg:text-2xl">User Details – {user.name}</h2>
+                {isDeleted && <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600">Deleted</span>}
+              </div>
               <p className="mt-1 text-sm text-gray-500 sm:text-base">Complete user information and activity history</p>
             </div>
             <button onClick={onClose} className="p-1 text-gray-400 transition-colors hover:text-gray-600">
@@ -17,6 +22,26 @@ export default function UserDetailsModal({ user, onClose }) {
               </svg>
             </button>
           </div>
+
+          {/* Deleted Account Notice */}
+          {isDeleted && (
+            <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:mb-5 sm:p-4">
+              <div className="flex items-center gap-2">
+                <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Account Deleted</p>
+                  <p className="text-xs text-gray-500">Deleted on {new Date(user.deleted_at).toLocaleDateString("en-CA")}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* User Info Grid */}
           <div className="mb-4 rounded-lg border border-gray-200 p-3 sm:mb-5 sm:rounded-xl sm:p-4 lg:mb-6 lg:p-5">
@@ -31,7 +56,9 @@ export default function UserDetailsModal({ user, onClose }) {
               </div>
               <div>
                 <p className="text-xs text-gray-500 sm:text-sm">Status</p>
-                <p className={`text-sm font-medium capitalize sm:text-base ${user.status === "active" ? "text-[#30442B]" : "text-red-600"}`}>{user.status}</p>
+                <p className={`text-sm font-medium capitalize sm:text-base ${isDeleted ? "text-gray-500" : user.status === "active" ? "text-[#30442B]" : "text-red-600"}`}>
+                  {isDeleted ? "Deleted" : user.status}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 sm:text-sm">Total Orders</p>

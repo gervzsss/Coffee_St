@@ -16,11 +16,13 @@ class UserController extends Controller
         $totalCustomers = User::where('is_admin', false)->count();
         $activeUsers = User::where('is_admin', false)->where('status', 'active')->count();
         $bannedUsers = User::where('is_admin', false)->where('status', 'restricted')->count();
+        $deletedUsers = User::onlyTrashed()->where('is_admin', false)->count();
 
         return response()->json([
             'total_customers' => $totalCustomers,
             'active_users' => $activeUsers,
             'banned_users' => $bannedUsers,
+            'deleted_users' => $deletedUsers,
         ]);
     }
 
@@ -32,6 +34,14 @@ class UserController extends Controller
         $query = User::where('is_admin', false)
             ->withCount('orders')
             ->withSum('orders', 'total');
+
+        // Handle trashed filter: none (default), only, with
+        $trashed = $request->input('trashed', 'none');
+        if ($trashed === 'only') {
+            $query->onlyTrashed();
+        } elseif ($trashed === 'with') {
+            $query->withTrashed();
+        }
 
         // Search by name, email, or phone
         if ($request->has('search') && ! empty($request->search)) {
@@ -62,6 +72,7 @@ class UserController extends Controller
                 'total_spent' => $user->orders_sum_total ?? 0,
                 'failed_orders_count' => $user->failed_orders_count ?? 0,
                 'created_at' => $user->created_at,
+                'deleted_at' => $user->deleted_at,
             ];
         });
 
@@ -71,13 +82,20 @@ class UserController extends Controller
     /**
      * Get detailed user information
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $user = User::with([
+        $query = User::with([
             'orders' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             },
-        ])->withCount('orders')->withSum('orders', 'total')->findOrFail($id);
+        ])->withCount('orders')->withSum('orders', 'total');
+
+        // Include trashed users if requested
+        if ($request->boolean('include_trashed')) {
+            $query->withTrashed();
+        }
+
+        $user = $query->findOrFail($id);
 
         // Use the maintained failed_orders_count column
         $failedOrdersCount = $user->failed_orders_count ?? 0;
@@ -98,6 +116,7 @@ class UserController extends Controller
             'has_warnings' => $failedOrdersCount > 0,
             'created_at' => $user->created_at,
             'status_changed_at' => $user->status_changed_at,
+            'deleted_at' => $user->deleted_at,
         ]);
     }
 
@@ -166,6 +185,40 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User deleted successfully',
+        ]);
+    }
+
+    /**
+     * Restore a soft-deleted user account
+     */
+    public function restore($id)
+    {
+        $user = User::onlyTrashed()->where('is_admin', false)->find($id);
+
+        if (! $user) {
+            return response()->json([
+                'message' => 'Deleted user not found or cannot be restored',
+            ], 404);
+        }
+
+        // Check for email conflict with active users (future-proofing)
+        $emailConflict = User::where('email', $user->email)->exists();
+        if ($emailConflict) {
+            return response()->json([
+                'message' => 'Cannot restore: email address is already in use by another account',
+            ], 409);
+        }
+
+        $user->restore();
+
+        return response()->json([
+            'message' => 'User account restored successfully',
+            'user' => [
+                'id' => $user->id,
+                'email' => $user->email,
+                'name' => trim($user->first_name.' '.$user->last_name) ?: 'N/A',
+                'deleted_at' => null,
+            ],
         ]);
     }
 }

@@ -26,9 +26,23 @@ export const getAllUsers = async (filters = {}) => {
   }
 };
 
-export const getUser = async (id) => {
+export const getDeletedUsers = async (filters = {}) => {
   try {
-    const response = await adminApi.get(`/users/${id}`);
+    const response = await adminApi.get('/users', { params: { ...filters, trashed: 'only' } });
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Failed to fetch deleted users:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to fetch deleted users',
+    };
+  }
+};
+
+export const getUser = async (id, includeTrash = false) => {
+  try {
+    const params = includeTrash ? { include_trashed: 1 } : {};
+    const response = await adminApi.get(`/users/${id}`, { params });
     return { success: true, data: response.data };
   } catch (error) {
     console.error('Failed to fetch user:', error);
@@ -48,6 +62,19 @@ export const updateUserStatus = async (id, status) => {
     return {
       success: false,
       error: error.response?.data?.message || 'Failed to update user status',
+    };
+  }
+};
+
+export const restoreUser = async (id) => {
+  try {
+    const response = await adminApi.post(`/users/${id}/restore`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Failed to restore user:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to restore user',
     };
   }
 };
@@ -81,8 +108,10 @@ export const deleteUser = async (id) => {
 export default {
   getCustomerMetrics,
   getAllUsers,
+  getDeletedUsers,
   getUser,
   updateUserStatus,
+  restoreUser,
   updateUser,
   deleteUser,
 };

@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAdminToast } from './useAdminToast';
 import {
   getAllUsers,
+  getDeletedUsers,
   getCustomerMetrics,
   getUser,
   updateUserStatus,
+  restoreUser,
 } from '../services/userService';
 
 export function useUsers() {
@@ -15,15 +17,18 @@ export function useUsers() {
     total_customers: 0,
     active_users: 0,
     banned_users: 0,
+    deleted_users: 0,
   });
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [showBlocked, setShowBlocked] = useState(false);
+  // viewMode: 'active' | 'blocked' | 'deleted'
+  const [viewMode, setViewMode] = useState('active');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -38,13 +43,19 @@ export function useUsers() {
     const filters = {};
     if (debouncedSearch) filters.search = debouncedSearch;
 
-    const usersResult = await getAllUsers(filters);
+    let usersResult;
+    if (viewMode === 'deleted') {
+      usersResult = await getDeletedUsers(filters);
+    } else {
+      usersResult = await getAllUsers(filters);
+    }
+
     if (usersResult.success) {
       setUsers(usersResult.data);
     }
 
     setLoading(false);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, viewMode]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -58,14 +69,18 @@ export function useUsers() {
   }, [fetchData]);
 
   const displayedUsers = users.filter((user) => {
-    if (showBlocked) {
+    if (viewMode === 'deleted') {
+      return true; // Already filtered by API
+    }
+    if (viewMode === 'blocked') {
       return user.status === 'restricted';
     }
     return user.status === 'active';
   });
 
   const handleViewDetails = async (userId) => {
-    const result = await getUser(userId);
+    const includeTrash = viewMode === 'deleted';
+    const result = await getUser(userId, includeTrash);
     if (result.success) {
       setSelectedUser(result.data);
       setShowDetailsModal(true);
@@ -110,8 +125,42 @@ export function useUsers() {
     setConfirmAction(null);
   };
 
+  // Restore deleted user handlers
+  const handleRestoreClick = (user) => {
+    setSelectedUser(user);
+    setShowRestoreModal(true);
+  };
+
+  const confirmRestore = async () => {
+    if (!selectedUser) return;
+
+    setActionLoading(true);
+    const result = await restoreUser(selectedUser.id);
+
+    if (result.success) {
+      showToast('User account restored successfully', { type: 'success', dismissible: true });
+      await fetchData();
+    } else {
+      showToast(result.error || 'Failed to restore user', { type: 'error', dismissible: true, duration: 4000 });
+    }
+
+    setActionLoading(false);
+    setShowRestoreModal(false);
+    setSelectedUser(null);
+  };
+
+  const closeRestoreModal = () => {
+    setShowRestoreModal(false);
+    setSelectedUser(null);
+  };
+
+  // Legacy toggle for backward compatibility - now cycles through modes
   const toggleBlockedView = () => {
-    setShowBlocked(!showBlocked);
+    setViewMode(viewMode === 'active' ? 'blocked' : 'active');
+  };
+
+  const setView = (mode) => {
+    setViewMode(mode);
   };
 
   const getWarningText = (user) => {
@@ -129,12 +178,16 @@ export function useUsers() {
 
     searchTerm,
     setSearchTerm,
-    showBlocked,
+    viewMode,
+    setView,
+    // Legacy support
+    showBlocked: viewMode === 'blocked',
     toggleBlockedView,
 
     selectedUser,
     showDetailsModal,
     showConfirmModal,
+    showRestoreModal,
     confirmAction,
     actionLoading,
 
@@ -143,6 +196,11 @@ export function useUsers() {
     handleStatusChange,
     confirmStatusChange,
     closeConfirmModal,
+
+    // Restore handlers
+    handleRestoreClick,
+    confirmRestore,
+    closeRestoreModal,
 
     getWarningText,
     refetch: fetchData,
