@@ -3,6 +3,8 @@ export { default as ConfirmStatusModal } from './ConfirmStatusModal';
 export { default as FailureReasonModal } from './FailureReasonModal';
 export { default as OrderDetailModal } from './OrderDetailModal';
 export { default as OrderCard } from './OrderCard';
+export { default as OrderTable } from './OrderTable';
 export { default as StatusDropdown } from './StatusDropdown';
 export { default as OrderStatusCardSkeleton } from './OrderStatusCardSkeleton';
 export { default as OrderCardSkeleton } from './OrderCardSkeleton';
+export { default as OrderTableSkeleton } from './OrderTableSkeleton';

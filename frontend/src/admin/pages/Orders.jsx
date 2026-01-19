@@ -2,7 +2,17 @@ import { useState } from "react";
 import { RefreshCw, Archive, RotateCcw } from "lucide-react";
 import { AdminLayout } from "../components/layout";
 import { AdminAnimatedPage, LoadingSpinner } from "../components/common";
-import { OrderCard, OrderDetailModal, ConfirmStatusModal, FailureReasonModal, ArchiveConfirmModal, OrderStatusCardSkeleton, OrderCardSkeleton } from "../components/orders";
+import {
+  OrderCard,
+  OrderTable,
+  OrderDetailModal,
+  ConfirmStatusModal,
+  FailureReasonModal,
+  ArchiveConfirmModal,
+  OrderStatusCardSkeleton,
+  OrderCardSkeleton,
+  OrderTableSkeleton,
+} from "../components/orders";
 import { useOrders } from "../hooks/useOrders";
 
 export default function Orders() {
@@ -157,11 +167,17 @@ export default function Orders() {
 
           {/* Orders Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2 xl:grid-cols-3">
-              <OrderCardSkeleton />
-              <OrderCardSkeleton />
-              <OrderCardSkeleton />
-            </div>
+            viewMode === "archived" ? (
+              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white sm:rounded-2xl">
+                <OrderTableSkeleton />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2 xl:grid-cols-3">
+                <OrderCardSkeleton />
+                <OrderCardSkeleton />
+                <OrderCardSkeleton />
+              </div>
+            )
           ) : filteredOrders.length === 0 ? (
             <div className="rounded-xl border border-gray-200 bg-white py-8 text-center sm:py-12">
               <svg className="mx-auto mb-3 h-12 w-12 text-gray-300 sm:mb-4 sm:h-16 sm:w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,6 +189,10 @@ export default function Orders() {
                 />
               </svg>
               <p className="text-sm text-gray-500 sm:text-base">{viewMode === "archived" ? "No archived orders" : "No orders found"}</p>
+            </div>
+          ) : viewMode === "archived" ? (
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white sm:rounded-2xl">
+              <OrderTable orders={filteredOrders} onViewDetails={handleViewOrder} onRestore={openArchiveModal} />
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2 xl:grid-cols-3">
