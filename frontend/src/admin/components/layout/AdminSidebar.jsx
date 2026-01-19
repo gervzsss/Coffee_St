@@ -126,7 +126,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unre
         <div
           className={`relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-lg ring-2 ${isPosMode ? "bg-amber-100 ring-amber-400/30" : "bg-white ring-white/10"}`}
         >
-          {isPosMode ? <Store className="h-7 w-7 text-amber-700" /> : <img src={logo} alt="Coffee St. Logo" className="h-full w-full object-cover" />}
+          <img src={logo} alt="Coffee St. Logo" className="h-full w-full object-cover" />
         </div>
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="text-base font-bold tracking-tight">Coffee St.</span>
