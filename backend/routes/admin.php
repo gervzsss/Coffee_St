@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\POSController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\UserController;
@@ -90,4 +91,12 @@ Route::middleware(['auth:sanctum', 'token.timeout', 'admin'])->group(function ()
     // Image Upload
     Route::post('/upload/image', [ImageUploadController::class, 'upload']);
     Route::delete('/upload/image', [ImageUploadController::class, 'destroy']);
+
+    // POS (Point of Sale)
+    Route::get('/pos/products', [POSController::class, 'products']);
+    Route::get('/pos/products/{id}/variants', [POSController::class, 'productVariants']);
+    Route::get('/pos/orders', [POSController::class, 'orders']);
+    Route::post('/pos/orders', [POSController::class, 'store']);
+    Route::get('/pos/orders/{id}', [POSController::class, 'show']);
+    Route::patch('/pos/orders/{id}/status', [POSController::class, 'updateStatus']);
 });

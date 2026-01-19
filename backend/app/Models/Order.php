@@ -12,6 +12,7 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'order_number',
+        'order_source',
         'status',
         'subtotal',
         'delivery_fee',
@@ -22,6 +23,8 @@ class Order extends Model
         'delivery_address',
         'delivery_contact',
         'delivery_instructions',
+        'pos_customer_name',
+        'pos_customer_phone',
         'payment_method',
         'confirmed_at',
         'preparing_at',
@@ -66,6 +69,11 @@ class Order extends Model
 
     const STATUS_CANCELLED = 'cancelled';
 
+    // Order source constants
+    const SOURCE_ONLINE = 'online';
+
+    const SOURCE_POS = 'pos';
+
     // Statuses eligible for archiving (terminal statuses)
     const ARCHIVABLE_STATUSES = [
         self::STATUS_DELIVERED,
@@ -73,8 +81,8 @@ class Order extends Model
         self::STATUS_CANCELLED,
     ];
 
-    // Valid status transitions
-    public static function getValidTransitions($currentStatus)
+    // Valid status transitions for online orders (with delivery)
+    public static function getOnlineTransitions($currentStatus)
     {
         $transitions = [
             self::STATUS_PENDING => [self::STATUS_CONFIRMED, self::STATUS_CANCELLED],
@@ -89,12 +97,52 @@ class Order extends Model
         return $transitions[$currentStatus] ?? [];
     }
 
+    // Valid status transitions for POS orders (no delivery step)
+    public static function getPosTransitions($currentStatus)
+    {
+        $transitions = [
+            self::STATUS_PENDING => [self::STATUS_CONFIRMED, self::STATUS_CANCELLED],
+            self::STATUS_CONFIRMED => [self::STATUS_PREPARING, self::STATUS_CANCELLED],
+            self::STATUS_PREPARING => [self::STATUS_DELIVERED, self::STATUS_CANCELLED],
+            self::STATUS_DELIVERED => [],
+            self::STATUS_CANCELLED => [],
+        ];
+
+        return $transitions[$currentStatus] ?? [];
+    }
+
+    // Valid status transitions based on order source
+    public static function getValidTransitions($currentStatus, $orderSource = null)
+    {
+        if ($orderSource === self::SOURCE_POS) {
+            return self::getPosTransitions($currentStatus);
+        }
+
+        return self::getOnlineTransitions($currentStatus);
+    }
+
     /**
      * Check if a status transition is valid
      */
     public function canTransitionTo($newStatus)
     {
-        return in_array($newStatus, self::getValidTransitions($this->status));
+        return in_array($newStatus, self::getValidTransitions($this->status, $this->order_source));
+    }
+
+    /**
+     * Check if this is a POS order
+     */
+    public function isPosOrder(): bool
+    {
+        return $this->order_source === self::SOURCE_POS;
+    }
+
+    /**
+     * Check if this is an online order
+     */
+    public function isOnlineOrder(): bool
+    {
+        return $this->order_source === self::SOURCE_ONLINE;
     }
 
     /**

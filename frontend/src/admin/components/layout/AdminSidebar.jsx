@@ -1,11 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
+import { usePosMode } from "../../context/PosModeContext";
 import logo from "/favicon-padded.png";
 import { useState, useRef, useEffect } from "react";
-import { Bell } from "lucide-react";
+import { Bell, ShoppingCart, ArrowLeft, Store, LayoutDashboard, Package, ShoppingBag, Users, MessageSquare, ClipboardList } from "lucide-react";
 
 export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unreadCount = 0, onNotificationClick }) {
   const { admin, logout } = useAdminAuth();
+  const { isPosMode, togglePosMode, disablePosMode } = usePosMode();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -45,65 +47,61 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unre
     };
   }, [isMenuOpen]);
 
-  const navItems = [
+  // Regular admin navigation items
+  const adminNavItems = [
     {
       path: "/admin/dashboard",
       label: "Dashboard",
-      icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="14" y="14" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
-        </svg>
-      ),
+      icon: <LayoutDashboard className="h-5 w-5" />,
     },
     {
       path: "/admin/products",
       label: "Products",
-      icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-          <line x1="12" y1="22.08" x2="12" y2="12" />
-        </svg>
-      ),
+      icon: <Package className="h-5 w-5" />,
     },
     {
       path: "/admin/orders",
       label: "Orders",
-      icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <path d="M16 10a4 4 0 01-8 0" />
-        </svg>
-      ),
+      icon: <ShoppingBag className="h-5 w-5" />,
     },
     {
       path: "/admin/users",
       label: "Users",
-      icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M23 21v-2a4 4 0 00-3-3.87" />
-          <path d="M16 3.13a4 4 0 010 7.75" />
-        </svg>
-      ),
+      icon: <Users className="h-5 w-5" />,
     },
     {
       path: "/admin/inquiries",
       label: "Inquiries",
-      icon: (
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-          <line x1="9" y1="10" x2="15" y2="10" />
-          <line x1="9" y1="14" x2="12" y2="14" />
-        </svg>
-      ),
+      icon: <MessageSquare className="h-5 w-5" />,
     },
   ];
+
+  // POS mode navigation items
+  const posNavItems = [
+    {
+      path: "/admin/pos",
+      label: "New Sale",
+      icon: <ShoppingCart className="h-5 w-5" />,
+    },
+    {
+      path: "/admin/pos/orders",
+      label: "POS Orders",
+      icon: <ClipboardList className="h-5 w-5" />,
+    },
+  ];
+
+  const navItems = isPosMode ? posNavItems : adminNavItems;
+
+  const handlePosToggle = () => {
+    if (isPosMode) {
+      disablePosMode();
+    } else {
+      togglePosMode();
+    }
+    if (onMobileClose) {
+      onMobileClose();
+    }
+  };
 
   return (
     <aside
@@ -124,25 +122,51 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unre
       </button>
 
       {/* Logo & Brand Section */}
-      <div className="relative flex items-center gap-3 border-b border-white/10 bg-black/10 px-5 py-6 backdrop-blur-sm">
-        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-lg ring-2 ring-white/10">
-          <img src={logo} alt="Coffee St. Logo" className="h-full w-full object-cover" />
+      <div className={`relative flex items-center gap-3 border-b border-white/10 px-5 py-6 backdrop-blur-sm ${isPosMode ? "bg-amber-900/30" : "bg-black/10"}`}>
+        <div
+          className={`relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-lg ring-2 ${isPosMode ? "bg-amber-100 ring-amber-400/30" : "bg-white ring-white/10"}`}
+        >
+          {isPosMode ? <Store className="h-7 w-7 text-amber-700" /> : <img src={logo} alt="Coffee St. Logo" className="h-full w-full object-cover" />}
         </div>
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="text-base font-bold tracking-tight">Coffee St.</span>
-          <span className="text-xs font-medium text-white/60">Admin Portal</span>
+          <span className={`text-xs font-medium ${isPosMode ? "text-amber-300" : "text-white/60"}`}>{isPosMode ? "POS Mode" : "Admin Portal"}</span>
         </div>
-        {/* Notification Icon - Hidden on mobile to avoid overlap with close button */}
+        {/* Notification Icon - Hidden on mobile and in POS mode */}
+        {!isPosMode && (
+          <button
+            onClick={onNotificationClick}
+            className="relative hidden h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/20 active:scale-95 lg:flex"
+            aria-label="Notifications"
+          >
+            <Bell className="h-5 w-5 text-white" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white ring-2 ring-[#30442B]">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </button>
+        )}
+      </div>
+
+      {/* POS Mode Toggle Button */}
+      <div className="relative px-3 pt-4">
         <button
-          onClick={onNotificationClick}
-          className="relative hidden h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/20 active:scale-95 lg:flex"
-          aria-label="Notifications"
+          onClick={handlePosToggle}
+          className={`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 font-medium transition-all duration-200 ${
+            isPosMode ? "bg-white/10 text-white hover:bg-white/20" : "bg-amber-500/20 text-amber-300 hover:bg-amber-500/30"
+          }`}
         >
-          <Bell className="h-5 w-5 text-white" />
-          {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white ring-2 ring-[#30442B]">
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
+          {isPosMode ? (
+            <>
+              <ArrowLeft className="h-5 w-5" />
+              <span>Exit POS Mode</span>
+            </>
+          ) : (
+            <>
+              <Store className="h-5 w-5" />
+              <span>Enter POS Mode</span>
+            </>
           )}
         </button>
       </div>
@@ -150,7 +174,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unre
       {/* Navigation Links */}
       <nav className="relative mt-3 flex flex-1 flex-col overflow-y-auto px-3">
         <div className="mb-2 px-3">
-          <span className="text-xs font-bold tracking-wider text-white/40 uppercase">Menu</span>
+          <span className="text-xs font-bold tracking-wider text-white/40 uppercase">{isPosMode ? "Point of Sale" : "Menu"}</span>
         </div>
         <ul className="space-y-1">
           {navItems.map((item) => (

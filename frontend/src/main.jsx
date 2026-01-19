@@ -28,9 +28,13 @@ import AdminProducts from "./admin/pages/Products.jsx";
 import AdminOrders from "./admin/pages/Orders.jsx";
 import AdminUsers from "./admin/pages/Users.jsx";
 import Inquiries from "./admin/pages/Inquiries.jsx";
+import POS from "./admin/pages/POS.jsx";
+import POSOrders from "./admin/pages/POSOrders.jsx";
+import POSOrderDetail from "./admin/pages/POSOrderDetail.jsx";
 
 import { AdminAuthProvider } from "./admin/context/AdminAuthContext.jsx";
 import { AdminToastProvider } from "./admin/context/ToastContext.jsx";
+import { PosModeProvider } from "./admin/context/PosModeContext.jsx";
 import { AdminProtectedRoute } from "./admin/components/layout";
 import { useToast } from "./user/hooks/useToast";
 
@@ -117,50 +121,77 @@ function UserAppContent() {
 
 function AdminAppContent() {
   return (
-    <Routes>
-      <Route index element={<AdminLogin />} />
-      <Route path="login" element={<AdminLogin />} />
-      <Route
-        path="dashboard"
-        element={
-          <AdminProtectedRoute>
-            <Dashboard />
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="products"
-        element={
-          <AdminProtectedRoute>
-            <AdminProducts />
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="orders"
-        element={
-          <AdminProtectedRoute>
-            <AdminOrders />
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="users"
-        element={
-          <AdminProtectedRoute>
-            <AdminUsers />
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="inquiries"
-        element={
-          <AdminProtectedRoute>
-            <Inquiries />
-          </AdminProtectedRoute>
-        }
-      />
-    </Routes>
+    <PosModeProvider>
+      <Routes>
+        <Route index element={<AdminLogin />} />
+        <Route path="login" element={<AdminLogin />} />
+        <Route
+          path="dashboard"
+          element={
+            <AdminProtectedRoute>
+              <Dashboard />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="products"
+          element={
+            <AdminProtectedRoute>
+              <AdminProducts />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="orders"
+          element={
+            <AdminProtectedRoute>
+              <AdminOrders />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="users"
+          element={
+            <AdminProtectedRoute>
+              <AdminUsers />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="inquiries"
+          element={
+            <AdminProtectedRoute>
+              <Inquiries />
+            </AdminProtectedRoute>
+          }
+        />
+        {/* POS Mode Routes */}
+        <Route
+          path="pos"
+          element={
+            <AdminProtectedRoute>
+              <POS />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="pos/orders"
+          element={
+            <AdminProtectedRoute>
+              <POSOrders />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="pos/order/:id"
+          element={
+            <AdminProtectedRoute>
+              <POSOrderDetail />
+            </AdminProtectedRoute>
+          }
+        />
+      </Routes>
+    </PosModeProvider>
   );
 }
 

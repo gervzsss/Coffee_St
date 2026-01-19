@@ -81,6 +81,11 @@ class OrderController extends Controller
             }
         }
 
+        // Filter by order source (online/pos)
+        if ($request->has('order_source') && ! empty($request->order_source)) {
+            $query->where('order_source', $request->order_source);
+        }
+
         // Search by order number or customer name
         if ($request->has('search') && ! empty($request->search)) {
             $search = $request->search;
@@ -102,9 +107,15 @@ class OrderController extends Controller
             return [
                 'id' => $order->id,
                 'order_number' => $order->order_number,
+                'order_source' => $order->order_source ?? 'online',
                 'status' => $order->status,
                 'status_label' => $order->status_label,
-                'customer' => [
+                'customer' => $order->isPosOrder() ? [
+                    'id' => $order->user->id,
+                    'name' => $order->pos_customer_name ?? 'Walk-in Customer',
+                    'email' => null,
+                    'phone' => $order->pos_customer_phone,
+                ] : [
                     'id' => $order->user->id,
                     'name' => $order->user->first_name.' '.$order->user->last_name,
                     'email' => $order->user->email,
@@ -141,6 +152,7 @@ class OrderController extends Controller
                 'time_ago' => $order->created_at->diffForHumans(),
                 'archived_at' => $order->archived_at,
                 'can_archive' => $order->canBeArchived(),
+                'valid_transitions' => Order::getValidTransitions($order->status, $order->order_source ?? 'online'),
             ];
         });
 
@@ -162,9 +174,16 @@ class OrderController extends Controller
         return response()->json([
             'id' => $order->id,
             'order_number' => $order->order_number,
+            'order_source' => $order->order_source ?? 'online',
             'status' => $order->status,
             'status_label' => $order->status_label,
-            'customer' => [
+            'customer' => $order->isPosOrder() ? [
+                'id' => $order->user->id,
+                'name' => $order->pos_customer_name ?? 'Walk-in Customer',
+                'email' => null,
+                'phone' => $order->pos_customer_phone,
+                'address' => null,
+            ] : [
                 'id' => $order->user->id,
                 'name' => $order->user->first_name.' '.$order->user->last_name,
                 'email' => $order->user->email,
@@ -218,7 +237,7 @@ class OrderController extends Controller
                     'created_at' => $log->created_at,
                 ];
             }),
-            'valid_transitions' => Order::getValidTransitions($order->status),
+            'valid_transitions' => Order::getValidTransitions($order->status, $order->order_source ?? 'online'),
         ]);
     }
 
@@ -243,7 +262,7 @@ class OrderController extends Controller
         if (! $order->canTransitionTo($newStatus)) {
             return response()->json([
                 'message' => "Cannot transition from '{$oldStatus}' to '{$newStatus}'",
-                'valid_transitions' => Order::getValidTransitions($oldStatus),
+                'valid_transitions' => Order::getValidTransitions($oldStatus, $order->order_source ?? 'online'),
             ], 422);
         }
 
