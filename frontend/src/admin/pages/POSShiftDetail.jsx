@@ -7,6 +7,7 @@ export default function POSShiftDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [shift, setShift] = useState(null);
+  const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,7 +17,8 @@ export default function POSShiftDetail() {
     try {
       const response = await getShiftDetail(id);
       if (response.success) {
-        setShift(response.data);
+        setShift(response.data?.shift || null);
+        setOrders(response.data?.orders || []);
       } else {
         setError(response.error || "Failed to load shift details");
       }
@@ -144,7 +146,7 @@ export default function POSShiftDetail() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Opened By</p>
-                <p className="mt-1 text-sm font-medium text-gray-900">{shift.opened_by_user?.name || "Unknown"}</p>
+                <p className="mt-1 text-sm font-medium text-gray-900">{shift.opened_by?.name || "Unknown"}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Closed</p>
@@ -152,7 +154,7 @@ export default function POSShiftDetail() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Closed By</p>
-                <p className="mt-1 text-sm font-medium text-gray-900">{shift.closed_by_user?.name || "-"}</p>
+                <p className="mt-1 text-sm font-medium text-gray-900">{shift.closed_by?.name || "-"}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Duration</p>
@@ -160,7 +162,7 @@ export default function POSShiftDetail() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Orders</p>
-                <p className="mt-1 text-sm font-medium text-gray-900">{shift.orders?.length || 0}</p>
+                <p className="mt-1 text-sm font-medium text-gray-900">{shift.orders_count || 0}</p>
               </div>
             </div>
 
@@ -182,7 +184,7 @@ export default function POSShiftDetail() {
               </div>
               <div className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
                 <span className="text-sm text-gray-600">Cash Sales</span>
-                <span className="text-sm font-medium text-green-600">+{formatCurrency(shift.total_cash_sales || 0)}</span>
+                <span className="text-sm font-medium text-green-600">+{formatCurrency(shift.cash_sales_total || 0)}</span>
               </div>
               <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-4 py-3">
                 <span className="text-sm font-medium text-gray-900">Expected Cash</span>
@@ -211,9 +213,9 @@ export default function POSShiftDetail() {
           {/* Orders Table */}
           <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
             <div className="border-b border-gray-200 px-6 py-4">
-              <h2 className="text-lg font-semibold text-gray-900">Orders ({shift.orders?.length || 0})</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Orders ({orders.length || 0})</h2>
             </div>
-            {shift.orders && shift.orders.length > 0 ? (
+            {orders.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
@@ -227,15 +229,15 @@ export default function POSShiftDetail() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {shift.orders.map((order) => (
+                    {orders.map((order) => (
                       <tr key={order.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <Link to={`/admin/orders/${order.id}`} className="text-sm font-medium text-emerald-600 hover:text-emerald-700">
+                          <Link to={`/admin/pos/order/${order.id}`} className="text-sm font-medium text-emerald-600 hover:text-emerald-700">
                             #{order.order_number}
                           </Link>
                         </td>
                         <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{formatTime(order.created_at)}</td>
-                        <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{order.order_items?.length || 0} items</td>
+                        <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{order.items_count || 0} items</td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${
@@ -246,7 +248,7 @@ export default function POSShiftDetail() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">{getOrderStatusBadge(order.status)}</td>
-                        <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap text-gray-900">{formatCurrency(order.total_amount)}</td>
+                        <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap text-gray-900">{formatCurrency(order.total)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -276,16 +278,16 @@ export default function POSShiftDetail() {
             <div className="space-y-4">
               <div className="rounded-lg bg-emerald-50 p-4">
                 <p className="text-sm text-emerald-600">Total Sales</p>
-                <p className="mt-1 text-2xl font-bold text-emerald-700">{formatCurrency(shift.total_sales || 0)}</p>
+                <p className="mt-1 text-2xl font-bold text-emerald-700">{formatCurrency(shift.gross_sales_total || 0)}</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-lg bg-gray-50 p-3">
                   <p className="text-xs text-gray-500">Cash</p>
-                  <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(shift.total_cash_sales || 0)}</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(shift.cash_sales_total || 0)}</p>
                 </div>
                 <div className="rounded-lg bg-gray-50 p-3">
                   <p className="text-xs text-gray-500">Non-Cash</p>
-                  <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(shift.total_non_cash_sales || 0)}</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(shift.ewallet_sales_total || 0)}</p>
                 </div>
               </div>
             </div>

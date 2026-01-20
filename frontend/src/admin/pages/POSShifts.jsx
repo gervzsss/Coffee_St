@@ -11,8 +11,8 @@ export default function POSShifts() {
   const [pagination, setPagination] = useState({});
   const [filters, setFilters] = useState({
     status: "",
-    date_from: "",
-    date_to: "",
+    from: "",
+    to: "",
     page: 1,
   });
 
@@ -22,20 +22,20 @@ export default function POSShifts() {
     try {
       const params = {};
       if (filters.status) params.status = filters.status;
-      if (filters.date_from) params.date_from = filters.date_from;
-      if (filters.date_to) params.date_to = filters.date_to;
+      if (filters.from) params.from = filters.from;
+      if (filters.to) params.to = filters.to;
       params.page = filters.page;
 
       const response = await getShifts(params);
       if (response.success) {
-        // response.data contains the Laravel paginated response
-        const paginatedData = response.data;
-        setShifts(paginatedData.data || []);
+        // Backend returns: { shifts: [...], pagination: {...} }
+        const payload = response.data;
+        setShifts(payload.shifts || []);
         setPagination({
-          currentPage: paginatedData.current_page,
-          lastPage: paginatedData.last_page,
-          total: paginatedData.total,
-          perPage: paginatedData.per_page,
+          currentPage: payload.pagination?.current_page || 1,
+          lastPage: payload.pagination?.last_page || 1,
+          total: payload.pagination?.total || 0,
+          perPage: payload.pagination?.per_page || 20,
         });
       } else {
         setError(response.error || "Failed to load shifts");
@@ -129,8 +129,8 @@ export default function POSShifts() {
             <label className="mb-1 block text-sm font-medium text-gray-700">From Date</label>
             <input
               type="date"
-              value={filters.date_from}
-              onChange={(e) => handleFilterChange("date_from", e.target.value)}
+              value={filters.from}
+              onChange={(e) => handleFilterChange("from", e.target.value)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
             />
           </div>
@@ -139,16 +139,13 @@ export default function POSShifts() {
             <label className="mb-1 block text-sm font-medium text-gray-700">To Date</label>
             <input
               type="date"
-              value={filters.date_to}
-              onChange={(e) => handleFilterChange("date_to", e.target.value)}
+              value={filters.to}
+              onChange={(e) => handleFilterChange("to", e.target.value)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
             />
           </div>
 
-          <button
-            onClick={() => setFilters({ status: "", date_from: "", date_to: "", page: 1 })}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
+          <button onClick={() => setFilters({ status: "", from: "", to: "", page: 1 })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
             Clear Filters
           </button>
         </div>
@@ -168,7 +165,7 @@ export default function POSShifts() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <h3 className="mt-4 text-lg font-medium text-gray-900">No shifts found</h3>
-          <p className="mt-1 text-sm text-gray-500">{filters.status || filters.date_from || filters.date_to ? "Try adjusting your filters" : "Shifts will appear here once created"}</p>
+          <p className="mt-1 text-sm text-gray-500">{filters.status || filters.from || filters.to ? "Try adjusting your filters" : "Shifts will appear here once created"}</p>
         </div>
       ) : (
         <>
@@ -194,15 +191,15 @@ export default function POSShifts() {
                       <div className="text-xs text-gray-500">{formatDateTime(shift.opened_at)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{shift.opened_by_user?.name || "Unknown"}</div>
-                      {shift.closed_by_user && <div className="text-xs text-gray-500">Closed by: {shift.closed_by_user.name}</div>}
+                      <div className="text-sm text-gray-900">{shift.opened_by?.name || "Unknown"}</div>
+                      {shift.closed_by && <div className="text-xs text-gray-500">Closed by: {shift.closed_by.name}</div>}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{shift.closed_at ? `${Math.round((new Date(shift.closed_at) - new Date(shift.opened_at)) / (1000 * 60))} min` : "In progress"}</div>
                       {shift.closed_at && <div className="text-xs text-gray-500">Closed: {formatDateTime(shift.closed_at)}</div>}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{formatCurrency(shift.total_cash_sales || 0)}</div>
+                      <div className="text-sm font-medium text-gray-900">{formatCurrency(shift.cash_sales_total || 0)}</div>
                       <div className="text-xs text-gray-500">{shift.orders_count || 0} orders</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
