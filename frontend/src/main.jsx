@@ -31,6 +31,8 @@ import Inquiries from "./admin/pages/Inquiries.jsx";
 import POS from "./admin/pages/POS.jsx";
 import POSOrders from "./admin/pages/POSOrders.jsx";
 import POSOrderDetail from "./admin/pages/POSOrderDetail.jsx";
+import POSShifts from "./admin/pages/POSShifts.jsx";
+import POSShiftDetail from "./admin/pages/POSShiftDetail.jsx";
 
 import { AdminAuthProvider } from "./admin/context/AdminAuthContext.jsx";
 import { AdminToastProvider } from "./admin/context/ToastContext.jsx";
@@ -187,6 +189,22 @@ function AdminAppContent() {
           element={
             <AdminProtectedRoute>
               <POSOrderDetail />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="pos/shifts"
+          element={
+            <AdminProtectedRoute>
+              <POSShifts />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="pos/shifts/:id"
+          element={
+            <AdminProtectedRoute>
+              <POSShiftDetail />
             </AdminProtectedRoute>
           }
         />

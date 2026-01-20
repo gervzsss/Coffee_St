@@ -6,7 +6,7 @@ const PosModeContext = createContext(null);
 const POS_MODE_KEY = "coffee_st_pos_mode";
 
 // Routes allowed in POS mode
-const POS_ROUTES = ["/admin/pos", "/admin/pos/orders", "/admin/pos/order"];
+const POS_ROUTES = ["/admin/pos", "/admin/pos/orders", "/admin/pos/order", "/admin/pos/shifts"];
 
 // Routes that are NOT allowed in POS mode
 const ADMIN_ONLY_ROUTES = ["/admin/dashboard", "/admin/products", "/admin/orders", "/admin/users", "/admin/inquiries"];

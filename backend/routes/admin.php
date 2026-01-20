@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\POSController;
+use App\Http\Controllers\Admin\PosShiftController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\UserController;
@@ -99,4 +100,11 @@ Route::middleware(['auth:sanctum', 'token.timeout', 'admin'])->group(function ()
     Route::post('/pos/orders', [POSController::class, 'store']);
     Route::get('/pos/orders/{id}', [POSController::class, 'show']);
     Route::patch('/pos/orders/{id}/status', [POSController::class, 'updateStatus']);
+
+    // POS Shift Management
+    Route::get('/pos/shifts/active', [PosShiftController::class, 'active']);
+    Route::post('/pos/shifts/open', [PosShiftController::class, 'open']);
+    Route::post('/pos/shifts/{id}/close', [PosShiftController::class, 'close']);
+    Route::get('/pos/shifts', [PosShiftController::class, 'index']);
+    Route::get('/pos/shifts/{id}', [PosShiftController::class, 'show']);
 });

@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderItemVariant;
 use App\Models\OrderStatusLog;
+use App\Models\PosShift;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\StockService;
@@ -126,6 +127,15 @@ class POSController extends Controller
             ], 500);
         }
 
+        // SHIFT ENFORCEMENT: Require active shift to create POS orders
+        $activeShift = PosShift::getActiveShift();
+        if (! $activeShift) {
+            return response()->json([
+                'message' => 'No active shift. Open a shift to begin selling.',
+                'error_code' => 'NO_ACTIVE_SHIFT',
+            ], 409);
+        }
+
         DB::beginTransaction();
         try {
             // Validate stock availability for all items
@@ -154,6 +164,7 @@ class POSController extends Controller
                 'user_id' => $walkInUser->id,
                 'order_number' => $orderNumber,
                 'order_source' => Order::SOURCE_POS,
+                'pos_shift_id' => $activeShift->id,
                 'status' => Order::STATUS_CONFIRMED,
                 'subtotal' => 0,
                 'delivery_fee' => 0, // No delivery fee for POS

@@ -4,17 +4,32 @@ import { AdminLayout, AdminHeader } from "../components/layout";
 import { usePosMode } from "../context/PosModeContext";
 import { useAdminToast } from "../hooks/useAdminToast";
 import { getPosProducts, getProductVariants, createPosOrder } from "../services/posService";
+import { getActiveShift, openShift, closeShift } from "../services/shiftService";
 import { LoadingSpinner, ButtonSpinner } from "../components/common";
 import POSCart from "../components/pos/POSCart";
 import POSProductGrid from "../components/pos/POSProductGrid";
 import POSVariantModal from "../components/pos/POSVariantModal";
 import POSCheckoutModal from "../components/pos/POSCheckoutModal";
 import POSOrderSuccessModal from "../components/pos/POSOrderSuccessModal";
+import OpenShiftModal from "../components/pos/OpenShiftModal";
+import CloseShiftModal from "../components/pos/CloseShiftModal";
+import CloseShiftResultModal from "../components/pos/CloseShiftResultModal";
+import ShiftBanner from "../components/pos/ShiftBanner";
 
 export default function POS() {
   const navigate = useNavigate();
   const { isPosMode } = usePosMode();
   const { showToast } = useAdminToast();
+
+  // Shift state
+  const [activeShift, setActiveShift] = useState(null);
+  const [isLoadingShift, setIsLoadingShift] = useState(true);
+  const [isOpeningShift, setIsOpeningShift] = useState(false);
+  const [isClosingShift, setIsClosingShift] = useState(false);
+  const [isCloseShiftModalOpen, setIsCloseShiftModalOpen] = useState(false);
+  const [closeShiftResult, setCloseShiftResult] = useState(null);
+  const [isCloseResultModalOpen, setIsCloseResultModalOpen] = useState(false);
+  const [inFlightOrders, setInFlightOrders] = useState(null);
 
   // Products state
   const [products, setProducts] = useState([]);
@@ -45,6 +60,65 @@ export default function POS() {
     }
   }, [isPosMode, navigate]);
 
+  // Fetch active shift on mount
+  const fetchActiveShift = useCallback(async () => {
+    setIsLoadingShift(true);
+    const result = await getActiveShift();
+    if (result.success) {
+      setActiveShift(result.data.active_shift);
+    } else {
+      showToast(result.error, { type: "error" });
+    }
+    setIsLoadingShift(false);
+  }, [showToast]);
+
+  useEffect(() => {
+    fetchActiveShift();
+  }, [fetchActiveShift]);
+
+  // Handle open shift
+  const handleOpenShift = async (openingCashFloat) => {
+    setIsOpeningShift(true);
+    const result = await openShift(openingCashFloat);
+
+    if (result.success) {
+      setActiveShift(result.data.shift);
+      showToast("Shift opened successfully", { type: "success" });
+    } else {
+      showToast(result.error, { type: "error" });
+    }
+    setIsOpeningShift(false);
+  };
+
+  // Handle close shift
+  const handleCloseShift = async (actualCashCount, notes) => {
+    setIsClosingShift(true);
+    setInFlightOrders(null);
+
+    const result = await closeShift(activeShift.id, actualCashCount, notes);
+
+    if (result.success) {
+      setIsCloseShiftModalOpen(false);
+      setCloseShiftResult(result.data);
+      setIsCloseResultModalOpen(true);
+      setActiveShift(null);
+      setCart([]); // Clear cart on shift close
+    } else {
+      if (result.inFlightOrders) {
+        setInFlightOrders(result.inFlightOrders);
+      } else {
+        showToast(result.error, { type: "error" });
+      }
+    }
+    setIsClosingShift(false);
+  };
+
+  // Handle close result modal dismiss
+  const handleCloseResultDismiss = () => {
+    setIsCloseResultModalOpen(false);
+    setCloseShiftResult(null);
+  };
+
   // Fetch products
   const fetchProducts = useCallback(async () => {
     setIsLoadingProducts(true);
@@ -65,8 +139,10 @@ export default function POS() {
   }, [searchQuery, selectedCategory, showToast]);
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    if (activeShift) {
+      fetchProducts();
+    }
+  }, [fetchProducts, activeShift]);
 
   // Handle product selection
   const handleProductSelect = async (product) => {
@@ -178,8 +254,16 @@ export default function POS() {
       setCart([]);
       setSuccessOrder(result.data.order);
       setIsSuccessModalOpen(true);
+      // Refresh shift data to update totals
+      fetchActiveShift();
     } else {
-      showToast(result.error, { type: "error" });
+      // Check for no active shift error
+      if (result.error?.includes("No active shift")) {
+        showToast("Shift has ended. Please open a new shift to continue.", { type: "error" });
+        setActiveShift(null);
+      } else {
+        showToast(result.error, { type: "error" });
+      }
     }
 
     setIsSubmitting(false);
@@ -199,87 +283,160 @@ export default function POS() {
     setIsSuccessModalOpen(false);
   };
 
+  // Show loading while checking shift status
+  if (isLoadingShift) {
+    return (
+      <AdminLayout>
+        <div className="flex h-screen items-center justify-center">
+          <LoadingSpinner />
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  // Show open shift modal if no active shift
+  const showOpenShiftModal = !activeShift;
+
   return (
     <AdminLayout>
       <AdminHeader
         title="Point of Sale"
         action={
-          <button
-            onClick={() => navigate("/admin/pos/orders")}
-            className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50"
-          >
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
-            View Orders
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate("/admin/pos/shifts")}
+              className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              Shifts
+            </button>
+            <button
+              onClick={() => navigate("/admin/pos/orders")}
+              className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+              Orders
+            </button>
+          </div>
         }
       />
 
-      <div className="flex h-[calc(100vh-80px)] gap-4 p-4 lg:p-6">
-        {/* Products Section */}
-        <div className="flex flex-1 flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
-          {/* Search and Filter */}
-          <div className="border-b border-gray-200 p-4">
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 py-2 pr-4 pl-10 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none"
-                />
-                <svg className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+      <div className="flex h-[calc(100vh-80px)] flex-col gap-4 p-4 lg:p-6">
+        {/* Shift Banner */}
+        {activeShift && (
+          <ShiftBanner
+            shift={activeShift}
+            onCloseShift={() => {
+              setInFlightOrders(null);
+              setIsCloseShiftModalOpen(true);
+            }}
+          />
+        )}
+
+        <div className="flex flex-1 gap-4 overflow-hidden">
+          {/* Products Section */}
+          <div className="flex flex-1 flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+            {/* Search and Filter */}
+            <div className="border-b border-gray-200 p-4">
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-lg border border-gray-300 py-2 pr-4 pl-10 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none"
+                    disabled={!activeShift}
+                  />
+                  <svg className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none"
+                  disabled={!activeShift}
+                >
+                  <option value="">All Categories</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none"
-              >
-                <option value="">All Categories</option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
+            </div>
+
+            {/* Products Grid */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {!activeShift ? (
+                <div className="flex h-full flex-col items-center justify-center text-gray-500">
+                  <svg className="mb-4 h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  <p className="text-lg font-medium">Shift Required</p>
+                  <p className="text-sm">Open a shift to start selling</p>
+                </div>
+              ) : isLoadingProducts ? (
+                <div className="flex h-full items-center justify-center">
+                  <LoadingSpinner />
+                </div>
+              ) : (
+                <POSProductGrid products={products} onProductSelect={handleProductSelect} />
+              )}
             </div>
           </div>
 
-          {/* Products Grid */}
-          <div className="flex-1 overflow-y-auto p-4">
-            {isLoadingProducts ? (
-              <div className="flex h-full items-center justify-center">
-                <LoadingSpinner />
-              </div>
-            ) : (
-              <POSProductGrid products={products} onProductSelect={handleProductSelect} />
-            )}
+          {/* Cart Section */}
+          <div className="w-full max-w-md">
+            <POSCart
+              items={cart}
+              subtotal={subtotal}
+              tax={tax}
+              total={total}
+              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveItem={handleRemoveFromCart}
+              onClearCart={handleClearCart}
+              onCheckout={handleCheckout}
+              disabled={!activeShift}
+            />
           </div>
         </div>
-
-        {/* Cart Section */}
-        <div className="w-full max-w-md">
-          <POSCart
-            items={cart}
-            subtotal={subtotal}
-            tax={tax}
-            total={total}
-            onUpdateQuantity={handleUpdateQuantity}
-            onRemoveItem={handleRemoveFromCart}
-            onClearCart={handleClearCart}
-            onCheckout={handleCheckout}
-          />
-        </div>
       </div>
+
+      {/* Open Shift Modal */}
+      <OpenShiftModal isOpen={showOpenShiftModal} onOpenShift={handleOpenShift} isSubmitting={isOpeningShift} />
+
+      {/* Close Shift Modal */}
+      <CloseShiftModal
+        isOpen={isCloseShiftModalOpen}
+        onClose={() => {
+          setIsCloseShiftModalOpen(false);
+          setInFlightOrders(null);
+        }}
+        shift={activeShift}
+        onCloseShift={handleCloseShift}
+        isSubmitting={isClosingShift}
+        inFlightOrders={inFlightOrders}
+      />
+
+      {/* Close Shift Result Modal */}
+      <CloseShiftResultModal isOpen={isCloseResultModalOpen} onClose={handleCloseResultDismiss} result={closeShiftResult} />
 
       {/* Variant Selection Modal */}
       <POSVariantModal

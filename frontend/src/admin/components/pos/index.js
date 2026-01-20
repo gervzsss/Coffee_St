@@ -3,3 +3,7 @@ export { default as POSCart } from './POSCart';
 export { default as POSVariantModal } from './POSVariantModal';
 export { default as POSCheckoutModal } from './POSCheckoutModal';
 export { default as POSOrderSuccessModal } from './POSOrderSuccessModal';
+export { default as OpenShiftModal } from './OpenShiftModal';
+export { default as CloseShiftModal } from './CloseShiftModal';
+export { default as CloseShiftResultModal } from './CloseShiftResultModal';
+export { default as ShiftBanner } from './ShiftBanner';

@@ -13,6 +13,7 @@ class Order extends Model
         'user_id',
         'order_number',
         'order_source',
+        'pos_shift_id',
         'status',
         'subtotal',
         'delivery_fee',
@@ -151,6 +152,14 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the POS shift this order belongs to.
+     */
+    public function posShift()
+    {
+        return $this->belongsTo(PosShift::class, 'pos_shift_id');
     }
 
     /**

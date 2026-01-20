@@ -1,6 +1,6 @@
 import { formatCurrency } from "../../utils/formatCurrency";
 
-export default function POSCart({ items, subtotal, tax, total, onUpdateQuantity, onRemoveItem, onClearCart, onCheckout }) {
+export default function POSCart({ items, subtotal, tax, total, onUpdateQuantity, onRemoveItem, onClearCart, onCheckout, disabled = false }) {
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
       {/* Header */}
@@ -100,10 +100,10 @@ export default function POSCart({ items, subtotal, tax, total, onUpdateQuantity,
 
         <button
           onClick={onCheckout}
-          disabled={items.length === 0}
+          disabled={disabled || items.length === 0}
           className="mt-4 w-full rounded-lg bg-emerald-600 py-3 text-base font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-gray-300"
         >
-          {items.length === 0 ? "Add items to checkout" : `Checkout (${items.reduce((sum, item) => sum + item.quantity, 0)} items)`}
+          {disabled ? "Open shift to checkout" : items.length === 0 ? "Add items to checkout" : `Checkout (${items.reduce((sum, item) => sum + item.quantity, 0)} items)`}
         </button>
       </div>
     </div>
