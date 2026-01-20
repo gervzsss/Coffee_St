@@ -11,6 +11,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unre
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [showPosConfirm, setShowPosConfirm] = useState(false);
   const menuRef = useRef(null);
 
   const handleLogout = async () => {
@@ -96,8 +97,18 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unre
     if (isPosMode) {
       disablePosMode();
     } else {
-      togglePosMode();
+      // Show confirmation dialog when entering POS mode
+      setShowPosConfirm(true);
+      return;
     }
+    if (onMobileClose) {
+      onMobileClose();
+    }
+  };
+
+  const confirmEnterPosMode = () => {
+    setShowPosConfirm(false);
+    togglePosMode();
     if (onMobileClose) {
       onMobileClose();
     }
@@ -275,6 +286,32 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unre
           </div>
         </div>
       </nav>
+
+      {/* POS Mode Confirmation Dialog */}
+      {showPosConfirm && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="p-6">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+                <Store className="h-6 w-6 text-amber-600" />
+              </div>
+              <h3 className="mb-2 text-center text-lg font-semibold text-gray-900">Enter POS Mode?</h3>
+              <p className="text-center text-sm text-gray-600">You will be switched to the Point of Sale interface. Admin features will be temporarily unavailable.</p>
+            </div>
+            <div className="flex gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
+              <button
+                onClick={() => setShowPosConfirm(false)}
+                className="flex-1 rounded-lg border border-gray-300 bg-white py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button onClick={confirmEnterPosMode} className="flex-1 rounded-lg bg-amber-500 py-2.5 text-sm font-medium text-white transition-colors hover:bg-amber-600">
+                Enter POS Mode
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

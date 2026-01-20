@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { getShiftDetail } from "../services/shiftService";
 import { formatCurrency } from "../utils/formatCurrency";
 
 export default function POSShiftDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [shift, setShift] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -107,18 +108,16 @@ export default function POSShiftDetail() {
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Link to="/admin/pos" className="hover:text-gray-700">
-            POS
-          </Link>
-          <span>/</span>
-          <Link to="/admin/pos/shifts" className="hover:text-gray-700">
-            Shift History
-          </Link>
-          <span>/</span>
-          <span className="text-gray-900">Shift #{shift.id}</span>
-        </div>
-        <div className="mt-2 flex items-center gap-3">
+        <button
+          onClick={() => navigate("/admin/pos/shifts")}
+          className="mb-4 inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+        >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Shift History
+        </button>
+        <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-gray-900">Shift #{shift.id}</h1>
           {shift.status === "active" ? (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
@@ -290,16 +289,6 @@ export default function POSShiftDetail() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Actions */}
-          <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-            <Link to="/admin/pos/shifts" className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Back to Shift History
-            </Link>
           </div>
         </div>
       </div>

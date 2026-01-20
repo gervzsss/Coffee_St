@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getShifts } from "../services/shiftService";
 import { formatCurrency } from "../utils/formatCurrency";
 
 export default function POSShifts() {
+  const navigate = useNavigate();
   const [shifts, setShifts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -95,14 +96,16 @@ export default function POSShifts() {
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Link to="/admin/pos" className="hover:text-gray-700">
-            POS
-          </Link>
-          <span>/</span>
-          <span className="text-gray-900">Shift History</span>
-        </div>
-        <h1 className="mt-2 text-2xl font-bold text-gray-900">Shift History</h1>
+        <button
+          onClick={() => navigate("/admin/pos")}
+          className="mb-4 inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+        >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to POS
+        </button>
+        <h1 className="text-2xl font-bold text-gray-900">Shift History</h1>
         <p className="mt-1 text-sm text-gray-600">View and audit all POS shift records</p>
       </div>
 
