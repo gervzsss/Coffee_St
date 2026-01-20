@@ -23,11 +23,13 @@ class OrderController extends Controller
 
     /**
      * Get order metrics/stats
+     * NOTE: This endpoint returns metrics for ONLINE (delivery) orders only.
+     * POS orders have their own metrics in POSController.
      */
     public function metrics(Request $request)
     {
-        // Base query excludes archived orders for operational metrics
-        $activeQuery = Order::notArchived();
+        // Base query: only online orders, excludes archived
+        $activeQuery = Order::where('order_source', Order::SOURCE_ONLINE)->notArchived();
 
         $stats = [
             'pending' => (clone $activeQuery)->where('status', 'pending')->count(),
@@ -37,7 +39,7 @@ class OrderController extends Controller
             'delivered' => (clone $activeQuery)->where('status', 'delivered')->count(),
             'failed' => (clone $activeQuery)->where('status', 'failed')->count(),
             'cancelled' => (clone $activeQuery)->where('status', 'cancelled')->count(),
-            'archived' => Order::archived()->count(),
+            'archived' => Order::where('order_source', Order::SOURCE_ONLINE)->archived()->count(),
         ];
 
         // Combined counts for the UI tabs
@@ -49,10 +51,21 @@ class OrderController extends Controller
 
     /**
      * Get all orders with filters
+     * NOTE: This endpoint returns ONLINE (delivery) orders only.
+     * POS orders are managed via /admin/pos/orders endpoint.
      */
     public function index(Request $request)
     {
-        $query = Order::with(['user', 'items.selectedVariants']);
+        // ENFORCE: Reject requests attempting to access POS orders via this endpoint
+        if ($request->has('order_source') && $request->order_source === 'pos') {
+            return response()->json([
+                'message' => 'POS orders cannot be accessed via this endpoint. Use /admin/pos/orders instead.',
+            ], 400);
+        }
+
+        // Force online-only orders
+        $query = Order::with(['user', 'items.selectedVariants'])
+            ->where('order_source', Order::SOURCE_ONLINE);
 
         // Handle archived filter (default: exclude archived)
         $archived = $request->get('archived', 'none');
@@ -79,11 +92,6 @@ class OrderController extends Controller
             } else {
                 $query->where('status', $status);
             }
-        }
-
-        // Filter by order source (online/pos)
-        if ($request->has('order_source') && ! empty($request->order_source)) {
-            $query->where('order_source', $request->order_source);
         }
 
         // Search by order number or customer name
@@ -161,15 +169,18 @@ class OrderController extends Controller
 
     /**
      * Get single order with full details
+     * NOTE: This endpoint returns ONLINE (delivery) orders only.
+     * POS orders are managed via /admin/pos/orders/{id} endpoint.
      */
     public function show($id)
     {
+        // Only allow access to online orders; POS orders return 404
         $order = Order::with([
             'user',
             'items.product',
             'items.selectedVariants',
             'statusLogs.changedByUser',
-        ])->findOrFail($id);
+        ])->where('order_source', Order::SOURCE_ONLINE)->findOrFail($id);
 
         return response()->json([
             'id' => $order->id,
@@ -243,10 +254,13 @@ class OrderController extends Controller
 
     /**
      * Update order status with validation and logging
+     * NOTE: This endpoint is for ONLINE (delivery) orders only.
+     * POS orders are managed via /admin/pos/orders/{id}/status endpoint.
      */
     public function updateStatus(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
+        // Only allow status updates for online orders; POS orders return 404
+        $order = Order::where('order_source', Order::SOURCE_ONLINE)->findOrFail($id);
 
         $validated = $request->validate([
             'status' => 'required|string|in:pending,confirmed,preparing,out_for_delivery,delivered,failed,cancelled',
@@ -425,10 +439,12 @@ class OrderController extends Controller
 
     /**
      * Archive an order
+     * NOTE: This endpoint is for ONLINE (delivery) orders only.
      */
     public function archive($id)
     {
-        $order = Order::findOrFail($id);
+        // Only allow archiving online orders; POS orders return 404
+        $order = Order::where('order_source', Order::SOURCE_ONLINE)->findOrFail($id);
 
         if ($order->isArchived()) {
             return response()->json([
@@ -460,10 +476,12 @@ class OrderController extends Controller
 
     /**
      * Unarchive (restore) an order
+     * NOTE: This endpoint is for ONLINE (delivery) orders only.
      */
     public function unarchive($id)
     {
-        $order = Order::findOrFail($id);
+        // Only allow unarchiving online orders; POS orders return 404
+        $order = Order::where('order_source', Order::SOURCE_ONLINE)->findOrFail($id);
 
         if (! $order->isArchived()) {
             return response()->json([

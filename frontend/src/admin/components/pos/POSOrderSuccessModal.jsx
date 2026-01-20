@@ -1,6 +1,6 @@
 import { formatCurrency } from "../../utils/formatCurrency";
 
-export default function POSOrderSuccessModal({ isOpen, onClose, order, onViewOrder, onNewSale }) {
+export default function POSOrderSuccessModal({ isOpen, order, onViewOrder, onNewSale }) {
   if (!isOpen || !order) return null;
 
   return (

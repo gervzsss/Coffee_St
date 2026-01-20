@@ -8,7 +8,7 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * Adds POS (Point of Sale) support fields to the orders table:
      * - order_source: distinguishes between online and in-store orders
      * - pos_customer_name: optional customer name for walk-in orders
@@ -19,11 +19,11 @@ return new class extends Migration
         Schema::table('orders', function (Blueprint $table) {
             // Order source: 'online' for website orders, 'pos' for in-store orders
             $table->enum('order_source', ['online', 'pos'])->default('online')->after('order_number');
-            
+
             // Optional POS customer info (for walk-in customers without accounts)
             $table->string('pos_customer_name', 120)->nullable()->after('delivery_instructions');
             $table->string('pos_customer_phone', 50)->nullable()->after('pos_customer_name');
-            
+
             // Index for efficient filtering by source and status
             $table->index(['order_source', 'status'], 'idx_orders_source_status');
         });

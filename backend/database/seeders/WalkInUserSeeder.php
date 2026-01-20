@@ -10,7 +10,7 @@ class WalkInUserSeeder extends Seeder
 {
     /**
      * Create or update the walk-in customer user for POS orders.
-     * 
+     *
      * This user acts as a placeholder for all POS orders where
      * the customer doesn't have an account. Individual customer
      * details can be stored in pos_customer_name and pos_customer_phone
@@ -23,7 +23,7 @@ class WalkInUserSeeder extends Seeder
             [
                 'first_name' => 'Walk-in',
                 'last_name' => 'Customer',
-                'password' => Hash::make('not-a-real-password-' . uniqid()),
+                'password' => Hash::make('not-a-real-password-'.uniqid()),
                 'is_admin' => false,
                 'status' => 'active',
                 'phone' => null,

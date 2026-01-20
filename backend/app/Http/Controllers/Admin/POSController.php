@@ -34,12 +34,12 @@ class POSController extends Controller
             ->whereNull('archived_at');
 
         // Search by name
-        if ($request->has('search') && !empty($request->search)) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+        if ($request->has('search') && ! empty($request->search)) {
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         // Filter by category
-        if ($request->has('category') && !empty($request->category)) {
+        if ($request->has('category') && ! empty($request->category)) {
             $query->where('category', $request->category);
         }
 
@@ -120,7 +120,7 @@ class POSController extends Controller
         // Get the walk-in user
         $walkInUser = User::where('email', 'walkin@coffeest.local')->first();
 
-        if (!$walkInUser) {
+        if (! $walkInUser) {
             return response()->json([
                 'message' => 'Walk-in user not found. Please run the WalkInUserSeeder.',
             ], 500);
@@ -132,15 +132,15 @@ class POSController extends Controller
             foreach ($validated['items'] as $item) {
                 $product = Product::lockForUpdate()->find($item['product_id']);
 
-                if (!$product) {
+                if (! $product) {
                     throw new \Exception("Product not found: {$item['product_id']}");
                 }
 
-                if (!$product->isAvailableForPurchase()) {
+                if (! $product->isAvailableForPurchase()) {
                     throw new \Exception("Product '{$product->name}' is not available for purchase");
                 }
 
-                if ($product->track_stock && !$product->hasStock($item['quantity'])) {
+                if ($product->track_stock && ! $product->hasStock($item['quantity'])) {
                     $available = $product->stock_quantity ?? 0;
                     throw new \Exception("Insufficient stock for '{$product->name}'. Available: {$available}, Requested: {$item['quantity']}");
                 }
@@ -265,7 +265,7 @@ class POSController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create POS order: ' . $e->getMessage());
+            Log::error('Failed to create POS order: '.$e->getMessage());
 
             return response()->json([
                 'message' => 'Failed to create POS order',
@@ -289,12 +289,12 @@ class POSController extends Controller
         }
 
         // Search by order number or customer name
-        if ($request->has('search') && !empty($request->search)) {
+        if ($request->has('search') && ! empty($request->search)) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('order_number', 'like', '%' . $search . '%')
-                    ->orWhere('pos_customer_name', 'like', '%' . $search . '%')
-                    ->orWhere('pos_customer_phone', 'like', '%' . $search . '%');
+                $q->where('order_number', 'like', '%'.$search.'%')
+                    ->orWhere('pos_customer_name', 'like', '%'.$search.'%')
+                    ->orWhere('pos_customer_phone', 'like', '%'.$search.'%');
             });
         }
 
@@ -399,7 +399,7 @@ class POSController extends Controller
                     'from_status' => $log->from_status,
                     'to_status' => $log->to_status,
                     'notes' => $log->notes,
-                    'changed_by' => $log->changedByUser ? $log->changedByUser->first_name . ' ' . $log->changedByUser->last_name : 'System',
+                    'changed_by' => $log->changedByUser ? $log->changedByUser->first_name.' '.$log->changedByUser->last_name : 'System',
                     'created_at' => $log->created_at,
                 ];
             }),
@@ -423,7 +423,7 @@ class POSController extends Controller
         $oldStatus = $order->status;
 
         // Validate the status transition for POS orders
-        if (!$order->canTransitionTo($newStatus)) {
+        if (! $order->canTransitionTo($newStatus)) {
             return response()->json([
                 'message' => "Cannot transition from '{$oldStatus}' to '{$newStatus}' for POS orders",
                 'valid_transitions' => Order::getValidTransitions($oldStatus, Order::SOURCE_POS),
@@ -451,7 +451,7 @@ class POSController extends Controller
             }
 
             // Return stock if cancelled (before delivered)
-            if ($newStatus === 'cancelled' && !in_array($oldStatus, ['delivered', 'cancelled'])) {
+            if ($newStatus === 'cancelled' && ! in_array($oldStatus, ['delivered', 'cancelled'])) {
                 $order->load('items.product');
                 foreach ($order->items as $orderItem) {
                     $product = $orderItem->product;
@@ -486,7 +486,7 @@ class POSController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update POS order status: ' . $e->getMessage());
+            Log::error('Failed to update POS order status: '.$e->getMessage());
 
             return response()->json(['message' => 'Failed to update order status'], 500);
         }

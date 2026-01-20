@@ -4,7 +4,6 @@ import { AdminLayout, AdminHeader } from "../components/layout";
 import { usePosMode } from "../context/PosModeContext";
 import { useAdminToast } from "../hooks/useAdminToast";
 import { getPosProducts, getProductVariants, createPosOrder } from "../services/posService";
-import { formatCurrency } from "../utils/formatCurrency";
 import { LoadingSpinner, ButtonSpinner } from "../components/common";
 import POSCart from "../components/pos/POSCart";
 import POSProductGrid from "../components/pos/POSProductGrid";

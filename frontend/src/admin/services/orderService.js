@@ -15,7 +15,10 @@ export const getOrderMetrics = async () => {
 
 export const getAllOrders = async (filters = {}) => {
   try {
-    const response = await adminApi.get('/orders', { params: filters });
+    // Explicitly request online orders only (delivery orders)
+    const response = await adminApi.get('/orders', {
+      params: { ...filters, order_source: 'online' }
+    });
     return { success: true, data: response.data };
   } catch (error) {
     console.error('Failed to fetch orders:', error);
@@ -28,8 +31,9 @@ export const getAllOrders = async (filters = {}) => {
 
 export const getArchivedOrders = async (filters = {}) => {
   try {
+    // Explicitly request online orders only (delivery orders)
     const response = await adminApi.get('/orders', {
-      params: { ...filters, archived: 'only' }
+      params: { ...filters, archived: 'only', order_source: 'online' }
     });
     return { success: true, data: response.data };
   } catch (error) {

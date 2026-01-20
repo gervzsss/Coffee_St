@@ -84,6 +84,7 @@ export function PosModeProvider({ children }) {
   return <PosModeContext.Provider value={value}>{children}</PosModeContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function usePosMode() {
   const context = useContext(PosModeContext);
   if (!context) {
@@ -91,5 +92,3 @@ export function usePosMode() {
   }
   return context;
 }
-
-export default PosModeContext;
