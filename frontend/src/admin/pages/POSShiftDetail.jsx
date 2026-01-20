@@ -182,14 +182,19 @@ export default function POSShiftDetail() {
                 <span className="text-sm text-gray-600">Opening Float</span>
                 <span className="text-sm font-medium text-gray-900">{formatCurrency(shift.opening_cash_float || 0)}</span>
               </div>
-              <div className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
-                <span className="text-sm text-gray-600">Cash Sales</span>
-                <span className="text-sm font-medium text-green-600">+{formatCurrency(shift.cash_sales_total || 0)}</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-4 py-3">
-                <span className="text-sm font-medium text-gray-900">Expected Cash</span>
-                <span className="text-sm font-bold text-gray-900">{formatCurrency(shift.expected_cash || 0)}</span>
-              </div>
+
+              {shift.status === "closed" && (
+                <>
+                  <div className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
+                    <span className="text-sm text-gray-600">Cash Sales</span>
+                    <span className="text-sm font-medium text-green-600">+{formatCurrency(shift.cash_sales_total || 0)}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-4 py-3">
+                    <span className="text-sm font-medium text-gray-900">Expected Cash</span>
+                    <span className="text-sm font-bold text-gray-900">{formatCurrency(shift.expected_cash || 0)}</span>
+                  </div>
+                </>
+              )}
 
               {shift.status === "closed" && (
                 <>
@@ -272,26 +277,28 @@ export default function POSShiftDetail() {
 
         {/* Side Summary */}
         <div className="space-y-6">
-          {/* Quick Stats */}
-          <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">Sales Summary</h2>
-            <div className="space-y-4">
-              <div className="rounded-lg bg-emerald-50 p-4">
-                <p className="text-sm text-emerald-600">Total Sales</p>
-                <p className="mt-1 text-2xl font-bold text-emerald-700">{formatCurrency(shift.gross_sales_total || 0)}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-lg bg-gray-50 p-3">
-                  <p className="text-xs text-gray-500">Cash</p>
-                  <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(shift.cash_sales_total || 0)}</p>
+          {/* Quick Stats - Only visible when shift is closed */}
+          {shift.status === "closed" && (
+            <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900">Sales Summary</h2>
+              <div className="space-y-4">
+                <div className="rounded-lg bg-emerald-50 p-4">
+                  <p className="text-sm text-emerald-600">Total Sales</p>
+                  <p className="mt-1 text-2xl font-bold text-emerald-700">{formatCurrency(shift.gross_sales_total || 0)}</p>
                 </div>
-                <div className="rounded-lg bg-gray-50 p-3">
-                  <p className="text-xs text-gray-500">Non-Cash</p>
-                  <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(shift.ewallet_sales_total || 0)}</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-lg bg-gray-50 p-3">
+                    <p className="text-xs text-gray-500">Cash</p>
+                    <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(shift.cash_sales_total || 0)}</p>
+                  </div>
+                  <div className="rounded-lg bg-gray-50 p-3">
+                    <p className="text-xs text-gray-500">Non-Cash</p>
+                    <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(shift.ewallet_sales_total || 0)}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

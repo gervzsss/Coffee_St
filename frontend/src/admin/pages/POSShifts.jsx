@@ -199,8 +199,17 @@ export default function POSShifts() {
                       {shift.closed_at && <div className="text-xs text-gray-500">Closed: {formatDateTime(shift.closed_at)}</div>}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{formatCurrency(shift.cash_sales_total || 0)}</div>
-                      <div className="text-xs text-gray-500">{shift.orders_count || 0} orders</div>
+                      {shift.status === "closed" ? (
+                        <>
+                          <div className="text-sm font-medium text-gray-900">{formatCurrency(shift.cash_sales_total || 0)}</div>
+                          <div className="text-xs text-gray-500">{shift.orders_count || 0} orders</div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-sm font-medium text-gray-500">Hidden</div>
+                          <div className="text-xs text-gray-500">{shift.orders_count || 0} orders</div>
+                        </>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {shift.variance !== null ? (

@@ -15,7 +15,7 @@ export default function POSOrders() {
 
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("confirmed");
   const [searchQuery, setSearchQuery] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
 

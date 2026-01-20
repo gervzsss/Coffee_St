@@ -26,7 +26,6 @@ class PosShiftController extends Controller
         }
 
         $shift->load('openedByUser');
-        $totals = $shift->calculateTotals();
 
         return response()->json([
             'active_shift' => [
@@ -38,9 +37,10 @@ class PosShiftController extends Controller
                     'name' => $shift->openedByUser->first_name.' '.$shift->openedByUser->last_name,
                 ],
                 'opening_cash_float' => $shift->opening_cash_float,
-                'cash_sales_total' => $totals['cash_sales_total'],
-                'ewallet_sales_total' => $totals['ewallet_sales_total'],
-                'gross_sales_total' => $totals['gross_sales_total'],
+                // Sales totals hidden for active shifts - only visible after closure
+                'cash_sales_total' => null,
+                'ewallet_sales_total' => null,
+                'gross_sales_total' => null,
                 'orders_count' => $shift->orders()->count(),
                 'in_flight_orders_count' => $shift->getInFlightOrdersCount(),
             ],
@@ -229,6 +229,8 @@ class PosShiftController extends Controller
 
         return response()->json([
             'shifts' => $shifts->items() ? collect($shifts->items())->map(function ($shift) {
+                $isActive = $shift->status === PosShift::STATUS_ACTIVE;
+
                 return [
                     'id' => $shift->id,
                     'status' => $shift->status,
@@ -243,13 +245,14 @@ class PosShiftController extends Controller
                         'name' => $shift->closedByUser->first_name.' '.$shift->closedByUser->last_name,
                     ] : null,
                     'opening_cash_float' => $shift->opening_cash_float,
-                    'cash_sales_total' => $shift->cash_sales_total,
-                    'ewallet_sales_total' => $shift->ewallet_sales_total,
-                    'gross_sales_total' => $shift->gross_sales_total,
-                    'expected_cash' => $shift->expected_cash,
-                    'actual_cash_count' => $shift->actual_cash_count,
-                    'variance' => $shift->variance,
-                    'is_discrepant' => $shift->isDiscrepant(),
+                    // Hide sales data for active shifts
+                    'cash_sales_total' => $isActive ? null : $shift->cash_sales_total,
+                    'ewallet_sales_total' => $isActive ? null : $shift->ewallet_sales_total,
+                    'gross_sales_total' => $isActive ? null : $shift->gross_sales_total,
+                    'expected_cash' => $isActive ? null : $shift->expected_cash,
+                    'actual_cash_count' => $isActive ? null : $shift->actual_cash_count,
+                    'variance' => $isActive ? null : $shift->variance,
+                    'is_discrepant' => $isActive ? false : $shift->isDiscrepant(),
                     'orders_count' => $shift->orders()->count(),
                 ];
             }) : [],
@@ -306,12 +309,8 @@ class PosShiftController extends Controller
             });
         }
 
-        // Calculate live totals for active shifts
-        $totals = $shift->isActive() ? $shift->calculateTotals() : [
-            'cash_sales_total' => $shift->cash_sales_total,
-            'ewallet_sales_total' => $shift->ewallet_sales_total,
-            'gross_sales_total' => $shift->gross_sales_total,
-        ];
+        // Hide sensitive data for active shifts
+        $isActive = $shift->isActive();
 
         return response()->json([
             'shift' => [
@@ -328,13 +327,14 @@ class PosShiftController extends Controller
                     'name' => $shift->closedByUser->first_name.' '.$shift->closedByUser->last_name,
                 ] : null,
                 'opening_cash_float' => $shift->opening_cash_float,
-                'cash_sales_total' => $totals['cash_sales_total'],
-                'ewallet_sales_total' => $totals['ewallet_sales_total'],
-                'gross_sales_total' => $totals['gross_sales_total'],
-                'expected_cash' => $shift->isClosed() ? $shift->expected_cash : $shift->calculateExpectedCash(),
-                'actual_cash_count' => $shift->actual_cash_count,
-                'variance' => $shift->variance,
-                'is_discrepant' => $shift->isDiscrepant(),
+                // Sales data hidden for active shifts - only visible after closure
+                'cash_sales_total' => $isActive ? null : $shift->cash_sales_total,
+                'ewallet_sales_total' => $isActive ? null : $shift->ewallet_sales_total,
+                'gross_sales_total' => $isActive ? null : $shift->gross_sales_total,
+                'expected_cash' => $isActive ? null : $shift->expected_cash,
+                'actual_cash_count' => $isActive ? null : $shift->actual_cash_count,
+                'variance' => $isActive ? null : $shift->variance,
+                'is_discrepant' => $isActive ? false : $shift->isDiscrepant(),
                 'notes' => $shift->notes,
                 'orders_count' => $shift->orders()->count(),
                 'delivered_orders_count' => $shift->deliveredOrders()->count(),

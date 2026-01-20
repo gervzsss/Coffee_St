@@ -294,6 +294,20 @@ class POSController extends Controller
             ->where('order_source', Order::SOURCE_POS)
             ->notArchived();
 
+        $includeAllShifts = $request->boolean('include_all_shifts', false);
+        $shiftId = $request->get('shift_id');
+
+        if ($shiftId) {
+            $query->where('pos_shift_id', $shiftId);
+        } elseif (! $includeAllShifts) {
+            $activeShift = PosShift::getActiveShift();
+            if ($activeShift) {
+                $query->where('pos_shift_id', $activeShift->id);
+            } else {
+                $query->whereRaw('1=0');
+            }
+        }
+
         // Filter by status
         if ($request->has('status') && $request->status !== 'all') {
             $query->where('status', $request->status);

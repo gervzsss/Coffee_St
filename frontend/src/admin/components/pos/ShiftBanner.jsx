@@ -28,7 +28,6 @@ export default function ShiftBanner({ shift, onCloseShift }) {
           <div className="flex items-center gap-3 text-xs text-emerald-700">
             <span>Float: {formatCurrency(shift.opening_cash_float)}</span>
             <span>•</span>
-            <span>Sales: {formatCurrency(shift.gross_sales_total || 0)}</span>
             <span className="text-emerald-500">({shift.orders_count || 0} orders)</span>
           </div>
         </div>
