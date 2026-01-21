@@ -7,3 +7,7 @@ export { default as OpenShiftModal } from './OpenShiftModal';
 export { default as CloseShiftModal } from './CloseShiftModal';
 export { default as CloseShiftResultModal } from './CloseShiftResultModal';
 export { default as ShiftBanner } from './ShiftBanner';
+export { default as POSOrderCardSkeleton } from './POSOrderCardSkeleton';
+export { default as POSProductCardSkeleton } from './POSProductCardSkeleton';
+export { default as POSOrderDetailSkeleton } from './POSOrderDetailSkeleton';
+export { default as POSShiftLoadingSkeleton } from './POSShiftLoadingSkeleton';

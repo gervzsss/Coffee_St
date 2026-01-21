@@ -2,15 +2,18 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { AdminLayout, AdminHeader } from "../components/layout";
 import { usePosMode } from "../context/PosModeContext";
+import { usePendingPosOrders } from "../context/PendingPosOrdersContext";
 import { useAdminToast } from "../hooks/useAdminToast";
 import { getPosOrders, updatePosOrderStatus } from "../services/posService";
 import { formatCurrency } from "../utils/formatCurrency";
 import { LoadingSpinner } from "../components/common";
 import { getPosStatusConfig, getPosNextStatuses } from "../constants/posStatus";
+import { POSOrderCardSkeleton } from "../components/pos";
 
 export default function POSOrders() {
   const navigate = useNavigate();
   const { isPosMode } = usePosMode();
+  const { refresh: refreshPendingOrders } = usePendingPosOrders();
   const { showToast } = useAdminToast();
 
   const [orders, setOrders] = useState([]);
@@ -61,6 +64,8 @@ export default function POSOrders() {
     if (result.success) {
       showToast("Order status updated", { type: "success" });
       fetchOrders();
+      // Refresh pending orders count in sidebar
+      refreshPendingOrders();
     } else {
       showToast(result.error, { type: "error" });
     }
@@ -132,8 +137,10 @@ export default function POSOrders() {
 
         {/* Orders List */}
         {isLoading ? (
-          <div className="flex h-64 items-center justify-center">
-            <LoadingSpinner />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <POSOrderCardSkeleton key={i} />
+            ))}
           </div>
         ) : orders.length === 0 ? (
           <div className="flex h-64 flex-col items-center justify-center rounded-xl bg-white text-gray-500 ring-1 ring-gray-200">

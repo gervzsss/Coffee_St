@@ -2,17 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AdminLayout, AdminHeader } from "../components/layout";
 import { usePosMode } from "../context/PosModeContext";
+import { usePendingPosOrders } from "../context/PendingPosOrdersContext";
 import { useAdminToast } from "../hooks/useAdminToast";
 import { getPosOrder, updatePosOrderStatus } from "../services/posService";
 import { formatCurrency } from "../utils/formatCurrency";
 import { formatDateTime } from "../utils/formatDate";
 import { LoadingSpinner, ButtonSpinner } from "../components/common";
 import { getPosStatusConfig, getPosNextStatuses } from "../constants/posStatus";
+import { POSOrderDetailSkeleton } from "../components/pos";
 
 export default function POSOrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isPosMode } = usePosMode();
+  const { refresh: refreshPendingOrders } = usePendingPosOrders();
   const { showToast } = useAdminToast();
 
   const [order, setOrder] = useState(null);
@@ -50,6 +53,8 @@ export default function POSOrderDetail() {
     if (result.success) {
       showToast("Order status updated", { type: "success" });
       fetchOrder();
+      // Refresh pending orders count in sidebar
+      refreshPendingOrders();
     } else {
       showToast(result.error, { type: "error" });
     }
@@ -59,8 +64,22 @@ export default function POSOrderDetail() {
   if (isLoading) {
     return (
       <AdminLayout>
-        <div className="flex h-screen items-center justify-center">
-          <LoadingSpinner />
+        <AdminHeader
+          title="Order Details"
+          action={
+            <button
+              onClick={() => navigate("/admin/pos/orders")}
+              className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to Orders
+            </button>
+          }
+        />
+        <div className="p-4 lg:p-6">
+          <POSOrderDetailSkeleton />
         </div>
       </AdminLayout>
     );

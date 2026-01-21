@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
 import { usePosMode } from "../../context/PosModeContext";
-import { usePendingPosOrdersAlert } from "../../hooks/usePendingPosOrdersAlert";
+import { usePendingPosOrders } from "../../context/PendingPosOrdersContext";
 import logo from "/favicon-padded.png";
 import { useState, useRef, useEffect } from "react";
 import { Bell, ShoppingCart, ArrowLeft, Store, LayoutDashboard, Package, ShoppingBag, Users, MessageSquare, ClipboardList } from "lucide-react";
@@ -9,7 +9,7 @@ import { Bell, ShoppingCart, ArrowLeft, Store, LayoutDashboard, Package, Shoppin
 export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unreadCount = 0, onNotificationClick }) {
   const { admin, logout } = useAdminAuth();
   const { isPosMode, togglePosMode, disablePosMode } = usePosMode();
-  const { pendingCount } = usePendingPosOrdersAlert();
+  const { pendingCount } = usePendingPosOrders();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -198,7 +198,7 @@ export default function AdminSidebar({ isMobileOpen = false, onMobileClose, unre
                     <span className="text-sm font-medium">{item.label}</span>
                     {/* Show pending badge on POS Orders */}
                     {isPosMode && item.path === "/admin/pos/orders" && pendingCount > 0 && (
-                      <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 text-xs font-bold text-white shadow-sm">
+                      <span className="ml-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 text-xs font-bold text-white shadow-sm">
                         {pendingCount > 9 ? "9+" : pendingCount}
                       </span>
                     )}

@@ -37,6 +37,7 @@ import POSShiftDetail from "./admin/pages/POSShiftDetail.jsx";
 import { AdminAuthProvider } from "./admin/context/AdminAuthContext.jsx";
 import { AdminToastProvider } from "./admin/context/ToastContext.jsx";
 import { PosModeProvider } from "./admin/context/PosModeContext.jsx";
+import { PendingPosOrdersProvider } from "./admin/context/PendingPosOrdersContext.jsx";
 import { AdminProtectedRoute } from "./admin/components/layout";
 import { useToast } from "./user/hooks/useToast";
 
@@ -124,91 +125,93 @@ function UserAppContent() {
 function AdminAppContent() {
   return (
     <PosModeProvider>
-      <Routes>
-        <Route index element={<AdminLogin />} />
-        <Route path="login" element={<AdminLogin />} />
-        <Route
-          path="dashboard"
-          element={
-            <AdminProtectedRoute>
-              <Dashboard />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route
-          path="products"
-          element={
-            <AdminProtectedRoute>
-              <AdminProducts />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route
-          path="orders"
-          element={
-            <AdminProtectedRoute>
-              <AdminOrders />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route
-          path="users"
-          element={
-            <AdminProtectedRoute>
-              <AdminUsers />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route
-          path="inquiries"
-          element={
-            <AdminProtectedRoute>
-              <Inquiries />
-            </AdminProtectedRoute>
-          }
-        />
-        {/* POS Mode Routes */}
-        <Route
-          path="pos"
-          element={
-            <AdminProtectedRoute>
-              <POS />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route
-          path="pos/orders"
-          element={
-            <AdminProtectedRoute>
-              <POSOrders />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route
-          path="pos/order/:id"
-          element={
-            <AdminProtectedRoute>
-              <POSOrderDetail />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route
-          path="pos/shifts"
-          element={
-            <AdminProtectedRoute>
-              <POSShifts />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route
-          path="pos/shifts/:id"
-          element={
-            <AdminProtectedRoute>
-              <POSShiftDetail />
-            </AdminProtectedRoute>
-          }
-        />
-      </Routes>
+      <PendingPosOrdersProvider>
+        <Routes>
+          <Route index element={<AdminLogin />} />
+          <Route path="login" element={<AdminLogin />} />
+          <Route
+            path="dashboard"
+            element={
+              <AdminProtectedRoute>
+                <Dashboard />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="products"
+            element={
+              <AdminProtectedRoute>
+                <AdminProducts />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="orders"
+            element={
+              <AdminProtectedRoute>
+                <AdminOrders />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="users"
+            element={
+              <AdminProtectedRoute>
+                <AdminUsers />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="inquiries"
+            element={
+              <AdminProtectedRoute>
+                <Inquiries />
+              </AdminProtectedRoute>
+            }
+          />
+          {/* POS Mode Routes */}
+          <Route
+            path="pos"
+            element={
+              <AdminProtectedRoute>
+                <POS />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="pos/orders"
+            element={
+              <AdminProtectedRoute>
+                <POSOrders />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="pos/order/:id"
+            element={
+              <AdminProtectedRoute>
+                <POSOrderDetail />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="pos/shifts"
+            element={
+              <AdminProtectedRoute>
+                <POSShifts />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="pos/shifts/:id"
+            element={
+              <AdminProtectedRoute>
+                <POSShiftDetail />
+              </AdminProtectedRoute>
+            }
+          />
+        </Routes>
+      </PendingPosOrdersProvider>
     </PosModeProvider>
   );
 }

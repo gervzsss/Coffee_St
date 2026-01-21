@@ -2,23 +2,29 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { AdminLayout, AdminHeader } from "../components/layout";
 import { usePosMode } from "../context/PosModeContext";
+import { usePendingPosOrders } from "../context/PendingPosOrdersContext";
 import { useAdminToast } from "../hooks/useAdminToast";
 import { getPosProducts, getProductVariants, createPosOrder } from "../services/posService";
 import { getActiveShift, openShift, closeShift } from "../services/shiftService";
 import { LoadingSpinner, ButtonSpinner } from "../components/common";
-import POSCart from "../components/pos/POSCart";
-import POSProductGrid from "../components/pos/POSProductGrid";
-import POSVariantModal from "../components/pos/POSVariantModal";
-import POSCheckoutModal from "../components/pos/POSCheckoutModal";
-import POSOrderSuccessModal from "../components/pos/POSOrderSuccessModal";
-import OpenShiftModal from "../components/pos/OpenShiftModal";
-import CloseShiftModal from "../components/pos/CloseShiftModal";
-import CloseShiftResultModal from "../components/pos/CloseShiftResultModal";
-import ShiftBanner from "../components/pos/ShiftBanner";
+import {
+  POSCart,
+  POSProductGrid,
+  POSVariantModal,
+  POSCheckoutModal,
+  POSOrderSuccessModal,
+  OpenShiftModal,
+  CloseShiftModal,
+  CloseShiftResultModal,
+  ShiftBanner,
+  POSProductCardSkeleton,
+  POSShiftLoadingSkeleton,
+} from "../components/pos";
 
 export default function POS() {
   const navigate = useNavigate();
   const { isPosMode } = usePosMode();
+  const { refresh: refreshPendingOrders } = usePendingPosOrders();
   const { showToast } = useAdminToast();
 
   // Shift state
@@ -129,20 +135,27 @@ export default function POS() {
 
     if (result.success) {
       setProducts(result.data);
-      // Extract unique categories
-      const uniqueCategories = [...new Set(result.data.map((p) => p.category))];
-      setCategories(uniqueCategories);
     } else {
       showToast(result.error, { type: "error" });
     }
     setIsLoadingProducts(false);
   }, [searchQuery, selectedCategory, showToast]);
 
+  // Fetch all categories (unfiltered)
+  const fetchCategories = useCallback(async () => {
+    const result = await getPosProducts({});
+    if (result.success) {
+      const uniqueCategories = [...new Set(result.data.map((p) => p.category))];
+      setCategories(uniqueCategories);
+    }
+  }, []);
+
   useEffect(() => {
     if (activeShift) {
+      fetchCategories();
       fetchProducts();
     }
-  }, [fetchProducts, activeShift]);
+  }, [fetchProducts, fetchCategories, activeShift]);
 
   // Handle product selection
   const handleProductSelect = async (product) => {
@@ -273,6 +286,8 @@ export default function POS() {
   const handleSuccessModalClose = () => {
     setIsSuccessModalOpen(false);
     setSuccessOrder(null);
+    // Refresh pending orders count in sidebar
+    refreshPendingOrders();
   };
 
   // View order after success
@@ -281,15 +296,44 @@ export default function POS() {
       navigate(`/admin/pos/order/${successOrder.id}`);
     }
     setIsSuccessModalOpen(false);
+    // Refresh pending orders count in sidebar
+    refreshPendingOrders();
   };
 
   // Show loading while checking shift status
   if (isLoadingShift) {
     return (
       <AdminLayout>
-        <div className="flex h-screen items-center justify-center">
-          <LoadingSpinner />
-        </div>
+        <AdminHeader
+          title="Point of Sale"
+          action={
+            <div className="flex items-center gap-2">
+              <button disabled className="flex cursor-not-allowed items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-400 shadow-sm ring-1 ring-gray-200">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                Shifts
+              </button>
+              <button disabled className="flex cursor-not-allowed items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-400 shadow-sm ring-1 ring-gray-200">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
+                </svg>
+                Orders
+              </button>
+            </div>
+          }
+        />
+        <POSShiftLoadingSkeleton />
       </AdminLayout>
     );
   }
@@ -393,8 +437,10 @@ export default function POS() {
                   <p className="text-sm">Open a shift to start selling</p>
                 </div>
               ) : isLoadingProducts ? (
-                <div className="flex h-full items-center justify-center">
-                  <LoadingSpinner />
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                  {[...Array(8)].map((_, i) => (
+                    <POSProductCardSkeleton key={i} />
+                  ))}
                 </div>
               ) : (
                 <POSProductGrid products={products} onProductSelect={handleProductSelect} />
