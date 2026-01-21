@@ -96,6 +96,23 @@ export const updatePosOrderStatus = async (id, statusData) => {
   }
 };
 
+/**
+ * Get pending POS orders alert summary
+ * Returns count and latest pending order for notifications
+ */
+export const getPendingPosOrdersAlert = async () => {
+  try {
+    const response = await adminApi.get('/pos/alerts/pending-orders');
+    return { success: true, data: response.data.data };
+  } catch (error) {
+    console.error('Failed to fetch pending POS orders alert:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to fetch pending orders',
+    };
+  }
+};
+
 export default {
   getPosProducts,
   getProductVariants,
@@ -103,4 +120,5 @@ export default {
   getPosOrders,
   getPosOrder,
   updatePosOrderStatus,
+  getPendingPosOrdersAlert,
 };

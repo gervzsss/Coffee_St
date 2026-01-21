@@ -14,6 +14,7 @@ export default function POSOrders() {
   const { showToast } = useAdminToast();
 
   const [orders, setOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("confirmed");
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,6 +29,14 @@ export default function POSOrders() {
 
   const fetchOrders = useCallback(async () => {
     setIsLoading(true);
+
+    // Fetch all orders for counts
+    const allResult = await getPosOrders({});
+    if (allResult.success) {
+      setAllOrders(allResult.data);
+    }
+
+    // Fetch filtered orders for display
     const result = await getPosOrders({
       status: statusFilter === "all" ? undefined : statusFilter,
       search: searchQuery || undefined,
@@ -59,10 +68,10 @@ export default function POSOrders() {
   };
 
   const statusCounts = {
-    all: orders.length,
-    confirmed: orders.filter((o) => o.status === "confirmed").length,
-    preparing: orders.filter((o) => o.status === "preparing").length,
-    delivered: orders.filter((o) => o.status === "delivered").length,
+    all: allOrders.length,
+    confirmed: allOrders.filter((o) => o.status === "confirmed").length,
+    preparing: allOrders.filter((o) => o.status === "preparing").length,
+    delivered: allOrders.filter((o) => o.status === "delivered").length,
   };
 
   return (

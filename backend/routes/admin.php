@@ -100,6 +100,7 @@ Route::middleware(['auth:sanctum', 'token.timeout', 'admin'])->group(function ()
     Route::post('/pos/orders', [POSController::class, 'store']);
     Route::get('/pos/orders/{id}', [POSController::class, 'show']);
     Route::patch('/pos/orders/{id}/status', [POSController::class, 'updateStatus']);
+    Route::get('/pos/alerts/pending-orders', [POSController::class, 'pendingOrdersAlert']);
 
     // POS Shift Management
     Route::get('/pos/shifts/active', [PosShiftController::class, 'active']);

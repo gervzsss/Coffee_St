@@ -516,4 +516,37 @@ class POSController extends Controller
             return response()->json(['message' => 'Failed to update order status'], 500);
         }
     }
+
+    /**
+     * Get pending POS orders count for sidebar badge
+     * Returns count of all non-completed orders for the active shift
+     */
+    public function pendingOrdersAlert()
+    {
+        // Get active shift
+        $activeShift = PosShift::getActiveShift();
+
+        if (! $activeShift) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'pending_count' => 0,
+                ],
+            ]);
+        }
+
+        // Query for POS orders that are not completed in the active shift
+        $pendingCount = Order::where('order_source', Order::SOURCE_POS)
+            ->where('pos_shift_id', $activeShift->id)
+            ->whereNotIn('status', [Order::STATUS_DELIVERED, Order::STATUS_CANCELLED])
+            ->whereNull('archived_at')
+            ->count();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'pending_count' => $pendingCount,
+            ],
+        ]);
+    }
 }
