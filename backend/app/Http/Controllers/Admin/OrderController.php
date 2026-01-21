@@ -404,13 +404,14 @@ class OrderController extends Controller
             $signature = sha1($stringToSign);
 
             $response = Http::withoutVerifying()
+                ->asMultipart()
                 ->attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
                 ->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
                     'api_key' => $apiKey,
                     'timestamp' => $timestamp,
                     'signature' => $signature,
                     'folder' => $folder,
-                ]);
+                ])->wait();
 
             if ($response->successful()) {
                 $data = $response->json();
