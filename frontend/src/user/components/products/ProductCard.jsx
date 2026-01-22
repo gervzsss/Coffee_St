@@ -102,7 +102,7 @@ export default function ProductCard({ product }) {
             </div>
           )}
 
-          {/* Price and Add to Cart */}
+          {/* Price and Order Now */}
           <div className="mt-auto flex items-center justify-between gap-2 pt-2">
             <span className={`text-base font-bold sm:text-lg lg:text-xl ${isUnavailable ? "text-gray-400" : "text-[#30442B]"}`}>₱{parseFloat(product.price).toFixed(2)}</span>
 
@@ -135,7 +135,7 @@ export default function ProductCard({ product }) {
                 "Adding..."
               ) : (
                 <>
-                  <span className="hidden sm:inline">Add to Cart</span>
+                  <span className="hidden sm:inline">Order Now</span>
                   <span className="sm:hidden">Add</span>
                 </>
               )}
@@ -253,7 +253,7 @@ export default function ProductCard({ product }) {
                     !selectedVariant || isAdding || product.is_sold_out ? "cursor-not-allowed bg-gray-300" : "cursor-pointer bg-[#30442B] hover:bg-[#405939]"
                   }`}
                 >
-                  {isAdding ? "Adding..." : "Add to Cart"}
+                  {isAdding ? "Adding..." : "Order Now"}
                 </button>
               </div>
             </div>

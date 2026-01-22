@@ -163,7 +163,11 @@ export default function POSOrders() {
               const isUpdating = updatingOrderId === order.id;
 
               return (
-                <div key={order.id} className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition-all hover:shadow-md">
+                <div
+                  key={order.id}
+                  onClick={() => navigate(`/admin/pos/order/${order.id}`)}
+                  className="cursor-pointer overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition-all hover:shadow-md hover:ring-emerald-300"
+                >
                   {/* Header */}
                   <div className="border-b border-gray-100 p-4">
                     <div className="flex items-start justify-between">
@@ -204,7 +208,7 @@ export default function POSOrders() {
 
                   {/* Actions */}
                   {nextStatuses.length > 0 && (
-                    <div className="border-t border-gray-100 bg-gray-50 p-3">
+                    <div className="border-t border-gray-100 bg-gray-50 p-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex gap-2">
                         {nextStatuses.map((status) => {
                           const nextConfig = getPosStatusConfig(status);
