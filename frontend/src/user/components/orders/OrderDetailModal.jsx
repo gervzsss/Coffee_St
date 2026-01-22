@@ -251,305 +251,312 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
 
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-3 sm:p-4">
-        <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl ring-1 ring-gray-900/5 sm:rounded-3xl lg:max-w-3xl">
-          {/* Close Button */}
-          <button onClick={onClose} className="absolute top-3 right-3 z-10 rounded-full p-1.5 transition-colors hover:bg-gray-100 sm:top-4 sm:right-4 sm:p-2">
-            <X className="h-5 w-5 text-gray-600 sm:h-6 sm:w-6" />
-          </button>
+        <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-gray-900/5 sm:rounded-3xl lg:max-w-3xl">
+          {/* Sticky Header */}
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 sm:px-6 sm:py-4">
+            <h2 className="font-outfit text-lg font-bold text-gray-900 sm:text-xl">Order Details</h2>
+            <button onClick={onClose} className="rounded-full p-1.5 transition-colors hover:bg-gray-100 sm:p-2">
+              <X className="h-5 w-5 text-gray-600 sm:h-6 sm:w-6" />
+            </button>
+          </div>
 
           {loading ? (
-            <div className="flex items-center justify-center py-24 sm:py-32">
+            <div className="flex flex-1 items-center justify-center py-24 sm:py-32">
               <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#30442B] sm:h-16 sm:w-16"></div>
             </div>
           ) : error ? (
-            <div className="p-4 sm:p-6 lg:p-8">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
               <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">{error}</div>
             </div>
           ) : order ? (
-            <div className="p-4 sm:p-6 lg:p-8">
-              {/* Header */}
-              <div className="mb-4 sm:mb-5 lg:mb-6">
-                <div className="mb-3 flex flex-col justify-between gap-3 sm:mb-4 sm:flex-row sm:items-center sm:gap-4">
-                  <div>
-                    <h2 className="font-outfit text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">{order.order_number}</h2>
-                    <div className="mt-1.5 flex items-center gap-1.5 text-gray-600 sm:mt-2 sm:gap-2">
-                      <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                      <span className="text-xs sm:text-sm">{formatDate(order.created_at)}</span>
+            <>
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+                {/* Order Number and Status */}
+                <div className="mb-4 sm:mb-5 lg:mb-6">
+                  <div className="mb-3 flex flex-col justify-between gap-3 sm:mb-4 sm:flex-row sm:items-center sm:gap-4">
+                    <div>
+                      <h2 className="font-outfit text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">{order.order_number}</h2>
+                      <div className="mt-1.5 flex items-center gap-1.5 text-gray-600 sm:mt-2 sm:gap-2">
+                        <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                        <span className="text-xs sm:text-sm">{formatDate(order.created_at)}</span>
+                      </div>
+                    </div>
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide uppercase sm:gap-1.5 sm:px-4 sm:py-2 sm:text-sm ${config.bgColor} ${config.textColor}`}
+                    >
+                      {getStatusIcon(order.status, "w-3.5 h-3.5 sm:w-4 sm:h-4")}
+                      {config.label}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Order Timeline - Show for active orders */}
+                {timeline.length > 0 && (
+                  <div className="mb-4 sm:mb-5 lg:mb-6">
+                    <h3 className="font-outfit mb-3 flex items-center gap-1.5 text-lg font-semibold text-gray-900 sm:mb-4 sm:gap-2 sm:text-xl">
+                      <Clock className="h-4 w-4 text-[#30442B] sm:h-5 sm:w-5" />
+                      Order Tracking
+                    </h3>
+                    <div className="relative">
+                      {/* Timeline */}
+                      <div className="space-y-0">
+                        {timeline.map((item, index) => {
+                          const itemConfig = getStatusConfig(item.status);
+                          const isLast = index === timeline.length - 1;
+
+                          return (
+                            <div key={index} className="flex gap-3 sm:gap-4">
+                              {/* Timeline indicator */}
+                              <div className="flex flex-col items-center">
+                                <div
+                                  className={`flex h-8 w-8 items-center justify-center rounded-full sm:h-10 sm:w-10 ${
+                                    item.completed ? `${itemConfig.bgColor} ${itemConfig.textColor}` : "bg-gray-100 text-gray-400"
+                                  }`}
+                                >
+                                  {getStatusIcon(item.status, "w-4 h-4 sm:w-5 sm:h-5")}
+                                </div>
+                                {!isLast && <div className={`h-10 w-0.5 sm:h-12 ${item.completed ? "bg-[#30442B]" : "bg-gray-200"}`} />}
+                              </div>
+
+                              {/* Content */}
+                              <div className={`flex-1 pb-4 sm:pb-6 ${isLast ? "pb-0" : ""}`}>
+                                <div className="flex flex-col justify-between gap-1 sm:flex-row sm:items-center sm:gap-2">
+                                  <p className={`text-sm font-semibold sm:text-base ${item.completed ? "text-gray-900" : "text-gray-400"}`}>{item.label}</p>
+                                  {item.time && <span className="text-sm text-gray-500">{formatShortDate(item.time)}</span>}
+                                </div>
+                                <p className={`mt-1 text-sm ${item.completed ? "text-gray-600" : "text-gray-400"}`}>{item.description}</p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide uppercase sm:gap-1.5 sm:px-4 sm:py-2 sm:text-sm ${config.bgColor} ${config.textColor}`}
-                  >
-                    {getStatusIcon(order.status, "w-3.5 h-3.5 sm:w-4 sm:h-4")}
-                    {config.label}
-                  </span>
-                </div>
-              </div>
+                )}
 
-              {/* Order Timeline - Show for active orders */}
-              {timeline.length > 0 && (
+                {/* Order Items */}
                 <div className="mb-4 sm:mb-5 lg:mb-6">
                   <h3 className="font-outfit mb-3 flex items-center gap-1.5 text-lg font-semibold text-gray-900 sm:mb-4 sm:gap-2 sm:text-xl">
-                    <Clock className="h-4 w-4 text-[#30442B] sm:h-5 sm:w-5" />
-                    Order Tracking
+                    <Package className="h-4 w-4 text-[#30442B] sm:h-5 sm:w-5" />
+                    Order Items
                   </h3>
-                  <div className="relative">
-                    {/* Timeline */}
-                    <div className="space-y-0">
-                      {timeline.map((item, index) => {
-                        const itemConfig = getStatusConfig(item.status);
-                        const isLast = index === timeline.length - 1;
-
-                        return (
-                          <div key={index} className="flex gap-3 sm:gap-4">
-                            {/* Timeline indicator */}
-                            <div className="flex flex-col items-center">
-                              <div
-                                className={`flex h-8 w-8 items-center justify-center rounded-full sm:h-10 sm:w-10 ${
-                                  item.completed ? `${itemConfig.bgColor} ${itemConfig.textColor}` : "bg-gray-100 text-gray-400"
-                                }`}
-                              >
-                                {getStatusIcon(item.status, "w-4 h-4 sm:w-5 sm:h-5")}
-                              </div>
-                              {!isLast && <div className={`h-10 w-0.5 sm:h-12 ${item.completed ? "bg-[#30442B]" : "bg-gray-200"}`} />}
-                            </div>
-
-                            {/* Content */}
-                            <div className={`flex-1 pb-4 sm:pb-6 ${isLast ? "pb-0" : ""}`}>
-                              <div className="flex flex-col justify-between gap-1 sm:flex-row sm:items-center sm:gap-2">
-                                <p className={`text-sm font-semibold sm:text-base ${item.completed ? "text-gray-900" : "text-gray-400"}`}>{item.label}</p>
-                                {item.time && <span className="text-sm text-gray-500">{formatShortDate(item.time)}</span>}
-                              </div>
-                              <p className={`mt-1 text-sm ${item.completed ? "text-gray-600" : "text-gray-400"}`}>{item.description}</p>
-                            </div>
+                  <div className="space-y-2 sm:space-y-3">
+                    {order.items && order.items.length > 0 ? (
+                      order.items.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between rounded-lg bg-gray-50 p-3 sm:rounded-xl sm:p-4">
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-900 sm:text-base">{item.product_name}</p>
+                            {item.variant_name && <p className="text-sm text-gray-600">{item.variant_name}</p>}
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Order Items */}
-              <div className="mb-4 sm:mb-5 lg:mb-6">
-                <h3 className="font-outfit mb-3 flex items-center gap-1.5 text-lg font-semibold text-gray-900 sm:mb-4 sm:gap-2 sm:text-xl">
-                  <Package className="h-4 w-4 text-[#30442B] sm:h-5 sm:w-5" />
-                  Order Items
-                </h3>
-                <div className="space-y-2 sm:space-y-3">
-                  {order.items && order.items.length > 0 ? (
-                    order.items.map((item, index) => (
-                      <div key={index} className="flex items-center justify-between rounded-lg bg-gray-50 p-3 sm:rounded-xl sm:p-4">
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900 sm:text-base">{item.product_name}</p>
-                          {item.variant_name && <p className="text-sm text-gray-600">{item.variant_name}</p>}
+                          <div className="text-right">
+                            <p className="text-sm text-gray-600">x{item.quantity}</p>
+                            <p className="font-semibold text-[#30442B]">₱{Number(item.line_total || 0).toFixed(2)}</p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-sm text-gray-600">x{item.quantity}</p>
-                          <p className="font-semibold text-[#30442B]">₱{Number(item.line_total || 0).toFixed(2)}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="py-4 text-center text-gray-500">No items found</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Pricing Breakdown */}
-              <div className="mb-4 rounded-lg bg-gray-50 p-3 sm:mb-5 sm:rounded-xl sm:p-4 lg:mb-6">
-                <div className="space-y-1.5 text-xs sm:space-y-2 sm:text-sm">
-                  <div className="flex justify-between text-gray-600">
-                    <span>Subtotal</span>
-                    <span>₱{Number(order.subtotal || 0).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Delivery Fee</span>
-                    <span>₱{Number(order.delivery_fee || 0).toFixed(2)}</span>
-                  </div>
-                  <div className="flex items-center justify-between border-t border-gray-300 pt-2 text-lg font-bold text-[#30442B]">
-                    <span>Total</span>
-                    <span>₱{Number(order.total || order.total_amount || 0).toFixed(2)}</span>
+                      ))
+                    ) : (
+                      <p className="py-4 text-center text-gray-500">No items found</p>
+                    )}
                   </div>
                 </div>
-              </div>
 
-              {/* Delivery Information */}
-              <div className="mb-4 sm:mb-5 lg:mb-6">
-                <h3 className="font-outfit mb-3 flex items-center gap-1.5 text-lg font-semibold text-gray-900 sm:mb-4 sm:gap-2 sm:text-xl">
-                  <MapPin className="h-4 w-4 text-[#30442B] sm:h-5 sm:w-5" />
-                  Delivery Information
-                </h3>
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="flex items-start gap-2 sm:gap-3">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gray-400 sm:h-5 sm:w-5" />
-                    <div>
-                      <p className="mb-0.5 text-xs font-medium text-gray-700 sm:mb-1 sm:text-sm">Delivery Address</p>
-                      <p className="text-sm text-gray-900 sm:text-base">{order.delivery_address}</p>
+                {/* Pricing Breakdown */}
+                <div className="mb-4 rounded-lg bg-gray-50 p-3 sm:mb-5 sm:rounded-xl sm:p-4 lg:mb-6">
+                  <div className="space-y-1.5 text-xs sm:space-y-2 sm:text-sm">
+                    <div className="flex justify-between text-gray-600">
+                      <span>Subtotal</span>
+                      <span>₱{Number(order.subtotal || 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-600">
+                      <span>Delivery Fee</span>
+                      <span>₱{Number(order.delivery_fee || 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-gray-300 pt-2 text-lg font-bold text-[#30442B]">
+                      <span>Total</span>
+                      <span>₱{Number(order.total || order.total_amount || 0).toFixed(2)}</span>
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex items-start gap-2 sm:gap-3">
-                    <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gray-400 sm:h-5 sm:w-5" />
-                    <div>
-                      <p className="mb-0.5 text-xs font-medium text-gray-700 sm:mb-1 sm:text-sm">Contact Number</p>
-                      <p className="text-sm text-gray-900 sm:text-base">{order.delivery_contact}</p>
-                    </div>
-                  </div>
-
-                  {order.delivery_instructions && (
-                    <div className="flex items-start gap-3">
-                      <Package className="mt-0.5 h-5 w-5 shrink-0 text-gray-400" />
+                {/* Delivery Information */}
+                <div className="mb-4 sm:mb-5 lg:mb-6">
+                  <h3 className="font-outfit mb-3 flex items-center gap-1.5 text-lg font-semibold text-gray-900 sm:mb-4 sm:gap-2 sm:text-xl">
+                    <MapPin className="h-4 w-4 text-[#30442B] sm:h-5 sm:w-5" />
+                    Delivery Information
+                  </h3>
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gray-400 sm:h-5 sm:w-5" />
                       <div>
-                        <p className="mb-1 text-sm font-medium text-gray-700">Delivery Instructions</p>
-                        <p className="text-gray-900">{order.delivery_instructions}</p>
+                        <p className="mb-0.5 text-xs font-medium text-gray-700 sm:mb-1 sm:text-sm">Delivery Address</p>
+                        <p className="text-sm text-gray-900 sm:text-base">{order.delivery_address}</p>
                       </div>
                     </div>
-                  )}
 
-                  <div className="flex items-start gap-3">
-                    <CreditCard className="mt-0.5 h-5 w-5 shrink-0 text-gray-400" />
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gray-400 sm:h-5 sm:w-5" />
+                      <div>
+                        <p className="mb-0.5 text-xs font-medium text-gray-700 sm:mb-1 sm:text-sm">Contact Number</p>
+                        <p className="text-sm text-gray-900 sm:text-base">{order.delivery_contact}</p>
+                      </div>
+                    </div>
+
+                    {order.delivery_instructions && (
+                      <div className="flex items-start gap-3">
+                        <Package className="mt-0.5 h-5 w-5 shrink-0 text-gray-400" />
+                        <div>
+                          <p className="mb-1 text-sm font-medium text-gray-700">Delivery Instructions</p>
+                          <p className="text-gray-900">{order.delivery_instructions}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-start gap-3">
+                      <CreditCard className="mt-0.5 h-5 w-5 shrink-0 text-gray-400" />
+                      <div>
+                        <p className="mb-1 text-sm font-medium text-gray-700">Payment Method</p>
+                        <p className="text-gray-900">{getPaymentMethodLabel(order.payment_method)}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Status Messages */}
+                {order.status === "delivered" && (
+                  <div className="mb-6 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4">
+                    <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
                     <div>
-                      <p className="mb-1 text-sm font-medium text-gray-700">Payment Method</p>
-                      <p className="text-gray-900">{getPaymentMethodLabel(order.payment_method)}</p>
+                      <p className="font-semibold text-green-900">Order Delivered!</p>
+                      <p className="text-sm text-green-700">Your order was delivered on {formatDate(order.delivered_at)}.</p>
                     </div>
                   </div>
-                </div>
-              </div>
+                )}
 
-              {/* Status Messages */}
-              {order.status === "delivered" && (
-                <div className="mb-6 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4">
-                  <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
-                  <div>
-                    <p className="font-semibold text-green-900">Order Delivered!</p>
-                    <p className="text-sm text-green-700">Your order was delivered on {formatDate(order.delivered_at)}.</p>
-                  </div>
-                </div>
-              )}
-
-              {order.status === "failed" && (
-                <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
-                  <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
-                  <div>
-                    <p className="font-semibold text-red-900">Delivery Failed</p>
-                    <p className="text-sm text-red-700">{order.failure_reason || "The delivery was unsuccessful. Please contact support for assistance."}</p>
-                  </div>
-                </div>
-              )}
-
-              {order.status === "cancelled" && (
-                <div className="mb-6 flex items-start gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                  <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-gray-600" />
-                  <div>
-                    <p className="font-semibold text-gray-900">Order Cancelled</p>
-                    <p className="text-sm text-gray-700">This order has been cancelled.</p>
-                  </div>
-                </div>
-              )}
-
-              {isActive && (
-                <div className="mb-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
-                  <Clock className="mt-0.5 h-5 w-5 shrink-0 animate-pulse text-blue-600" />
-                  <div>
-                    <p className="font-semibold text-blue-900">Order in Progress</p>
-                    <p className="text-sm text-blue-700">
-                      {order.status === "pending" && "Your order is waiting to be confirmed."}
-                      {order.status === "confirmed" && "Your order has been confirmed and will be prepared soon."}
-                      {order.status === "preparing" && "Your order is being prepared with care."}
-                      {order.status === "out_for_delivery" && "Your order is on its way! Get ready!"}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Cancel Order Section - Show for pending/confirmed */}
-              {(order.status === "pending" || order.status === "confirmed") && !showCancelConfirm && (
-                <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
-                  <div className="flex-1">
-                    <p className="font-semibold text-amber-900">Need to cancel?</p>
-                    <p className="mb-3 text-sm text-amber-700">You can still cancel this order since it hasn't started preparation yet.</p>
-                    <button
-                      onClick={() => setShowCancelConfirm(true)}
-                      className="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition-colors hover:bg-red-50"
-                    >
-                      <XCircle className="h-4 w-4" />
-                      Cancel Order
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Cancel Confirmation Dialog */}
-              {showCancelConfirm && (
-                <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
-                  <div className="flex items-start gap-3">
+                {order.status === "failed" && (
+                  <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
                     <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+                    <div>
+                      <p className="font-semibold text-red-900">Delivery Failed</p>
+                      <p className="text-sm text-red-700">{order.failure_reason || "The delivery was unsuccessful. Please contact support for assistance."}</p>
+                    </div>
+                  </div>
+                )}
+
+                {order.status === "cancelled" && (
+                  <div className="mb-6 flex items-start gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-gray-600" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Order Cancelled</p>
+                      <p className="text-sm text-gray-700">This order has been cancelled.</p>
+                    </div>
+                  </div>
+                )}
+
+                {isActive && (
+                  <div className="mb-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
+                    <Clock className="mt-0.5 h-5 w-5 shrink-0 animate-pulse text-blue-600" />
+                    <div>
+                      <p className="font-semibold text-blue-900">Order in Progress</p>
+                      <p className="text-sm text-blue-700">
+                        {order.status === "pending" && "Your order is waiting to be confirmed."}
+                        {order.status === "confirmed" && "Your order has been confirmed and will be prepared soon."}
+                        {order.status === "preparing" && "Your order is being prepared with care."}
+                        {order.status === "out_for_delivery" && "Your order is on its way! Get ready!"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Cancel Order Section - Show for pending/confirmed */}
+                {(order.status === "pending" || order.status === "confirmed") && !showCancelConfirm && (
+                  <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                     <div className="flex-1">
-                      <p className="font-semibold text-red-900">Confirm Cancellation</p>
-                      <p className="mb-4 text-sm text-red-700">Are you sure you want to cancel this order? This action cannot be undone.</p>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleCancelOrder}
-                          disabled={cancelLoading}
-                          className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          {cancelLoading ? (
-                            <>
-                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                              Cancelling...
-                            </>
-                          ) : (
-                            "Yes, Cancel Order"
-                          )}
-                        </button>
-                        <button
-                          onClick={() => setShowCancelConfirm(false)}
-                          disabled={cancelLoading}
-                          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          Keep Order
-                        </button>
+                      <p className="font-semibold text-amber-900">Need to cancel?</p>
+                      <p className="mb-3 text-sm text-amber-700">You can still cancel this order since it hasn't started preparation yet.</p>
+                      <button
+                        onClick={() => setShowCancelConfirm(true)}
+                        className="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition-colors hover:bg-red-50"
+                      >
+                        <XCircle className="h-4 w-4" />
+                        Cancel Order
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Cancel Confirmation Dialog */}
+                {showCancelConfirm && (
+                  <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
+                    <div className="flex items-start gap-3">
+                      <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+                      <div className="flex-1">
+                        <p className="font-semibold text-red-900">Confirm Cancellation</p>
+                        <p className="mb-4 text-sm text-red-700">Are you sure you want to cancel this order? This action cannot be undone.</p>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleCancelOrder}
+                            disabled={cancelLoading}
+                            className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            {cancelLoading ? (
+                              <>
+                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                                Cancelling...
+                              </>
+                            ) : (
+                              "Yes, Cancel Order"
+                            )}
+                          </button>
+                          <button
+                            onClick={() => setShowCancelConfirm(false)}
+                            disabled={cancelLoading}
+                            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            Keep Order
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Contact Store Section - Show for preparing and beyond */}
-              {["preparing", "out_for_delivery"].includes(order.status) && (
-                <div className="mb-6 flex items-start gap-3 rounded-xl border border-orange-200 bg-orange-50 p-4">
-                  <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-orange-600" />
-                  <div className="flex-1">
-                    <p className="font-semibold text-orange-900">Can't cancel this order?</p>
-                    <p className="mb-3 text-sm text-orange-700">This order is already being prepared or is out for delivery. Please contact the store directly to request cancellation.</p>
-                    <button
-                      onClick={handleGoToContact}
-                      className="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-700"
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      Go to Contact
-                    </button>
+                {/* Contact Store Section - Show for preparing and beyond */}
+                {["preparing", "out_for_delivery"].includes(order.status) && (
+                  <div className="mb-6 flex items-start gap-3 rounded-xl border border-orange-200 bg-orange-50 p-4">
+                    <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-orange-600" />
+                    <div className="flex-1">
+                      <p className="font-semibold text-orange-900">Can't cancel this order?</p>
+                      <p className="mb-3 text-sm text-orange-700">This order is already being prepared or is out for delivery. Please contact the store directly to request cancellation.</p>
+                      <button
+                        onClick={handleGoToContact}
+                        className="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-700"
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                        Go to Contact
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Delivery Proof */}
-              {order.delivery_proof_url && (
-                <div className="mb-6">
-                  <h3 className="font-outfit mb-4 text-xl font-semibold text-gray-900">Delivery Proof</h3>
-                  <img src={order.delivery_proof_url} alt="Delivery proof" className="w-full max-w-md rounded-xl border border-gray-200" />
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="mt-4 flex justify-end sm:mt-5 lg:mt-6">
-                <button onClick={onClose} className="rounded-lg bg-[#30442B] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#405939] sm:px-6 sm:py-3 sm:text-base">
-                  Close
-                </button>
+                {/* Delivery Proof */}
+                {order.delivery_proof_url && (
+                  <div className="mb-6">
+                    <h3 className="font-outfit mb-4 text-xl font-semibold text-gray-900">Delivery Proof</h3>
+                    <img src={order.delivery_proof_url} alt="Delivery proof" className="w-full max-w-md rounded-xl border border-gray-200" />
+                  </div>
+                )}
               </div>
-            </div>
+
+              {/* Sticky Footer */}
+              <div className="sticky bottom-0 border-t border-gray-200 bg-white px-4 py-3 sm:px-6 sm:py-4">
+                <div className="flex justify-end">
+                  <button onClick={onClose} className="rounded-lg bg-[#30442B] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#405939] sm:px-6 sm:py-3 sm:text-base">
+                    Close
+                  </button>
+                </div>
+              </div>
+            </>
           ) : null}
         </div>
       </div>

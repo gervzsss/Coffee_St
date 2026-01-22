@@ -3,21 +3,22 @@ export default function ProductDetailsModal({ product, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white sm:rounded-2xl lg:max-w-2xl">
-        <div className="p-4 sm:p-5 lg:p-6">
-          {/* Header */}
-          <div className="mb-4 flex items-start justify-between sm:mb-5 lg:mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">Product Details</h2>
-              <p className="mt-1 text-sm text-gray-500 sm:text-base">View product information and history</p>
-            </div>
-            <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-600">
-              <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+      <div className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-white sm:rounded-2xl lg:max-w-2xl">
+        {/* Sticky Header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 sm:px-5 sm:py-4 lg:px-6">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">Product Details</h2>
+            <p className="mt-0.5 text-xs text-gray-500 sm:text-sm">View product information and history</p>
           </div>
+          <button onClick={onClose} className="rounded-full p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
+            <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6">
           {/* Product Info */}
           <div className="mb-4 flex flex-col gap-4 sm:mb-5 sm:flex-row sm:gap-6 lg:mb-6">
             {product.image_url ? (
@@ -133,6 +134,15 @@ export default function ProductDetailsModal({ product, onClose }) {
           <div className="mt-6 border-t pt-4 text-sm text-gray-500">
             <p>Created: {new Date(product.created_at).toLocaleString()}</p>
             {product.updated_at && <p>Last Updated: {new Date(product.updated_at).toLocaleString()}</p>}
+          </div>
+        </div>
+
+        {/* Sticky Footer */}
+        <div className="sticky bottom-0 border-t border-gray-200 bg-white px-4 py-3 sm:px-5 sm:py-4 lg:px-6">
+          <div className="flex justify-end">
+            <button onClick={onClose} className="rounded-lg bg-[#30442B] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#405939] sm:px-6 sm:py-3 sm:text-base">
+              Close
+            </button>
           </div>
         </div>
       </div>
