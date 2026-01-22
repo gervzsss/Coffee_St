@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { getShifts } from "../services/shiftService";
 import { formatCurrency } from "../utils/formatCurrency";
 
@@ -93,7 +94,7 @@ export default function POSShifts() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <motion.div initial={{ opacity: 1, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: "easeOut" }} className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
       <div className="mb-6">
         <button
@@ -260,6 +261,6 @@ export default function POSShifts() {
           )}
         </>
       )}
-    </div>
+    </motion.div>
   );
 }
