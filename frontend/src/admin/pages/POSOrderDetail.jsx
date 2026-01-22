@@ -233,6 +233,15 @@ export default function POSOrderDetail() {
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-medium text-gray-900">{formatCurrency(order.subtotal)}</span>
                   </div>
+                  {order.discount_amount > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-amber-600">
+                        Discount ({order.discount_percent}%)
+                        {order.discount_reason && <span className="text-xs"> - {order.discount_reason}</span>}
+                      </span>
+                      <span className="font-medium text-amber-600">-{formatCurrency(order.discount_amount)}</span>
+                    </div>
+                  )}
                   <div className="border-t border-gray-200 pt-3">
                     <div className="flex justify-between">
                       <span className="text-lg font-semibold text-gray-900">Total</span>

@@ -252,6 +252,15 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate, onMar
                     <span>Subtotal</span>
                     <span>₱{Number(order.subtotal || 0).toFixed(2)}</span>
                   </div>
+                  {order.discount_amount > 0 && (
+                    <div className="flex justify-between text-sm text-amber-600">
+                      <span>
+                        Discount ({order.discount_percent}%)
+                        {order.discount_reason && <span className="text-xs"> - {order.discount_reason}</span>}
+                      </span>
+                      <span>-₱{Number(order.discount_amount || 0).toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm text-gray-600">
                     <span>Delivery Fee</span>
                     <span>₱{Number(order.delivery_fee || 0).toFixed(2)}</span>

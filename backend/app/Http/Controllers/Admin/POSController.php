@@ -115,6 +115,8 @@ class POSController extends Controller
             'customer_name' => 'nullable|string|max:120',
             'customer_phone' => 'nullable|string|max:50',
             'notes' => 'nullable|string|max:500',
+            'discount_percent' => 'nullable|numeric|min:0|max:100',
+            'discount_reason' => 'nullable|string|max:100',
         ]);
 
         // Get the walk-in user
@@ -166,6 +168,9 @@ class POSController extends Controller
                 'pos_shift_id' => $activeShift->id,
                 'status' => Order::STATUS_CONFIRMED,
                 'subtotal' => 0,
+                'discount_percent' => $validated['discount_percent'] ?? null,
+                'discount_amount' => 0,
+                'discount_reason' => $validated['discount_reason'] ?? null,
                 'delivery_fee' => 0, // No delivery fee for POS
                 'total' => 0,
                 'delivery_address' => null,
@@ -247,6 +252,9 @@ class POSController extends Controller
                     'customer_name' => $order->pos_customer_name,
                     'customer_phone' => $order->pos_customer_phone,
                     'subtotal' => $order->subtotal,
+                    'discount_percent' => $order->discount_percent,
+                    'discount_amount' => $order->discount_amount,
+                    'discount_reason' => $order->discount_reason,
                     'total' => $order->total,
                     'payment_method' => $order->payment_method,
                     'items' => $order->items->map(function ($item) {
@@ -336,6 +344,9 @@ class POSController extends Controller
                     'customer_name' => $order->pos_customer_name ?? 'Walk-in',
                     'customer_phone' => $order->pos_customer_phone,
                     'subtotal' => $order->subtotal,
+                    'discount_percent' => $order->discount_percent,
+                    'discount_amount' => $order->discount_amount,
+                    'discount_reason' => $order->discount_reason,
                     'total' => $order->total,
                     'items_count' => $itemsCount,
                     'items' => $order->items->map(function ($item) {
@@ -402,6 +413,9 @@ class POSController extends Controller
                 ];
             }),
             'subtotal' => $order->subtotal,
+            'discount_percent' => $order->discount_percent,
+            'discount_amount' => $order->discount_amount,
+            'discount_reason' => $order->discount_reason,
             'total' => $order->total,
             'payment_method' => $order->payment_method,
             'notes' => $order->notes,

@@ -255,6 +255,8 @@ export default function POS() {
       customer_name: checkoutData.customerName || null,
       customer_phone: checkoutData.customerPhone || null,
       notes: checkoutData.notes || null,
+      discount_percent: checkoutData.discountPercent || null,
+      discount_reason: checkoutData.discountReason || null,
     };
 
     const result = await createPosOrder(orderData);
@@ -499,7 +501,6 @@ export default function POS() {
         isOpen={isCheckoutModalOpen}
         onClose={() => setIsCheckoutModalOpen(false)}
         subtotal={subtotal}
-        total={total}
         itemCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
         onSubmit={handleSubmitOrder}
         isSubmitting={isSubmitting}

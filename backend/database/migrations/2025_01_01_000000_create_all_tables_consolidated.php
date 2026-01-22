@@ -171,6 +171,9 @@ return new class extends Migration
             $table->foreignId('pos_shift_id')->nullable()->constrained('pos_shifts')->onDelete('set null');
             $table->enum('status', ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'failed', 'cancelled'])->default('pending');
             $table->decimal('subtotal', 10, 2)->default(0.00);
+            $table->decimal('discount_percent', 5, 2)->nullable();
+            $table->decimal('discount_amount', 10, 2)->default(0.00);
+            $table->string('discount_reason', 100)->nullable();
             $table->decimal('delivery_fee', 10, 2)->default(0.00);
             $table->decimal('total', 10, 2)->default(0.00);
             $table->text('delivery_address')->nullable();

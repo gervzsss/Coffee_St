@@ -16,6 +16,9 @@ class Order extends Model
         'pos_shift_id',
         'status',
         'subtotal',
+        'discount_percent',
+        'discount_amount',
+        'discount_reason',
         'delivery_fee',
         'total',
         'delivery_address',
@@ -39,6 +42,8 @@ class Order extends Model
     protected $casts = [
         'status' => 'string',
         'subtotal' => 'float',
+        'discount_percent' => 'float',
+        'discount_amount' => 'float',
         'delivery_fee' => 'float',
         'total' => 'float',
         'confirmed_at' => 'datetime',
@@ -178,9 +183,16 @@ class Order extends Model
     public function calculateTotals(): void
     {
         $subtotal = $this->items->sum('line_total');
-        $total = $subtotal + $this->delivery_fee;
+
+        // Calculate discount amount if discount percentage is set
+        $discountAmount = $this->discount_percent
+            ? round($subtotal * ($this->discount_percent / 100), 2)
+            : 0;
+
+        $total = $subtotal - $discountAmount + $this->delivery_fee;
 
         $this->subtotal = $subtotal;
+        $this->discount_amount = $discountAmount;
         $this->total = $total;
     }
 
