@@ -92,7 +92,7 @@ export default function Checkout() {
 
               {/* Right Column - Order Summary */}
               <div className="lg:col-span-1">
-                <OrderSummaryCheckout items={selectedCartItems} deliveryFee={50} taxRate={0.12} onConfirmCheckout={handleConfirmCheckout} disabled={loading} loading={loading} />
+                <OrderSummaryCheckout items={selectedCartItems} deliveryFee={50} onConfirmCheckout={handleConfirmCheckout} disabled={loading} loading={loading} />
               </div>
             </div>
           </div>

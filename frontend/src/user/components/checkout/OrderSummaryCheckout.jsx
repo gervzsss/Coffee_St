@@ -1,7 +1,6 @@
-export default function OrderSummaryCheckout({ items, deliveryFee = 50, taxRate = 0.12, onConfirmCheckout, disabled = false, loading = false }) {
+export default function OrderSummaryCheckout({ items, deliveryFee = 50, onConfirmCheckout, disabled = false, loading = false }) {
   const subtotal = items.reduce((sum, item) => sum + (item.line_total || 0), 0);
-  const tax = subtotal * taxRate;
-  const total = subtotal + tax + deliveryFee;
+  const total = subtotal + deliveryFee;
 
   return (
     <div className="sticky top-24 rounded-2xl bg-white p-4 shadow-lg ring-1 ring-gray-900/5 sm:top-28 sm:rounded-3xl sm:p-6">
@@ -15,15 +14,9 @@ export default function OrderSummaryCheckout({ items, deliveryFee = 50, taxRate 
         </div>
 
         {/* Delivery Fee */}
-        <div className="flex justify-between text-gray-600">
+        <div className="flex justify-between border-b border-gray-200 pb-2 text-gray-600 sm:pb-3">
           <span>Delivery Fee</span>
           <span>₱{deliveryFee.toFixed(2)}</span>
-        </div>
-
-        {/* Tax */}
-        <div className="flex justify-between border-b border-gray-200 pb-2 text-gray-600 sm:pb-3">
-          <span>Tax ({(taxRate * 100).toFixed(0)}%)</span>
-          <span>₱{tax.toFixed(2)}</span>
         </div>
 
         {/* Total */}

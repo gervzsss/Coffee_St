@@ -1,4 +1,4 @@
-export default function CartSummary({ selectedCount, subtotal, tax, taxRate, total, onCheckout, disabled = false }) {
+export default function CartSummary({ selectedCount, subtotal, total, onCheckout, disabled = false }) {
   return (
     <div className="sticky top-24 space-y-3 rounded-lg border bg-white p-4 shadow-sm sm:top-28 sm:space-y-4 sm:p-5 lg:p-6">
       <div>
@@ -9,10 +9,6 @@ export default function CartSummary({ selectedCount, subtotal, tax, taxRate, tot
         <div className="flex justify-between border-b border-neutral-100 py-1.5 sm:py-2">
           <dt>Subtotal</dt>
           <dd>₱{subtotal.toFixed(2)}</dd>
-        </div>
-        <div className="flex justify-between border-b border-neutral-100 py-1.5 sm:py-2">
-          <dt>Tax ({taxRate}%)</dt>
-          <dd>₱{tax.toFixed(2)}</dd>
         </div>
         <div className="flex items-center justify-between pt-1.5 text-base font-semibold text-[#30442B] sm:pt-2 sm:text-lg">
           <dt>Total</dt>

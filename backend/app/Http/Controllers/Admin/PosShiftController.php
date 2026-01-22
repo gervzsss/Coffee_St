@@ -300,7 +300,6 @@ class PosShiftController extends Controller
                     'status_label' => $order->status_label,
                     'payment_method' => $order->payment_method,
                     'subtotal' => $order->subtotal,
-                    'tax' => $order->tax,
                     'total' => $order->total,
                     'customer_name' => $order->pos_customer_name ?? 'Walk-in',
                     'items_count' => $order->items->sum('quantity'),

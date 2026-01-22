@@ -87,12 +87,11 @@ export const clearCart = async () => {
   }
 };
 
-export const calculateCartTotals = (cartItems = [], taxRate = 0.12) => {
+export const calculateCartTotals = (cartItems = []) => {
   const subtotal = cartItems.reduce((total, item) => total + (item.line_total || 0), 0);
-  const tax = subtotal * taxRate;
-  const total = subtotal + tax;
+  const total = subtotal;
 
-  return { subtotal, tax, total, taxRate };
+  return { subtotal, total };
 };
 
 export default {

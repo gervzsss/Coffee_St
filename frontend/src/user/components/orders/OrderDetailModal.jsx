@@ -367,10 +367,6 @@ export default function OrderDetailModal({ isOpen, onClose, order: initialOrder,
                     <span>Delivery Fee</span>
                     <span>₱{Number(order.delivery_fee || 0).toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Tax ({((order.tax_rate || 0) * 100).toFixed(0)}%)</span>
-                    <span>₱{Number(order.tax_amount || 0).toFixed(2)}</span>
-                  </div>
                   <div className="flex items-center justify-between border-t border-gray-300 pt-2 text-lg font-bold text-[#30442B]">
                     <span>Total</span>
                     <span>₱{Number(order.total || order.total_amount || 0).toFixed(2)}</span>

@@ -30,7 +30,6 @@ export const createOrder = async (orderData = {}) => {
   try {
     const response = await api.post('/orders', {
       delivery_fee: orderData.delivery_fee || 0,
-      tax_rate: orderData.tax_rate || 0.12,
       ...orderData,
     });
     return { success: true, data: response.data.order };
@@ -70,17 +69,14 @@ export const cancelOrder = async (orderId) => {
   }
 };
 
-export const calculateOrderTotals = (cartItems = [], deliveryFee = 0, taxRate = 0.12) => {
+export const calculateOrderTotals = (cartItems = [], deliveryFee = 0) => {
   const subtotal = cartItems.reduce((total, item) => total + (item.line_total || 0), 0);
-  const tax = subtotal * taxRate;
-  const total = subtotal + tax + deliveryFee;
+  const total = subtotal + deliveryFee;
 
   return {
     subtotal,
-    tax,
     deliveryFee,
     total,
-    taxRate,
   };
 };
 

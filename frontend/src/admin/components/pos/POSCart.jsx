@@ -1,6 +1,6 @@
 import { formatCurrency } from "../../utils/formatCurrency";
 
-export default function POSCart({ items, subtotal, tax, total, onUpdateQuantity, onRemoveItem, onClearCart, onCheckout, disabled = false }) {
+export default function POSCart({ items, subtotal, total, onUpdateQuantity, onRemoveItem, onClearCart, onCheckout, disabled = false }) {
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
       {/* Header */}
@@ -87,10 +87,6 @@ export default function POSCart({ items, subtotal, tax, total, onUpdateQuantity,
           <div className="flex justify-between text-gray-600">
             <span>Subtotal</span>
             <span>{formatCurrency(subtotal)}</span>
-          </div>
-          <div className="flex justify-between text-gray-600">
-            <span>Tax (12%)</span>
-            <span>{formatCurrency(tax)}</span>
           </div>
           <div className="flex justify-between border-t border-gray-200 pt-2 text-lg font-bold text-gray-900">
             <span>Total</span>

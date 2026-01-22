@@ -9,7 +9,7 @@ import { useToast } from "../hooks/useToast";
 import { useCartOperations } from "../hooks/useCartOperations";
 import { useCartSelection } from "../hooks/useCartSelection";
 import { useProductEdit } from "../hooks/useProductEdit";
-import { calculateSelectedSubtotal, calculateTax, calculateTotal, getTaxRatePercentage } from "../utils/cartCalculations";
+import { calculateSelectedSubtotal, calculateTotal } from "../utils/cartCalculations";
 
 export default function Cart() {
   const { isAuthenticated, openAuthModal } = useAuth();
@@ -242,8 +242,6 @@ export default function Cart() {
               <CartSummary
                 selectedCount={selectedItems.size}
                 subtotal={calculateSelectedSubtotal(cartItems, selectedItems)}
-                tax={calculateTax(cartItems, selectedItems)}
-                taxRate={getTaxRatePercentage()}
                 total={calculateTotal(cartItems, selectedItems)}
                 onCheckout={handleCheckout}
                 disabled={selectedItems.size === 0}

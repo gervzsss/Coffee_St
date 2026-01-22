@@ -2,7 +2,7 @@ import { useState } from "react";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { ButtonSpinner } from "../common";
 
-export default function POSCheckoutModal({ isOpen, onClose, subtotal, tax, total, itemCount, onSubmit, isSubmitting }) {
+export default function POSCheckoutModal({ isOpen, onClose, subtotal, total, itemCount, onSubmit, isSubmitting }) {
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -120,10 +120,6 @@ export default function POSCheckoutModal({ isOpen, onClose, subtotal, tax, total
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
                 <span>{formatCurrency(subtotal)}</span>
-              </div>
-              <div className="flex justify-between text-gray-600">
-                <span>Tax (12%)</span>
-                <span>{formatCurrency(tax)}</span>
               </div>
               <div className="flex justify-between border-t border-gray-200 pt-2 text-xl font-bold text-gray-900">
                 <span>Total</span>

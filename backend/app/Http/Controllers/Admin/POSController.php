@@ -115,7 +115,6 @@ class POSController extends Controller
             'customer_name' => 'nullable|string|max:120',
             'customer_phone' => 'nullable|string|max:50',
             'notes' => 'nullable|string|max:500',
-            'tax_rate' => 'nullable|numeric|min:0|max:1',
         ]);
 
         // Get the walk-in user
@@ -168,9 +167,6 @@ class POSController extends Controller
                 'status' => Order::STATUS_CONFIRMED,
                 'subtotal' => 0,
                 'delivery_fee' => 0, // No delivery fee for POS
-                'tax_rate' => $validated['tax_rate'] ?? 0.12,
-                'tax_amount' => 0,
-                'tax' => 0,
                 'total' => 0,
                 'delivery_address' => null,
                 'delivery_contact' => null,
@@ -251,7 +247,6 @@ class POSController extends Controller
                     'customer_name' => $order->pos_customer_name,
                     'customer_phone' => $order->pos_customer_phone,
                     'subtotal' => $order->subtotal,
-                    'tax' => $order->tax,
                     'total' => $order->total,
                     'payment_method' => $order->payment_method,
                     'items' => $order->items->map(function ($item) {
@@ -341,7 +336,6 @@ class POSController extends Controller
                     'customer_name' => $order->pos_customer_name ?? 'Walk-in',
                     'customer_phone' => $order->pos_customer_phone,
                     'subtotal' => $order->subtotal,
-                    'tax' => $order->tax,
                     'total' => $order->total,
                     'items_count' => $itemsCount,
                     'items' => $order->items->map(function ($item) {
@@ -408,8 +402,6 @@ class POSController extends Controller
                 ];
             }),
             'subtotal' => $order->subtotal,
-            'tax_rate' => $order->tax_rate,
-            'tax' => $order->tax,
             'total' => $order->total,
             'payment_method' => $order->payment_method,
             'notes' => $order->notes,

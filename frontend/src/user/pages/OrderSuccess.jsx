@@ -152,10 +152,6 @@ export default function OrderSuccess() {
                     <span>Delivery Fee</span>
                     <span>₱{order.delivery_fee.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Tax ({(order.tax_rate * 100).toFixed(0)}%)</span>
-                    <span>₱{order.tax_amount.toFixed(2)}</span>
-                  </div>
                   <div className="flex items-center justify-between border-t pt-2 text-lg font-bold text-[#30442B]">
                     <span>Total</span>
                     <span>₱{order.total.toFixed(2)}</span>

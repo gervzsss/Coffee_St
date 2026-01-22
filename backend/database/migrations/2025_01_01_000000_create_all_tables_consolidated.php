@@ -14,6 +14,7 @@ return new class extends Migration
      * - User management with order tracking
      * - Product catalog with variants and stock management
      * - Cart and order processing
+     * - POS (Point of Sale) with shift management
      * - Inquiry/messaging system
      * - Notifications system
      * - Stock logging and audit trail
@@ -139,21 +140,44 @@ return new class extends Migration
             $table->index('variant_id', 'idx_cart_item_variants_variant');
         });
 
-        // 8. Orders Table
+        // 8. POS Shifts Table
+        Schema::create('pos_shifts', function (Blueprint $table) {
+            $table->id();
+            $table->enum('status', ['active', 'closed'])->default('active');
+            $table->timestamp('opened_at');
+            $table->timestamp('closed_at')->nullable();
+            $table->foreignId('opened_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('closed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->decimal('opening_cash_float', 10, 2);
+            $table->decimal('actual_cash_count', 10, 2)->nullable();
+            $table->decimal('expected_cash', 10, 2)->nullable();
+            $table->decimal('variance', 10, 2)->nullable();
+            $table->decimal('cash_sales_total', 10, 2)->nullable();
+            $table->decimal('ewallet_sales_total', 10, 2)->nullable();
+            $table->decimal('gross_sales_total', 10, 2)->nullable();
+            $table->text('notes')->nullable();
+            $table->timestamps();
+
+            $table->index('status', 'idx_pos_shifts_status');
+            $table->index(['status', 'opened_at'], 'idx_pos_shifts_status_opened');
+        });
+
+        // 9. Orders Table
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number', 20)->unique();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->enum('order_source', ['online', 'pos'])->default('online');
+            $table->foreignId('pos_shift_id')->nullable()->constrained('pos_shifts')->onDelete('set null');
             $table->enum('status', ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'failed', 'cancelled'])->default('pending');
             $table->decimal('subtotal', 10, 2)->default(0.00);
             $table->decimal('delivery_fee', 10, 2)->default(0.00);
-            $table->decimal('tax_rate', 6, 4)->default(0.0800);
-            $table->decimal('tax_amount', 10, 2)->default(0.00);
-            $table->decimal('tax', 10, 2)->default(0.00);
             $table->decimal('total', 10, 2)->default(0.00);
             $table->text('delivery_address')->nullable();
             $table->string('delivery_contact', 20)->nullable();
             $table->text('delivery_instructions')->nullable();
+            $table->string('pos_customer_name', 120)->nullable();
+            $table->string('pos_customer_phone', 50)->nullable();
             $table->enum('payment_method', ['cash', 'gcash'])->default('cash');
 
             // Order tracking fields
@@ -172,9 +196,11 @@ return new class extends Migration
 
             $table->index(['user_id', 'status'], 'idx_orders_user_status');
             $table->index('order_number', 'idx_orders_order_number');
+            $table->index(['order_source', 'status'], 'idx_orders_source_status');
+            $table->index('pos_shift_id', 'idx_orders_pos_shift');
         });
 
-        // 9. Order Items Table
+        // 10. Order Items Table
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
@@ -192,7 +218,7 @@ return new class extends Migration
             $table->index('order_id', 'idx_order_items_order');
         });
 
-        // 10. Order Item Variants Table
+        // 11. Order Item Variants Table
         Schema::create('order_item_variants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_item_id')->constrained('order_items')->onDelete('cascade');
@@ -205,7 +231,7 @@ return new class extends Migration
             $table->index('order_item_id', 'idx_order_item_variants_order_item');
         });
 
-        // 11. Inquiry Threads Table
+        // 12. Inquiry Threads Table
         Schema::create('inquiry_threads', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
@@ -222,7 +248,7 @@ return new class extends Migration
             $table->index(['status', 'last_message_at'], 'idx_threads_status_last_message');
         });
 
-        // 12. Thread Messages Table
+        // 13. Thread Messages Table
         Schema::create('thread_messages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('thread_id')->constrained('inquiry_threads')->onDelete('cascade');
@@ -236,7 +262,7 @@ return new class extends Migration
             $table->index(['thread_id', 'created_at'], 'idx_thread_messages_thread_created');
         });
 
-        // 13. Notifications Table
+        // 14. Notifications Table
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
@@ -254,7 +280,7 @@ return new class extends Migration
             $table->index(['is_read', 'created_at'], 'idx_notifications_is_read_created_at');
         });
 
-        // 14. Stock Logs Table
+        // 15. Stock Logs Table
         Schema::create('stock_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
@@ -272,7 +298,7 @@ return new class extends Migration
             $table->index(['product_id', 'created_at'], 'idx_stock_logs_product_created');
         });
 
-        // 15. Personal Access Tokens Table (Laravel Sanctum)
+        // 16. Personal Access Tokens Table (Laravel Sanctum)
         Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->id();
             $table->morphs('tokenable');
@@ -286,7 +312,7 @@ return new class extends Migration
             $table->index('expires_at', 'idx_personal_access_tokens_expires_at');
         });
 
-        // 16. Order Status Logs Table
+        // 17. Order Status Logs Table
         Schema::create('order_status_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
@@ -315,6 +341,7 @@ return new class extends Migration
         Schema::dropIfExists('order_item_variants');
         Schema::dropIfExists('order_items');
         Schema::dropIfExists('orders');
+        Schema::dropIfExists('pos_shifts');
         Schema::dropIfExists('cart_item_variants');
         Schema::dropIfExists('cart_items');
         Schema::dropIfExists('carts');

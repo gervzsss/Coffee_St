@@ -17,9 +17,6 @@ class Order extends Model
         'status',
         'subtotal',
         'delivery_fee',
-        'tax_rate',
-        'tax_amount',
-        'tax',
         'total',
         'delivery_address',
         'delivery_contact',
@@ -43,9 +40,6 @@ class Order extends Model
         'status' => 'string',
         'subtotal' => 'float',
         'delivery_fee' => 'float',
-        'tax_rate' => 'float',
-        'tax_amount' => 'float',
-        'tax' => 'float',
         'total' => 'float',
         'confirmed_at' => 'datetime',
         'preparing_at' => 'datetime',
@@ -184,12 +178,9 @@ class Order extends Model
     public function calculateTotals(): void
     {
         $subtotal = $this->items->sum('line_total');
-        $taxAmount = $subtotal * $this->tax_rate;
-        $total = $subtotal + $taxAmount + $this->delivery_fee;
+        $total = $subtotal + $this->delivery_fee;
 
         $this->subtotal = $subtotal;
-        $this->tax_amount = $taxAmount;
-        $this->tax = $taxAmount; // Duplicate field for compatibility
         $this->total = $total;
     }
 

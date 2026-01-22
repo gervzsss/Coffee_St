@@ -57,11 +57,9 @@ export function useCheckout(selectedCartItems = [], user = null, isBuyNow = fals
   const calculateTotals = () => {
     const subtotal = selectedCartItems.reduce((sum, item) => sum + (item.line_total || 0), 0);
     const deliveryFee = 50.00;
-    const taxRate = 0.12;
-    const tax = subtotal * taxRate;
-    const total = subtotal + tax + deliveryFee;
+    const total = subtotal + deliveryFee;
 
-    return { subtotal, deliveryFee, taxRate, tax, total };
+    return { subtotal, deliveryFee, total };
   };
 
   const submitOrder = async () => {
@@ -103,7 +101,6 @@ export function useCheckout(selectedCartItems = [], user = null, isBuyNow = fals
           delivery_instructions: formData.delivery_instructions || null,
           payment_method: formData.payment_method,
           delivery_fee: totals.deliveryFee,
-          tax_rate: totals.taxRate,
         });
       } else {
         // Regular cart checkout flow
@@ -116,7 +113,6 @@ export function useCheckout(selectedCartItems = [], user = null, isBuyNow = fals
           delivery_instructions: formData.delivery_instructions || null,
           payment_method: formData.payment_method,
           delivery_fee: totals.deliveryFee,
-          tax_rate: totals.taxRate,
         });
 
         // Only update cart count for regular checkout

@@ -135,7 +135,6 @@ class OrderController extends Controller
                 'notes' => $order->notes,
                 'subtotal' => $order->subtotal,
                 'delivery_fee' => $order->delivery_fee,
-                'tax' => $order->tax,
                 'total' => $order->total,
                 'items_count' => $itemsCount,
                 'items' => $order->items->map(function ($item) {
@@ -222,8 +221,6 @@ class OrderController extends Controller
             }),
             'subtotal' => $order->subtotal,
             'delivery_fee' => $order->delivery_fee,
-            'tax_rate' => $order->tax_rate,
-            'tax' => $order->tax,
             'total' => $order->total,
             'payment_method' => $order->payment_method,
             'notes' => $order->notes,

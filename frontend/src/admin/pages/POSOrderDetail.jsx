@@ -233,10 +233,6 @@ export default function POSOrderDetail() {
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-medium text-gray-900">{formatCurrency(order.subtotal)}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tax ({(order.tax_rate * 100).toFixed(0)}%)</span>
-                    <span className="font-medium text-gray-900">{formatCurrency(order.tax)}</span>
-                  </div>
                   <div className="border-t border-gray-200 pt-3">
                     <div className="flex justify-between">
                       <span className="text-lg font-semibold text-gray-900">Total</span>

@@ -225,9 +225,7 @@ export default function POS() {
 
   // Calculate totals
   const subtotal = cart.reduce((sum, item) => sum + item.line_total, 0);
-  const taxRate = 0.12;
-  const tax = subtotal * taxRate;
-  const total = subtotal + tax;
+  const total = subtotal;
 
   // Handle checkout
   const handleCheckout = () => {
@@ -257,7 +255,6 @@ export default function POS() {
       customer_name: checkoutData.customerName || null,
       customer_phone: checkoutData.customerPhone || null,
       notes: checkoutData.notes || null,
-      tax_rate: taxRate,
     };
 
     const result = await createPosOrder(orderData);
@@ -453,7 +450,6 @@ export default function POS() {
             <POSCart
               items={cart}
               subtotal={subtotal}
-              tax={tax}
               total={total}
               onUpdateQuantity={handleUpdateQuantity}
               onRemoveItem={handleRemoveFromCart}
@@ -503,7 +499,6 @@ export default function POS() {
         isOpen={isCheckoutModalOpen}
         onClose={() => setIsCheckoutModalOpen(false)}
         subtotal={subtotal}
-        tax={tax}
         total={total}
         itemCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
         onSubmit={handleSubmitOrder}

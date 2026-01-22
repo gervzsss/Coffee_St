@@ -72,8 +72,6 @@ class OrderController extends Controller
             'status' => $order->status,
             'subtotal' => (float) $order->subtotal,
             'delivery_fee' => (float) $order->delivery_fee,
-            'tax_rate' => (float) $order->tax_rate,
-            'tax_amount' => (float) $order->tax_amount,
             'total' => (float) $order->total,
             'delivery_address' => $order->delivery_address,
             'delivery_contact' => $order->delivery_contact,
@@ -214,7 +212,6 @@ class OrderController extends Controller
             'delivery_instructions' => 'nullable|string|max:500',
             'payment_method' => 'required|in:cash,gcash',
             'delivery_fee' => 'nullable|numeric|min:0',
-            'tax_rate' => 'nullable|numeric|min:0|max:1',
         ]);
 
         $user = Auth::user();
@@ -269,9 +266,6 @@ class OrderController extends Controller
                 'status' => 'pending',
                 'subtotal' => 0,
                 'delivery_fee' => $request->delivery_fee ?? 50.00,
-                'tax_rate' => $request->tax_rate ?? 0.1200,
-                'tax_amount' => 0,
-                'tax' => 0,
                 'total' => 0,
                 'delivery_address' => $request->delivery_address,
                 'delivery_contact' => $request->delivery_contact,
@@ -454,7 +448,6 @@ class OrderController extends Controller
             'delivery_instructions' => 'nullable|string|max:500',
             'payment_method' => 'required|in:cash,gcash',
             'delivery_fee' => 'nullable|numeric|min:0',
-            'tax_rate' => 'nullable|numeric|min:0|max:1',
         ]);
 
         $user = Auth::user();
@@ -496,9 +489,6 @@ class OrderController extends Controller
                 'status' => 'pending',
                 'subtotal' => 0,
                 'delivery_fee' => $request->delivery_fee ?? 50.00,
-                'tax_rate' => $request->tax_rate ?? 0.1200,
-                'tax_amount' => 0,
-                'tax' => 0,
                 'total' => 0,
                 'delivery_address' => $request->delivery_address,
                 'delivery_contact' => $request->delivery_contact,
