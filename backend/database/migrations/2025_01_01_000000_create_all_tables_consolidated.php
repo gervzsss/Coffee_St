@@ -166,7 +166,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number', 20)->unique();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('order_source', ['online', 'pos'])->default('online');
             $table->foreignId('pos_shift_id')->nullable()->constrained('pos_shifts')->onDelete('set null');
             $table->enum('status', ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'failed', 'cancelled'])->default('pending');

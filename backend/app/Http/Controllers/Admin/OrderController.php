@@ -119,15 +119,15 @@ class OrderController extends Controller
                 'status' => $order->status,
                 'status_label' => $order->status_label,
                 'customer' => $order->isPosOrder() ? [
-                    'id' => $order->user->id,
+                    'id' => null,
                     'name' => $order->pos_customer_name ?? 'Walk-in Customer',
                     'email' => null,
                     'phone' => $order->pos_customer_phone,
                 ] : [
-                    'id' => $order->user->id,
-                    'name' => $order->user->first_name.' '.$order->user->last_name,
-                    'email' => $order->user->email,
-                    'phone' => $order->user->phone,
+                    'id' => $order->user?->id,
+                    'name' => $order->user ? ($order->user->first_name.' '.$order->user->last_name) : 'Unknown',
+                    'email' => $order->user?->email,
+                    'phone' => $order->user?->phone,
                 ],
                 'delivery_address' => $order->delivery_address,
                 'delivery_contact' => $order->delivery_contact,
@@ -191,17 +191,17 @@ class OrderController extends Controller
             'status' => $order->status,
             'status_label' => $order->status_label,
             'customer' => $order->isPosOrder() ? [
-                'id' => $order->user->id,
+                'id' => null,
                 'name' => $order->pos_customer_name ?? 'Walk-in Customer',
                 'email' => null,
                 'phone' => $order->pos_customer_phone,
                 'address' => null,
             ] : [
-                'id' => $order->user->id,
-                'name' => $order->user->first_name.' '.$order->user->last_name,
-                'email' => $order->user->email,
-                'phone' => $order->user->phone,
-                'address' => $order->user->address,
+                'id' => $order->user?->id,
+                'name' => $order->user ? ($order->user->first_name.' '.$order->user->last_name) : 'Unknown',
+                'email' => $order->user?->email,
+                'phone' => $order->user?->phone,
+                'address' => $order->user?->address,
             ],
             'delivery_address' => $order->delivery_address,
             'delivery_contact' => $order->delivery_contact,
@@ -333,13 +333,13 @@ class OrderController extends Controller
 
             // Increment warnings (failed_orders_count) ONLY for failed deliveries
             // i.e., when transitioning from out_for_delivery to failed
-            if ($oldStatus === 'out_for_delivery' && $newStatus === 'failed') {
+            if ($oldStatus === 'out_for_delivery' && $newStatus === 'failed' && $order->user) {
                 $order->user->increment('failed_orders_count');
             }
 
             // Decrement failed orders count if transitioning FROM failed to another status
             // (only if it was a delivery failure)
-            if ($oldStatus === 'failed' && $newStatus !== 'failed') {
+            if ($oldStatus === 'failed' && $newStatus !== 'failed' && $order->user) {
                 // Check if this was previously a delivery failure by looking at status logs
                 $wasDeliveryFailure = OrderStatusLog::where('order_id', $order->id)
                     ->where('from_status', 'out_for_delivery')

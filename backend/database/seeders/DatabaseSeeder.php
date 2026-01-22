@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             VariantGroupSeeder::class,
             AdminUserSeeder::class,
-            WalkInUserSeeder::class,
         ]);
     }
 }

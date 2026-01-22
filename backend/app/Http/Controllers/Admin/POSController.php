@@ -9,7 +9,6 @@ use App\Models\OrderItemVariant;
 use App\Models\OrderStatusLog;
 use App\Models\PosShift;
 use App\Models\Product;
-use App\Models\User;
 use App\Services\StockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -119,15 +118,6 @@ class POSController extends Controller
             'discount_reason' => 'nullable|string|max:100',
         ]);
 
-        // Get the walk-in user
-        $walkInUser = User::where('email', 'walkin@coffeest.local')->first();
-
-        if (! $walkInUser) {
-            return response()->json([
-                'message' => 'Walk-in user not found. Please run the WalkInUserSeeder.',
-            ], 500);
-        }
-
         // SHIFT ENFORCEMENT: Require active shift to create POS orders
         $activeShift = PosShift::getActiveShift();
         if (! $activeShift) {
@@ -160,9 +150,9 @@ class POSController extends Controller
             // Generate unique order number
             $orderNumber = Order::generateOrderNumber();
 
-            // Create order - POS orders start at 'confirmed' status
+            // Create order - POS orders start at 'confirmed' status (no user_id for POS orders)
             $order = Order::create([
-                'user_id' => $walkInUser->id,
+                'user_id' => null,
                 'order_number' => $orderNumber,
                 'order_source' => Order::SOURCE_POS,
                 'pos_shift_id' => $activeShift->id,

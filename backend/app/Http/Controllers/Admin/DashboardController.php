@@ -59,10 +59,17 @@ class DashboardController extends Controller
             ->take(5)
             ->get()
             ->map(function ($order) {
+                // For POS orders, use pos_customer_name; for online orders, use user name
+                if ($order->order_source === 'pos') {
+                    $customerName = $order->pos_customer_name ?? 'Walk-in Customer';
+                } else {
+                    $customerName = $order->user ? ($order->user->first_name.' '.$order->user->last_name) : 'Unknown';
+                }
+
                 return [
                     'id' => $order->id,
                     'order_number' => $order->order_number,
-                    'customer_name' => $order->user ? ($order->user->first_name.' '.$order->user->last_name) : 'Unknown',
+                    'customer_name' => $customerName,
                     'total' => $order->total,
                     'status' => $order->status,
                 ];
