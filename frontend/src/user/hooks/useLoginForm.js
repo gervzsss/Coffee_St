@@ -13,6 +13,7 @@ export const useLoginForm = (onClose, resetFormCallback) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showDeletedAccountModal, setShowDeletedAccountModal] = useState(false);
 
   const handleChangeEmail = (e) => {
     setLoginEmail(e.target.value);
@@ -64,6 +65,13 @@ export const useLoginForm = (onClose, resetFormCallback) => {
       if (resetFormCallback) resetFormCallback();
     } catch (err) {
       const errorData = err.response?.data;
+
+      // Check if the account has been deleted
+      if (errorData?.error === 'account_deleted') {
+        setShowDeletedAccountModal(true);
+        return;
+      }
+
       if (errorData?.errors) {
         setErrors(errorData.errors);
         // Show toast with the first error message from backend
@@ -102,6 +110,10 @@ export const useLoginForm = (onClose, resetFormCallback) => {
     setShowPassword((prev) => !prev);
   };
 
+  const closeDeletedAccountModal = () => {
+    setShowDeletedAccountModal(false);
+  };
+
   return {
     loginEmail,
     loginPassword,
@@ -109,6 +121,7 @@ export const useLoginForm = (onClose, resetFormCallback) => {
     loading,
     errors,
     firstInputRef,
+    showDeletedAccountModal,
     handleChangeEmail,
     handleChangePassword,
     handleBlurEmail,
@@ -116,5 +129,6 @@ export const useLoginForm = (onClose, resetFormCallback) => {
     handleSubmit,
     resetForm,
     toggleShowPassword,
+    closeDeletedAccountModal,
   };
 };

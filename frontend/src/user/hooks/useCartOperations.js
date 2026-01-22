@@ -97,10 +97,19 @@ export function useCartOperations(isAuthenticated) {
   }, [calculateLineTotal, debouncedApiUpdate]);
 
   const removeItem = async (itemId) => {
+    // Get the item name before removing
+    const itemToRemove = cartItems.find((item) => item.id === itemId);
+    const itemName = itemToRemove?.product_name || 'Item';
+
     try {
       await api.delete(`/cart/${itemId}`);
       setCartItems((prev) => prev.filter((item) => item.id !== itemId));
       window.dispatchEvent(new Event('cartUpdated'));
+
+      showToast(`${itemName} removed from cart`, {
+        type: 'success',
+        dismissible: true,
+      });
     } catch (err) {
       console.error('Failed to remove item:', err);
       setError('Failed to remove item');
@@ -112,10 +121,17 @@ export function useCartOperations(isAuthenticated) {
   };
 
   const removeItems = async (itemIds) => {
+    const itemCount = itemIds.length;
+
     try {
       await Promise.all(itemIds.map((id) => api.delete(`/cart/${id}`)));
       setCartItems((prev) => prev.filter((item) => !itemIds.includes(item.id)));
       window.dispatchEvent(new Event('cartUpdated'));
+
+      showToast(`${itemCount} ${itemCount === 1 ? 'item' : 'items'} removed from cart`, {
+        type: 'success',
+        dismissible: true,
+      });
     } catch (err) {
       console.error('Failed to remove items:', err);
       setError('Failed to remove items');

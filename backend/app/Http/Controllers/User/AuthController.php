@@ -56,6 +56,19 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+        // First check for soft-deleted users
+        $deletedUser = User::withTrashed()
+            ->where('email', $validated['email'])
+            ->whereNotNull('deleted_at')
+            ->first();
+
+        if ($deletedUser && Hash::check($validated['password'], $deletedUser->password)) {
+            return response()->json([
+                'error' => 'account_deleted',
+                'message' => 'This account has been deleted. Please contact the administrator to retrieve your account.',
+            ], 403);
+        }
+
         $user = User::where('email', $validated['email'])->first();
 
         if (! $user || ! Hash::check($validated['password'], $user->password)) {
