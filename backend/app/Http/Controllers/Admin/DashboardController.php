@@ -20,6 +20,10 @@ class DashboardController extends Controller
         $totalProducts = Product::count();
         $totalUsers = User::where('is_admin', false)->count();
 
+        // Total Sales (Online + POS completed orders)
+        $totalSales = Order::whereIn('status', ['delivered', 'completed'])
+            ->sum('total');
+
         // Sales Overview (Last 7 Days)
         $salesOverview = collect();
         for ($i = 6; $i >= 0; $i--) {
@@ -83,6 +87,7 @@ class DashboardController extends Controller
         return response()->json([
             'totalOrders' => $totalOrders,
             'totalRevenue' => number_format($totalRevenue, 2, '.', ''),
+            'totalSales' => number_format($totalSales, 2, '.', ''),
             'totalProducts' => $totalProducts,
             'totalUsers' => $totalUsers,
             'recentOrders' => $recentOrders,

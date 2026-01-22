@@ -58,7 +58,12 @@ export default function Dashboard() {
                 <StatCard title="Menu Items" value={stats?.totalProducts || 0} change="+3 from last month" trend="up" />
                 <StatCard title="Active Users" value={stats?.totalUsers || 0} change="+12% from last month" trend="up" />
                 <StatCard title="Current Orders" value={stats?.totalOrders || 0} change="+3 from last month" trend="up" />
-                <StatCard title="Unread Messages" value={stats?.pendingInquiriesCount || 0} change="+3 from last month" trend="up" />
+                <StatCard
+                  title="Total Sales"
+                  value={`₱${Number(stats?.totalSales || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  change="+15% from last month"
+                  trend="up"
+                />
               </>
             )}
           </div>
