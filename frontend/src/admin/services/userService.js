@@ -105,6 +105,22 @@ export const deleteUser = async (id) => {
   }
 };
 
+export const changeUserPassword = async (id, newPassword, confirmPassword) => {
+  try {
+    const response = await adminApi.patch(`/users/${id}/password`, {
+      new_password: newPassword,
+      new_password_confirmation: confirmPassword,
+    });
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Failed to change user password:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to change password',
+    };
+  }
+};
+
 export default {
   getCustomerMetrics,
   getAllUsers,
@@ -114,4 +130,5 @@ export default {
   restoreUser,
   updateUser,
   deleteUser,
+  changeUserPassword,
 };

@@ -80,6 +80,7 @@ Route::middleware(['auth:sanctum', 'token.timeout', 'admin'])->group(function ()
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::patch('/users/{id}/status', [UserController::class, 'updateStatus']);
+    Route::patch('/users/{id}/password', [UserController::class, 'changePassword']);
     Route::post('/users/{id}/restore', [UserController::class, 'restore']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
 

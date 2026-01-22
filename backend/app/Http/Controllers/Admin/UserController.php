@@ -221,4 +221,34 @@ class UserController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Change a user's password (admin only)
+     * The admin cannot see the current password, only set a new one
+     */
+    public function changePassword(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->is_admin) {
+            return response()->json([
+                'message' => 'Cannot change password of admin users through this endpoint',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user->update([
+            'password' => bcrypt($validated['new_password']),
+        ]);
+
+        // Revoke all tokens to force re-login with new password
+        $user->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Password changed successfully. User will need to log in again.',
+        ]);
+    }
 }

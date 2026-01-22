@@ -7,6 +7,7 @@ import {
   getUser,
   updateUserStatus,
   restoreUser,
+  changeUserPassword,
 } from '../services/userService';
 
 export function useUsers() {
@@ -29,6 +30,7 @@ export function useUsers() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showRestoreModal, setShowRestoreModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -154,6 +156,34 @@ export function useUsers() {
     setSelectedUser(null);
   };
 
+  // Change password handlers
+  const handleChangePasswordClick = (user) => {
+    setSelectedUser(user);
+    setShowPasswordModal(true);
+  };
+
+  const confirmChangePassword = async (newPassword, confirmPassword) => {
+    if (!selectedUser) return;
+
+    setActionLoading(true);
+    const result = await changeUserPassword(selectedUser.id, newPassword, confirmPassword);
+
+    if (result.success) {
+      showToast('Password changed successfully. User will need to log in again.', { type: 'success', dismissible: true });
+      setShowPasswordModal(false);
+      setSelectedUser(null);
+    } else {
+      showToast(result.error || 'Failed to change password', { type: 'error', dismissible: true, duration: 4000 });
+    }
+
+    setActionLoading(false);
+  };
+
+  const closePasswordModal = () => {
+    setShowPasswordModal(false);
+    setSelectedUser(null);
+  };
+
   // Legacy toggle for backward compatibility - now cycles through modes
   const toggleBlockedView = () => {
     setViewMode(viewMode === 'active' ? 'blocked' : 'active');
@@ -188,6 +218,7 @@ export function useUsers() {
     showDetailsModal,
     showConfirmModal,
     showRestoreModal,
+    showPasswordModal,
     confirmAction,
     actionLoading,
 
@@ -201,6 +232,11 @@ export function useUsers() {
     handleRestoreClick,
     confirmRestore,
     closeRestoreModal,
+
+    // Password change handlers
+    handleChangePasswordClick,
+    confirmChangePassword,
+    closePasswordModal,
 
     getWarningText,
     refetch: fetchData,

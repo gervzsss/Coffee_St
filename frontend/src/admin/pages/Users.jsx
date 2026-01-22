@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Key } from "lucide-react";
 import { AdminLayout } from "../components/layout";
 import { AdminAnimatedPage } from "../components/common";
-import { UserDetailsModal, ConfirmStatusModal, RestoreConfirmModal, UserMetricSkeleton, UserTableSkeleton } from "../components/users";
+import { UserDetailsModal, ConfirmStatusModal, RestoreConfirmModal, ChangePasswordModal, UserMetricSkeleton, UserTableSkeleton } from "../components/users";
 import { useUsers } from "../hooks";
 
 export default function Users() {
@@ -18,6 +18,7 @@ export default function Users() {
     showDetailsModal,
     showConfirmModal,
     showRestoreModal,
+    showPasswordModal,
     confirmAction,
     actionLoading,
     handleViewDetails,
@@ -28,6 +29,9 @@ export default function Users() {
     handleRestoreClick,
     confirmRestore,
     closeRestoreModal,
+    handleChangePasswordClick,
+    confirmChangePassword,
+    closePasswordModal,
     getWarningText,
     refetch,
   } = useUsers();
@@ -232,28 +236,35 @@ export default function Users() {
                                     />
                                   </svg>
                                 </button>
-                              ) : user.status === "active" ? (
-                                <button onClick={() => handleStatusChange(user, "block")} className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50" title="Block User">
-                                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                                    />
-                                  </svg>
-                                </button>
                               ) : (
-                                <button onClick={() => handleStatusChange(user, "unblock")} className="rounded-lg p-2 text-green-600 transition-colors hover:bg-green-50" title="Unblock User">
-                                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
-                                    />
-                                  </svg>
-                                </button>
+                                <>
+                                  <button onClick={() => handleChangePasswordClick(user)} className="rounded-lg p-2 text-amber-600 transition-colors hover:bg-amber-50" title="Change Password">
+                                    <Key className="h-5 w-5" />
+                                  </button>
+                                  {user.status === "active" ? (
+                                    <button onClick={() => handleStatusChange(user, "block")} className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50" title="Block User">
+                                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                                        />
+                                      </svg>
+                                    </button>
+                                  ) : (
+                                    <button onClick={() => handleStatusChange(user, "unblock")} className="rounded-lg p-2 text-green-600 transition-colors hover:bg-green-50" title="Unblock User">
+                                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
+                                        />
+                                      </svg>
+                                    </button>
+                                  )}
+                                </>
                               )}
                             </div>
                           </td>
@@ -273,6 +284,8 @@ export default function Users() {
       {showConfirmModal && <ConfirmStatusModal user={selectedUser} action={confirmAction} onConfirm={confirmStatusChange} onCancel={closeConfirmModal} isLoading={actionLoading} />}
 
       {showRestoreModal && <RestoreConfirmModal user={selectedUser} onConfirm={confirmRestore} onCancel={closeRestoreModal} isLoading={actionLoading} />}
+
+      {showPasswordModal && <ChangePasswordModal user={selectedUser} onClose={closePasswordModal} onConfirm={confirmChangePassword} loading={actionLoading} />}
     </AdminLayout>
   );
 }
