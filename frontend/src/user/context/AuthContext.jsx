@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     const handleBlocked = (event) => {
       setToken(null);
       setUser(null);
-      setBlockedMessage(event.detail?.message || "Your account has been blocked. Please contact support for assistance.");
+      setBlockedMessage(event.detail?.message || "Your account has been blocked due to violations. Please contact support for assistance.");
     };
 
     const handleUnauthorized = () => {

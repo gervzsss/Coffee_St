@@ -67,7 +67,7 @@ class AuthController extends Controller
         // Check if user account is blocked/restricted
         if ($user->status === 'restricted') {
             throw ValidationException::withMessages([
-                'email' => ['Your account has been blocked. Please contact support for assistance.'],
+                'email' => ['Your account has been blocked due to violations. Please contact support for assistance.'],
             ]);
         }
 

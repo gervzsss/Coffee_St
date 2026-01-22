@@ -21,7 +21,7 @@ class CheckUserStatus
             $request->user()->currentAccessToken()->delete();
 
             return response()->json([
-                'message' => 'Your account has been blocked. Please contact support for assistance.',
+                'message' => 'Your account has been blocked due to violations. Please contact support for assistance.',
             ], 403);
         }
 
