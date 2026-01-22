@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { RefreshCw } from "lucide-react";
 import { AdminLayout, AdminHeader } from "../components/layout";
 import { usePosMode } from "../context/PosModeContext";
 import { usePendingPosOrders } from "../context/PendingPosOrdersContext";
@@ -19,6 +20,7 @@ export default function POSOrders() {
   const [orders, setOrders] = useState([]);
   const [allOrders, setAllOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [statusFilter, setStatusFilter] = useState("confirmed");
   const [searchQuery, setSearchQuery] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
@@ -53,6 +55,13 @@ export default function POSOrders() {
     setIsLoading(false);
   }, [statusFilter, searchQuery, showToast]);
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchOrders();
+    refreshPendingOrders();
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
@@ -84,15 +93,25 @@ export default function POSOrders() {
       <AdminHeader
         title="POS Orders"
         action={
-          <button
-            onClick={() => navigate("/admin/pos")}
-            className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-700"
-          >
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-            </svg>
-            New Sale
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-200 transition-all hover:bg-gray-50 disabled:opacity-50"
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+              {refreshing ? "Refreshing..." : "Refresh"}
+            </button>
+            <button
+              onClick={() => navigate("/admin/pos")}
+              className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-700"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+              </svg>
+              New Sale
+            </button>
+          </div>
         }
       />
 
